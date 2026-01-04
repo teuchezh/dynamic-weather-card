@@ -1,0 +1,28 @@
+{
+  "name": "animated-weather-card",
+  "version": "1.0.0",
+  "description": "Красивая анимированная карточка погоды в стиле iOS для Home Assistant",
+  "main": "animated-weather-card.js",
+  "scripts": {
+    "build": "echo 'No build step required for this card'",
+    "test": "echo 'No tests specified'"
+  },
+  "keywords": [
+    "home-assistant",
+    "homeassistant",
+    "lovelace",
+    "weather",
+    "card",
+    "animated",
+    "ios"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
+

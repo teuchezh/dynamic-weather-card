@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Weather Card - Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .test-container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        select, input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            padding: 10px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #0056CC;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Animated Weather Card - Тестирование</h1>
+        
+        <div id="card-container"></div>
+        
+        <div class="controls">
+            <label>
+                Погодное условие:
+                <select id="condition-select">
+                    <option value="sunny">Солнечно</option>
+                    <option value="clear">Ясно</option>
+                    <option value="cloudy">Облачно</option>
+                    <option value="partlycloudy">Переменная облачность</option>
+                    <option value="rainy">Дождь</option>
+                    <option value="rain">Дождь (rain)</option>
+                    <option value="snowy">Снег</option>
+                    <option value="snow">Снег (snow)</option>
+                    <option value="foggy">Туман</option>
+                    <option value="fog">Туман (fog)</option>
+                    <option value="lightning">Гроза</option>
+                    <option value="lightning-rainy">Гроза с дождем</option>
+                    <option value="pouring">Сильный дождь</option>
+                    <option value="snowy-rainy">Мокрый снег</option>
+                    <option value="hail">Град</option>
+                    <option value="clear-night">Ясная ночь</option>
+                </select>
+            </label>
+            
+            <label>
+                Температура (°C):
+                <input type="number" id="temperature-input" value="20" min="-50" max="50">
+            </label>
+            
+            <label>
+                Влажность (%):
+                <input type="number" id="humidity-input" value="50" min="0" max="100">
+            </label>
+            
+            <label>
+                Скорость ветра (km/h):
+                <input type="number" id="wind-input" value="10" min="0" max="100">
+            </label>
+            
+            <label>
+                Время суток:
+                <select id="time-select">
+                    <option value="auto">Автоматически (текущее время)</option>
+                    <option value="manual">Вручную (крутилка времени)</option>
+                    <option value="day">День</option>
+                    <option value="night">Ночь</option>
+                    <option value="sunrise">Восход</option>
+                    <option value="sunset">Закат</option>
+                </select>
+            </label>
+            
+            <div id="time-slider-container" style="display: none; margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <span>Время:</span>
+                    <input type="range" id="time-slider" min="0" max="1439" value="720" style="flex: 1;">
+                    <span id="time-display" style="min-width: 80px; font-weight: bold;">12:00</span>
+                </label>
+                <div style="display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap;">
+                    <button onclick="setTime(360)" style="padding: 4px 8px; font-size: 12px;">6:00 (Восход)</button>
+                    <button onclick="setTime(720)" style="padding: 4px 8px; font-size: 12px;">12:00 (День)</button>
+                    <button onclick="setTime(1080)" style="padding: 4px 8px; font-size: 12px;">18:00 (Закат)</button>
+                    <button onclick="setTime(1200)" style="padding: 4px 8px; font-size: 12px;">20:00 (Ночь)</button>
+                </div>
+            </div>
+            
+            <label>
+                Высота карточки (px):
+                <input type="number" id="height-input" value="200" min="150" max="400">
+            </label>
+            
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd;">
+                <strong style="font-size: 14px; color: #333;">Опции отображения:</strong>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="show-feels-like" checked>
+                        <span>Температура "ощущается как"</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="show-min-temp" checked>
+                        <span>Минимальная температура</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="show-humidity" checked>
+                        <span>Влажность</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="show-wind" checked>
+                        <span>Скорость ветра</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="show-wind-direction" checked>
+                        <span>Направление ветра</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="show-wind-gust" checked>
+                        <span>Порывы ветра</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="show-forecast">
+                        <span>Прогноз на сегодня</span>
+                    </label>
+                </div>
+            </div>
+            
+            <button onclick="updateCard()">Обновить карточку</button>
+        </div>
+    </div>
+
+    <!-- Импорт карта для Lit - должен быть перед модулями -->
+    <!-- Используем esm.sh который автоматически резолвит все зависимости -->
+    <script type="importmap">
+    {
+        "imports": {
+            "lit": "https://esm.sh/lit@3.1.3",
+            "lit/": "https://esm.sh/lit@3.1.3/",
+            "@lit/reactive-element": "https://esm.sh/@lit/reactive-element@2.0.4",
+            "@lit/reactive-element/": "https://esm.sh/@lit/reactive-element@2.0.4/",
+            "lit-element": "https://esm.sh/lit-element@4.0.4",
+            "lit-element/": "https://esm.sh/lit-element@4.0.4/",
+            "lit-html": "https://esm.sh/lit-html@3.1.2",
+            "lit-html/": "https://esm.sh/lit-html@3.1.2/"
+        }
+    }
+    </script>
+
+    <!-- Загрузка Lit из CDN -->
+    <script type="module">
+        // Мок для ha-card
+        if (!customElements.get('ha-card')) {
+            customElements.define('ha-card', class extends HTMLElement {
+                connectedCallback() {
+                    this.style.display = 'block';
+                    this.style.width = '100%';
+                }
+            });
+        }
+        
+        // Загружаем основную карточку
+        import('./animated-weather-card.js').then(() => {
+            window.cardLoaded = true;
+            if (window.initCard) window.initCard();
+        }).catch(err => {
+            console.error('Ошибка загрузки карточки:', err);
+            document.getElementById('card-container').innerHTML = 
+                '<p style="color: red;">Ошибка загрузки карточки. Проверьте консоль браузера (F12).</p>' +
+                '<p>Убедитесь, что вы запускаете через локальный сервер (не file://)</p>';
+        });
+    </script>
+
+    <script>
+        let card = null;
+        let mockHass = null;
+        let currentManualTime = 720; // 12:00 по умолчанию
+        
+        // Функция для форматирования времени (минуты -> HH:MM)
+        function formatTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return String(hours).padStart(2, '0') + ':' + String(mins).padStart(2, '0');
+        }
+        
+        // Функция для установки времени
+        function setTime(minutes) {
+            currentManualTime = minutes;
+            document.getElementById('time-slider').value = minutes;
+            document.getElementById('time-display').textContent = formatTime(minutes);
+            if (document.getElementById('time-select').value === 'manual') {
+                updateCard();
+            }
+        }
+        
+            // Инициализация слайдера времени и переключателей
+            document.addEventListener('DOMContentLoaded', function() {
+                const timeSlider = document.getElementById('time-slider');
+                const timeDisplay = document.getElementById('time-display');
+                const timeSelect = document.getElementById('time-select');
+                const sliderContainer = document.getElementById('time-slider-container');
+                
+                // Обновление времени при движении слайдера
+                timeSlider.addEventListener('input', function() {
+                    currentManualTime = parseInt(this.value);
+                    timeDisplay.textContent = formatTime(currentManualTime);
+                    if (timeSelect.value === 'manual') {
+                        updateCard();
+                    }
+                });
+                
+                // Показ/скрытие слайдера
+                timeSelect.addEventListener('change', function() {
+                    if (this.value === 'manual') {
+                        sliderContainer.style.display = 'block';
+                        updateCard();
+                    } else {
+                        sliderContainer.style.display = 'none';
+                        updateCard();
+                    }
+                });
+                
+                // Автоматическое обновление при изменении переключателей
+                const checkboxes = [
+                    'show-feels-like',
+                    'show-min-temp',
+                    'show-humidity',
+                    'show-wind',
+                    'show-wind-direction',
+                    'show-wind-gust',
+                    'show-forecast'
+                ];
+                
+                checkboxes.forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.addEventListener('change', function() {
+                            if (card) {
+                                updateCard();
+                            }
+                        });
+                    }
+                });
+                
+                // Инициализация отображения
+                timeDisplay.textContent = formatTime(currentManualTime);
+            });
+        
+        function createMockHass(condition, temperature, humidity, windSpeed, timeOfDay) {
+            // Если указано конкретное время, переопределяем метод getTimeOfDay
+            if (timeOfDay && timeOfDay !== 'auto') {
+                // Сохраняем оригинальный метод
+                if (!window.originalGetTimeOfDay) {
+                    const cardClass = customElements.get('animated-weather-card');
+                    if (cardClass && cardClass.prototype.getTimeOfDay) {
+                        window.originalGetTimeOfDay = cardClass.prototype.getTimeOfDay.bind(null);
+                    }
+                }
+            }
+            
+            // Создаем фейковые данные прогноза на сегодня
+            const now = new Date();
+            const fakeForecast = [];
+            const conditions = ['sunny', 'partlycloudy', 'cloudy', 'rainy', 'clear'];
+            const baseTemp = temperature;
+            
+            for (let i = 1; i <= 8; i++) {
+                const forecastTime = new Date(now.getTime() + i * 60 * 60 * 1000);
+                const hour = forecastTime.getHours();
+                // Температура меняется в зависимости от времени суток
+                let temp = baseTemp;
+                if (hour >= 6 && hour < 12) {
+                    temp = baseTemp + Math.floor(Math.random() * 3); // Утро - слегка теплее
+                } else if (hour >= 12 && hour < 18) {
+                    temp = baseTemp + 2 + Math.floor(Math.random() * 4); // День - теплее
+                } else if (hour >= 18 && hour < 22) {
+                    temp = baseTemp + Math.floor(Math.random() * 3); // Вечер - немного теплее
+                } else {
+                    temp = baseTemp - 2 + Math.floor(Math.random() * 3); // Ночь - прохладнее
+                }
+                
+                fakeForecast.push({
+                    datetime: forecastTime.toISOString(),
+                    condition: conditions[Math.floor(Math.random() * conditions.length)],
+                    temperature: temp,
+                    temp: temp
+                });
+            }
+            
+            return {
+                states: {
+                    'weather.test': {
+                        state: temperature.toString(),
+                        attributes: {
+                            condition: condition,
+                            temperature: temperature,
+                            humidity: humidity,
+                            wind_speed: windSpeed,
+                            pressure: 1013,
+                            friendly_name: 'Тестовая погода',
+                            forecast: fakeForecast
+                        }
+                    }
+                }
+            };
+        }
+        
+        function updateCard() {
+            const container = document.getElementById('card-container');
+            container.innerHTML = '';
+            
+            if (!window.cardLoaded) {
+                container.innerHTML = '<p>Загрузка карточки...</p>';
+                return;
+            }
+            
+            const condition = document.getElementById('condition-select').value;
+            const temperature = parseInt(document.getElementById('temperature-input').value);
+            const humidity = parseInt(document.getElementById('humidity-input').value);
+            const windSpeed = parseInt(document.getElementById('wind-input').value);
+            const height = parseInt(document.getElementById('height-input').value);
+            const timeSelect = document.getElementById('time-select').value;
+            
+            // Создаем карточку
+            card = document.createElement('animated-weather-card');
+            
+            // Переопределяем getTimeOfDay если нужно
+            if (timeSelect === 'manual') {
+                // Ручной режим - используем время со слайдера
+                card.getTimeOfDay = function() {
+                    const totalMinutes = currentManualTime;
+                    const hour = Math.floor(totalMinutes / 60);
+                    
+                    // Восход: 6:00 - 8:00 (360-480 минут)
+                    if (totalMinutes >= 360 && totalMinutes < 480) {
+                        const progress = (totalMinutes - 360) / 120;
+                        return { type: 'sunrise', progress };
+                    }
+                    
+                    // День: 8:00 - 18:00 (480-1080 минут)
+                    if (totalMinutes >= 480 && totalMinutes < 1080) {
+                        const progress = (totalMinutes - 480) / 600;
+                        return { type: 'day', progress };
+                    }
+                    
+                    // Закат: 18:00 - 20:00 (1080-1200 минут)
+                    if (totalMinutes >= 1080 && totalMinutes < 1200) {
+                        const progress = (totalMinutes - 1080) / 120;
+                        return { type: 'sunset', progress };
+                    }
+                    
+                    // Ночь
+                    return { type: 'night', progress: 0 };
+                };
+            } else if (timeSelect !== 'auto') {
+                // Предустановленные режимы
+                card.getTimeOfDay = function() {
+                    const progress = timeSelect === 'sunrise' ? 0.5 : (timeSelect === 'sunset' ? 0.5 : 0);
+                    return { type: timeSelect, progress: progress };
+                };
+            }
+            // Если auto - используем реальное время (не переопределяем)
+            
+            mockHass = createMockHass(condition, temperature, humidity, windSpeed, timeSelect);
+            
+            // Добавляем дополнительные атрибуты для тестирования
+            mockHass.states['weather.test'].attributes.apparent_temperature = temperature - 3;
+            mockHass.states['weather.test'].attributes.wind_bearing = 200;
+            mockHass.states['weather.test'].attributes.wind_gust_speed = windSpeed * 2;
+            mockHass.states['weather.test'].attributes.templow = temperature - 5;
+            
+            // Получаем значения переключателей
+            const showFeelsLike = document.getElementById('show-feels-like').checked;
+            const showMinTemp = document.getElementById('show-min-temp').checked;
+            const showHumidity = document.getElementById('show-humidity').checked;
+            const showWind = document.getElementById('show-wind').checked;
+            const showWindDirection = document.getElementById('show-wind-direction').checked;
+            const showWindGust = document.getElementById('show-wind-gust').checked;
+            const showForecast = document.getElementById('show-forecast').checked;
+            
+            // Используем прогноз из mockHass (уже создан в createMockHass)
+            
+            card.setConfig({
+                entity: 'weather.test',
+                name: 'Тестовая погода',
+                height: height,
+                icons_path: './icons/',
+                show_feels_like: showFeelsLike,
+                show_wind: showWind,
+                show_wind_direction: showWindDirection,
+                show_wind_gust: showWindGust,
+                show_humidity: showHumidity,
+                show_min_temp: showMinTemp,
+                show_forecast: showForecast
+            });
+            
+            card.hass = mockHass;
+            
+            container.appendChild(card);
+            
+            // Даем время на инициализацию
+            setTimeout(() => {
+                // Проверка что canvas создан
+                const canvas = card.shadowRoot?.querySelector('canvas');
+                if (canvas) {
+                    console.log('Canvas создан:', canvas.width, 'x', canvas.height);
+                } else {
+                    console.error('Canvas не найден!');
+                }
+            }, 200);
+        }
+        
+        // Инициализация после загрузки карточки
+        window.initCard = function() {
+            updateCard();
+        };
+        
+        // Автоматическое обновление при изменении времени
+        setInterval(() => {
+            if (card && document.getElementById('time-select').value === 'auto') {
+                updateCard();
+            }
+        }, 60000); // Каждую минуту
+    </script>
+</body>
+</html>
+
