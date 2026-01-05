@@ -385,7 +385,7 @@
         }
 
         // Load main card
-        import('./dist/dynamic-weather-card.js').then(() => {
+        import('./dynamic-weather-card.js').then(() => {
             window.cardLoaded = true;
             if (window.initCard) window.initCard();
         }).catch(err => {

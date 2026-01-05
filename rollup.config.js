@@ -9,7 +9,7 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 export default {
   input: 'src/index.js',
   output: {
-    file: 'dist/dynamic-weather-card.js',
+    file: 'dynamic-weather-card.js',
     format: 'es',
     sourcemap: false
   },

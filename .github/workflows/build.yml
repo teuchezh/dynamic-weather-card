@@ -28,18 +28,18 @@ jobs:
 
       - name: Verify build output
         run: |
-          if [ ! -f dist/dynamic-weather-card.js ]; then
-            echo "Build failed: dist/dynamic-weather-card.js not found"
+          if [ ! -f dynamic-weather-card.js ]; then
+            echo "Build failed: dynamic-weather-card.js not found"
             exit 1
           fi
-          echo "Build successful: $(wc -l < dist/dynamic-weather-card.js) lines"
+          echo "Build successful: $(wc -l < dynamic-weather-card.js) lines"
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/dynamic-weather-card.js
+            dynamic-weather-card.js
             hacs.json
             README.md
             LICENSE
