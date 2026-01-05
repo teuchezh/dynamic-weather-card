@@ -398,6 +398,6 @@ export class AnimatedWeatherCard extends LitElement {
   }
 
   static getConfigElement() {
-    return document.createElement('animated-weather-card-editor');
+    return document.createElement('dynamic-weather-card-editor');
   }
 }

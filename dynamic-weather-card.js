@@ -274,7 +274,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
           </div>
         </div>
       </ha-card>
-    `}setConfig(t){if(!t.entity)throw new Error("Please define a weather entity");this.config={entity:t.entity,icons_path:t.icons_path,name:t.name,height:t.height||ft,showFeelsLike:!1!==t.show_feels_like,showWind:!1!==t.show_wind,showWindGust:!1!==t.show_wind_gust,showWindDirection:!1!==t.show_wind_direction,showHumidity:!1!==t.show_humidity,showMinTemp:!1!==t.show_min_temp,showForecast:!0===t.show_forecast,showSunriseSunset:!1!==t.show_sunrise_sunset}}getCardSize(){return 1}static getConfigElement(){return document.createElement("animated-weather-card-editor")}}class kt extends at{static get properties(){return{hass:{type:Object},config:{type:Object}}}createRenderRoot(){return this}setConfig(t){this.config=t||{}}render(){return this.hass?I`
+    `}setConfig(t){if(!t.entity)throw new Error("Please define a weather entity");this.config={entity:t.entity,icons_path:t.icons_path,name:t.name,height:t.height||ft,showFeelsLike:!1!==t.show_feels_like,showWind:!1!==t.show_wind,showWindGust:!1!==t.show_wind_gust,showWindDirection:!1!==t.show_wind_direction,showHumidity:!1!==t.show_humidity,showMinTemp:!1!==t.show_min_temp,showForecast:!0===t.show_forecast,showSunriseSunset:!1!==t.show_sunrise_sunset}}getCardSize(){return 1}static getConfigElement(){return document.createElement("dynamic-weather-card-editor")}}class kt extends at{static get properties(){return{hass:{type:Object},config:{type:Object}}}createRenderRoot(){return this}setConfig(t){this.config=t||{}}render(){return this.hass?I`
       <style>
         .card-config {
           padding: 16px;
