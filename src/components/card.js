@@ -154,11 +154,15 @@ export class AnimatedWeatherCard extends LitElement {
 
   getWeatherData() {
     const entityId = this.config.entity || 'weather.home';
+    const state = this.getState(entityId);
     const attrs = this.getAttributes(entityId);
 
+    // Get condition from attributes or entity state
+    const condition = attrs.condition || state || 'sunny';
+
     return {
-      condition: attrs.condition || 'sunny',
-      temperature: attrs.temperature || this.getState(entityId) || 20,
+      condition: condition,
+      temperature: attrs.temperature || 20,
       apparentTemperature: attrs.apparent_temperature || null,
       humidity: attrs.humidity != null ? attrs.humidity : null,
       windSpeed: attrs.wind_speed != null ? attrs.wind_speed : null,
