@@ -20,7 +20,7 @@ import { FoggyAnimation } from '../animations/foggy.js';
 import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { cardStyles } from './styles.js';
-import { getSVGIcon } from '../icons/svg-icons.js';
+import { getSVGIcon, getWeatherConditionIcon } from '../icons/svg-icons.js';
 
 export class AnimatedWeatherCard extends LitElement {
   static get properties() {
@@ -317,7 +317,7 @@ export class AnimatedWeatherCard extends LitElement {
         ${forecast.map(item => html`
           <div class="forecast-item">
             <div class="forecast-time">${formatForecastTime(item.datetime)}</div>
-            <div class="forecast-icon">${getConditionEmoji(item.condition)}</div>
+            <div class="forecast-icon">${getWeatherConditionIcon(item.condition)}</div>
             <div class="forecast-temp">${Math.round(item.temperature || item.temp || item.native_temperature || 0)}°</div>
           </div>
         `)}

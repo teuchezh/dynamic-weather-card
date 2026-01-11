@@ -219,8 +219,13 @@ export const cardStyles = css`
   }
 
   .forecast-icon {
-    font-size: 24px;
     line-height: 1;
+  }
+
+  .forecast-icon svg {
+    width: 32px;
+    height: 32px;
+    display: block;
   }
 
   .forecast-temp {
