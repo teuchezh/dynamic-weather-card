@@ -18,6 +18,9 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
     overflow: hidden;
     background: transparent;
     box-shadow: none;
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
   }
 
   .weather-card {
@@ -61,7 +64,7 @@ const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow
 
   .content {
     position: relative;
-    z-index: 10;
+    z-index: 1;
     padding: 20px;
     display: flex;
     flex-direction: column;

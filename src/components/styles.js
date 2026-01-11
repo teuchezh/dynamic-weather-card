@@ -20,6 +20,9 @@ export const cardStyles = css`
     overflow: hidden;
     background: transparent;
     box-shadow: none;
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
   }
 
   .weather-card {
@@ -63,7 +66,7 @@ export const cardStyles = css`
 
   .content {
     position: relative;
-    z-index: 10;
+    z-index: 1;
     padding: 20px;
     display: flex;
     flex-direction: column;
