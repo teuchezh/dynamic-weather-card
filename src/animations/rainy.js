@@ -36,8 +36,8 @@ export class RainyAnimation extends BaseAnimation {
       this.rainDrops = [];
       for (let i = 0; i < dropCount; i++) {
         this.rainDrops.push({
-          startX: Math.random() * width,
-          startY: Math.random() * (height + 200) - 100,
+          x: Math.random() * width,
+          y: Math.random() * height - Math.random() * 200,
           speed: heavy ? (80 + Math.random() * 100) : (60 + Math.random() * 80),
           windOffset: (Math.random() - 0.5) * 30,
           width: heavy ? (1.2 + Math.random() * 1.0) : (0.8 + Math.random() * 0.7),
@@ -48,30 +48,33 @@ export class RainyAnimation extends BaseAnimation {
       }
     }
 
-    const time = Date.now() * 0.0015;
+    const deltaTime = 1 / 60; // Assume 60fps for consistent animation
+    const time = Date.now() * 0.001;
 
     for (let i = 0; i < this.rainDrops.length; i++) {
       const drop = this.rainDrops[i];
-      const dropY = (drop.startY + time * drop.speed) % (height + 200);
 
-      // Reset drop position when it goes off screen
-      if (dropY > height + 50) {
-        drop.startY = -50 - Math.random() * 50;
-        drop.startX = Math.random() * width;
+      // Update drop position
+      drop.y += drop.speed * deltaTime;
+
+      // Reset drop when it goes off screen (smooth loop)
+      if (drop.y > height + 50) {
+        drop.y = -50 - Math.random() * 100;
+        drop.x = Math.random() * width;
       }
 
       // Wind effect
       const wind = drop.windOffset * (1 + Math.sin(time * 0.5 + drop.phase) * 0.2);
-      const dropX = (drop.startX + wind + (time * 15) % width) % width;
+      const dropX = drop.x + wind;
 
       // Wrap around horizontally
       if (dropX < -10) {
-        drop.startX = width + 10;
+        drop.x = width + 10;
       } else if (dropX > width + 10) {
-        drop.startX = -10;
+        drop.x = -10;
       }
 
-      this.drawRainDrop(dropX, dropY, drop);
+      this.drawRainDrop(dropX, drop.y, drop);
     }
   }
 
@@ -86,7 +89,7 @@ export class RainyAnimation extends BaseAnimation {
     this.ctx.globalAlpha = drop.alpha;
 
     const topY = dropY - drop.length * 0.5;
-    const tipY = dropY + drop.length * 0.5;
+    const bottomY = dropY + drop.length * 0.5;
 
     this.ctx.fillStyle = `rgba(220, 240, 255, ${drop.alpha})`;
     this.ctx.strokeStyle = `rgba(240, 250, 255, ${drop.alpha * 0.5})`;
@@ -94,25 +97,22 @@ export class RainyAnimation extends BaseAnimation {
 
     this.ctx.beginPath();
 
-    // Top rounded part
-    const topRadius = drop.width;
-    this.ctx.arc(dropX, topY, topRadius, 0, Math.PI * 2, false);
+    // Start at pointed top
+    this.ctx.moveTo(dropX, topY);
 
-    // Left side
-    this.ctx.moveTo(dropX - topRadius, topY);
+    // Left side - expand from narrow top to wider bottom
     this.ctx.quadraticCurveTo(
-      dropX - topRadius * 0.5, dropY,
-      dropX - topRadius * 0.15, tipY - drop.width * 0.5
+      dropX - drop.width * 0.3, dropY,
+      dropX - drop.width, bottomY - drop.width * 0.3
     );
 
-    // Pointed tip
-    this.ctx.lineTo(dropX, tipY);
+    // Bottom rounded part (left to right)
+    this.ctx.arc(dropX, bottomY, drop.width, Math.PI, 0, false);
 
-    // Right side
-    this.ctx.lineTo(dropX + topRadius * 0.15, tipY - drop.width * 0.5);
+    // Right side - from wider bottom back to narrow top
     this.ctx.quadraticCurveTo(
-      dropX + topRadius * 0.5, dropY,
-      dropX + topRadius, topY
+      dropX + drop.width * 0.3, dropY,
+      dropX, topY
     );
 
     this.ctx.closePath();

@@ -35,7 +35,7 @@ export const WEATHER_CONDITION_SVGS = {
   'lightning': thunderstormSvg,
   'lightning-rainy': thunderstormSvg,
   'windy': cloudySvg,
-  'windy-variant': cloudySvg,
+  'windy-variant': cloudySvg
 };
 
 // Helper function to get weather condition SVG

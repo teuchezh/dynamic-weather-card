@@ -4,6 +4,11 @@ import { BaseAnimation } from './base.js';
  * Snowy weather animation
  */
 export class SnowyAnimation extends BaseAnimation {
+  constructor(ctx) {
+    super(ctx);
+    this.snowflakes = [];
+  }
+
   /**
    * Draw snowy weather
    * @param {{type: string, progress: number}} timeOfDay - Time of day info
@@ -13,27 +18,67 @@ export class SnowyAnimation extends BaseAnimation {
   draw(timeOfDay, width, height) {
     const time = Date.now() * 0.001;
     this.drawClouds(time, width, height, 0.7);
-    this.drawSnowflakes(width, height, time);
+    this.drawSnowflakes(width, height);
   }
 
   /**
    * Draw snowflakes
    * @param {number} width - Canvas width
    * @param {number} height - Canvas height
-   * @param {number} time - Animation time
    */
-  drawSnowflakes(width, height, time) {
+  drawSnowflakes(width, height) {
+    // Calculate snowflake count based on area
+    const snowflakeCount = Math.floor((width * height) / 5000);
+    const targetCount = Math.max(30, Math.min(snowflakeCount, 80));
+
+    // Initialize or adjust snowflakes
+    if (this.snowflakes.length !== targetCount) {
+      this.snowflakes = [];
+      for (let i = 0; i < targetCount; i++) {
+        this.snowflakes.push({
+          x: Math.random() * width,
+          y: Math.random() * height - Math.random() * 100,
+          speedY: 15 + Math.random() * 10,
+          speedX: (Math.random() - 0.5) * 8,
+          size: 1.5 + Math.random() * 1.5,
+          alpha: 0.6 + Math.random() * 0.3,
+          rotation: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.3,
+          swayPhase: Math.random() * Math.PI * 2,
+          swaySpeed: 0.5 + Math.random() * 0.5
+        });
+      }
+    }
+
+    const deltaTime = 1 / 60; // Assume 60fps
+    const time = Date.now() * 0.001;
+
     this.ctx.lineWidth = 1;
     this.ctx.lineCap = 'round';
 
-    for (let i = 0; i < 40; i++) {
-      const x = (width * 0.15 + i * 22 + Math.sin(time * 0.15 + i) * 15) % width;
-      const y = ((time * 60 + i * 25) % (height + 60)) - 30;
-      const size = 1.5 + (i % 4) * 0.8;
-      const alpha = 0.7 + (i % 2) * 0.2;
-      const rotation = time * 0.25 + i * 0.3;
+    for (let i = 0; i < this.snowflakes.length; i++) {
+      const flake = this.snowflakes[i];
 
-      this.drawSnowflake(x, y, size, alpha, rotation);
+      // Update position with gentle swaying
+      const sway = Math.sin(time * flake.swaySpeed + flake.swayPhase) * 2;
+      flake.y += flake.speedY * deltaTime;
+      flake.x += (flake.speedX + sway) * deltaTime;
+      flake.rotation += flake.rotationSpeed * deltaTime;
+
+      // Reset when off screen (smooth loop)
+      if (flake.y > height + 20) {
+        flake.y = -20 - Math.random() * 50;
+        flake.x = Math.random() * width;
+      }
+
+      // Wrap horizontally
+      if (flake.x < -10) {
+        flake.x = width + 10;
+      } else if (flake.x > width + 10) {
+        flake.x = -10;
+      }
+
+      this.drawSnowflake(flake.x, flake.y, flake.size, flake.alpha, flake.rotation);
     }
   }
 

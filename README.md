@@ -132,6 +132,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_sunrise_sunset` | boolean | false | Show sunrise and sunset times |
 | `sunrise_entity` | string | - | Sunrise sensor entity ID (optional) |
 | `sunset_entity` | string | - | Sunset sensor entity ID (optional) |
+| `templow_attribute` | string | - | Custom attribute name for minimum temperature (optional). If not specified, the card will automatically search for known attributes: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |
 
 ## Supported Weather Conditions
 
@@ -165,12 +166,27 @@ yarn install
 ### Build
 
 ```bash
-# Production build
+# Production build (includes linting)
 yarn build
 
 # Development mode with automatic rebuild
 yarn dev
 ```
+
+### Code Quality
+
+```bash
+# Check code with ESLint
+yarn lint
+
+# Auto-fix linting issues
+yarn lint:fix
+```
+
+The project uses ESLint with rules for:
+- Code style consistency
+- Lit-specific best practices
+- Automatic formatting
 
 ### Testing
 

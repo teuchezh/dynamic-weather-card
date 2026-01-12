@@ -1,11 +1,6 @@
-import { LitElement, html, css } from 'lit';
-import { CONDITION_NAMES, TRANSLATIONS, DEFAULT_CONFIG } from '../constants.js';
+import { LitElement, html } from 'lit';
+import { CONDITION_NAMES, TRANSLATIONS, DEFAULT_CONFIG, TEMPLOW_ATTRIBUTES } from '../constants.js';
 import {
-  getWindDirectionText,
-  getWindDirectionIcon,
-  getConditionEmoji,
-  getIcon,
-  getTimeOfDay,
   getBackgroundGradient,
   formatForecastTime,
   getSunriseSunsetData,
@@ -26,7 +21,7 @@ export class AnimatedWeatherCard extends LitElement {
   static get properties() {
     return {
       hass: { type: Object },
-      config: { type: Object },
+      config: { type: Object }
     };
   }
 
@@ -194,9 +189,31 @@ export class AnimatedWeatherCard extends LitElement {
     // Get condition from attributes or entity state
     const condition = attrs.condition || state || 'sunny';
 
+    // Get minimum temperature from various sources
+    let templow = null;
+
+    // If user specified custom attribute, use it
+    if (this.config.templowAttribute && attrs[this.config.templowAttribute] != null) {
+      templow = attrs[this.config.templowAttribute];
+    } else {
+      // Try known attribute names
+      for (const attrName of TEMPLOW_ATTRIBUTES) {
+        if (attrs[attrName] != null) {
+          templow = attrs[attrName];
+          break;
+        }
+      }
+
+      // Fallback to forecast data if no direct attribute found
+      if (templow == null) {
+        templow = (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow : null)
+          || (attrs.forecast_hourly && attrs.forecast_hourly[0] ? attrs.forecast_hourly[0].native_templow : null);
+      }
+    }
+
     return {
       condition: condition,
-      temperature: attrs.temperature || 20,
+      temperature: attrs.temperature != null ? attrs.temperature : null,
       apparentTemperature: attrs.apparent_temperature || null,
       humidity: attrs.humidity != null ? attrs.humidity : null,
       windSpeed: attrs.wind_speed != null ? attrs.wind_speed : null,
@@ -205,8 +222,8 @@ export class AnimatedWeatherCard extends LitElement {
       windDirection: attrs.wind_direction || null,
       pressure: attrs.pressure || null,
       forecast: attrs.forecast || attrs.forecast_hourly || [],
-      friendlyName: attrs.friendly_name || 'Weather',
-      templow: attrs.templow || (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow : null) || (attrs.forecast_hourly && attrs.forecast_hourly[0] ? attrs.forecast_hourly[0].native_templow : null)
+      friendlyName: attrs.friendly_name || this.translate('weather'),
+      templow: templow
     };
   }
 
@@ -309,7 +326,7 @@ export class AnimatedWeatherCard extends LitElement {
   renderTodayForecast() {
     const forecast = this.getTodayForecast();
     if (forecast.length === 0) {
-      return html`<div style="opacity: 0.6; font-size: 14px;">Прогноз недоступен</div>`;
+      return html`<div style="opacity: 0.6; font-size: 14px;">${this.translate('forecast_unavailable')}</div>`;
     }
 
     return html`
@@ -367,7 +384,7 @@ export class AnimatedWeatherCard extends LitElement {
     const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
     const cardClasses = `weather-card ${timeOfDay.type}`;
 
-    let minHeight = this.config.height ? `${this.config.height}px` : '200px';
+    const minHeight = this.config.height ? `${this.config.height}px` : '200px';
 
     const bgGradient = getBackgroundGradient(timeOfDay);
     const bgStyle = bgGradient
@@ -391,7 +408,7 @@ export class AnimatedWeatherCard extends LitElement {
             ` : ''}
             <div>
               <div class="condition">${this.getConditionName(weather.condition)}</div>
-              <div class="temperature">${Math.round(weather.temperature)}°</div>
+              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : this.translate('no_data')}</div>
               ${this.config.showMinTemp && weather.templow ? html`
                 <div class="temp-range">
                   <span class="temp-min">↓ ${Math.round(weather.templow)}°</span>
@@ -468,6 +485,7 @@ export class AnimatedWeatherCard extends LitElement {
       language: config.language || DEFAULT_CONFIG.language,
       sunriseEntity: config.sunrise_entity || null,
       sunsetEntity: config.sunset_entity || null,
+      templowAttribute: config.templow_attribute || null,
       tapAction: config.tap_action || { action: 'more-info' },
       holdAction: config.hold_action || { action: 'none' },
       doubleTapAction: config.double_tap_action || { action: 'none' }
@@ -560,11 +578,11 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  handleHold(e) {
+  handleHold() {
     this.handleAction(this.config.holdAction);
   }
 
-  handleDoubleTap(e) {
+  handleDoubleTap() {
     this.handleAction(this.config.doubleTapAction);
   }
 

@@ -1,4 +1,4 @@
-import { html, svg } from 'lit';
+import { svg } from 'lit';
 
 // SVG icon templates from Basmilius Weather Icons
 // License: MIT - https://github.com/basmilius/weather-icons
@@ -43,7 +43,7 @@ export const SVG_ICONS = {
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="transform: rotate(${bearing}deg); transform-origin: center;">
       <path fill="currentColor" d="M12 2L4 20L12 17L20 20L12 2Z"/>
     </svg>
-  `,
+  `
 };
 
 // Weather condition icons for forecast
@@ -385,7 +385,7 @@ export const WEATHER_CONDITION_ICONS = {
         <animateTransform attributeName="transform" dur="7s" repeatCount="indefinite" type="translate" values="-3 0; 3 0; -3 0"/>
       </g>
     </svg>
-  `,
+  `
 };
 
 // Helper function to get icon

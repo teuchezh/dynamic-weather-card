@@ -21,7 +21,7 @@ export class BaseAnimation {
     this.ctx.shadowBlur = size * 0.25;
     this.ctx.shadowColor = `rgba(255, 255, 255, ${opacity * 0.4})`;
     this.ctx.globalAlpha = opacity * 0.85;
-    this.ctx.fillStyle = `rgba(255, 255, 255, 1)`;
+    this.ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 
     const parts = [
       // Bottom row

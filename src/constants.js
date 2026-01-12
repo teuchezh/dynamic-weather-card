@@ -1,26 +1,6 @@
 // Version is injected from package.json during build
 export const VERSION = __VERSION__;
 
-// Weather condition emojis
-export const CONDITION_EMOJI = {
-  'sunny': '☀️',
-  'clear': '☀️',
-  'clear-night': '🌙',
-  'partlycloudy': '⛅',
-  'overcast': '☁️',
-  'cloudy': '☁️',
-  'rainy': '🌧️',
-  'pouring': '🌧️',
-  'lightning': '⚡',
-  'lightning-rainy': '⛈️',
-  'snowy': '❄️',
-  'snowy-rainy': '🌨️',
-  'foggy': '🌫️',
-  'hail': '🌨️',
-  'windy': '💨',
-  'windy-variant': '💨'
-};
-
 // Weather condition names
 export const CONDITION_NAMES = {
   en: {
@@ -67,51 +47,36 @@ export const CONDITION_NAMES = {
 export const TRANSLATIONS = {
   en: {
     'feels_like': 'Feels like',
-    'forecast_title': 'Today\'s Forecast'
+    'forecast_title': 'Today\'s Forecast',
+    'no_data': 'No data',
+    'forecast_unavailable': 'Forecast unavailable',
+    'weather': 'Weather'
   },
   ru: {
     'feels_like': 'Ощущается как',
-    'forecast_title': 'Прогноз на сегодня'
+    'forecast_title': 'Прогноз на сегодня',
+    'no_data': 'Нет данных',
+    'forecast_unavailable': 'Прогноз недоступен',
+    'weather': 'Погода'
   }
 };
 
-// Icon mappings
-export const ICON_MAP = {
-  'humidity-icon.svg': '💧',
-  'wind-icon.svg': '💨',
-  'wind-gust-icon.svg': '🌪️',
-  'wind-n.svg': '⬆️',
-  'wind-ne.svg': '↗️',
-  'wind-e.svg': '➡️',
-  'wind-se.svg': '↘️',
-  'wind-s.svg': '⬇️',
-  'wind-sw.svg': '↙️',
-  'wind-w.svg': '⬅️',
-  'wind-nw.svg': '↖️',
-};
-
-// Wind direction icons
-export const WIND_DIRECTION_ICONS = [
-  'wind-n.svg',
-  'wind-ne.svg',
-  'wind-e.svg',
-  'wind-se.svg',
-  'wind-s.svg',
-  'wind-sw.svg',
-  'wind-w.svg',
-  'wind-nw.svg'
-];
-
-// Wind direction text (Russian)
-export const WIND_DIRECTIONS = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
-
 // Time of day thresholds (in minutes from midnight)
 export const TIME_THRESHOLDS = {
-  SUNRISE_START: 360,  // 6:00
-  SUNRISE_END: 480,    // 8:00
-  DAY_END: 1080,       // 18:00
-  SUNSET_END: 1200     // 20:00
+  SUNRISE_START: 360, // 6:00
+  SUNRISE_END: 480, // 8:00
+  DAY_END: 1080, // 18:00
+  SUNSET_END: 1200 // 20:00
 };
+
+// Known attribute names for minimum temperature from various weather providers
+export const TEMPLOW_ATTRIBUTES = [
+  'templow',
+  'temperature_low',
+  'temp_low',
+  'min_temp',
+  'yandex_pogoda_minimal_forecast_temperature'
+];
 
 // Default configuration
 export const DEFAULT_CONFIG = {

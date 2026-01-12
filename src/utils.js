@@ -1,52 +1,10 @@
-import { WIND_DIRECTIONS, WIND_DIRECTION_ICONS, TIME_THRESHOLDS, CONDITION_EMOJI, ICON_MAP } from './constants.js';
+import { TIME_THRESHOLDS } from './constants.js';
 
 /**
- * Get wind direction text from bearing angle
- * @param {number|null} bearing - Wind bearing in degrees
- * @returns {string|null} Direction text
- */
-export function getWindDirectionText(bearing) {
-  if (bearing === null || bearing === undefined) return null;
-  const index = Math.round(bearing / 45) % 8;
-  return WIND_DIRECTIONS[index];
-}
-
-/**
- * Get wind direction icon from bearing angle
- * @param {number|null} bearing - Wind bearing in degrees
- * @returns {string} Icon name
- */
-export function getWindDirectionIcon(bearing) {
-  if (bearing === null || bearing === undefined) return 'wind-icon.svg';
-  const normalizedBearing = ((bearing % 360) + 360) % 360;
-  const index = Math.round(normalizedBearing / 45) % 8;
-  return WIND_DIRECTION_ICONS[index] || 'wind-icon.svg';
-}
-
-/**
- * Get emoji for weather condition
- * @param {string} condition - Weather condition
- * @returns {string} Emoji
- */
-export function getConditionEmoji(condition) {
-  if (!condition) return '🌤️';
-  return CONDITION_EMOJI[condition.toLowerCase()] || '🌤️';
-}
-
-/**
- * Get icon (emoji) by name
- * @param {string} iconName - Icon name
- * @returns {string} Emoji
- */
-export function getIcon(iconName) {
-  return ICON_MAP[iconName] || '';
-}
-
-/**
- * Determine time of day and its progress
+ * Determine time of day and its progress (internal fallback)
  * @returns {{type: string, progress: number}} Time of day info
  */
-export function getTimeOfDay() {
+function getTimeOfDay() {
   const now = new Date();
   const hour = now.getHours();
   const minute = now.getMinutes();
@@ -251,9 +209,9 @@ export function getTimeOfDayWithSunData(sunData) {
 
     // Calculate sunrise/sunset window (±1 hour)
     const sunriseStart = sunriseTime - 60 * 60 * 1000; // 1 hour before
-    const sunriseEnd = sunriseTime + 60 * 60 * 1000;   // 1 hour after
-    const sunsetStart = sunsetTime - 60 * 60 * 1000;   // 1 hour before
-    const sunsetEnd = sunsetTime + 60 * 60 * 1000;     // 1 hour after
+    const sunriseEnd = sunriseTime + 60 * 60 * 1000; // 1 hour after
+    const sunsetStart = sunsetTime - 60 * 60 * 1000; // 1 hour before
+    const sunsetEnd = sunsetTime + 60 * 60 * 1000; // 1 hour after
 
     // Sunrise period
     if (currentTime >= sunriseStart && currentTime < sunriseEnd) {
