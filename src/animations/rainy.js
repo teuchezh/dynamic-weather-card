@@ -7,6 +7,7 @@ export class RainyAnimation extends BaseAnimation {
   constructor(ctx) {
     super(ctx);
     this.rainDrops = [];
+    this.lastTime = 0;
   }
 
   /**
@@ -48,8 +49,12 @@ export class RainyAnimation extends BaseAnimation {
       }
     }
 
-    const deltaTime = 1 / 60; // Assume 60fps for consistent animation
-    const time = Date.now() * 0.001;
+    // Calculate real delta time for smooth animation
+    const currentTime = Date.now() * 0.001;
+    const deltaTime = this.lastTime > 0 ? Math.min(currentTime - this.lastTime, 0.1) : 1 / 60;
+    this.lastTime = currentTime;
+
+    const time = currentTime;
 
     for (let i = 0; i < this.rainDrops.length; i++) {
       const drop = this.rainDrops[i];

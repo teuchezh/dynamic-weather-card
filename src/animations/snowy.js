@@ -7,6 +7,7 @@ export class SnowyAnimation extends BaseAnimation {
   constructor(ctx) {
     super(ctx);
     this.snowflakes = [];
+    this.lastTime = 0;
   }
 
   /**
@@ -50,8 +51,12 @@ export class SnowyAnimation extends BaseAnimation {
       }
     }
 
-    const deltaTime = 1 / 60; // Assume 60fps
-    const time = Date.now() * 0.001;
+    // Calculate real delta time for smooth animation
+    const currentTime = Date.now() * 0.001;
+    const deltaTime = this.lastTime > 0 ? Math.min(currentTime - this.lastTime, 0.1) : 1 / 60;
+    this.lastTime = currentTime;
+
+    const time = currentTime;
 
     this.ctx.lineWidth = 1;
     this.ctx.lineCap = 'round';
