@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.3.3] - 2026-01-13
+
+## What's Changed
+
+### ✨ Features
+- feat: add clock display, overlay opacity control, and wind speed units (6f9337a)
+
+### 🔧 Chores & Maintenance
+- chore: bump version to 0.3.3 (3ac570a)
+
+**Full Changelog**: https://github.com/teuchezh/dynamic-weather-card/compare/v0.3.2...v0.3.3
+
+
 ## [v0.3.2] - 2026-01-13
 
 ## What's Changed
