@@ -45,7 +45,7 @@ jobs:
 
       - name: Check file size
         run: |
-          SIZE=$(wc -c < dynamic-weather-card.js)
+          SIZE=$(wc -c < dist/dynamic-weather-card.js)
           echo "Build size: $SIZE bytes"
 
           # Warn if file is larger than 100KB
