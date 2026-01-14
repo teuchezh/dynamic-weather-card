@@ -22,8 +22,8 @@
   "forecast_unavailable": "Voorspelling niet beschikbaar",
   "weather": "Weer",
   "language": "Taal",
-  "meterPerSecond": "m/s",
-
+  "wind_unit_kmh": "km/u",
+  "wind_unit_ms": "m/s",
   "demo": {
     "pageTitle": "🌤️ Dynamische Weerkaart",
     "pageSubtitle": "Interactieve demo & configuratietool",
@@ -34,24 +34,20 @@
     "rainy": "Regen",
     "snowy": "Sneeuw",
     "clearNight": "Heldere nacht",
-
     "weatherCondition": "🌦️ Weersomstandigheden",
     "condition": "Conditie",
     "temperature": "Temperatuur (°C)",
     "humidity": "Luchtvochtigheid (%)",
-    "windSpeed": "Windsnelheid (km/h)",
-
+    "windSpeed": "Windsnelheid",
     "timeOfDay": "🕐 Tijd van de dag",
     "timeMode": "Tijdmodus",
     "autoTime": "🕐 Automatisch (huidige tijd)",
     "manualControl": "⏱️ Handmatige bediening",
-
     "sunrise": "🌅 Zonsopgang",
     "day": "☀️ Dag",
     "sunset": "🌇 Zonsondergang",
     "night": "🌙 Nacht",
     "currentTime": "Huidige tijd",
-
     "displayOptions": "👁️ Weergaveopties",
     "cardName": "Kaartnaam",
     "height": "Hoogte (px)",
@@ -61,20 +57,15 @@
     "windGust": "Windstoten",
     "hourlyForecast": "Uurlijkse voorspelling",
     "sunriseSunset": "Zonsopgang / Zonsondergang",
-
     "updateCard": "🔄 Kaart bijwerken",
     "startDemo": "🎬 Demo starten",
     "stopDemo": "⏹️ Demo stoppen",
-
     "madeWith": "Gemaakt met ❤️ voor Home Assistant",
     "loading": "⏳ Kaart laden...",
-
     "errorTitle": "⚠️ Kan kaart niet laden",
     "errorDetails": "Controleer de browserconsole (F12) voor details",
     "errorServer": "Zorg ervoor dat het bestand via een lokale server wordt geladen (niet file://)",
-
     "placeholderEmpty": "Leeg laten om te verbergen",
-
     "weatherConditions": {
       "sunny": "☀️ Zonnig",
       "clear": "☀️ Helder",
@@ -90,7 +81,6 @@
       "lightning": "⚡ Bliksem",
       "thunderstorm": "⛈️ Onweer"
     },
-
     "language": {
       "title": "🌍 Taal",
       "english": "🇺🇸 English",

@@ -22,8 +22,8 @@
   "forecast_unavailable": "Vorhersage nicht verfügbar",
   "weather": "Wetter",
   "language": "Sprache",
-  "meterPerSecond": "m/s",
-
+  "wind_unit_kmh": "km/h",
+  "wind_unit_ms": "m/s",
   "demo": {
     "pageTitle": "🌤️ Dynamische Wetterkarte",
     "pageSubtitle": "Interaktive Demo & Konfiguration",
@@ -34,24 +34,20 @@
     "rainy": "Regnerisch",
     "snowy": "Schnee",
     "clearNight": "Klare Nacht",
-
     "weatherCondition": "🌦️ Wetterbedingungen",
     "condition": "Zustand",
     "temperature": "Temperatur (°C)",
     "humidity": "Luftfeuchtigkeit (%)",
-    "windSpeed": "Windgeschwindigkeit (km/h)",
-
+    "windSpeed": "Windgeschwindigkeit",
     "timeOfDay": "🕐 Tageszeit",
     "timeMode": "Zeitmodus",
     "autoTime": "🕐 Automatisch (Aktuelle Zeit)",
     "manualControl": "⏱️ Manuelle Steuerung",
-
     "sunrise": "🌅 Sonnenaufgang",
     "day": "☀️ Tag",
     "sunset": "🌇 Sonnenuntergang",
     "night": "🌙 Nacht",
     "currentTime": "Aktuelle Zeit",
-
     "displayOptions": "👁️ Anzeigeoptionen",
     "cardName": "Kartenname",
     "height": "Höhe (px)",
@@ -61,20 +57,15 @@
     "windGust": "Windböen",
     "hourlyForecast": "Stündliche Vorhersage",
     "sunriseSunset": "Sonnenaufgang / Sonnenuntergang",
-
     "updateCard": "🔄 Karte aktualisieren",
     "startDemo": "🎬 Demo starten",
     "stopDemo": "⏹️ Demo stoppen",
-
     "madeWith": "Mit ❤️ für Home Assistant gemacht",
     "loading": "⏳ Karte wird geladen...",
-
     "errorTitle": "⚠️ Karte konnte nicht geladen werden",
     "errorDetails": "Überprüfe die Browser-Konsole (F12) für Details",
     "errorServer": "Stelle sicher, dass die Datei über einen lokalen Server geladen wird (nicht file://)",
-
     "placeholderEmpty": "Leer lassen, um auszublenden",
-
     "weatherConditions": {
       "sunny": "☀️ Sonnig",
       "clear": "☀️ Klar",
@@ -90,7 +81,6 @@
       "lightning": "⚡ Blitz",
       "thunderstorm": "⛈️ Gewitter"
     },
-
     "language": {
       "title": "🌍 Sprache",
       "english": "🇺🇸 English",

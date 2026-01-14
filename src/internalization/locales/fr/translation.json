@@ -22,7 +22,8 @@
   "forecast_unavailable": "Prévisions non disponibles",
   "weather": "Météo",
   "language": "Langue",
-  "meterPerSecond": "m/s",
+  "wind_unit_kmh": "km/h",
+  "wind_unit_ms": "m/s",
   "demo": {
     "pageTitle": "🌤️ Carte Météo Dynamique",
     "pageSubtitle": "Démo Interactive & Outil de Configuration",
@@ -37,7 +38,7 @@
     "condition": "Condition",
     "temperature": "Température (°C)",
     "humidity": "Humidité (%)",
-    "windSpeed": "Vitesse du vent (km/h)",
+    "windSpeed": "Vitesse du vent",
     "timeOfDay": "🕐 Moment de la journée",
     "timeMode": "Mode horaire",
     "autoTime": "🕐 Auto (heure actuelle)",

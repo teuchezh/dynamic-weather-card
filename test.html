@@ -461,24 +461,24 @@
             <h2 class="panel-title" data-i18n="configuration">⚙️ Configuration</h2>
 
             <!-- Quick Presets -->
-            <div class="control-section" data-i18n="quickPresets">
-                <div class="section-header">🎨 Quick Presets</div>
+            <div class="control-section">
+                <div class="section-header" data-i18n="quickPresets">🎨 Quick Presets</div>
                 <div class="quick-presets">
                     <div class="preset-card" onclick="applyPreset('sunny')">
                         <div class="preset-icon">☀️</div>
-                        <div class="preset-name">Sunny Day</div>
+                        <div class="preset-name" data-i18n="sunnyDay">Sunny Day</div>
                     </div>
                     <div class="preset-card" onclick="applyPreset('rainy')">
                         <div class="preset-icon">🌧️</div>
-                        <div class="preset-name">Rainy</div>
+                        <div class="preset-name" data-i18n="rainy">Rainy</div>
                     </div>
                     <div class="preset-card" onclick="applyPreset('snowy')">
                         <div class="preset-icon">❄️</div>
-                        <div class="preset-name">Snowy</div>
+                        <div class="preset-name" data-i18n="snowy">Snowy</div>
                     </div>
                     <div class="preset-card" onclick="applyPreset('night')">
                         <div class="preset-icon">🌙</div>
-                        <div class="preset-name">Clear Night</div>
+                        <div class="preset-name" data-i18n="clearNight">Clear Night</div>
                     </div>
                 </div>
             </div>
@@ -734,7 +734,7 @@
           $$('[data-i18n-placeholder]').forEach(el => {
             el.placeholder = i18next.t(`demo.${el.dataset.i18nPlaceholder}`);
           });
-            document.querySelectorAll('.checkbox-text')[8].textContent = t('clock');
+            document.querySelectorAll('.checkbox-text')[8].textContent = i18next.t('clock');
 
           document.title = i18next.t('demo.pageTitle');
         }
