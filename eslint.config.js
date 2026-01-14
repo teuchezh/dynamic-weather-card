@@ -15,6 +15,9 @@ export default [
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
+        i18next: 'readonly',
+        URL: 'readonly',
+        Event: 'readonly',
         customElements: 'readonly',
         HTMLElement: 'readonly',
         CustomEvent: 'readonly',
@@ -70,10 +73,4 @@ export default [
       '*.config.js'
     ]
   },
-  {
-    "env": {
-      "browser": true,
-      "es2021": true
-    }
-  }
 ];

@@ -21,7 +21,7 @@ i18next
       caches: []
     },
 
-    keySeparator: '.',
+    keySeparator: '.'
   });
 
 i18next.on('initialized', () => {

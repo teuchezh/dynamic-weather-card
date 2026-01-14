@@ -361,7 +361,7 @@ export class AnimatedWeatherCard extends LitElement {
   }
 
   getWindSpeedUnit() {
-    return  this.config.windSpeedUnit === 'kmh' ? i18next.t('wind_unit_kmh') : i18next.t('wind_unit_ms');
+    return this.config.windSpeedUnit === 'kmh' ? i18next.t('wind_unit_kmh') : i18next.t('wind_unit_ms');
   }
 
   formatCurrentTime() {
