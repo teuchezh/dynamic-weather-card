@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit';
-import { CONDITION_NAMES, TRANSLATIONS, DEFAULT_CONFIG, TEMPLOW_ATTRIBUTES } from '../constants.js';
+import { DEFAULT_CONFIG, TEMPLOW_ATTRIBUTES } from '../constants.js';
 import {
   getBackgroundGradient,
   formatForecastTime,
@@ -16,6 +16,7 @@ import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { cardStyles } from './styles.js';
 import { getSVGIcon, getWeatherConditionIcon } from '../icons/svg-icons.js';
+import { t } from '../internalization/directive.js';
 
 export class AnimatedWeatherCard extends LitElement {
   static get properties() {
@@ -222,7 +223,7 @@ export class AnimatedWeatherCard extends LitElement {
       windDirection: attrs.wind_direction || null,
       pressure: attrs.pressure || null,
       forecast: attrs.forecast || attrs.forecast_hourly || [],
-      friendlyName: attrs.friendly_name || this.translate('weather'),
+      friendlyName: attrs.friendly_name || t('weather'),
       templow: templow
     };
   }
@@ -326,7 +327,7 @@ export class AnimatedWeatherCard extends LitElement {
   renderTodayForecast() {
     const forecast = this.getTodayForecast();
     if (forecast.length === 0) {
-      return html`<div style="opacity: 0.6; font-size: 14px;">${this.translate('forecast_unavailable')}</div>`;
+      return html`<div style="opacity: 0.6; font-size: 14px;">${t('forecast_unavailable')}</div>`;
     }
 
     return html`
@@ -340,35 +341,6 @@ export class AnimatedWeatherCard extends LitElement {
         `)}
       </div>
     `;
-  }
-
-  getLanguage() {
-    // Priority: config.language > hass.language > 'ru'
-    if (this.config.language && this.config.language !== 'auto') {
-      return this.config.language;
-    }
-
-    // Auto-detect from Home Assistant
-    if (this.hass && this.hass.language) {
-      const hassLang = this.hass.language.split('-')[0]; // 'en-US' -> 'en'
-      // Support only 'en' and 'ru', fallback to 'en' for other languages
-      if (hassLang === 'ru') return 'ru';
-      return 'en';
-    }
-
-    return 'en'; // Default fallback
-  }
-
-  getConditionName(condition) {
-    const lang = this.getLanguage();
-    const names = CONDITION_NAMES[lang] || CONDITION_NAMES.en;
-    return names[condition.toLowerCase()] || condition;
-  }
-
-  translate(key) {
-    const lang = this.getLanguage();
-    const translations = TRANSLATIONS[lang] || TRANSLATIONS.en;
-    return translations[key] || key;
   }
 
   render() {
@@ -407,15 +379,15 @@ export class AnimatedWeatherCard extends LitElement {
               </div>
             ` : ''}
             <div>
-              <div class="condition">${this.getConditionName(weather.condition)}</div>
-              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : this.translate('no_data')}</div>
+              <div class="condition">${t(weather.condition)}</div>
+              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : t('no_data')}</div>
               ${this.config.showMinTemp && weather.templow ? html`
                 <div class="temp-range">
                   <span class="temp-min">↓ ${Math.round(weather.templow)}°</span>
                 </div>
               ` : ''}
               ${this.config.showFeelsLike && weather.apparentTemperature ? html`
-                <div class="feels-like">${this.translate('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
+                <div class="feels-like">${t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
               ` : ''}
             </div>
             <div class="details">
@@ -433,17 +405,20 @@ export class AnimatedWeatherCard extends LitElement {
                   </div>
                 ` : ''}
                 ${this.config.showWind && weather.windSpeed != null ? html`
-                  ${this.config.showWindDirection && weather.windBearing != null ? html`
                     <div class="info-item">
-                      <span class="info-icon">${getSVGIcon('windDirection', weather.windBearing)}</span>
-                      <span>${weather.windSpeed} м/с${this.config.showWindGust && weather.windGust ? ` / ${weather.windGust} м/с` : ''}</span>
+  <span class="info-icon">
+    ${this.config.showWindDirection && weather.windBearing != null
+            ? getSVGIcon('windDirection', weather.windBearing)
+            : getSVGIcon('wind')}
+  </span>
+
+                        <span>
+    ${weather.windSpeed} ${t('meterPerSecond')}
+    ${this.config.showWindGust && weather.windGust != null
+            ? html` / ${weather.windGust} ${t('meterPerSecond')}`
+            : ''}
+  </span>
                     </div>
-                  ` : html`
-                    <div class="info-item">
-                      <span class="info-icon">${getSVGIcon('wind')}</span>
-                      <span>${weather.windSpeed} м/с${this.config.showWindGust && weather.windGust ? ` / ${weather.windGust} м/с` : ''}</span>
-                    </div>
-                  `}
                 ` : ''}
                 ${this.config.showSunriseSunset && sunData.hasSunData ? html`
                   <div class="info-item">
@@ -455,7 +430,7 @@ export class AnimatedWeatherCard extends LitElement {
             </div>
             ${this.config.showForecast ? html`
               <div class="forecast-container">
-                <div class="forecast-title">${this.translate('forecast_title')}</div>
+                <div class="forecast-title">${t('forecast_title')}</div>
                 ${this.renderTodayForecast()}
               </div>
             ` : ''}

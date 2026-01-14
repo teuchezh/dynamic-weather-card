@@ -28,6 +28,9 @@
   },
   "dependencies": {
     "@bybas/weather-icons": "^2.0.0",
+    "i18next": "^25.7.4",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-http-backend": "^3.0.2",
     "lit": "^3.0.0"
   },
   "devDependencies": {
@@ -36,6 +39,7 @@
     "@rollup/plugin-terser": "^0.4.0",
     "eslint": "^9.39.2",
     "eslint-plugin-lit": "^2.1.1",
-    "rollup": "^4.0.0"
+    "rollup": "^4.0.0",
+    "rollup-plugin-copy": "^3.5.0"
   }
 }

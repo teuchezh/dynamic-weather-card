@@ -2,6 +2,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
 import { readFileSync } from 'fs';
+import copy from "rollup-plugin-copy";
 
 // Read version from package.json
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
@@ -9,9 +10,11 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 export default {
   input: 'src/index.js',
   output: {
-    file: 'dynamic-weather-card.js',
+    dir: 'dist',
     format: 'es',
-    sourcemap: false
+    sourcemap: false,
+    entryFileNames: 'dynamic-weather-card.js',
+    chunkFileNames: '[name]-[hash].js'
   },
   plugins: [
     replace({
@@ -19,6 +22,14 @@ export default {
       preventAssignment: true
     }),
     resolve(),
+    copy({
+      targets: [
+        {
+          src: 'src/internalization/locales/**/*',
+          dest: 'dist/locales'
+        }
+      ]
+    }),
     terser({
       format: {
         comments: false
