@@ -22,7 +22,8 @@ export class AnimatedWeatherCard extends LitElement {
   static get properties() {
     return {
       hass: { type: Object },
-      config: { type: Object }
+      config: { type: Object },
+      currentTime: { type: String }
     };
   }
 
@@ -41,6 +42,8 @@ export class AnimatedWeatherCard extends LitElement {
     this.animations = {};
     this.holdTimer = null;
     this.holdDelay = 500; // milliseconds
+    this.currentTime = '';
+    this.clockInterval = null;
   }
 
   connectedCallback() {
@@ -54,6 +57,7 @@ export class AnimatedWeatherCard extends LitElement {
           this.setupResizeObserver();
         }
         this.setupForecastScroll();
+        this.startClock();
       }, 100);
     });
   }
@@ -75,6 +79,11 @@ export class AnimatedWeatherCard extends LitElement {
         forecastScroll.removeEventListener('wheel', this._wheelHandler);
       }
       this._wheelHandler = null;
+    }
+    // Clean up clock interval
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+      this.clockInterval = null;
     }
   }
 
@@ -343,6 +352,37 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
+  convertWindSpeed(speed) {
+    if (speed == null) return null;
+    if (this.config.windSpeedUnit === 'kmh') {
+      return Math.round(speed * 3.6 * 10) / 10; // Convert m/s to km/h and round to 1 decimal
+    }
+    return speed;
+  }
+
+  getWindSpeedUnit() {
+    return this.config.windSpeedUnit === 'kmh' ? this.translate('wind_unit_kmh') : this.translate('wind_unit_ms');
+  }
+
+  formatCurrentTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  startClock() {
+    if (!this.config.showClock) return;
+
+    // Update immediately
+    this.currentTime = this.formatCurrentTime();
+
+    // Update every second
+    this.clockInterval = setInterval(() => {
+      this.currentTime = this.formatCurrentTime();
+    }, 1000);
+  }
+
   render() {
     if (!this.hass) {
       return html`<div>No Home Assistant connection</div>`;
@@ -363,6 +403,12 @@ export class AnimatedWeatherCard extends LitElement {
       ? `background: linear-gradient(135deg, rgb(${bgGradient.start.r}, ${bgGradient.start.g}, ${bgGradient.start.b}), rgb(${bgGradient.end.r}, ${bgGradient.end.g}, ${bgGradient.end.b}));`
       : '';
 
+    // Apply overlay opacity via CSS variable
+    const overlayOpacity = this.config.overlayOpacity !== undefined
+      ? this.config.overlayOpacity
+      : DEFAULT_CONFIG.overlayOpacity;
+    const overlayStyle = `--overlay-opacity: ${overlayOpacity};`;
+
     return html`
       <ha-card
         @click=${this.handleTap}
@@ -370,7 +416,7 @@ export class AnimatedWeatherCard extends LitElement {
         @pointerup=${this.handlePointerUp}
         @pointercancel=${this.handlePointerUp}
       >
-        <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; cursor: pointer;">
+        <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} cursor: pointer;">
           <div class="canvas-container"></div>
           <div class="content">
             ${this.config.name !== undefined ? html`
@@ -405,20 +451,17 @@ export class AnimatedWeatherCard extends LitElement {
                   </div>
                 ` : ''}
                 ${this.config.showWind && weather.windSpeed != null ? html`
+                  ${this.config.showWindDirection && weather.windBearing != null ? html`
                     <div class="info-item">
-  <span class="info-icon">
-    ${this.config.showWindDirection && weather.windBearing != null
-            ? getSVGIcon('windDirection', weather.windBearing)
-            : getSVGIcon('wind')}
-  </span>
-
-                        <span>
-    ${weather.windSpeed} ${t('meterPerSecond')}
-    ${this.config.showWindGust && weather.windGust != null
-            ? html` / ${weather.windGust} ${t('meterPerSecond')}`
-            : ''}
-  </span>
+                      <span class="info-icon">${getSVGIcon('windDirection', weather.windBearing)}</span>
+                      <span>${this.convertWindSpeed(weather.windSpeed)} ${this.getWindSpeedUnit()}${this.config.showWindGust && weather.windGust ? ` / ${this.convertWindSpeed(weather.windGust)} ${this.getWindSpeedUnit()}` : ''}</span>
                     </div>
+                  ` : html`
+                    <div class="info-item">
+                      <span class="info-icon">${getSVGIcon('wind')}</span>
+                      <span>${this.convertWindSpeed(weather.windSpeed)} ${this.getWindSpeedUnit()}${this.config.showWindGust && weather.windGust ? ` / ${this.convertWindSpeed(weather.windGust)} ${this.getWindSpeedUnit()}` : ''}</span>
+                    </div>
+                  `}
                 ` : ''}
                 ${this.config.showSunriseSunset && sunData.hasSunData ? html`
                   <div class="info-item">
@@ -435,6 +478,9 @@ export class AnimatedWeatherCard extends LitElement {
               </div>
             ` : ''}
           </div>
+          ${this.config.showClock ? html`
+            <div class="clock">${this.currentTime}</div>
+          ` : ''}
         </div>
       </ha-card>
     `;
@@ -457,7 +503,10 @@ export class AnimatedWeatherCard extends LitElement {
       showMinTemp: config.show_min_temp !== false,
       showForecast: config.show_forecast === true,
       showSunriseSunset: config.show_sunrise_sunset !== false,
+      showClock: config.show_clock === true,
+      overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
       language: config.language || DEFAULT_CONFIG.language,
+      windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,
       sunriseEntity: config.sunrise_entity || null,
       sunsetEntity: config.sunset_entity || null,
       templowAttribute: config.templow_attribute || null,

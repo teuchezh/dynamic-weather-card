@@ -28,6 +28,9 @@ export const DEFAULT_CONFIG = {
   showMinTemp: true,
   showForecast: false,
   showSunriseSunset: false,
+  showClock: false,
+  overlayOpacity: 0.1,
   language: 'auto',
-  height: null
+  height: null,
+  windSpeedUnit: 'ms' // 'ms' or 'kmh'
 };

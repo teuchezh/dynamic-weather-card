@@ -25,6 +25,8 @@ export default [
         requestAnimationFrame: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
         DOMParser: 'readonly',
         __VERSION__: 'readonly'
       }

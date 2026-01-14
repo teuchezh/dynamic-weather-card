@@ -14,6 +14,7 @@ export const cardStyles = css`
     --sunset-gradient-end: #FFA07A;
     --sunrise-gradient-start: #FFA07A;
     --sunrise-gradient-end: #FFD700;
+    --overlay-opacity: 0.1;
   }
 
   ha-card {
@@ -74,8 +75,8 @@ export const cardStyles = css`
     height: 100%;
     background: linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.08) 0%,
-      rgba(0, 0, 0, 0.12) 100%
+      rgba(0, 0, 0, calc(var(--overlay-opacity) * 0.8)) 0%,
+      rgba(0, 0, 0, calc(var(--overlay-opacity) * 1.2)) 100%
     );
     z-index: 0;
     border-radius: 16px;
@@ -252,5 +253,29 @@ export const cardStyles = css`
     font-size: 16px;
     font-weight: 500;
     opacity: 0.9;
+  }
+
+  .clock {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 48px;
+    font-weight: 200;
+    line-height: 1;
+    color: white;
+    text-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.4),
+      0 2px 6px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  @media (max-width: 600px) {
+    .clock {
+      font-size: 36px;
+      bottom: 16px;
+      right: 16px;
+    }
   }
 `;

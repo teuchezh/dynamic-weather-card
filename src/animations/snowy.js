@@ -58,7 +58,6 @@ export class SnowyAnimation extends BaseAnimation {
 
     const time = currentTime;
 
-    this.ctx.lineWidth = 1;
     this.ctx.lineCap = 'round';
 
     for (let i = 0; i < this.snowflakes.length; i++) {
@@ -100,29 +99,40 @@ export class SnowyAnimation extends BaseAnimation {
     this.ctx.translate(x, y);
     this.ctx.rotate(rotation);
     this.ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+    this.ctx.lineWidth = 1;
+
+    // Optimize: draw all branches in a single path
+    this.ctx.beginPath();
 
     // Draw 6-pointed snowflake
     for (let j = 0; j < 6; j++) {
+      const angle = (Math.PI / 3) * j;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+
       // Main branch
-      this.ctx.beginPath();
       this.ctx.moveTo(0, 0);
-      this.ctx.lineTo(0, size * 2.5);
-      this.ctx.stroke();
+      this.ctx.lineTo(sin * size * 2.5, cos * size * 2.5);
 
-      // Side branches
-      this.ctx.beginPath();
-      this.ctx.moveTo(size * 0.5, size * 1.5);
-      this.ctx.lineTo(size * 1.2, size * 1.8);
-      this.ctx.stroke();
+      // Side branches (rotated coordinates)
+      const branch1X = sin * size * 1.5 + cos * size * 0.5;
+      const branch1Y = cos * size * 1.5 - sin * size * 0.5;
+      const branch1EndX = sin * size * 1.8 + cos * size * 1.2;
+      const branch1EndY = cos * size * 1.8 - sin * size * 1.2;
 
-      this.ctx.beginPath();
-      this.ctx.moveTo(-size * 0.5, size * 1.5);
-      this.ctx.lineTo(-size * 1.2, size * 1.8);
-      this.ctx.stroke();
+      this.ctx.moveTo(branch1X, branch1Y);
+      this.ctx.lineTo(branch1EndX, branch1EndY);
 
-      this.ctx.rotate(Math.PI / 3);
+      const branch2X = sin * size * 1.5 - cos * size * 0.5;
+      const branch2Y = cos * size * 1.5 + sin * size * 0.5;
+      const branch2EndX = sin * size * 1.8 - cos * size * 1.2;
+      const branch2EndY = cos * size * 1.8 + sin * size * 1.2;
+
+      this.ctx.moveTo(branch2X, branch2Y);
+      this.ctx.lineTo(branch2EndX, branch2EndY);
     }
 
+    this.ctx.stroke();
     this.ctx.restore();
   }
 }

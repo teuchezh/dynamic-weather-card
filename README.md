@@ -12,6 +12,8 @@
 Dynamic weather card for Home Assistant with realistic animations.
 ![demo](/docs/demo.gif)
 
+**[Try Live Demo →](https://teuchezh.github.io/dynamic-weather-card/test.html)**
+
 ## Features
 
 - 🎨 Animated weather effects on Canvas
@@ -80,6 +82,8 @@ entity: weather.home
 name: My Weather
 height: 250
 language: auto  # 'auto' (default), 'ru' or 'en'
+overlay_opacity: 0.2  # Dark overlay opacity (0-1, default: 0.1)
+wind_speed_unit: ms  # 'ms' (m/s, default) or 'kmh' (km/h)
 show_feels_like: true
 show_min_temp: true
 show_humidity: true
@@ -88,6 +92,7 @@ show_wind_direction: true
 show_wind_gust: true
 show_forecast: true
 show_sunrise_sunset: true
+show_clock: true  # Show current time in the bottom right corner
 sunrise_entity: sensor.yandex_pogoda_next_sunrise  # Optional
 sunset_entity: sensor.yandex_pogoda_next_sunset    # Optional
 ```
@@ -122,6 +127,8 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `name` | string | - | Name (optional) |
 | `height` | number | 200 | Card height in pixels |
 | `language` | string | `auto` | Interface language (`auto`, `ru` or `en`). `auto` detects language from Home Assistant settings |
+| `overlay_opacity` | number | 0.1 | Dark overlay opacity for better text readability (0-1). Higher values create darker overlay |
+| `wind_speed_unit` | string | `ms` | Wind speed unit (`ms` for m/s or `kmh` for km/h) |
 | `show_feels_like` | boolean | true | Show feels like temperature |
 | `show_min_temp` | boolean | true | Show minimum temperature |
 | `show_humidity` | boolean | false | Show humidity |
@@ -130,6 +137,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_wind_gust` | boolean | false | Show wind gusts |
 | `show_forecast` | boolean | false | Show today's forecast |
 | `show_sunrise_sunset` | boolean | false | Show sunrise and sunset times |
+| `show_clock` | boolean | false | Show current time in the bottom right corner |
 | `sunrise_entity` | string | - | Sunrise sensor entity ID (optional) |
 | `sunset_entity` | string | - | Sunset sensor entity ID (optional) |
 | `templow_attribute` | string | - | Custom attribute name for minimum temperature (optional). If not specified, the card will automatically search for known attributes: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |
