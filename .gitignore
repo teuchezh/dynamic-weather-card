@@ -7,7 +7,7 @@ yarn-error.log
 # Build artifacts
 *.map
 # Don't ignore the compiled file in root (needed for HACS)
-dist/
+!dynamic-weather-card.js
 # GitHub Actions
 !.github/
 

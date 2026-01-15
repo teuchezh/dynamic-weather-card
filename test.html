@@ -699,7 +699,7 @@
         }
 
         // Load main card
-        import('./dist/dynamic-weather-card.js').then(() => {
+        import('./dynamic-weather-card.js').then(() => {
             window.cardLoaded = true;
             if (window.initCard) window.initCard();
         }).catch(err => {
@@ -715,7 +715,7 @@
             `;
         });
 
-        import { i18n } from './dist/dynamic-weather-card.js';
+        import { i18n } from './dynamic-weather-card.js';
         window.i18n = i18n;
     </script>
 
@@ -984,8 +984,6 @@
             if (config.name) {
                 cardConfig.name = config.name;
             }
-
-          console.log("cardConfig", cardConfig)
 
             card.setConfig(cardConfig);
             card.hass = mockHass;
