@@ -34,6 +34,7 @@ dynamic-weather-card/
 │   ├── constants.js         # Constants and mappings
 │   ├── utils.js            # Utilities
 │   └── index.js            # Entry point
+├── dynamic-weather-card.js  # Compiled file for HACS
 ├── test.html               # Page for local testing
 ├── hacs.json               # HACS configuration
 ├── info.md                 # Description for HACS Store
