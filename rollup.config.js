@@ -2,7 +2,6 @@ import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
 import { readFileSync } from 'fs';
-import copy from "rollup-plugin-copy";
 
 // Read version from package.json
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
@@ -22,14 +21,6 @@ export default {
       preventAssignment: true
     }),
     resolve(),
-    copy({
-      targets: [
-        {
-          src: 'src/internalization/locales/**/*',
-          dest: 'dist/locales'
-        }
-      ]
-    }),
     terser({
       format: {
         comments: false

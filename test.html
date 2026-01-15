@@ -491,8 +491,8 @@
                         <option value="en" data-i18n="language.english">🇺🇸 English</option>
                         <option value="ru" data-i18n="language.russian">🇷🇺 Русский</option>
                         <option value="fr" data-i18n="language.french">🇫🇷 Français</option>
-                        <option value="fr" data-i18n="language.german">🇩🇪 Deutsch</option>
-                        <option value="fr" data-i18n="language.dutch">🇳🇱 Nederlands</option>
+                        <option value="de" data-i18n="language.german">🇩🇪 Deutsch</option>
+                        <option value="nl" data-i18n="language.dutch">🇳🇱 Nederlands</option>
                     </select>
                 </div>
             </div>
@@ -714,6 +714,9 @@
                 </div>
             `;
         });
+
+        import { i18n } from './dist/dynamic-weather-card.js';
+        window.i18n = i18n;
     </script>
 
     <!-- Main application logic -->
@@ -728,15 +731,15 @@
         // ============================================================================
         function applyTranslations() {
           $$('[data-i18n]').forEach(el => {
-            el.textContent = i18next.t(`demo.${el.dataset.i18n}`);
+            el.textContent = i18n.t(`demo.${el.dataset.i18n}`);
           });
 
           $$('[data-i18n-placeholder]').forEach(el => {
-            el.placeholder = i18next.t(`demo.${el.dataset.i18nPlaceholder}`);
+            el.placeholder = i18n.t(`demo.${el.dataset.i18nPlaceholder}`);
           });
-            document.querySelectorAll('.checkbox-text')[8].textContent = i18next.t('clock');
+            document.querySelectorAll('.checkbox-text')[8].textContent = i18n.t('clock');
 
-          document.title = i18next.t('demo.pageTitle');
+          document.title = i18n.t('demo.pageTitle');
         }
 
         // ============================================================================
@@ -827,7 +830,7 @@
                             friendly_name: 'Demo Weather',
                             forecast: generateForecast(temperature),
                             sunrise: sunrise.toISOString(),
-                            sunset: sunset.toISOString()
+                            sunset: sunset.toISOString(),
                         }
                     }
                 }
@@ -861,7 +864,7 @@
             demoModeActive = true;
             demoStep = 0;
             const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = i18next.t('demo.stopDemo');
+            demoBtn.textContent = i18n.t('demo.stopDemo');
             demoBtn.classList.add('active');
 
             runDemoStep();
@@ -875,7 +878,7 @@
                 demoInterval = null;
             }
             const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = i18next.t('demo.startDemo');
+            demoBtn.textContent = i18n.t('demo.startDemo');
             demoBtn.classList.remove('active');
         }
 
@@ -922,7 +925,7 @@
             container.innerHTML = '';
 
             if (!window.cardLoaded) {
-                container.innerHTML = `<div class="loading-message">${i18next.t('loading')}</div>`;
+                container.innerHTML = `<div class="loading-message">${i18n.t('loading')}</div>`;
                 return;
             }
 
@@ -944,7 +947,8 @@
                 showWindGust: document.getElementById('show-wind-gust').checked,
                 showForecast: document.getElementById('show-forecast').checked,
                 showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
-                showClock: document.getElementById('show-clock').checked
+                showClock: document.getElementById('show-clock').checked,
+                language: document.getElementById('language-select').value
             };
 
             card = document.createElement('dynamic-weather-card');
@@ -973,12 +977,15 @@
                 show_min_temp: config.showMinTemp,
                 show_forecast: config.showForecast,
                 show_sunrise_sunset: config.showSunriseSunset,
-                show_clock: config.showClock
+                show_clock: config.showClock,
+                language: config.language,
             };
 
             if (config.name) {
                 cardConfig.name = config.name;
             }
+
+          console.log("cardConfig", cardConfig)
 
             card.setConfig(cardConfig);
             card.hass = mockHass;
@@ -988,21 +995,14 @@
         function setupLanguageSelect() {
           const languageSelect = document.getElementById('language-select');
 
-          languageSelect.value = i18next.resolvedLanguage;
+          languageSelect.value = i18n.lang;
 
           languageSelect.addEventListener('change', (e) => {
-            i18next.changeLanguage(e.target.value);
+            i18n.setLanguage(e.target.value);
+            applyTranslations();
+            updateCard();
           });
         }
-
-        window.addEventListener('i18n-ready', () => {
-          setupLanguageSelect();
-          applyTranslations();
-
-          i18next.on('languageChanged', () => {
-            applyTranslations();
-          });
-        });
 
         document.addEventListener('DOMContentLoaded', () => {
             const timeSlider = document.getElementById('time-slider');
@@ -1022,6 +1022,13 @@
                 sliderContainer.style.display = timeSelect.value === 'manual' ? 'block' : 'none';
                 updateCard();
             });
+
+          setupLanguageSelect();
+          applyTranslations();
+
+          window.addEventListener('language-changed', () => {
+            applyTranslations();
+          });
 
             const checkboxIds = [
                 'show-feels-like', 'show-min-temp', 'show-humidity',

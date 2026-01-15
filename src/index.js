@@ -1,6 +1,9 @@
 import { AnimatedWeatherCard } from './components/card.js';
 import { VERSION } from './constants.js';
 
+export { i18n } from './internalization/index.js';
+export { t } from './internalization/directive.js';
+
 // Register custom elements
 try {
   customElements.define('dynamic-weather-card', AnimatedWeatherCard);

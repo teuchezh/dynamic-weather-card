@@ -16,7 +16,7 @@ import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { cardStyles } from './styles.js';
 import { getSVGIcon, getWeatherConditionIcon } from '../icons/svg-icons.js';
-import { t } from '../internalization/directive.js';
+import { i18n } from '../internalization';
 
 export class AnimatedWeatherCard extends LitElement {
   static get properties() {
@@ -232,7 +232,7 @@ export class AnimatedWeatherCard extends LitElement {
       windDirection: attrs.wind_direction || null,
       pressure: attrs.pressure || null,
       forecast: attrs.forecast || attrs.forecast_hourly || [],
-      friendlyName: attrs.friendly_name || t('weather'),
+      friendlyName: attrs.friendly_name || i18n.t('weather'),
       templow: templow
     };
   }
@@ -336,7 +336,7 @@ export class AnimatedWeatherCard extends LitElement {
   renderTodayForecast() {
     const forecast = this.getTodayForecast();
     if (forecast.length === 0) {
-      return html`<div style="opacity: 0.6; font-size: 14px;">${t('forecast_unavailable')}</div>`;
+      return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unavailable')}</div>`;
     }
 
     return html`
@@ -361,7 +361,7 @@ export class AnimatedWeatherCard extends LitElement {
   }
 
   getWindSpeedUnit() {
-    return this.config.windSpeedUnit === 'kmh' ? i18next.t('wind_unit_kmh') : i18next.t('wind_unit_ms');
+    return this.config.windSpeedUnit === 'kmh' ? i18n.t('wind_unit_kmh') : i18n.t('wind_unit_ms');
   }
 
   formatCurrentTime() {
@@ -425,15 +425,15 @@ export class AnimatedWeatherCard extends LitElement {
               </div>
             ` : ''}
             <div>
-              <div class="condition">${t(weather.condition)}</div>
-              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : t('no_data')}</div>
+              <div class="condition">${i18n.t(weather.condition)}</div>
+              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
               ${this.config.showMinTemp && weather.templow ? html`
                 <div class="temp-range">
                   <span class="temp-min">↓ ${Math.round(weather.templow)}°</span>
                 </div>
               ` : ''}
               ${this.config.showFeelsLike && weather.apparentTemperature ? html`
-                <div class="feels-like">${t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
+                <div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
               ` : ''}
             </div>
             <div class="details">
@@ -473,7 +473,7 @@ export class AnimatedWeatherCard extends LitElement {
             </div>
             ${this.config.showForecast ? html`
               <div class="forecast-container">
-                <div class="forecast-title">${t('forecast_title')}</div>
+                <div class="forecast-title">${i18n.t('forecast_title')}</div>
                 ${this.renderTodayForecast()}
               </div>
             ` : ''}
