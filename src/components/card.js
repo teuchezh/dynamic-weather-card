@@ -514,6 +514,10 @@ export class AnimatedWeatherCard extends LitElement {
       holdAction: config.hold_action || { action: 'none' },
       doubleTapAction: config.double_tap_action || { action: 'none' }
     };
+
+    if (this.config.language) {
+      i18n.setLanguage(this.config.language);
+    }
   }
 
   handleAction(actionConfig) {
