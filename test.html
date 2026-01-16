@@ -715,7 +715,11 @@
             `;
         });
 
-        import { i18n } from './dynamic-weather-card.js';
+        import { i18n, resolveLanguage } from './dynamic-weather-card.js';
+
+        const lang = resolveLanguage();
+        i18n.setLanguage(lang);
+
         window.i18n = i18n;
     </script>
 

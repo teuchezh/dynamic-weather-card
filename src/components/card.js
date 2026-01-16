@@ -17,6 +17,7 @@ import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { cardStyles } from './styles.js';
 import { getSVGIcon, getWeatherConditionIcon } from '../icons/svg-icons.js';
 import { i18n } from '../internalization';
+import { resolveLanguage } from '../internalization/resolveLanguage.js';
 
 export class AnimatedWeatherCard extends LitElement {
   static get properties() {
@@ -94,6 +95,15 @@ export class AnimatedWeatherCard extends LitElement {
         this.resizeCanvas();
       }
       this.setupForecastScroll();
+    }
+
+    const resolvedLang = resolveLanguage({
+      configLang: this.config?.language,
+      hassLang: this.hass?.language
+    });
+
+    if (i18n.lang !== resolvedLang) {
+      i18n.setLanguage(resolvedLang);
     }
   }
 

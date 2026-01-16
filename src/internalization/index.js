@@ -22,7 +22,7 @@ const detectLang = () => {
 };
 
 class I18n {
-  lang = detectLang();
+  lang = 'en';
   fallback = 'en';
 
   t(key) {
@@ -32,10 +32,7 @@ class I18n {
       (o, k) => o?.[k],
       translations[this.lang]
     );
-
-    if (fromCurrent != null) {
-      return fromCurrent;
-    }
+    if (fromCurrent != null) return fromCurrent;
 
     const fromFallback = path.reduce(
       (o, k) => o?.[k],
@@ -46,7 +43,7 @@ class I18n {
   }
 
   setLanguage(lang) {
-    if (!translations[lang]) return;
+    if (!translations[lang] || this.lang === lang) return;
     this.lang = lang;
     window.dispatchEvent(new CustomEvent('language-changed'));
   }

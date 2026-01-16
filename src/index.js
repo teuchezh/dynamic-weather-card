@@ -3,6 +3,7 @@ import { VERSION } from './constants.js';
 
 export { i18n } from './internalization/index.js';
 export { t } from './internalization/directive.js';
+export { resolveLanguage } from './internalization/resolveLanguage.js';
 
 // Register custom elements
 try {
