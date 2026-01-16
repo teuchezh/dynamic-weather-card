@@ -1,7 +1,9 @@
 # 🌤️ Dynamic Weather Card
 
-Dynamic weather card for Home Assistant with realistic animations.  
-![demo](docs/demo.gif)
+Dynamic weather card for Home Assistant with realistic animations.
+![demo](/docs/demo.gif)
+
+**[Try Live Demo →](https://teuchezh.github.io/dynamic-weather-card/test.html)**
 
 ## Features
 
@@ -36,6 +38,13 @@ show_min_temp: true
 show_forecast: true
 show_sunrise_sunset: true
 ```
+
+## Supported Languages
+- English
+- Russian
+- German
+- French
+- Dutch
 
 ## Documentation
 
