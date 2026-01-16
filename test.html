@@ -445,79 +445,93 @@
 </head>
 <body>
     <div class="page-header">
-        <h1 class="page-title">🌤️ Dynamic Weather Card</h1>
-        <p class="page-subtitle">Interactive Demo & Configuration Tool</p>
+        <h1 class="page-title" data-i18n="pageTitle">🌤️ Dynamic Weather Card</h1>
+        <p class="page-subtitle" data-i18n="pageSubtitle">Interactive Demo & Configuration Tool</p>
     </div>
 
     <div class="main-container">
         <!-- Card Preview -->
         <div class="card-preview">
-            <div class="preview-label">Live Preview</div>
+            <div class="preview-label" data-i18n="livePreview">Live Preview</div>
             <div id="card-container"></div>
         </div>
 
         <!-- Controls Panel -->
         <div class="controls-panel">
-            <h2 class="panel-title">⚙️ Configuration</h2>
+            <h2 class="panel-title" data-i18n="configuration">⚙️ Configuration</h2>
 
             <!-- Quick Presets -->
             <div class="control-section">
-                <div class="section-header">🎨 Quick Presets</div>
+                <div class="section-header" data-i18n="quickPresets">🎨 Quick Presets</div>
                 <div class="quick-presets">
                     <div class="preset-card" onclick="applyPreset('sunny')">
                         <div class="preset-icon">☀️</div>
-                        <div class="preset-name">Sunny Day</div>
+                        <div class="preset-name" data-i18n="sunnyDay">Sunny Day</div>
                     </div>
                     <div class="preset-card" onclick="applyPreset('rainy')">
                         <div class="preset-icon">🌧️</div>
-                        <div class="preset-name">Rainy</div>
+                        <div class="preset-name" data-i18n="rainy">Rainy</div>
                     </div>
                     <div class="preset-card" onclick="applyPreset('snowy')">
                         <div class="preset-icon">❄️</div>
-                        <div class="preset-name">Snowy</div>
+                        <div class="preset-name" data-i18n="snowy">Snowy</div>
                     </div>
                     <div class="preset-card" onclick="applyPreset('night')">
                         <div class="preset-icon">🌙</div>
-                        <div class="preset-name">Clear Night</div>
+                        <div class="preset-name" data-i18n="clearNight">Clear Night</div>
                     </div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="section-header" data-i18n="language.title">🌍 Language</div>
+
+                <div class="control-group">
+                    <select id="language-select">
+                        <option value="en" data-i18n="language.english">🇺🇸 English</option>
+                        <option value="ru" data-i18n="language.russian">🇷🇺 Русский</option>
+                        <option value="fr" data-i18n="language.french">🇫🇷 Français</option>
+                        <option value="de" data-i18n="language.german">🇩🇪 Deutsch</option>
+                        <option value="nl" data-i18n="language.dutch">🇳🇱 Nederlands</option>
+                    </select>
                 </div>
             </div>
 
             <!-- Weather Settings -->
             <div class="control-section">
-                <div class="section-header">🌦️ Weather Condition</div>
+                <div class="section-header" data-i18n="weatherCondition">🌦️ Weather Condition</div>
 
                 <div class="control-group">
-                    <label class="control-label">Condition</label>
+                    <label class="control-label" data-i18n="condition">Condition</label>
                     <select id="condition-select">
-                        <option value="sunny">☀️ Sunny</option>
-                        <option value="clear">☀️ Clear</option>
-                        <option value="clear-night">🌙 Clear Night</option>
-                        <option value="partlycloudy">⛅ Partly Cloudy</option>
-                        <option value="cloudy">☁️ Cloudy</option>
-                        <option value="rainy">🌧️ Rainy</option>
-                        <option value="pouring">⛈️ Pouring</option>
-                        <option value="snowy">❄️ Snowy</option>
-                        <option value="snowy-rainy">🌨️ Sleet</option>
-                        <option value="hail">🧊 Hail</option>
-                        <option value="foggy">🌫️ Foggy</option>
-                        <option value="lightning">⚡ Lightning</option>
-                        <option value="lightning-rainy">⛈️ Thunderstorm</option>
+                        <option value="sunny" data-i18n="weatherConditions.sunny">☀️ Sunny</option>
+                        <option value="clear" data-i18n="weatherConditions.clear">☀️ Clear</option>
+                        <option value="clear-night" data-i18n="weatherConditions.clearNight">🌙 Clear Night</option>
+                        <option value="partlycloudy" data-i18n="weatherConditions.partlyCloudy">⛅ Partly Cloudy</option>
+                        <option value="cloudy" data-i18n="weatherConditions.cloudy">☁️ Cloudy</option>
+                        <option value="rainy" data-i18n="weatherConditions.rainy">🌧️ Rainy</option>
+                        <option value="pouring" data-i18n="weatherConditions.pouring">⛈️ Pouring</option>
+                        <option value="snowy" data-i18n="weatherConditions.snowy">❄️ Snowy</option>
+                        <option value="snowy-rainy" data-i18n="weatherConditions.sleet">🌨️ Sleet</option>
+                        <option value="hail" data-i18n="weatherConditions.hail">🧊 Hail</option>
+                        <option value="foggy" data-i18n="weatherConditions.foggy">🌫️ Foggy</option>
+                        <option value="lightning" data-i18n="weatherConditions.lightning">⚡ Lightning</option>
+                        <option value="lightning-rainy" data-i18n="weatherConditions.thunderstorm">⛈️ Thunderstorm</option>
                     </select>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label">Temperature (°C)</label>
+                    <label class="control-label" data-i18n="temperature">Temperature (°C)</label>
                     <input type="number" id="temperature-input" value="20" min="-50" max="50">
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label">Humidity (%)</label>
+                    <label class="control-label" data-i18n="humidity">Humidity (%)</label>
                     <input type="number" id="humidity-input" value="65" min="0" max="100">
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label">Wind Speed (km/h)</label>
+                    <label class="control-label" data-i18n="windSpeed">Wind Speed (km/h)</label>
                     <input type="number" id="wind-input" value="15" min="0" max="150">
                 </div>
 
@@ -535,17 +549,17 @@
 
             <!-- Time Settings -->
             <div class="control-section">
-                <div class="section-header">🕐 Time of Day</div>
+                <div class="section-header" data-i18n="timeOfDay">🕐 Time of Day</div>
 
                 <div class="control-group">
-                    <label class="control-label">Time Mode</label>
+                    <label class="control-label" data-i18n="timeMode">Time Mode</label>
                     <select id="time-select">
-                        <option value="auto">🕐 Auto (Current Time)</option>
-                        <option value="manual">⏱️ Manual Control</option>
-                        <option value="sunrise">🌅 Sunrise</option>
-                        <option value="day">☀️ Day</option>
-                        <option value="sunset">🌇 Sunset</option>
-                        <option value="night">🌙 Night</option>
+                        <option value="auto" data-i18n="autoTime">🕐 Auto (Current Time)</option>
+                        <option value="manual" data-i18n="manualControl">⏱️ Manual Control</option>
+                        <option value="sunrise" data-i18n="sunrise">🌅 Sunrise</option>
+                        <option value="day" data-i18n="day">☀️ Day</option>
+                        <option value="sunset" data-i18n="sunset">🌇 Sunset</option>
+                        <option value="night" data-i18n="night">🌙 Night</option>
                     </select>
 
                     <div id="time-slider-container" class="time-controls" style="display: none;">
@@ -566,15 +580,15 @@
 
             <!-- Display Options -->
             <div class="control-section">
-                <div class="section-header">👁️ Display Options</div>
+                <div class="section-header" data-i18n="displayOptions">👁️ Display Options</div>
 
                 <div class="control-group">
-                    <label class="control-label">Card Name</label>
-                    <input type="text" id="name-input" value="" placeholder="Leave empty to hide">
+                    <label class="control-label" data-i18n="cardName">Card Name</label>
+                    <input type="text" id="name-input" value="" placeholder="Leave empty to hide" data-i18n-placeholder="placeholderEmpty">
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label">Height (px)</label>
+                    <label class="control-label" data-i18n="height">Height (px)</label>
                     <input type="number" id="height-input" value="200" min="150" max="400" step="10">
                 </div>
 
@@ -594,35 +608,35 @@
                 <div class="checkbox-group">
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-feels-like" checked>
-                        <span class="checkbox-text">Feels Like Temperature</span>
+                        <span class="checkbox-text" data-i18n="feelsLike">Feels Like Temperature</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-min-temp" checked>
-                        <span class="checkbox-text">Min Temperature</span>
+                        <span class="checkbox-text" data-i18n="minTemp">Min Temperature</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-humidity">
-                        <span class="checkbox-text">Humidity</span>
+                        <span class="checkbox-text" data-i18n="humidity">Humidity</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-wind">
-                        <span class="checkbox-text">Wind Speed</span>
+                        <span class="checkbox-text" data-i18n="windSpeed">Wind Speed</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-wind-direction">
-                        <span class="checkbox-text">Wind Direction</span>
+                        <span class="checkbox-text" data-i18n="windDirection">Wind Direction</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-wind-gust">
-                        <span class="checkbox-text">Wind Gust</span>
+                        <span class="checkbox-text" data-i18n="windGust">Wind Gust</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-forecast">
-                        <span class="checkbox-text">Hourly Forecast</span>
+                        <span class="checkbox-text" data-i18n="hourlyForecast">Hourly Forecast</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-sunrise-sunset">
-                        <span class="checkbox-text">Sunrise/Sunset</span>
+                        <span class="checkbox-text" data-i18n="sunriseSunset">Sunrise/Sunset</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-clock">
@@ -633,11 +647,11 @@
 
             <!-- Action Buttons -->
             <div class="control-section">
-                <button class="btn btn-primary" onclick="updateCard()">
+                <button class="btn btn-primary" onclick="updateCard()" data-i18n="updateCard">
                     🔄 Update Card
                 </button>
                 <div style="height: 12px;"></div>
-                <button class="btn btn-demo" id="demo-btn" onclick="toggleDemoMode()">
+                <button class="btn btn-demo" id="demo-btn" onclick="toggleDemoMode()" data-i18n="startDemo">
                     🎬 Start Demo Mode
                 </button>
             </div>
@@ -711,248 +725,35 @@
                 </div>
             `;
         });
+
+        import { i18n, resolveLanguage } from './dynamic-weather-card.js';
+
+        const lang = resolveLanguage();
+        i18n.setLanguage(lang);
+
+        window.i18n = i18n;
     </script>
 
     <!-- Main application logic -->
     <script>
         // ============================================================================
+        // UTILS
+        // ============================================================================
+        const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+        // ============================================================================
         // TRANSLATIONS
         // ============================================================================
+function applyTranslations() {
+          $$('[data-i18n]').forEach(el => {
+            el.textContent = i18n.t(`demo.${el.dataset.i18n}`);
+          });
 
-        const TRANSLATIONS = {
-            en: {
-                pageTitle: '🌤️ Dynamic Weather Card',
-                pageSubtitle: 'Interactive Demo & Configuration Tool',
-                livePreview: 'Live Preview',
-                configuration: '⚙️ Configuration',
-                quickPresets: '🎨 Quick Presets',
-                sunnyDay: 'Sunny Day',
-                rainy: 'Rainy',
-                snowy: 'Snowy',
-                clearNight: 'Clear Night',
-                weatherCondition: '🌦️ Weather Condition',
-                condition: 'Condition',
-                temperature: 'Temperature (°C)',
-                humidity: 'Humidity (%)',
-                windSpeed: 'Wind Speed (km/h)',
-                windBearing: 'Wind Direction (°)',
-                timeOfDay: '🕐 Time of Day',
-                timeMode: 'Time Mode',
-                autoTime: '🕐 Auto (Current Time)',
-                manualControl: '⏱️ Manual Control',
-                sunrise: '🌅 Sunrise',
-                day: '☀️ Day',
-                sunset: '🌇 Sunset',
-                night: '🌙 Night',
-                currentTime: 'Current Time',
-                displayOptions: '👁️ Display Options',
-                cardName: 'Card Name',
-                height: 'Height (px)',
-                overlayOpacity: 'Overlay Opacity (0-1)',
-                windSpeedUnit: 'Wind Speed Unit',
-                windUnitMs: 'm/s',
-                windUnitKmh: 'km/h',
-                feelsLike: 'Feels Like Temperature',
-                minTemp: 'Min Temperature',
-                windDirection: 'Wind Direction',
-                windGust: 'Wind Gust',
-                hourlyForecast: 'Hourly Forecast',
-                sunriseSunset: 'Sunrise/Sunset',
-                clock: 'Clock',
-                updateCard: '🔄 Update Card',
-                startDemo: '🎬 Start Demo Mode',
-                stopDemo: '⏹️ Stop Demo',
-                madeWith: 'Made with ❤️ for Home Assistant',
-                loading: '⏳ Loading card...',
-                errorTitle: '⚠️ Failed to load card',
-                errorDetails: 'Check the browser console (F12) for details',
-                errorServer: 'Make sure the file is served via a local server (not file://)',
-                placeholderEmpty: 'Leave empty to hide',
-                weatherConditions: {
-                    sunny: '☀️ Sunny',
-                    clear: '☀️ Clear',
-                    clearNight: '🌙 Clear Night',
-                    partlycloudy: '⛅ Partly Cloudy',
-                    cloudy: '☁️ Cloudy',
-                    rainy: '🌧️ Rainy',
-                    pouring: '⛈️ Pouring',
-                    snowy: '❄️ Snowy',
-                    sleet: '🌨️ Sleet',
-                    hail: '🧊 Hail',
-                    foggy: '🌫️ Foggy',
-                    lightning: '⚡ Lightning',
-                    thunderstorm: '⛈️ Thunderstorm'
-                }
-            },
-            ru: {
-                pageTitle: '🌤️ Динамическая карточка погоды',
-                pageSubtitle: 'Интерактивная демонстрация и настройка',
-                livePreview: 'Предпросмотр',
-                configuration: '⚙️ Конфигурация',
-                quickPresets: '🎨 Быстрые пресеты',
-                sunnyDay: 'Солнечный день',
-                rainy: 'Дождь',
-                snowy: 'Снег',
-                clearNight: 'Ясная ночь',
-                weatherCondition: '🌦️ Погодные условия',
-                condition: 'Состояние',
-                temperature: 'Температура (°C)',
-                humidity: 'Влажность (%)',
-                windSpeed: 'Скорость ветра (км/ч)',
-                windBearing: 'Направление ветра (°)',
-                timeOfDay: '🕐 Время суток',
-                timeMode: 'Режим времени',
-                autoTime: '🕐 Авто (текущее время)',
-                manualControl: '⏱️ Ручное управление',
-                sunrise: '🌅 Восход',
-                day: '☀️ День',
-                sunset: '🌇 Закат',
-                night: '🌙 Ночь',
-                currentTime: 'Текущее время',
-                displayOptions: '👁️ Опции отображения',
-                cardName: 'Название карточки',
-                height: 'Высота (px)',
-                overlayOpacity: 'Прозрачность затемнения (0-1)',
-                windSpeedUnit: 'Единицы скорости ветра',
-                windUnitMs: 'м/с',
-                windUnitKmh: 'км/ч',
-                feelsLike: 'Ощущается как',
-                minTemp: 'Мин. температура',
-                windDirection: 'Направление ветра',
-                windGust: 'Порывы ветра',
-                hourlyForecast: 'Почасовой прогноз',
-                sunriseSunset: 'Восход/Закат',
-                clock: 'Часы',
-                updateCard: '🔄 Обновить карточку',
-                startDemo: '🎬 Запустить демо',
-                stopDemo: '⏹️ Остановить демо',
-                madeWith: 'Сделано с ❤️ для Home Assistant',
-                loading: '⏳ Загрузка карточки...',
-                errorTitle: '⚠️ Не удалось загрузить карточку',
-                errorDetails: 'Проверьте консоль браузера (F12) для деталей',
-                errorServer: 'Убедитесь, что файл открыт через локальный сервер (не file://)',
-                placeholderEmpty: 'Оставьте пустым, чтобы скрыть',
-                weatherConditions: {
-                    sunny: '☀️ Солнечно',
-                    clear: '☀️ Ясно',
-                    clearNight: '🌙 Ясная ночь',
-                    partlycloudy: '⛅ Переменная облачность',
-                    cloudy: '☁️ Облачно',
-                    rainy: '🌧️ Дождь',
-                    pouring: '⛈️ Ливень',
-                    snowy: '❄️ Снег',
-                    sleet: '🌨️ Мокрый снег',
-                    hail: '🧊 Град',
-                    foggy: '🌫️ Туман',
-                    lightning: '⚡ Гроза',
-                    thunderstorm: '⛈️ Гроза с дождем'
-                }
-            }
-        };
+          $$('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = i18n.t(`demo.${el.dataset.i18nPlaceholder}`);
+          });
 
-        // Detect browser language
-        let currentLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-        if (currentLang.startsWith('ru')) {
-            currentLang = 'ru';
-        } else {
-            currentLang = 'en';
-        }
-
-        function t(key) {
-            const keys = key.split('.');
-            let value = TRANSLATIONS[currentLang];
-            for (const k of keys) {
-                value = value?.[k];
-            }
-            return value || key;
-        }
-
-        function updatePageLanguage() {
-            document.querySelector('.page-title').textContent = t('pageTitle');
-            document.querySelector('.page-subtitle').textContent = t('pageSubtitle');
-            document.querySelector('.preview-label').textContent = t('livePreview');
-            document.querySelector('.panel-title').textContent = t('configuration');
-
-            // Quick presets section
-            document.querySelectorAll('.section-header')[0].textContent = t('quickPresets');
-            document.querySelectorAll('.preset-name')[0].textContent = t('sunnyDay');
-            document.querySelectorAll('.preset-name')[1].textContent = t('rainy');
-            document.querySelectorAll('.preset-name')[2].textContent = t('snowy');
-            document.querySelectorAll('.preset-name')[3].textContent = t('clearNight');
-
-            // Weather section
-            document.querySelectorAll('.section-header')[1].textContent = t('weatherCondition');
-            document.querySelectorAll('.control-label')[0].textContent = t('condition');
-            document.querySelectorAll('.control-label')[1].textContent = t('temperature');
-            document.querySelectorAll('.control-label')[2].textContent = t('humidity');
-            document.querySelectorAll('.control-label')[3].textContent = t('windSpeed');
-            document.querySelectorAll('.control-label')[4].textContent = t('windBearing');
-
-            // Time section
-            document.querySelectorAll('.section-header')[2].textContent = t('timeOfDay');
-            document.querySelectorAll('.control-label')[5].textContent = t('timeMode');
-            document.querySelectorAll('.control-label')[6].textContent = t('currentTime');
-
-            // Display options section
-            document.querySelectorAll('.section-header')[3].textContent = t('displayOptions');
-            document.querySelectorAll('.control-label')[7].textContent = t('cardName');
-            document.querySelectorAll('.control-label')[8].textContent = t('height');
-            document.querySelectorAll('.control-label')[9].textContent = t('overlayOpacity');
-            document.querySelectorAll('.control-label')[10].textContent = t('windSpeedUnit');
-
-            // Wind speed unit options
-            const windSpeedUnitSelect = document.getElementById('wind-speed-unit-select');
-            windSpeedUnitSelect.options[0].text = t('windUnitMs');
-            windSpeedUnitSelect.options[1].text = t('windUnitKmh');
-
-            // Weather condition options
-            const conditionSelect = document.getElementById('condition-select');
-            conditionSelect.options[0].text = t('weatherConditions.sunny');
-            conditionSelect.options[1].text = t('weatherConditions.clear');
-            conditionSelect.options[2].text = t('weatherConditions.clearNight');
-            conditionSelect.options[3].text = t('weatherConditions.partlycloudy');
-            conditionSelect.options[4].text = t('weatherConditions.cloudy');
-            conditionSelect.options[5].text = t('weatherConditions.rainy');
-            conditionSelect.options[6].text = t('weatherConditions.pouring');
-            conditionSelect.options[7].text = t('weatherConditions.snowy');
-            conditionSelect.options[8].text = t('weatherConditions.sleet');
-            conditionSelect.options[9].text = t('weatherConditions.hail');
-            conditionSelect.options[10].text = t('weatherConditions.foggy');
-            conditionSelect.options[11].text = t('weatherConditions.lightning');
-            conditionSelect.options[12].text = t('weatherConditions.thunderstorm');
-
-            // Time mode options
-            const timeSelect = document.getElementById('time-select');
-            timeSelect.options[0].text = t('autoTime');
-            timeSelect.options[1].text = t('manualControl');
-            timeSelect.options[2].text = t('sunrise');
-            timeSelect.options[3].text = t('day');
-            timeSelect.options[4].text = t('sunset');
-            timeSelect.options[5].text = t('night');
-
-            // Checkboxes
-            document.querySelectorAll('.checkbox-text')[0].textContent = t('feelsLike');
-            document.querySelectorAll('.checkbox-text')[1].textContent = t('minTemp');
-            document.querySelectorAll('.checkbox-text')[2].textContent = t('humidity');
-            document.querySelectorAll('.checkbox-text')[3].textContent = t('windSpeed');
-            document.querySelectorAll('.checkbox-text')[4].textContent = t('windDirection');
-            document.querySelectorAll('.checkbox-text')[5].textContent = t('windGust');
-            document.querySelectorAll('.checkbox-text')[6].textContent = t('hourlyForecast');
-            document.querySelectorAll('.checkbox-text')[7].textContent = t('sunriseSunset');
-            document.querySelectorAll('.checkbox-text')[8].textContent = t('clock');
-
-            // Buttons
-            document.querySelector('.btn-primary').innerHTML = t('updateCard');
-            document.getElementById('demo-btn').textContent = t('startDemo');
-
-            // Placeholder
-            document.getElementById('name-input').placeholder = t('placeholderEmpty');
-
-            // Footer
-            const footerText = document.querySelector('.footer');
-            const githubLink = footerText.querySelector('a');
-            footerText.innerHTML = `${t('madeWith')} | `;
-            footerText.appendChild(githubLink);
+          document.title = i18n.t('demo.pageTitle');
         }
 
         // ============================================================================
@@ -1043,7 +844,7 @@
                             friendly_name: 'Demo Weather',
                             forecast: generateForecast(temperature),
                             sunrise: sunrise.toISOString(),
-                            sunset: sunset.toISOString()
+                            sunset: sunset.toISOString(),
                         }
                     }
                 }
@@ -1078,7 +879,7 @@
             demoModeActive = true;
             demoStep = 0;
             const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = t('stopDemo');
+            demoBtn.textContent = i18n.t('demo.stopDemo');
             demoBtn.classList.add('active');
 
             runDemoStep();
@@ -1092,7 +893,7 @@
                 demoInterval = null;
             }
             const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = t('startDemo');
+            demoBtn.textContent = i18n.t('demo.startDemo');
             demoBtn.classList.remove('active');
         }
 
@@ -1145,7 +946,7 @@
             container.innerHTML = '';
 
             if (!window.cardLoaded) {
-                container.innerHTML = `<div class="loading-message">${t('loading')}</div>`;
+                container.innerHTML = `<div class="loading-message">${i18n.t('loading')}</div>`;
                 return;
             }
 
@@ -1167,7 +968,8 @@
                 showWindGust: document.getElementById('show-wind-gust').checked,
                 showForecast: document.getElementById('show-forecast').checked,
                 showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
-                showClock: document.getElementById('show-clock').checked
+                showClock: document.getElementById('show-clock').checked,
+                language: document.getElementById('language-select').value
             };
 
             card = document.createElement('dynamic-weather-card');
@@ -1197,7 +999,8 @@
                 show_min_temp: config.showMinTemp,
                 show_forecast: config.showForecast,
                 show_sunrise_sunset: config.showSunriseSunset,
-                show_clock: config.showClock
+                show_clock: config.showClock,
+                language: config.language,
             };
 
             if (config.name) {
@@ -1209,10 +1012,19 @@
             container.appendChild(card);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Apply translations
-            updatePageLanguage();
+        function setupLanguageSelect() {
+          const languageSelect = document.getElementById('language-select');
 
+          languageSelect.value = i18n.lang;
+
+          languageSelect.addEventListener('change', (e) => {
+            i18n.setLanguage(e.target.value);
+            applyTranslations();
+            updateCard();
+          });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
             const timeSlider = document.getElementById('time-slider');
             const timeDisplay = document.getElementById('time-display');
             const timeSelect = document.getElementById('time-select');
@@ -1230,6 +1042,13 @@
                 sliderContainer.style.display = timeSelect.value === 'manual' ? 'block' : 'none';
                 updateCard();
             });
+
+          setupLanguageSelect();
+          applyTranslations();
+
+          window.addEventListener('language-changed', () => {
+            applyTranslations();
+          });
 
             const checkboxIds = [
                 'show-feels-like', 'show-min-temp', 'show-humidity',
@@ -1253,7 +1072,7 @@
             if (card && document.getElementById('time-select').value === 'auto') {
                 updateCard();
             }
-        }, 60000);
+        }, 60_000);
     </script>
 </body>
 </html>

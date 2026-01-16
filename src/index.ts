@@ -2,6 +2,10 @@ import { AnimatedWeatherCard } from './components/card';
 import { VERSION } from './constants';
 import type { CustomCardRegistration } from './types';
 
+export { i18n } from './internalization/index';
+export { t } from './internalization/directive';
+export { resolveLanguage } from './internalization/resolveLanguage';
+
 // Register custom elements
 try {
   customElements.define('dynamic-weather-card', AnimatedWeatherCard);
