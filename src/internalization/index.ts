@@ -20,18 +20,18 @@ class I18n {
   t(key: string): string {
     const path = key.split('.');
 
-    const fromCurrent = path.reduce(
-      (o: any, k: string) => o?.[k],
+    const fromCurrent = path.reduce<unknown>(
+      (o, k) => (o as Record<string, unknown>)?.[k],
       translations[this.lang]
     );
-    if (fromCurrent != null) return fromCurrent;
+    if (fromCurrent != null) return fromCurrent as string;
 
-    const fromFallback = path.reduce(
-      (o: any, k: string) => o?.[k],
+    const fromFallback = path.reduce<unknown>(
+      (o, k) => (o as Record<string, unknown>)?.[k],
       translations[this.fallback]
     );
 
-    return fromFallback ?? key;
+    return (fromFallback as string) ?? key;
   }
 
   setLanguage(lang: string): void {
@@ -43,6 +43,6 @@ class I18n {
 
 export const i18n = new I18n();
 
-(window as any).i18n = i18n;
+(window as unknown as { i18n: I18n }).i18n = i18n;
 
 export { translations };

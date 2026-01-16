@@ -21,11 +21,18 @@ import { cardStyles } from './styles.js';
 import { getSVGIcon, getWeatherConditionIcon, windDirection } from '../icons/svg-icons.js';
 import type {
   HomeAssistant,
+  HassEntity,
   WeatherCardConfig,
   TimeOfDay,
   WeatherForecast,
-  BackgroundGradient
+  BackgroundGradient,
+  WeatherEntityAttributes
 } from '../types';
+
+interface ForecastItemExtended extends WeatherForecast {
+  temp?: number;
+  native_temperature?: number;
+}
 
 interface WeatherCardConfigInternal extends WeatherCardConfig {
   name?: string;
@@ -42,9 +49,34 @@ interface ActionConfig {
   action: 'more-info' | 'toggle' | 'call-service' | 'navigate' | 'url' | 'none';
   entity?: string;
   service?: string;
-  service_data?: Record<string, any>;
+  service_data?: Record<string, unknown>;
   navigation_path?: string;
   url_path?: string;
+}
+
+interface ConfigInput {
+  entity: string;
+  icons_path?: string;
+  name?: string;
+  height?: number;
+  show_feels_like?: boolean;
+  show_wind?: boolean;
+  show_wind_gust?: boolean;
+  show_wind_direction?: boolean;
+  show_humidity?: boolean;
+  show_min_temp?: boolean;
+  show_forecast?: boolean;
+  show_sunrise_sunset?: boolean;
+  show_clock?: boolean;
+  overlay_opacity?: number;
+  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr';
+  wind_speed_unit?: 'ms' | 'kmh';
+  sunrise_entity?: string;
+  sunset_entity?: string;
+  templow_attribute?: string;
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
 }
 
 interface WeatherData {
@@ -146,7 +178,7 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  updated(changedProperties: Map<string, any>): void {
+  updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
     if (changedProperties.has('hass') || changedProperties.has('config')) {
       if (this.canvas && this.ctx) {
@@ -255,10 +287,10 @@ export class AnimatedWeatherCard extends LitElement {
     return entity ? entity.state : null;
   }
 
-  private getAttributes(entityId: string): Record<string, any> {
-    if (!this.hass || !entityId) return {};
+  private getAttributes(entityId: string): WeatherEntityAttributes {
+    if (!this.hass || !entityId) return {} as WeatherEntityAttributes;
     const entity = this.hass.states[entityId];
-    return entity ? entity.attributes : {};
+    return entity ? entity.attributes : {} as WeatherEntityAttributes;
   }
 
   private getWeatherData(): WeatherData {
@@ -271,18 +303,18 @@ export class AnimatedWeatherCard extends LitElement {
     let templow: number | null = null;
 
     if (this.config.templowAttribute && attrs[this.config.templowAttribute] != null) {
-      templow = attrs[this.config.templowAttribute];
+      templow = attrs[this.config.templowAttribute] as number;
     } else {
       for (const attrName of TEMPLOW_ATTRIBUTES) {
         if (attrs[attrName] != null) {
-          templow = attrs[attrName];
+          templow = attrs[attrName] as number;
           break;
         }
       }
 
       if (templow == null) {
-        templow = (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow : null)
-          || (attrs.forecast_hourly && attrs.forecast_hourly[0] ? attrs.forecast_hourly[0].native_templow : null);
+        templow = (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow ?? null : null)
+          || (attrs.forecast_hourly && attrs.forecast_hourly[0] ? attrs.forecast_hourly[0].native_templow ?? null : null);
       }
     }
 
@@ -297,7 +329,7 @@ export class AnimatedWeatherCard extends LitElement {
       windDirection: attrs.wind_direction || null,
       pressure: attrs.pressure || null,
       forecast: attrs.forecast || attrs.forecast_hourly || [],
-friendlyName: attrs.friendly_name || i18n.t('weather'),
+      friendlyName: attrs.friendly_name || i18n.t('weather'),
       templow: templow
     };
   }
@@ -347,7 +379,7 @@ friendlyName: attrs.friendly_name || i18n.t('weather'),
 
     const weather = this.getWeatherData();
     const weatherState = this.hass?.states[this.config.entity];
-    const sunData = getSunriseSunsetData(weatherState || {} as any, this.config.sunriseEntity, this.config.sunsetEntity, this.hass);
+    const sunData = getSunriseSunsetData(weatherState || {} as HassEntity, this.config.sunriseEntity, this.config.sunsetEntity, this.hass);
 
     const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
     const condition = weather.condition.toLowerCase();
@@ -358,7 +390,7 @@ friendlyName: attrs.friendly_name || i18n.t('weather'),
         this.animations.sunny?.draw(Date.now(), width, height, timeOfDay);
         break;
       case 'clear-night':
-        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 } as any);
+        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 });
         break;
       case 'rainy':
       case 'rain':
@@ -399,7 +431,7 @@ friendlyName: attrs.friendly_name || i18n.t('weather'),
   private renderTodayForecast(): TemplateResult {
     const forecast = this.getTodayForecast();
     if (forecast.length === 0) {
-return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unavailable')}</div>`;
+      return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unavailable')}</div>`;
     }
 
     return html`
@@ -408,14 +440,14 @@ return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unava
           <div class="forecast-item">
             <div class="forecast-time">${formatForecastTime(item.datetime)}</div>
             <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
-            <div class="forecast-temp">${Math.round(item.temperature || (item as any).temp || (item as any).native_temperature || 0)}°</div>
+            <div class="forecast-temp">${Math.round(item.temperature || (item as ForecastItemExtended).temp || (item as ForecastItemExtended).native_temperature || 0)}°</div>
           </div>
         `)}
       </div>
     `;
   }
 
-private convertWindSpeed(speed: number | null): number | null {
+  private convertWindSpeed(speed: number | null): number | null {
     if (speed == null) return null;
     if (this.config.windSpeedUnit === 'kmh') {
       return Math.round(speed * 3.6 * 10) / 10;
@@ -423,7 +455,7 @@ private convertWindSpeed(speed: number | null): number | null {
     return speed;
   }
 
-private getWindSpeedUnit(): string {
+  private getWindSpeedUnit(): string {
     return this.config.windSpeedUnit === 'kmh' ? i18n.t('wind_unit_kmh') : i18n.t('wind_unit_ms');
   }
 
@@ -503,10 +535,10 @@ private getWindSpeedUnit(): string {
                     <span>${weather.humidity} %</span>
                   </div>
                 ` : ''}
-                ${this.config.showSunriseSunset && sunData.hasSunData ? html`
+                ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunrise ? html`
                   <div class="info-item">
                     <span class="info-icon">${getSVGIcon('sunrise')}</span>
-                    <span>${formatTime(sunData.sunrise!)}</span>
+                    <span>${formatTime(sunData.sunrise)}</span>
                   </div>
                 ` : ''}
                 ${this.config.showWind && weather.windSpeed != null ? html`
@@ -522,10 +554,10 @@ private getWindSpeedUnit(): string {
                     </div>
                   `}
                 ` : ''}
-                ${this.config.showSunriseSunset && sunData.hasSunData ? html`
+                ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunset ? html`
                   <div class="info-item">
                     <span class="info-icon">${getSVGIcon('sunset')}</span>
-                    <span>${formatTime(sunData.sunset!)}</span>
+                    <span>${formatTime(sunData.sunset)}</span>
                   </div>
                 ` : ''}
               </div>
@@ -545,7 +577,7 @@ private getWindSpeedUnit(): string {
     `;
   }
 
-  setConfig(config: any): void {
+  setConfig(config: ConfigInput): void {
     if (!config.entity) {
       throw new Error('Please define a weather entity');
     }
@@ -617,7 +649,7 @@ private getWindSpeedUnit(): string {
     }
   }
 
-  private fireEvent(type: string, detail: Record<string, any> = {}): void {
+  private fireEvent(type: string, detail: Record<string, unknown> = {}): void {
     const event = new CustomEvent(type, {
       detail,
       bubbles: true,

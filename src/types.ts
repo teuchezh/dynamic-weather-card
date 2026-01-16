@@ -6,7 +6,7 @@
 export interface HassEntity {
   entity_id: string;
   state: string;
-  attributes: Record<string, any>;
+  attributes: WeatherEntityAttributes;
   last_changed: string;
   last_updated: string;
   context: {
@@ -18,18 +18,23 @@ export interface HassEntity {
 
 // Weather Entity Attributes
 export interface WeatherEntityAttributes {
-  temperature: number;
-  temperature_unit: string;
+  temperature?: number;
+  temperature_unit?: string;
   humidity?: number;
   pressure?: number;
   wind_speed?: number;
   wind_speed_unit?: string;
   wind_bearing?: number;
   wind_gust_speed?: number;
+  wind_gust?: number;
   visibility?: number;
   forecast?: WeatherForecast[];
+  forecast_hourly?: WeatherForecast[];
   attribution?: string;
   friendly_name?: string;
+  condition?: string;
+  apparent_temperature?: number;
+  wind_direction?: string;
   // Additional attributes for minimum temperature
   templow?: number;
   temperature_low?: number;
@@ -39,6 +44,8 @@ export interface WeatherEntityAttributes {
   // Sun data
   next_rising?: string;
   next_setting?: string;
+  // Index signature for dynamic attributes
+  [key: string]: unknown;
 }
 
 // Weather Forecast
@@ -46,6 +53,7 @@ export interface WeatherForecast {
   datetime: string;
   temperature?: number;
   templow?: number;
+  native_templow?: number;
   condition?: string;
   precipitation?: number;
   precipitation_probability?: number;
@@ -62,8 +70,8 @@ export interface HomeAssistant {
     number_format: string;
     time_format: string;
   };
-  themes: any;
-  selectedTheme: any;
+  themes: Record<string, unknown>;
+  selectedTheme: Record<string, unknown> | null;
   config: {
     latitude: number;
     longitude: number;
@@ -78,8 +86,8 @@ export interface HomeAssistant {
     time_zone: string;
     version: string;
   };
-  callService: (_domain: string, _service: string, _data?: any) => Promise<void>;
-  callWS: (_msg: any) => Promise<any>;
+  callService: (_domain: string, _service: string, _data?: Record<string, unknown>) => Promise<void>;
+  callWS: (_msg: Record<string, unknown>) => Promise<unknown>;
 }
 
 // Weather Card Configuration
@@ -96,7 +104,7 @@ export interface WeatherCardConfig {
   showSunriseSunset?: boolean;
   showClock?: boolean;
   overlayOpacity?: number;
-  language?: 'auto' | 'en' | 'ru';
+  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr';
   height?: number | null;
   windSpeedUnit?: 'ms' | 'kmh';
 }
