@@ -12,15 +12,6 @@ const translations = {
   fr
 };
 
-const detectLang = () => {
-  const lang = (navigator.language || 'en').toLowerCase();
-  if (lang.startsWith('ru')) return 'ru';
-  if (lang.startsWith('de')) return 'de';
-  if (lang.startsWith('nl')) return 'nl';
-  if (lang.startsWith('fr')) return 'fr';
-  return 'en';
-};
-
 class I18n {
   lang = 'en';
   fallback = 'en';
