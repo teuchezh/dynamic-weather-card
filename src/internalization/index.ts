@@ -1,8 +1,8 @@
-import ru from './locales/ru/translation.js';
-import de from './locales/de/translation.js';
-import nl from './locales/nl/translation.js';
-import fr from './locales/fr/translation.js';
-import en from './locales/en/translation.js';
+import ru from './locales/ru/translation';
+import de from './locales/de/translation';
+import nl from './locales/nl/translation';
+import fr from './locales/fr/translation';
+import en from './locales/en/translation';
 import type { Translation, SupportedLanguage } from './types';
 
 const translations: Record<SupportedLanguage, Translation> = {
