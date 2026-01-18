@@ -3,13 +3,15 @@ import de from './locales/de/translation.js';
 import nl from './locales/nl/translation.js';
 import fr from './locales/fr/translation.js';
 import en from './locales/en/translation.js';
+import it from './locales/it/translation.js';
 
 const translations = {
   en,
   ru,
   de,
   nl,
-  fr
+  fr,
+  it
 };
 
 class I18n {
