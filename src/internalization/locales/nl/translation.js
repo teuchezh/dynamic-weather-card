@@ -87,6 +87,7 @@ export default {
       'russian': '🇷🇺 Русский',
       'german': '🇩🇪 Deutsch',
       'dutch': '🇳🇱 Nederlands'
+      'italy': '🇮🇹 Italia' 
     }
   }
 };
