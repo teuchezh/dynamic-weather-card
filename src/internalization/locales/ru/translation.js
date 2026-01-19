@@ -88,6 +88,7 @@ export default {
       'french': '🇫🇷 Français',
       'german': '🇩🇪 Deutsch',
       'dutch': '🇳🇱 Nederlands'
+      'italy': '🇮🇹 Italia' 
     }
   }
 };
