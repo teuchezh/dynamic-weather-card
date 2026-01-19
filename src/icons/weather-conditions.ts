@@ -1,4 +1,4 @@
-import { svg } from 'lit';
+import { svg, SVGTemplateResult } from 'lit';
 
 // Weather condition SVG icons from Basmilius Weather Icons
 // License: MIT - https://github.com/basmilius/weather-icons
@@ -16,7 +16,7 @@ import hailSvg from './hail.svg?raw';
 import thunderstormSvg from './thunderstorms-rain.svg?raw';
 
 // Map weather conditions to SVG content
-export const WEATHER_CONDITION_SVGS = {
+export const WEATHER_CONDITION_SVGS: Record<string, string> = {
   'sunny': clearDaySvg,
   'clear': clearDaySvg,
   'clear-night': clearNightSvg,
@@ -39,7 +39,7 @@ export const WEATHER_CONDITION_SVGS = {
 };
 
 // Helper function to get weather condition SVG
-export function getWeatherConditionSVG(condition) {
+export function getWeatherConditionSVG(condition: string): SVGTemplateResult | string {
   if (!condition) return '';
 
   const svgContent = WEATHER_CONDITION_SVGS[condition.toLowerCase()];
@@ -53,5 +53,8 @@ export function getWeatherConditionSVG(condition) {
   if (!svgElement) return '';
 
   // Get the inner HTML
-  return svg([svgElement.outerHTML]);
+  // Convert to template strings array
+  const strings = [svgElement.outerHTML] as unknown as TemplateStringsArray;
+  Object.defineProperty(strings, 'raw', { value: [svgElement.outerHTML] });
+  return svg(strings);
 }

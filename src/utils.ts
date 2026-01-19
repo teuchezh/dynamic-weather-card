@@ -1,10 +1,10 @@
-import { TIME_THRESHOLDS } from './constants.js';
+import { TIME_THRESHOLDS } from './constants';
+import type { TimeOfDay, Position, BackgroundGradient, SunMoonData, HassEntity, HomeAssistant } from './types';
 
 /**
  * Determine time of day and its progress (internal fallback)
- * @returns {{type: string, progress: number}} Time of day info
  */
-function getTimeOfDay() {
+function getTimeOfDay(): TimeOfDay {
   const now = new Date();
   const hour = now.getHours();
   const minute = now.getMinutes();
@@ -34,12 +34,8 @@ function getTimeOfDay() {
 
 /**
  * Get sun/moon position based on time of day
- * @param {{type: string, progress: number}} timeOfDay - Time of day info
- * @param {number} width - Canvas width
- * @param {number} height - Canvas height
- * @returns {{x: number, y: number}} Position coordinates
  */
-export function getSunPosition(timeOfDay, width, height) {
+export function getSunPosition(timeOfDay: TimeOfDay, width: number, height: number): Position {
   if (timeOfDay.type === 'sunrise') {
     const progress = timeOfDay.progress;
     return {
@@ -70,10 +66,8 @@ export function getSunPosition(timeOfDay, width, height) {
 
 /**
  * Get background gradient colors for sunrise/sunset
- * @param {{type: string, progress: number}} timeOfDay - Time of day info
- * @returns {{start: {r: number, g: number, b: number}, end: {r: number, g: number, b: number}}|null}
  */
-export function getBackgroundGradient(timeOfDay) {
+export function getBackgroundGradient(timeOfDay: TimeOfDay): BackgroundGradient | null {
   if (timeOfDay.type === 'sunrise') {
     const progress = timeOfDay.progress;
     const nightStart = { r: 26, g: 26, b: 46 };
@@ -116,10 +110,8 @@ export function getBackgroundGradient(timeOfDay) {
 
 /**
  * Format forecast time as HH:00
- * @param {string} datetime - ISO datetime string
- * @returns {string} Formatted time
  */
-export function formatForecastTime(datetime) {
+export function formatForecastTime(datetime: string): string {
   if (!datetime) return '';
   const date = new Date(datetime);
   const hours = date.getHours();
@@ -128,10 +120,8 @@ export function formatForecastTime(datetime) {
 
 /**
  * Format time as HH:MM
- * @param {Date|string} datetime - Date object or ISO datetime string
- * @returns {string} Formatted time
  */
-export function formatTime(datetime) {
+export function formatTime(datetime: Date | string): string {
   if (!datetime) return '';
   const date = typeof datetime === 'string' ? new Date(datetime) : datetime;
   const hours = date.getHours();
@@ -141,15 +131,15 @@ export function formatTime(datetime) {
 
 /**
  * Get sunrise and sunset data from weather entity or separate sensors
- * @param {Object} weatherState - Weather entity state
- * @param {string|null} sunriseEntity - Optional separate sunrise sensor entity ID
- * @param {string|null} sunsetEntity - Optional separate sunset sensor entity ID
- * @param {Object} hass - Home Assistant object
- * @returns {{sunrise: Date|null, sunset: Date|null, hasSunData: boolean}}
  */
-export function getSunriseSunsetData(weatherState, sunriseEntity = null, sunsetEntity = null, hass = null) {
-  let sunrise = null;
-  let sunset = null;
+export function getSunriseSunsetData(
+  weatherState: HassEntity,
+  sunriseEntity: string | null = null,
+  sunsetEntity: string | null = null,
+  hass: HomeAssistant | null = null
+): SunMoonData & { hasSunData: boolean } {
+  let sunrise: Date | null = null;
+  let sunset: Date | null = null;
 
   // Try to get from separate sensors first (if configured)
   if (sunriseEntity && hass && hass.states[sunriseEntity]) {
@@ -186,10 +176,8 @@ export function getSunriseSunsetData(weatherState, sunriseEntity = null, sunsetE
 
 /**
  * Determine time of day based on sunrise/sunset or fallback to static times
- * @param {{sunrise: Date|null, sunset: Date|null, hasSunData: boolean}} sunData - Sun data
- * @returns {{type: string, progress: number}} Time of day info
  */
-export function getTimeOfDayWithSunData(sunData) {
+export function getTimeOfDayWithSunData(sunData: SunMoonData & { hasSunData: boolean }): TimeOfDay {
   const now = new Date();
 
   // If we have real sun data, use it

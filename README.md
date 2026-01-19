@@ -94,7 +94,7 @@ show_forecast: true
 show_sunrise_sunset: true
 show_clock: true  # Show current time in the bottom right corner
 sunrise_entity: sensor.sun_next_rising  # Optional
-sunset_entity: sensor.sun_next_setting    # Optional
+sunset_entity: sensor.sun_next_setting  # Optional
 ```
 
 ### Example with fixed language
@@ -113,8 +113,8 @@ type: custom:dynamic-weather-card
 entity: weather.yandex_pogoda
 name: Krasnodar
 show_sunrise_sunset: true
-sunrise_entity: sensor.sun_next_rising
-sunset_entity: sensor.sun_next_setting
+sunrise_entity: sensor.yandex_pogoda_next_sunrise
+sunset_entity: sensor.yandex_pogoda_next_sunset
 ```
 
 > **Note:** Yandex Weather does not provide sunrise/sunset data in the weather entity, so separate sensors must be specified.

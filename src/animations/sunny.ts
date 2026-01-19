@@ -1,5 +1,6 @@
-import { BaseAnimation } from './base.js';
-import { getSunPosition } from '../utils.js';
+import { BaseAnimation } from './base';
+import { getSunPosition } from '../utils';
+import { TimeOfDay, Position } from '../types';
 
 /**
  * Sunny weather animation
@@ -7,37 +8,38 @@ import { getSunPosition } from '../utils.js';
 export class SunnyAnimation extends BaseAnimation {
   /**
    * Draw sunny weather
-   * @param {{type: string, progress: number}} timeOfDay - Time of day info
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
+   * @param time - Animation time (unused, for interface compatibility)
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param timeOfDay - Time of day info
    */
-  draw(timeOfDay, width, height) {
-    const time = Date.now() * 0.001;
-    const sunPos = getSunPosition(timeOfDay, width, height);
+  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay): void {
+    const currentTime = Date.now() * 0.001;
+    const sunPos: Position = getSunPosition(timeOfDay, width, height);
     const sunX = sunPos.x;
     const sunY = sunPos.y;
 
     if (timeOfDay.type === 'day' || timeOfDay.type === 'sunrise' || timeOfDay.type === 'sunset') {
-      this.drawSun(sunX, sunY, time);
+      this.drawSun(sunX, sunY, currentTime);
 
       // Sunrise/sunset horizon reflection
       if (timeOfDay.type === 'sunrise' || timeOfDay.type === 'sunset') {
-        this.drawHorizonReflection(sunX, sunY, height, time);
+        this.drawHorizonReflection(sunX, sunY, height, currentTime);
       }
     } else if (timeOfDay.type === 'night') {
-      this.drawNightSky(width, height, time);
+      this.drawNightSky(width, height, currentTime);
     }
 
-    this.drawClouds(time, width, height, 0.3);
+    this.drawClouds(currentTime, width, height, 0.3);
   }
 
   /**
    * Draw the sun with halos
-   * @param {number} sunX - Sun X position
-   * @param {number} sunY - Sun Y position
-   * @param {number} time - Animation time
+   * @param sunX - Sun X position
+   * @param sunY - Sun Y position
+   * @param time - Animation time
    */
-  drawSun(sunX, sunY, time) {
+  private drawSun(sunX: number, sunY: number, time: number): void {
     const sunRadius = 48 + Math.sin(time * 0.15) * 1.5;
 
     // Outer halo
@@ -107,12 +109,12 @@ export class SunnyAnimation extends BaseAnimation {
 
   /**
    * Draw horizon reflection for sunrise/sunset
-   * @param {number} sunX - Sun X position
-   * @param {number} sunY - Sun Y position
-   * @param {number} height - Canvas height
-   * @param {number} time - Animation time
+   * @param sunX - Sun X position
+   * @param sunY - Sun Y position
+   * @param height - Canvas height
+   * @param time - Animation time
    */
-  drawHorizonReflection(sunX, sunY, height, time) {
+  private drawHorizonReflection(sunX: number, sunY: number, height: number, time: number): void {
     const sunRadius = 48 + Math.sin(time * 0.15) * 1.5;
     const horizonY = height * 0.85;
 
@@ -127,11 +129,11 @@ export class SunnyAnimation extends BaseAnimation {
 
   /**
    * Draw night sky with stars and moon
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
-   * @param {number} time - Animation time
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param time - Animation time
    */
-  drawNightSky(width, height, time) {
+  private drawNightSky(width: number, height: number, time: number): void {
     // Stars
     this.ctx.fillStyle = '#FFFFFF';
     for (let i = 0; i < 20; i++) {

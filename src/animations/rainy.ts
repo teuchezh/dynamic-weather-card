@@ -1,35 +1,45 @@
-import { BaseAnimation } from './base.js';
+import { BaseAnimation } from './base';
+import { TimeOfDay } from '../types';
+
+interface RainDrop {
+  x: number;
+  y: number;
+  speed: number;
+  windOffset: number;
+  width: number;
+  length: number;
+  alpha: number;
+  phase: number;
+}
 
 /**
  * Rainy weather animation
  */
 export class RainyAnimation extends BaseAnimation {
-  constructor(ctx) {
-    super(ctx);
-    this.rainDrops = [];
-    this.lastTime = 0;
-  }
+  private rainDrops: RainDrop[] = [];
+  private lastTime: number = 0;
 
   /**
    * Draw rainy weather
-   * @param {{type: string, progress: number}} timeOfDay - Time of day info
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
-   * @param {boolean} heavy - Heavy rain flag
+   * @param time - Animation time (unused, for interface compatibility)
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param timeOfDay - Time of day info
+   * @param heavy - Heavy rain flag
    */
-  draw(timeOfDay, width, height, heavy = false) {
-    const time = Date.now() * 0.001;
-    this.drawClouds(time, width, height, heavy ? 1.0 : 0.8);
+  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, heavy: boolean = false): void {
+    const currentTime = Date.now() * 0.001;
+    this.drawClouds(currentTime, width, height, heavy ? 1.0 : 0.8);
     this.drawRain(width, height, heavy);
   }
 
   /**
    * Draw rain drops
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
-   * @param {boolean} heavy - Heavy rain flag
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param heavy - Heavy rain flag
    */
-  drawRain(width, height, heavy) {
+  private drawRain(width: number, height: number, heavy: boolean): void {
     const dropCount = heavy ? 130 : 90;
 
     // Initialize rain drops
@@ -54,7 +64,7 @@ export class RainyAnimation extends BaseAnimation {
     const deltaTime = this.lastTime > 0 ? Math.min(currentTime - this.lastTime, 0.1) : 1 / 60;
     this.lastTime = currentTime;
 
-    const time = currentTime;
+    const currentAnimTime = currentTime;
 
     for (let i = 0; i < this.rainDrops.length; i++) {
       const drop = this.rainDrops[i];
@@ -69,7 +79,7 @@ export class RainyAnimation extends BaseAnimation {
       }
 
       // Wind effect
-      const wind = drop.windOffset * (1 + Math.sin(time * 0.5 + drop.phase) * 0.2);
+      const wind = drop.windOffset * (1 + Math.sin(currentAnimTime * 0.5 + drop.phase) * 0.2);
       const dropX = drop.x + wind;
 
       // Wrap around horizontally
@@ -85,19 +95,22 @@ export class RainyAnimation extends BaseAnimation {
 
   /**
    * Draw a single rain drop
-   * @param {number} dropX - Drop X position
-   * @param {number} dropY - Drop Y position
-   * @param {Object} drop - Drop parameters
+   * @param dropX - Drop X position
+   * @param dropY - Drop Y position
+   * @param drop - Drop parameters
    */
-  drawRainDrop(dropX, dropY, drop) {
+  private drawRainDrop(dropX: number, dropY: number, drop: RainDrop): void {
     this.ctx.save();
     this.ctx.globalAlpha = drop.alpha;
 
     const topY = dropY - drop.length * 0.5;
     const bottomY = dropY + drop.length * 0.5;
 
-    this.ctx.fillStyle = `rgba(220, 240, 255, ${drop.alpha})`;
-    this.ctx.strokeStyle = `rgba(240, 250, 255, ${drop.alpha * 0.5})`;
+    const fillAlpha = drop.alpha;
+    const strokeAlpha = drop.alpha * 0.5;
+
+    this.ctx.fillStyle = 'rgba(220, 240, 255, ' + fillAlpha + ')';
+    this.ctx.strokeStyle = 'rgba(240, 250, 255, ' + strokeAlpha + ')';
     this.ctx.lineWidth = 0.4;
 
     this.ctx.beginPath();

@@ -2,18 +2,16 @@
  * Base class for weather animations
  */
 export class BaseAnimation {
-  constructor(ctx) {
+  protected ctx: CanvasRenderingContext2D;
+
+  constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
   }
 
   /**
    * Draw a single cloud
-   * @param {number} x - X position
-   * @param {number} y - Y position
-   * @param {number} size - Cloud size
-   * @param {number} opacity - Cloud opacity
    */
-  drawCloud(x, y, size, opacity) {
+  drawCloud(x: number, y: number, size: number, opacity: number): void {
     const savedShadowBlur = this.ctx.shadowBlur;
     const savedShadowColor = this.ctx.shadowColor;
     const savedGlobalAlpha = this.ctx.globalAlpha;
@@ -52,12 +50,8 @@ export class BaseAnimation {
 
   /**
    * Draw multiple clouds
-   * @param {number} time - Animation time
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
-   * @param {number} density - Cloud density (0-1)
    */
-  drawClouds(time, width, height, density = 0.5) {
+  drawClouds(time: number, width: number, height: number, density: number = 0.5): void {
     const cloudCount = Math.max(2, Math.floor(width / 150 * density));
 
     for (let i = 0; i < cloudCount; i++) {

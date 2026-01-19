@@ -1,32 +1,41 @@
-import { BaseAnimation } from './base.js';
+import { BaseAnimation } from './base';
+import { TimeOfDay } from '../types';
+
+interface HailStone {
+  startX: number;
+  startY: number;
+  speed: number;
+  windOffset: number;
+  size: number;
+  alpha: number;
+  phase: number;
+}
 
 /**
  * Hail weather animation
  */
 export class HailAnimation extends BaseAnimation {
-  constructor(ctx) {
-    super(ctx);
-    this.hailStones = [];
-  }
+  private hailStones: HailStone[] = [];
 
   /**
    * Draw hail weather
-   * @param {{type: string, progress: number}} timeOfDay - Time of day info
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
+   * @param time - Animation time (unused, for interface compatibility)
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param timeOfDay - Time of day info
    */
-  draw(timeOfDay, width, height) {
-    const time = Date.now() * 0.001;
-    this.drawClouds(time, width, height, 1.0);
+  draw(time: number, width: number, height: number, _timeOfDay: TimeOfDay): void {
+    const currentTime = Date.now() * 0.001;
+    this.drawClouds(currentTime, width, height, 1.0);
     this.drawHailStones(width, height);
   }
 
   /**
    * Draw hail stones
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
+   * @param width - Canvas width
+   * @param height - Canvas height
    */
-  drawHailStones(width, height) {
+  private drawHailStones(width: number, height: number): void {
     const stoneCount = 60;
 
     // Initialize hail stones
@@ -78,11 +87,11 @@ export class HailAnimation extends BaseAnimation {
 
   /**
    * Draw a single hail stone
-   * @param {number} hailX - Stone X position
-   * @param {number} hailY - Stone Y position
-   * @param {Object} hail - Stone parameters
+   * @param hailX - Stone X position
+   * @param hailY - Stone Y position
+   * @param hail - Stone parameters
    */
-  drawHailStone(hailX, hailY, hail) {
+  private drawHailStone(hailX: number, hailY: number, hail: HailStone): void {
     this.ctx.save();
     this.ctx.globalAlpha = hail.alpha;
 

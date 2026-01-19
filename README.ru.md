@@ -93,8 +93,8 @@ show_wind_gust: true
 show_forecast: true
 show_sunrise_sunset: true
 show_clock: true  # Показывать текущее время в правом нижнем углу
-sunrise_entity: sensor.yandex_pogoda_next_sunrise  # Опционально
-sunset_entity: sensor.yandex_pogoda_next_sunset    # Опционально
+sunrise_entity: sensor.sun_next_setting  # Опционально
+sunset_entity: sensor.sun_next_setting    # Опционально
 ```
 
 ### Пример с фиксированным языком

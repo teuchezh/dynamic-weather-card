@@ -23,7 +23,7 @@ jobs:
       - name: Get version from package.json
         id: package-version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          VERSION=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' package.json | head -1 | cut -d'"' -f4)
           echo "version=v$VERSION" >> $GITHUB_OUTPUT
           echo "Found version: v$VERSION"
 

@@ -1,44 +1,48 @@
-import { BaseAnimation } from './base.js';
-import { RainyAnimation } from './rainy.js';
+import { BaseAnimation } from './base';
+import { RainyAnimation } from './rainy';
+import { TimeOfDay } from '../types';
 
 /**
  * Thunderstorm weather animation
  */
 export class ThunderstormAnimation extends BaseAnimation {
-  constructor(ctx) {
+  private rainyAnimation: RainyAnimation;
+
+  constructor(ctx: CanvasRenderingContext2D) {
     super(ctx);
     this.rainyAnimation = new RainyAnimation(ctx);
   }
 
   /**
    * Draw thunderstorm weather
-   * @param {{type: string, progress: number}} timeOfDay - Time of day info
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
-   * @param {boolean} withRain - Include rain flag
+   * @param time - Animation time (unused, for interface compatibility)
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param timeOfDay - Time of day info
+   * @param withRain - Include rain flag
    */
-  draw(timeOfDay, width, height, withRain = true) {
-    const time = Date.now() * 0.001;
+  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, withRain: boolean = true): void {
+    const currentTime = Date.now() * 0.001;
 
     // Dark clouds
-    this.drawClouds(time, width, height, 1.0);
+    this.drawClouds(currentTime, width, height, 1.0);
 
     // Rain if specified
     if (withRain) {
-      this.rainyAnimation.draw(timeOfDay, width, height, false);
+      this.rainyAnimation.draw(time, width, height, timeOfDay, false);
     }
 
     // Lightning flash effect
-    this.drawLightning(width, height, time);
+    this.drawLightning(width, height, currentTime);
   }
 
   /**
    * Draw lightning flash effect
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
-   * @param {number} time - Animation time
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param time - Animation time
    */
-  drawLightning(width, height, time) {
+  private drawLightning(width: number, height: number, time: number): void {
     // Create unpredictable flash pattern
     const flashPattern = Math.sin(time * 2.5) * Math.sin(time * 5.3) * Math.sin(time * 7.1);
     const flashIntensity = Math.max(0, flashPattern);

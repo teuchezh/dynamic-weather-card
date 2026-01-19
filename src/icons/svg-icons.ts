@@ -1,9 +1,9 @@
-import { svg } from 'lit';
+import { svg, SVGTemplateResult } from 'lit';
 
 // SVG icon templates from Basmilius Weather Icons
 // License: MIT - https://github.com/basmilius/weather-icons
 
-export const SVG_ICONS = {
+export const SVG_ICONS: Record<string, SVGTemplateResult> = {
   wind: svg`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="20" height="20">
       <path fill="none" stroke="currentColor" stroke-dasharray="35 22" stroke-linecap="round" stroke-miterlimit="10" stroke-width="3" d="M43.64 20a5 5 0 113.61 8.46h-35.5">
@@ -36,18 +36,18 @@ export const SVG_ICONS = {
       <circle cx="32" cy="46" r="5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
       <path fill="none" stroke="currentColor" stroke-dasharray="2 3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M46 46a14 14 0 01-28 0"/>
     </svg>
-  `,
-
-  // Wind direction arrow (simple custom SVG)
-  windDirection: (bearing) => svg`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="transform: rotate(${bearing}deg); transform-origin: center;">
-      <path fill="currentColor" d="M12 2L4 20L12 17L20 20L12 2Z"/>
-    </svg>
   `
 };
 
+// Wind direction arrow (simple custom SVG)
+export const windDirection = (bearing: number): SVGTemplateResult => svg`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="transform: rotate(${bearing}deg); transform-origin: center;">
+    <path fill="currentColor" d="M12 2L4 20L12 17L20 20L12 2Z"/>
+  </svg>
+`;
+
 // Weather condition icons for forecast
-export const WEATHER_CONDITION_ICONS = {
+export const WEATHER_CONDITION_ICONS: Record<string, SVGTemplateResult> = {
   'sunny': svg`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
       <g>
@@ -389,8 +389,8 @@ export const WEATHER_CONDITION_ICONS = {
 };
 
 // Helper function to get icon
-export function getSVGIcon(name, ...args) {
-  const icon = SVG_ICONS[name];
+export function getSVGIcon(name: string, ...args: unknown[]): SVGTemplateResult | string {
+  const icon = SVG_ICONS[name] as SVGTemplateResult | ((..._args: unknown[]) => SVGTemplateResult) | undefined;
   if (typeof icon === 'function') {
     return icon(...args);
   }
@@ -398,7 +398,7 @@ export function getSVGIcon(name, ...args) {
 }
 
 // Helper function to get weather condition icon
-export function getWeatherConditionIcon(condition) {
+export function getWeatherConditionIcon(condition: string): SVGTemplateResult | string {
   if (!condition) return '';
 
   const icon = WEATHER_CONDITION_ICONS[condition.toLowerCase()];

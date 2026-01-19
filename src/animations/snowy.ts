@@ -1,33 +1,45 @@
-import { BaseAnimation } from './base.js';
+import { BaseAnimation } from './base';
+import { TimeOfDay } from '../types';
+
+interface Snowflake {
+  x: number;
+  y: number;
+  speedY: number;
+  speedX: number;
+  size: number;
+  alpha: number;
+  rotation: number;
+  rotationSpeed: number;
+  swayPhase: number;
+  swaySpeed: number;
+}
 
 /**
  * Snowy weather animation
  */
 export class SnowyAnimation extends BaseAnimation {
-  constructor(ctx) {
-    super(ctx);
-    this.snowflakes = [];
-    this.lastTime = 0;
-  }
+  private snowflakes: Snowflake[] = [];
+  private lastTime: number = 0;
 
   /**
    * Draw snowy weather
-   * @param {{type: string, progress: number}} timeOfDay - Time of day info
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
+   * @param time - Animation time (unused, for interface compatibility)
+   * @param width - Canvas width
+   * @param height - Canvas height
+   * @param timeOfDay - Time of day info
    */
-  draw(timeOfDay, width, height) {
-    const time = Date.now() * 0.001;
-    this.drawClouds(time, width, height, 0.7);
+  draw(time: number, width: number, height: number, _timeOfDay: TimeOfDay): void {
+    const currentTime = Date.now() * 0.001;
+    this.drawClouds(currentTime, width, height, 0.7);
     this.drawSnowflakes(width, height);
   }
 
   /**
    * Draw snowflakes
-   * @param {number} width - Canvas width
-   * @param {number} height - Canvas height
+   * @param width - Canvas width
+   * @param height - Canvas height
    */
-  drawSnowflakes(width, height) {
+  private drawSnowflakes(width: number, height: number): void {
     // Calculate snowflake count based on area
     const snowflakeCount = Math.floor((width * height) / 5000);
     const targetCount = Math.max(30, Math.min(snowflakeCount, 80));
@@ -56,7 +68,7 @@ export class SnowyAnimation extends BaseAnimation {
     const deltaTime = this.lastTime > 0 ? Math.min(currentTime - this.lastTime, 0.1) : 1 / 60;
     this.lastTime = currentTime;
 
-    const time = currentTime;
+    const currentAnimTime = currentTime;
 
     this.ctx.lineCap = 'round';
 
@@ -64,7 +76,7 @@ export class SnowyAnimation extends BaseAnimation {
       const flake = this.snowflakes[i];
 
       // Update position with gentle swaying
-      const sway = Math.sin(time * flake.swaySpeed + flake.swayPhase) * 2;
+      const sway = Math.sin(currentAnimTime * flake.swaySpeed + flake.swayPhase) * 2;
       flake.y += flake.speedY * deltaTime;
       flake.x += (flake.speedX + sway) * deltaTime;
       flake.rotation += flake.rotationSpeed * deltaTime;
@@ -88,13 +100,13 @@ export class SnowyAnimation extends BaseAnimation {
 
   /**
    * Draw a single snowflake
-   * @param {number} x - X position
-   * @param {number} y - Y position
-   * @param {number} size - Snowflake size
-   * @param {number} alpha - Opacity
-   * @param {number} rotation - Rotation angle
+   * @param x - X position
+   * @param y - Y position
+   * @param size - Snowflake size
+   * @param alpha - Opacity
+   * @param rotation - Rotation angle
    */
-  drawSnowflake(x, y, size, alpha, rotation) {
+  private drawSnowflake(x: number, y: number, size: number, alpha: number, rotation: number): void {
     this.ctx.save();
     this.ctx.translate(x, y);
     this.ctx.rotate(rotation);

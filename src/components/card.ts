@@ -1,5 +1,8 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, TemplateResult } from 'lit';
+import { property, state } from 'lit/decorators.js';
 import { DEFAULT_CONFIG, TEMPLOW_ATTRIBUTES } from '../constants.js';
+import { i18n } from '../internalization/index';
+import { resolveLanguage } from '../internalization/resolveLanguage';
 import {
   getBackgroundGradient,
   formatForecastTime,
@@ -15,18 +18,117 @@ import { FoggyAnimation } from '../animations/foggy.js';
 import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { cardStyles } from './styles.js';
-import { getSVGIcon, getWeatherConditionIcon } from '../icons/svg-icons.js';
-import { i18n } from '../internalization';
-import { resolveLanguage } from '../internalization/resolveLanguage.js';
+import { getSVGIcon, getWeatherConditionIcon, windDirection } from '../icons/svg-icons.js';
+import type {
+  HomeAssistant,
+  HassEntity,
+  WeatherCardConfig,
+  TimeOfDay,
+  WeatherForecast,
+  BackgroundGradient,
+  WeatherEntityAttributes
+} from '../types';
+
+interface ForecastItemExtended extends WeatherForecast {
+  temp?: number;
+  native_temperature?: number;
+}
+
+interface WeatherCardConfigInternal extends WeatherCardConfig {
+  name?: string;
+  icons_path?: string;
+  sunriseEntity?: string | null;
+  sunsetEntity?: string | null;
+  templowAttribute?: string | null;
+  tapAction?: ActionConfig;
+  holdAction?: ActionConfig;
+  doubleTapAction?: ActionConfig;
+}
+
+interface ActionConfig {
+  action: 'more-info' | 'toggle' | 'call-service' | 'navigate' | 'url' | 'none';
+  entity?: string;
+  service?: string;
+  service_data?: Record<string, unknown>;
+  navigation_path?: string;
+  url_path?: string;
+}
+
+interface ConfigInput {
+  entity: string;
+  icons_path?: string;
+  name?: string;
+  height?: number;
+  show_feels_like?: boolean;
+  show_wind?: boolean;
+  show_wind_gust?: boolean;
+  show_wind_direction?: boolean;
+  show_humidity?: boolean;
+  show_min_temp?: boolean;
+  show_forecast?: boolean;
+  show_sunrise_sunset?: boolean;
+  show_clock?: boolean;
+  overlay_opacity?: number;
+  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr';
+  wind_speed_unit?: 'ms' | 'kmh';
+  sunrise_entity?: string;
+  sunset_entity?: string;
+  templow_attribute?: string;
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
+}
+
+interface WeatherData {
+  condition: string;
+  temperature: number | null;
+  apparentTemperature: number | null;
+  humidity: number | null;
+  windSpeed: number | null;
+  windGust: number | null;
+  windBearing: number | null;
+  windDirection: string | null;
+  pressure: number | null;
+  forecast: WeatherForecast[];
+  friendlyName: string;
+  templow: number | null;
+}
+
+interface Animations {
+  sunny: SunnyAnimation;
+  rainy: RainyAnimation;
+  snowy: SnowyAnimation;
+  cloudy: CloudyAnimation;
+  foggy: FoggyAnimation;
+  hail: HailAnimation;
+  thunderstorm: ThunderstormAnimation;
+}
+
+interface SunData {
+  sunrise: Date | null;
+  sunset: Date | null;
+  hasSunData: boolean;
+}
 
 export class AnimatedWeatherCard extends LitElement {
-  static get properties() {
-    return {
-      hass: { type: Object },
-      config: { type: Object },
-      currentTime: { type: String }
-    };
-  }
+  @property({ type: Object }) hass?: HomeAssistant;
+  @property({ type: Object }) config!: WeatherCardConfigInternal;
+  @state() private currentTime: string = '';
+
+  private animationFrame: number | null = null;
+  private canvas: HTMLCanvasElement | null = null;
+  private ctx: CanvasRenderingContext2D | null = null;
+  private canvasWidth: number = 0;
+  private canvasHeight: number = 0;
+  private animations: Partial<Animations> = {};
+  private holdTimer: number | null = null;
+  private readonly holdDelay: number = 500;
+  private clockInterval: number | null = null;
+  private resizeObserver: ResizeObserver | null = null;
+  private _wheelHandler: EventListener | null = null;
+  private lastTap: number | null = null;
+  private holdFired: boolean = false;
+  _testTimeOfDay?: TimeOfDay;
 
   static get styles() {
     return cardStyles;
@@ -34,20 +136,10 @@ export class AnimatedWeatherCard extends LitElement {
 
   constructor() {
     super();
-    this.config = {};
-    this.animationFrame = null;
-    this.canvas = null;
-    this.ctx = null;
-    this.canvasWidth = 0;
-    this.canvasHeight = 0;
-    this.animations = {};
-    this.holdTimer = null;
-    this.holdDelay = 500; // milliseconds
-    this.currentTime = '';
-    this.clockInterval = null;
+    this.config = {} as WeatherCardConfigInternal;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.updateComplete.then(() => {
       setTimeout(() => {
@@ -63,7 +155,7 @@ export class AnimatedWeatherCard extends LitElement {
     });
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
@@ -73,7 +165,6 @@ export class AnimatedWeatherCard extends LitElement {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
     }
-    // Clean up wheel event listener
     if (this._wheelHandler && this.shadowRoot) {
       const forecastScroll = this.shadowRoot.querySelector('.forecast-scroll');
       if (forecastScroll) {
@@ -81,14 +172,13 @@ export class AnimatedWeatherCard extends LitElement {
       }
       this._wheelHandler = null;
     }
-    // Clean up clock interval
     if (this.clockInterval) {
       clearInterval(this.clockInterval);
       this.clockInterval = null;
     }
   }
 
-  updated(changedProperties) {
+  updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
     if (changedProperties.has('hass') || changedProperties.has('config')) {
       if (this.canvas && this.ctx) {
@@ -107,7 +197,9 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  initializeAnimations() {
+  private initializeAnimations(): void {
+    if (!this.ctx) return;
+
     this.animations = {
       sunny: new SunnyAnimation(this.ctx),
       rainy: new RainyAnimation(this.ctx),
@@ -119,7 +211,7 @@ export class AnimatedWeatherCard extends LitElement {
     };
   }
 
-  setupResizeObserver() {
+  private setupResizeObserver(): void {
     if (!this.shadowRoot) return;
     const container = this.shadowRoot.querySelector('.canvas-container');
     if (!container) return;
@@ -130,29 +222,27 @@ export class AnimatedWeatherCard extends LitElement {
     this.resizeObserver.observe(container);
   }
 
-  setupForecastScroll() {
+  private setupForecastScroll(): void {
     if (!this.shadowRoot) return;
     const forecastScroll = this.shadowRoot.querySelector('.forecast-scroll');
     if (!forecastScroll) return;
 
-    // Remove existing listener if any
     if (this._wheelHandler) {
-      forecastScroll.removeEventListener('wheel', this._wheelHandler);
+      forecastScroll.removeEventListener('wheel', this._wheelHandler as EventListener);
     }
 
-    // Add horizontal scroll on mouse wheel
-    this._wheelHandler = (e) => {
-      if (e.deltaY !== 0) {
+    this._wheelHandler = ((e: Event) => {
+      const wheelEvent = e as WheelEvent;
+      if (wheelEvent.deltaY !== 0) {
         e.preventDefault();
-        forecastScroll.scrollLeft += e.deltaY;
+        (forecastScroll as HTMLElement).scrollLeft += wheelEvent.deltaY;
       }
-    };
-
+    }) as EventListener;
     forecastScroll.addEventListener('wheel', this._wheelHandler, { passive: false });
   }
 
-  resizeCanvas() {
-    if (!this.canvas) return;
+  private resizeCanvas(): void {
+    if (!this.canvas || !this.shadowRoot) return;
     const container = this.shadowRoot.querySelector('.canvas-container');
     if (!container) return;
 
@@ -166,16 +256,18 @@ export class AnimatedWeatherCard extends LitElement {
     this.canvas.style.height = '100%';
 
     this.ctx = this.canvas.getContext('2d');
-    this.ctx.scale(dpr, dpr);
+    if (this.ctx) {
+      this.ctx.scale(dpr, dpr);
+    }
 
     this.canvasWidth = rect.width;
     this.canvasHeight = rect.height;
 
-    // Reinitialize animations with new context
     this.initializeAnimations();
   }
 
-  setupCanvas() {
+  private setupCanvas(): void {
+    if (!this.shadowRoot) return;
     const container = this.shadowRoot.querySelector('.canvas-container');
     if (!container) return;
 
@@ -189,45 +281,40 @@ export class AnimatedWeatherCard extends LitElement {
     this.resizeCanvas();
   }
 
-  getState(entityId) {
+  private getState(entityId: string): string | null {
     if (!this.hass || !entityId) return null;
     const entity = this.hass.states[entityId];
     return entity ? entity.state : null;
   }
 
-  getAttributes(entityId) {
-    if (!this.hass || !entityId) return {};
+  private getAttributes(entityId: string): WeatherEntityAttributes {
+    if (!this.hass || !entityId) return {} as WeatherEntityAttributes;
     const entity = this.hass.states[entityId];
-    return entity ? entity.attributes : {};
+    return entity ? entity.attributes : {} as WeatherEntityAttributes;
   }
 
-  getWeatherData() {
+  private getWeatherData(): WeatherData {
     const entityId = this.config.entity || 'weather.home';
     const state = this.getState(entityId);
     const attrs = this.getAttributes(entityId);
 
-    // Get condition from attributes or entity state
     const condition = attrs.condition || state || 'sunny';
 
-    // Get minimum temperature from various sources
-    let templow = null;
+    let templow: number | null = null;
 
-    // If user specified custom attribute, use it
     if (this.config.templowAttribute && attrs[this.config.templowAttribute] != null) {
-      templow = attrs[this.config.templowAttribute];
+      templow = attrs[this.config.templowAttribute] as number;
     } else {
-      // Try known attribute names
       for (const attrName of TEMPLOW_ATTRIBUTES) {
         if (attrs[attrName] != null) {
-          templow = attrs[attrName];
+          templow = attrs[attrName] as number;
           break;
         }
       }
 
-      // Fallback to forecast data if no direct attribute found
       if (templow == null) {
-        templow = (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow : null)
-          || (attrs.forecast_hourly && attrs.forecast_hourly[0] ? attrs.forecast_hourly[0].native_templow : null);
+        templow = (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow ?? null : null)
+          || (attrs.forecast_hourly && attrs.forecast_hourly[0] ? attrs.forecast_hourly[0].native_templow ?? null : null);
       }
     }
 
@@ -247,7 +334,7 @@ export class AnimatedWeatherCard extends LitElement {
     };
   }
 
-  getTodayForecast() {
+  private getTodayForecast(): WeatherForecast[] {
     if (!this.hass || !this.config) return [];
     const weather = this.getWeatherData();
     if (!weather.forecast || weather.forecast.length === 0) return [];
@@ -261,17 +348,16 @@ export class AnimatedWeatherCard extends LitElement {
       if (!item.datetime) return false;
       const itemDate = new Date(item.datetime);
       const itemDay = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
-      // Show all forecasts for today (including past hours) and tomorrow until current hour
       return itemDay.getTime() === today.getTime() ||
-             (itemDay.getTime() === tomorrow.getTime() && itemDate.getHours() <= now.getHours());
+        (itemDay.getTime() === tomorrow.getTime() && itemDate.getHours() <= now.getHours());
     });
 
     return todayForecast
-      .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
+      .sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime())
       .slice(0, 8);
   }
 
-  startAnimation() {
+  private startAnimation(): void {
     const animate = () => {
       this.draw();
       this.animationFrame = requestAnimationFrame(animate);
@@ -279,7 +365,7 @@ export class AnimatedWeatherCard extends LitElement {
     animate();
   }
 
-  draw() {
+  private draw(): void {
     if (!this.ctx || !this.canvas) return;
     if (!this.canvasWidth || !this.canvasHeight) {
       this.resizeCanvas();
@@ -293,57 +379,56 @@ export class AnimatedWeatherCard extends LitElement {
 
     const weather = this.getWeatherData();
     const weatherState = this.hass?.states[this.config.entity];
-    const sunData = getSunriseSunsetData(weatherState);
+    const sunData = getSunriseSunsetData(weatherState || {} as HassEntity, this.config.sunriseEntity, this.config.sunsetEntity, this.hass);
 
-    // Allow test override of time of day
     const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
     const condition = weather.condition.toLowerCase();
 
     switch (condition) {
       case 'sunny':
       case 'clear':
-        this.animations.sunny.draw(timeOfDay, width, height);
+        this.animations.sunny?.draw(Date.now(), width, height, timeOfDay);
         break;
       case 'clear-night':
-        this.animations.sunny.draw({ type: 'night', progress: 0 }, width, height);
+        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 });
         break;
       case 'rainy':
       case 'rain':
-        this.animations.rainy.draw(timeOfDay, width, height, false);
+        this.animations.rainy?.draw(Date.now(), width, height, timeOfDay, false);
         break;
       case 'pouring':
-        this.animations.rainy.draw(timeOfDay, width, height, true);
+        this.animations.rainy?.draw(Date.now(), width, height, timeOfDay, true);
         break;
       case 'snowy':
       case 'snow':
-        this.animations.snowy.draw(timeOfDay, width, height);
+        this.animations.snowy?.draw(Date.now(), width, height, timeOfDay);
         break;
       case 'snowy-rainy':
-        this.animations.rainy.draw(timeOfDay, width, height, false);
-        this.animations.snowy.draw(timeOfDay, width, height);
+        this.animations.rainy?.draw(Date.now(), width, height, timeOfDay, false);
+        this.animations.snowy?.draw(Date.now(), width, height, timeOfDay);
         break;
       case 'hail':
-        this.animations.hail.draw(timeOfDay, width, height);
+        this.animations.hail?.draw(Date.now(), width, height, timeOfDay);
         break;
       case 'foggy':
       case 'fog':
-        this.animations.foggy.draw(timeOfDay, width, height);
+        this.animations.foggy?.draw(Date.now(), width, height, timeOfDay);
         break;
       case 'lightning':
-        this.animations.thunderstorm.draw(timeOfDay, width, height, false);
+        this.animations.thunderstorm?.draw(Date.now(), width, height, timeOfDay, false);
         break;
       case 'lightning-rainy':
-        this.animations.thunderstorm.draw(timeOfDay, width, height, true);
+        this.animations.thunderstorm?.draw(Date.now(), width, height, timeOfDay, true);
         break;
       case 'cloudy':
       case 'partlycloudy':
       default:
-        this.animations.cloudy.draw(timeOfDay, width, height);
+        this.animations.cloudy?.draw(Date.now(), width, height, timeOfDay);
         break;
     }
   }
 
-  renderTodayForecast() {
+  private renderTodayForecast(): TemplateResult {
     const forecast = this.getTodayForecast();
     if (forecast.length === 0) {
       return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unavailable')}</div>`;
@@ -354,66 +439,62 @@ export class AnimatedWeatherCard extends LitElement {
         ${forecast.map(item => html`
           <div class="forecast-item">
             <div class="forecast-time">${formatForecastTime(item.datetime)}</div>
-            <div class="forecast-icon">${getWeatherConditionIcon(item.condition)}</div>
-            <div class="forecast-temp">${Math.round(item.temperature || item.temp || item.native_temperature || 0)}°</div>
+            <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
+            <div class="forecast-temp">${Math.round(item.temperature || (item as ForecastItemExtended).temp || (item as ForecastItemExtended).native_temperature || 0)}°</div>
           </div>
         `)}
       </div>
     `;
   }
 
-  convertWindSpeed(speed) {
+  private convertWindSpeed(speed: number | null): number | null {
     if (speed == null) return null;
     if (this.config.windSpeedUnit === 'kmh') {
-      return Math.round(speed * 3.6 * 10) / 10; // Convert m/s to km/h and round to 1 decimal
+      return Math.round(speed * 3.6 * 10) / 10;
     }
     return speed;
   }
 
-  getWindSpeedUnit() {
+  private getWindSpeedUnit(): string {
     return this.config.windSpeedUnit === 'kmh' ? i18n.t('wind_unit_kmh') : i18n.t('wind_unit_ms');
   }
 
-  formatCurrentTime() {
+  private formatCurrentTime(): string {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
   }
 
-  startClock() {
+  private startClock(): void {
     if (!this.config.showClock) return;
 
-    // Update immediately
     this.currentTime = this.formatCurrentTime();
 
-    // Update every second
-    this.clockInterval = setInterval(() => {
+    this.clockInterval = window.setInterval(() => {
       this.currentTime = this.formatCurrentTime();
     }, 1000);
   }
 
-  render() {
+  render(): TemplateResult {
     if (!this.hass) {
       return html`<div>No Home Assistant connection</div>`;
     }
 
     const weather = this.getWeatherData();
     const weatherState = this.hass.states[this.config.entity];
-    const sunData = getSunriseSunsetData(weatherState, this.config.sunriseEntity, this.config.sunsetEntity, this.hass);
+    const sunData = getSunriseSunsetData(weatherState, this.config.sunriseEntity, this.config.sunsetEntity, this.hass) as SunData;
 
-    // Allow test override of time of day
     const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
     const cardClasses = `weather-card ${timeOfDay.type}`;
 
     const minHeight = this.config.height ? `${this.config.height}px` : '200px';
 
-    const bgGradient = getBackgroundGradient(timeOfDay);
+    const bgGradient: BackgroundGradient | null = getBackgroundGradient(timeOfDay);
     const bgStyle = bgGradient
       ? `background: linear-gradient(135deg, rgb(${bgGradient.start.r}, ${bgGradient.start.g}, ${bgGradient.start.b}), rgb(${bgGradient.end.r}, ${bgGradient.end.g}, ${bgGradient.end.b}));`
       : '';
 
-    // Apply overlay opacity via CSS variable
     const overlayOpacity = this.config.overlayOpacity !== undefined
       ? this.config.overlayOpacity
       : DEFAULT_CONFIG.overlayOpacity;
@@ -435,7 +516,7 @@ export class AnimatedWeatherCard extends LitElement {
               </div>
             ` : ''}
             <div>
-              <div class="condition">${i18n.t(weather.condition)}</div>
+<div class="condition">${i18n.t(weather.condition)}</div>
               <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
               ${this.config.showMinTemp && weather.templow ? html`
                 <div class="temp-range">
@@ -443,7 +524,7 @@ export class AnimatedWeatherCard extends LitElement {
                 </div>
               ` : ''}
               ${this.config.showFeelsLike && weather.apparentTemperature ? html`
-                <div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
+<div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
               ` : ''}
             </div>
             <div class="details">
@@ -454,7 +535,7 @@ export class AnimatedWeatherCard extends LitElement {
                     <span>${weather.humidity} %</span>
                   </div>
                 ` : ''}
-                ${this.config.showSunriseSunset && sunData.hasSunData ? html`
+                ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunrise ? html`
                   <div class="info-item">
                     <span class="info-icon">${getSVGIcon('sunrise')}</span>
                     <span>${formatTime(sunData.sunrise)}</span>
@@ -463,7 +544,7 @@ export class AnimatedWeatherCard extends LitElement {
                 ${this.config.showWind && weather.windSpeed != null ? html`
                   ${this.config.showWindDirection && weather.windBearing != null ? html`
                     <div class="info-item">
-                      <span class="info-icon">${getSVGIcon('windDirection', weather.windBearing)}</span>
+                      <span class="info-icon">${windDirection(weather.windBearing)}</span>
                       <span>${this.convertWindSpeed(weather.windSpeed)} ${this.getWindSpeedUnit()}${this.config.showWindGust && weather.windGust ? ` / ${this.convertWindSpeed(weather.windGust)} ${this.getWindSpeedUnit()}` : ''}</span>
                     </div>
                   ` : html`
@@ -473,7 +554,7 @@ export class AnimatedWeatherCard extends LitElement {
                     </div>
                   `}
                 ` : ''}
-                ${this.config.showSunriseSunset && sunData.hasSunData ? html`
+                ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunset ? html`
                   <div class="info-item">
                     <span class="info-icon">${getSVGIcon('sunset')}</span>
                     <span>${formatTime(sunData.sunset)}</span>
@@ -483,7 +564,7 @@ export class AnimatedWeatherCard extends LitElement {
             </div>
             ${this.config.showForecast ? html`
               <div class="forecast-container">
-                <div class="forecast-title">${i18n.t('forecast_title')}</div>
+<div class="forecast-title">${i18n.t('forecast_title')}</div>
                 ${this.renderTodayForecast()}
               </div>
             ` : ''}
@@ -496,11 +577,12 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
-  setConfig(config) {
+  setConfig(config: ConfigInput): void {
     if (!config.entity) {
       throw new Error('Please define a weather entity');
     }
     this.config = {
+      type: 'custom:animated-weather-card',
       entity: config.entity,
       icons_path: config.icons_path,
       name: config.name,
@@ -530,7 +612,7 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  handleAction(actionConfig) {
+  private handleAction(actionConfig: ActionConfig | undefined): void {
     if (!actionConfig || !this.hass) return;
 
     const action = actionConfig.action || 'more-info';
@@ -567,7 +649,7 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  fireEvent(type, detail = {}) {
+  private fireEvent(type: string, detail: Record<string, unknown> = {}): void {
     const event = new CustomEvent(type, {
       detail,
       bubbles: true,
@@ -576,13 +658,11 @@ export class AnimatedWeatherCard extends LitElement {
     this.dispatchEvent(event);
   }
 
-  handleTap(e) {
-    // Prevent tap on forecast items or info items
-    if (e.target.closest('.forecast-item') || e.target.closest('.info-item')) {
+  private handleTap(e: MouseEvent): void {
+    if ((e.target as HTMLElement).closest('.forecast-item') || (e.target as HTMLElement).closest('.info-item')) {
       return;
     }
 
-    // Handle double tap
     if (this.lastTap && (Date.now() - this.lastTap) < 300) {
       this.handleDoubleTap(e);
       this.lastTap = null;
@@ -591,7 +671,6 @@ export class AnimatedWeatherCard extends LitElement {
 
     this.lastTap = Date.now();
 
-    // Delay single tap to allow for double tap
     setTimeout(() => {
       if (this.lastTap) {
         this.handleAction(this.config.tapAction);
@@ -600,15 +679,17 @@ export class AnimatedWeatherCard extends LitElement {
     }, 300);
   }
 
-  handlePointerDown(e) {
-    this.holdTimer = setTimeout(() => {
+  private handlePointerDown(e: PointerEvent): void {
+    this.holdTimer = window.setTimeout(() => {
       this.handleHold(e);
       this.holdFired = true;
     }, this.holdDelay);
   }
 
-  handlePointerUp(e) {
-    clearTimeout(this.holdTimer);
+  private handlePointerUp(e: PointerEvent): void {
+    if (this.holdTimer) {
+      clearTimeout(this.holdTimer);
+    }
     if (this.holdFired) {
       e.preventDefault();
       e.stopPropagation();
@@ -616,15 +697,15 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  handleHold() {
+  private handleHold(_e: PointerEvent): void {
     this.handleAction(this.config.holdAction);
   }
 
-  handleDoubleTap() {
+  private handleDoubleTap(_e: MouseEvent): void {
     this.handleAction(this.config.doubleTapAction);
   }
 
-  getCardSize() {
+  getCardSize(): number {
     return 1;
   }
 }

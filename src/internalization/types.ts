@@ -1,0 +1,97 @@
+export interface DemoTranslations {
+  pageTitle: string;
+  pageSubtitle: string;
+  livePreview: string;
+  configuration: string;
+  quickPresets: string;
+  sunnyDay: string;
+  rainy: string;
+  snowy: string;
+  clearNight: string;
+  weatherCondition: string;
+  condition: string;
+  temperature: string;
+  humidity: string;
+  windSpeed: string;
+  timeOfDay: string;
+  timeMode: string;
+  autoTime: string;
+  manualControl: string;
+  sunrise: string;
+  day: string;
+  sunset: string;
+  night: string;
+  currentTime: string;
+  displayOptions: string;
+  cardName: string;
+  height: string;
+  feelsLike: string;
+  minTemp: string;
+  windDirection: string;
+  windGust: string;
+  hourlyForecast: string;
+  sunriseSunset: string;
+  updateCard: string;
+  startDemo: string;
+  stopDemo: string;
+  madeWith: string;
+  loading: string;
+  errorTitle: string;
+  errorDetails: string;
+  errorServer: string;
+  placeholderEmpty: string;
+  weatherConditions: {
+    sunny: string;
+    clear: string;
+    clearNight: string;
+    partlyCloudy: string;
+    cloudy: string;
+    rainy: string;
+    pouring: string;
+    snowy: string;
+    sleet: string;
+    hail: string;
+    foggy: string;
+    lightning: string;
+    thunderstorm: string;
+  };
+  language: {
+    title: string;
+    english: string;
+    russian: string;
+    french: string;
+    german: string;
+    dutch: string;
+  };
+}
+
+export interface Translation {
+  sunny: string;
+  clear: string;
+  overcast: string;
+  cloudy: string;
+  partlycloudy: string;
+  rainy: string;
+  rain: string;
+  snowy: string;
+  snow: string;
+  foggy: string;
+  fog: string;
+  lightning: string;
+  'lightning-rainy': string;
+  pouring: string;
+  'snowy-rainy': string;
+  hail: string;
+  'clear-night': string;
+  feels_like: string;
+  forecast_title: string;
+  no_data: string;
+  forecast_unavailable: string;
+  weather: string;
+  language: string;
+  wind_unit_kmh: string;
+  wind_unit_ms: string;
+  demo: DemoTranslations;
+}
+
+export type SupportedLanguage = 'en' | 'ru' | 'de' | 'nl' | 'fr';
