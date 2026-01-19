@@ -169,6 +169,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 - Немецкий
 - Французский
 - Нидерландский
+- Испанский
 
 ## Разработка
 
