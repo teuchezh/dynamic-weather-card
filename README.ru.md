@@ -81,7 +81,7 @@ type: custom:dynamic-weather-card
 entity: weather.home
 name: Моя погода
 height: 250
-language: auto  # 'auto' (по умолчанию), 'ru' или 'en'
+language: auto  # 'auto' (по умолчанию), 'ru', 'es' или 'en'
 overlay_opacity: 0.2  # Прозрачность затемнения (0-1, по умолчанию: 0.1)
 wind_speed_unit: ms  # 'ms' (м/с, по умолчанию) или 'kmh' (км/ч)
 show_feels_like: true

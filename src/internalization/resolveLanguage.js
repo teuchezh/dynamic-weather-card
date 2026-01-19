@@ -9,6 +9,7 @@ export const resolveLanguage = ({ configLang, hassLang } = {}) => {
     if (lang.startsWith('de')) return 'de';
     if (lang.startsWith('nl')) return 'nl';
     if (lang.startsWith('fr')) return 'fr';
+    if (lang.startsWith('es')) return 'es';
   }
 
   return 'en';
