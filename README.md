@@ -20,7 +20,7 @@ Dynamic weather card for Home Assistant with realistic animations.
 - ☀️ Dynamic background based on time of day (sunrise, day, sunset, night)
 - 🌧️ Realistic animations: rain, snow, hail, fog, thunderstorm
 - 📊 Hourly forecast for today
-- 🌍 Automatic language detection from Home Assistant settings (Russian/English)
+- 🌍 Automatic language detection from Home Assistant settings
 - ⚙️ Full customization of displayed elements
 - 📱 Responsive design
 
@@ -81,7 +81,7 @@ type: custom:dynamic-weather-card
 entity: weather.home
 name: My Weather
 height: 250
-language: auto  # 'auto' (default), 'ru' or 'en'
+language: auto  # 'auto' (default), 'ru', 'en', 'de', 'fr', 'nl', 'es'
 overlay_opacity: 0.2  # Dark overlay opacity (0-1, default: 0.1)
 wind_speed_unit: ms  # 'ms' (m/s, default) or 'kmh' (km/h)
 show_feels_like: true
@@ -90,9 +90,13 @@ show_humidity: true
 show_wind: true
 show_wind_direction: true
 show_wind_gust: true
-show_forecast: true
+show_hourly_forecast: true
+hourly_forecast_hours: 5
+show_daily_forecast: false
+daily_forecast_days: 5
 show_sunrise_sunset: true
-show_clock: true  # Show current time in the bottom right corner
+show_clock: true  # Show current time
+clock_position: top  # 'top' or 'details'
 sunrise_entity: sensor.sun_next_rising  # Optional
 sunset_entity: sensor.sun_next_setting  # Optional
 ```
@@ -126,7 +130,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `entity` | string | **required** | Weather entity ID |
 | `name` | string | - | Name (optional) |
 | `height` | number | 200 | Card height in pixels |
-| `language` | string | `auto` | Interface language (`auto`, `ru` or `en`). `auto` detects language from Home Assistant settings |
+| `language` | string | `auto` | Interface language (`auto`, `ru`, `en`, `de`, `fr`, `nl`, `es`). `auto` detects language from Home Assistant settings |
 | `overlay_opacity` | number | 0.1 | Dark overlay opacity for better text readability (0-1). Higher values create darker overlay |
 | `wind_speed_unit` | string | `ms` | Wind speed unit (`ms` for m/s or `kmh` for km/h) |
 | `show_feels_like` | boolean | true | Show feels like temperature |
@@ -135,12 +139,18 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_wind` | boolean | false | Show wind speed |
 | `show_wind_direction` | boolean | false | Show wind direction |
 | `show_wind_gust` | boolean | false | Show wind gusts |
-| `show_forecast` | boolean | false | Show today's forecast |
+| `show_hourly_forecast` | boolean | false | Show today's forecast (hourly) |
+| `hourly_forecast_hours` | number | 5 | Number of hours to show in hourly forecast |
+| `show_daily_forecast` | boolean | false | Show daily forecast |
+| `daily_forecast_days` | number | 5 | Number of days to show in daily forecast |
 | `show_sunrise_sunset` | boolean | false | Show sunrise and sunset times |
-| `show_clock` | boolean | false | Show current time in the bottom right corner |
+| `show_clock` | boolean | false | Show current time |
+| `clock_position` | string | `top` | Clock position (`top` for top right, `details` for info row) |
 | `sunrise_entity` | string | - | Sunrise sensor entity ID (optional) |
 | `sunset_entity` | string | - | Sunset sensor entity ID (optional) |
 | `templow_attribute` | string | - | Custom attribute name for minimum temperature (optional). If not specified, the card will automatically search for known attributes: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |
+
+If both `show_hourly_forecast` and `show_daily_forecast` are enabled, both sections are shown.
 
 ## Supported Weather Conditions
 

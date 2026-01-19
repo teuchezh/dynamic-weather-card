@@ -30,6 +30,7 @@ export interface DemoTranslations {
   windDirection: string;
   windGust: string;
   hourlyForecast: string;
+  dailyForecast: string;
   sunriseSunset: string;
   updateCard: string;
   startDemo: string;
@@ -86,6 +87,7 @@ export interface Translation {
   'clear-night': string;
   feels_like: string;
   forecast_title: string;
+  daily_forecast_title: string;
   no_data: string;
   forecast_unavailable: string;
   weather: string;
