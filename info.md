@@ -1,6 +1,6 @@
 # 🌤️ Dynamic Weather Card
 
-Dynamic weather card for Home Assistant with realistic animations.
+Dynamic weather card for Home Assistant with realistic animations.  
 ![demo](/docs/demo.gif)
 
 **[Try Live Demo →](https://teuchezh.github.io/dynamic-weather-card/test.html)**
@@ -11,7 +11,7 @@ Dynamic weather card for Home Assistant with realistic animations.
 - ☀️ Dynamic background based on time of day (sunrise, day, sunset, night)
 - 🌧️ Realistic animations: rain, snow, hail, fog, thunderstorm
 - 📊 Hourly forecast for today
-- 🌍 Automatic language detection from Home Assistant settings (Russian/English)
+- 🌍 Automatic language detection from Home Assistant settings
 - ⚙️ Full customization of displayed elements
 - 📱 Responsive design
 
@@ -44,7 +44,7 @@ show_sunrise_sunset: true
 - Russian
 - German
 - French
-- Dutch
+- Spanish 
 
 ## Documentation
 

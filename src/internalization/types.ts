@@ -62,6 +62,7 @@ export interface DemoTranslations {
     french: string;
     german: string;
     dutch: string;
+    spanish: string;
   };
 }
 
@@ -94,4 +95,4 @@ export interface Translation {
   demo: DemoTranslations;
 }
 
-export type SupportedLanguage = 'en' | 'ru' | 'de' | 'nl' | 'fr';
+export type SupportedLanguage = 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
