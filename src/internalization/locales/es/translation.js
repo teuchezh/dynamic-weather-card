@@ -17,7 +17,7 @@ export default {
   'hail': 'Granizo',
   'clear-night': 'Noche Despejada',
   'feels_like': 'Sensación térmica',
-  'forecast_title': "Previsión para hoy",
+  'forecast_title': 'Previsión para hoy',
   'no_data': 'Sin datos',
   'forecast_unavailable': 'Forecast unavailable',
   'weather': 'Clima',
