@@ -163,6 +163,13 @@ The card automatically changes background and animations based on time of day:
 - **18:00 - 20:00** - Sunset 🌇
 - **20:00 - 6:00** - Night 🌙
 
+## Supported Languages
+- English
+- Russian
+- German
+- French
+- Dutch
+
 ## Development
 
 ### Install dependencies
