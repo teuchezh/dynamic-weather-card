@@ -123,6 +123,16 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 
 > **Note:** Yandex Weather does not provide sunrise/sunset data in the weather entity, so separate sensors must be specified.
 
+### Sunrise and Sunset Data
+
+The card automatically retrieves sunrise and sunset data in the following priority:
+
+1. **Custom sensors** (if specified): `sunrise_entity` and `sunset_entity` parameters
+2. **Weather entity attributes**: `forecast_sunrise`, `sunrise`, `forecast_sunset`, `sunset`
+3. **Default Home Assistant sun entity**: `sun.sun` with `next_rising` and `next_setting` attributes
+
+This means that in most cases, you don't need to configure sunrise/sunset sensors - the card will automatically use Home Assistant's built-in sun integration.
+
 ## Configuration Parameters
 
 | Parameter | Type | Default | Description |
@@ -146,8 +156,8 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_sunrise_sunset` | boolean | false | Show sunrise and sunset times |
 | `show_clock` | boolean | false | Show current time |
 | `clock_position` | string | `top` | Clock position (`top` for top right, `details` for info row) |
-| `sunrise_entity` | string | - | Sunrise sensor entity ID (optional) |
-| `sunset_entity` | string | - | Sunset sensor entity ID (optional) |
+| `sunrise_entity` | string | - | Sunrise sensor entity ID (optional). If not specified, the card will use the weather entity attributes or the default `sun.sun` entity |
+| `sunset_entity` | string | - | Sunset sensor entity ID (optional). If not specified, the card will use the weather entity attributes or the default `sun.sun` entity |
 | `templow_attribute` | string | - | Custom attribute name for minimum temperature (optional). If not specified, the card will automatically search for known attributes: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |
 
 If both `show_hourly_forecast` and `show_daily_forecast` are enabled, both sections are shown.
