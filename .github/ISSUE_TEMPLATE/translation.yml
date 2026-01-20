@@ -1,0 +1,101 @@
+name: 🌍 Translation Contribution
+description: Add or update a translation for a new language
+title: "[Translation]: "
+labels: ["translation", "documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping make Dynamic Weather Card available in more languages!
+
+  - type: dropdown
+    id: translation-type
+    attributes:
+      label: Translation Type
+      description: What type of translation work is this?
+      options:
+        - New language
+        - Update existing translation
+        - Fix translation error
+    validations:
+      required: true
+
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      description: Which language are you translating to/from?
+      placeholder: e.g., Spanish (es), Portuguese (pt), Italian (it)
+    validations:
+      required: true
+
+  - type: input
+    id: language-code
+    attributes:
+      label: Language Code
+      description: ISO 639-1 language code
+      placeholder: e.g., es, pt, it, ja, zh
+    validations:
+      required: true
+
+  - type: textarea
+    id: translation
+    attributes:
+      label: Translation Content
+      description: Please provide the translation file content or the specific strings you want to translate
+      render: typescript
+      placeholder: |
+        export default {
+          weather: 'Clima',
+          feels_like: 'Sensación térmica',
+          // ... rest of translations
+        };
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Translation Notes
+      description: Any notes about the translation, cultural considerations, or alternative phrasings
+      placeholder: |
+        - Used formal/informal tone because...
+        - Alternative for "feels like" could be...
+
+  - type: checkboxes
+    id: native-speaker
+    attributes:
+      label: Language Proficiency
+      options:
+        - label: I am a native speaker of this language
+          required: false
+        - label: I am fluent in this language
+          required: false
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing
+      description: Have you tested this translation in Home Assistant?
+      placeholder: Yes, I have tested with...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked existing translations for this language
+          required: true
+        - label: I have included all translation keys from the English version
+          required: true
+        - label: I have tested the translation (if possible)
+          required: false
+        - label: I can maintain this translation for future updates
+          required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other information about this translation
+      placeholder: Any other context...

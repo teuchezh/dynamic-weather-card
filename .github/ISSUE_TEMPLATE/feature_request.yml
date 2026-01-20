@@ -1,0 +1,92 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for Dynamic Weather Card
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature! Please fill out the form below.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see
+      placeholder: I would like to have...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered
+      placeholder: I've also thought about...
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Feature Type
+      description: What type of feature is this?
+      options:
+        - New weather animation
+        - New configuration option
+        - UI/UX improvement
+        - Performance improvement
+        - New translation
+        - Integration with other services
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Describe your use case and how this feature would help you
+      placeholder: This would help me to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples
+      description: If possible, provide examples or screenshots of similar features in other projects
+      placeholder: Drag and drop images or links here
+
+  - type: textarea
+    id: mockup
+    attributes:
+      label: Mockup / Design
+      description: If you have a mockup or design idea, please share it here
+      placeholder: Drag and drop images here
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context or information about the feature request
+      placeholder: Any other information...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked existing feature requests for duplicates
+          required: true
+        - label: This feature aligns with the project's goals
+          required: false
+        - label: I am willing to help implement this feature
+          required: false
