@@ -101,10 +101,15 @@ export interface WeatherCardConfig {
   showHumidity?: boolean;
   showMinTemp?: boolean;
   showForecast?: boolean;
+  showHourlyForecast?: boolean;
+  showDailyForecast?: boolean;
+  hourlyForecastHours?: number;
+  dailyForecastDays?: number;
   showSunriseSunset?: boolean;
   showClock?: boolean;
+  clockPosition?: 'top' | 'details';
   overlayOpacity?: number;
-  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr';
+  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
   height?: number | null;
   windSpeedUnit?: 'ms' | 'kmh';
 }

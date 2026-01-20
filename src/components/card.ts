@@ -6,6 +6,7 @@ import { resolveLanguage } from '../internalization/resolveLanguage';
 import {
   getBackgroundGradient,
   formatForecastTime,
+  formatForecastDay,
   getSunriseSunsetData,
   getTimeOfDayWithSunData,
   formatTime
@@ -40,6 +41,11 @@ interface WeatherCardConfigInternal extends WeatherCardConfig {
   sunriseEntity?: string | null;
   sunsetEntity?: string | null;
   templowAttribute?: string | null;
+  showHourlyForecast?: boolean;
+  showDailyForecast?: boolean;
+  hourlyForecastHours?: number;
+  dailyForecastDays?: number;
+  clockPosition?: 'top' | 'details';
   tapAction?: ActionConfig;
   holdAction?: ActionConfig;
   doubleTapAction?: ActionConfig;
@@ -66,10 +72,15 @@ interface ConfigInput {
   show_humidity?: boolean;
   show_min_temp?: boolean;
   show_forecast?: boolean;
+  show_hourly_forecast?: boolean;
+  show_daily_forecast?: boolean;
+  hourly_forecast_hours?: number;
+  daily_forecast_days?: number;
   show_sunrise_sunset?: boolean;
   show_clock?: boolean;
+  clock_position?: 'top' | 'details';
   overlay_opacity?: number;
-  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr';
+  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
   wind_speed_unit?: 'ms' | 'kmh';
   sunrise_entity?: string;
   sunset_entity?: string;
@@ -352,9 +363,58 @@ export class AnimatedWeatherCard extends LitElement {
         (itemDay.getTime() === tomorrow.getTime() && itemDate.getHours() <= now.getHours());
     });
 
+    const hours = Math.max(
+      1,
+      Math.floor(Number(this.config.hourlyForecastHours ?? DEFAULT_CONFIG.hourlyForecastHours))
+    );
+
     return todayForecast
       .sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime())
-      .slice(0, 8);
+      .slice(0, hours);
+  }
+
+  private getWeekForecast(): WeatherForecast[] {
+    if (!this.hass || !this.config) return [];
+    const weather = this.getWeatherData();
+    if (!weather.forecast || weather.forecast.length === 0) return [];
+
+    const days = Math.max(
+      1,
+      Math.floor(Number(this.config.dailyForecastDays ?? DEFAULT_CONFIG.dailyForecastDays))
+    );
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const end = new Date(start);
+    end.setDate(end.getDate() + days);
+
+    const toDayKey = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const dayBuckets = new Map<string, { item: WeatherForecast; itemDate: Date; hourScore: number }>();
+
+    weather.forecast.forEach(item => {
+      if (!item.datetime) return;
+      const itemDate = new Date(item.datetime);
+      if (Number.isNaN(itemDate.getTime())) return;
+      if (itemDate < start || itemDate >= end) return;
+
+      const key = toDayKey(itemDate);
+      const hourScore = Math.abs((itemDate.getHours() + itemDate.getMinutes() / 60) - 12);
+      const existing = dayBuckets.get(key);
+
+      if (!existing || hourScore < existing.hourScore) {
+        dayBuckets.set(key, { item, itemDate, hourScore });
+      }
+    });
+
+    return Array.from(dayBuckets.values())
+      .sort((a, b) => a.itemDate.getTime() - b.itemDate.getTime())
+      .map(entry => entry.item)
+      .slice(0, days);
   }
 
   private startAnimation(): void {
@@ -447,6 +507,25 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
+  private renderDailyForecast(): TemplateResult {
+    const forecast = this.getWeekForecast();
+    if (forecast.length === 0) {
+      return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unavailable')}</div>`;
+    }
+
+    return html`
+      <div class="forecast-scroll">
+        ${forecast.map(item => html`
+          <div class="forecast-item">
+            <div class="forecast-time">${formatForecastDay(item.datetime, i18n.lang)}</div>
+            <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
+            <div class="forecast-temp">${Math.round(item.temperature || (item as ForecastItemExtended).temp || (item as ForecastItemExtended).native_temperature || 0)}°</div>
+          </div>
+        `)}
+      </div>
+    `;
+  }
+
   private convertWindSpeed(speed: number | null): number | null {
     if (speed == null) return null;
     if (this.config.windSpeedUnit === 'kmh') {
@@ -515,19 +594,24 @@ export class AnimatedWeatherCard extends LitElement {
                 <div class="location">${this.config.name || weather.friendlyName}</div>
               </div>
             ` : ''}
-            <div>
-<div class="condition">${i18n.t(weather.condition)}</div>
-              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
-              ${this.config.showMinTemp && weather.templow ? html`
-                <div class="temp-range">
-                  <span class="temp-min">↓ ${Math.round(weather.templow)}°</span>
-                </div>
-              ` : ''}
-              ${this.config.showFeelsLike && weather.apparentTemperature ? html`
-<div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
+            <div class="primary">
+              <div class="primary-left">
+                <div class="condition">${i18n.t(weather.condition)}</div>
+                <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
+                ${this.config.showMinTemp && weather.templow ? html`
+                  <div class="temp-range">
+                    <span class="temp-min">↓ ${Math.round(weather.templow)}°</span>
+                  </div>
+                ` : ''}
+                ${this.config.showFeelsLike && weather.apparentTemperature ? html`
+                  <div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
+                ` : ''}
+              </div>
+              ${this.config.showClock && this.config.clockPosition === 'top' ? html`
+                <div class="clock">${this.currentTime}</div>
               ` : ''}
             </div>
-            <div class="details">
+            <div class="details ${this.config.showClock && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
               <div class="info-grid">
                 ${this.config.showHumidity && weather.humidity != null ? html`
                   <div class="info-item">
@@ -561,17 +645,23 @@ export class AnimatedWeatherCard extends LitElement {
                   </div>
                 ` : ''}
               </div>
+              ${this.config.showClock && this.config.clockPosition === 'details' ? html`
+                <div class="clock">${this.currentTime}</div>
+              ` : ''}
             </div>
-            ${this.config.showForecast ? html`
+            ${this.config.showHourlyForecast ? html`
               <div class="forecast-container">
-<div class="forecast-title">${i18n.t('forecast_title')}</div>
+                <div class="forecast-title">${i18n.t('forecast_title')}</div>
                 ${this.renderTodayForecast()}
               </div>
             ` : ''}
+            ${this.config.showDailyForecast ? html`
+              <div class="forecast-container">
+                <div class="forecast-title">${i18n.t('daily_forecast_title')}</div>
+                ${this.renderDailyForecast()}
+              </div>
+            ` : ''}
           </div>
-          ${this.config.showClock ? html`
-            <div class="clock">${this.currentTime}</div>
-          ` : ''}
         </div>
       </ha-card>
     `;
@@ -581,6 +671,7 @@ export class AnimatedWeatherCard extends LitElement {
     if (!config.entity) {
       throw new Error('Please define a weather entity');
     }
+    const showHourlyForecast = config.show_hourly_forecast ?? config.show_forecast;
     this.config = {
       type: 'custom:animated-weather-card',
       entity: config.entity,
@@ -594,8 +685,13 @@ export class AnimatedWeatherCard extends LitElement {
       showHumidity: config.show_humidity !== false,
       showMinTemp: config.show_min_temp !== false,
       showForecast: config.show_forecast === true,
+      showHourlyForecast: showHourlyForecast === true,
+      showDailyForecast: config.show_daily_forecast === true,
+      hourlyForecastHours: config.hourly_forecast_hours ?? DEFAULT_CONFIG.hourlyForecastHours,
+      dailyForecastDays: config.daily_forecast_days ?? DEFAULT_CONFIG.dailyForecastDays,
       showSunriseSunset: config.show_sunrise_sunset !== false,
       showClock: config.show_clock === true,
+      clockPosition: config.clock_position || DEFAULT_CONFIG.clockPosition,
       overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
       language: config.language || DEFAULT_CONFIG.language,
       windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,

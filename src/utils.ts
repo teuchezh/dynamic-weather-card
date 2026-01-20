@@ -119,6 +119,20 @@ export function formatForecastTime(datetime: string): string {
 }
 
 /**
+ * Format forecast date as a short weekday + day/month label.
+ */
+export function formatForecastDay(datetime: string, locale?: string): string {
+  if (!datetime) return '';
+  const date = new Date(datetime);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString(locale || undefined, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short'
+  });
+}
+
+/**
  * Format time as HH:MM
  */
 export function formatTime(datetime: Date | string): string {

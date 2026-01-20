@@ -605,6 +605,14 @@
                         <option value="kmh">km/h</option>
                     </select>
                 </div>
+                <div class="control-group">
+                    <label class="control-label">Daily Forecast Days</label>
+                    <input type="number" id="daily-forecast-days" value="5" min="1" max="14" step="1">
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Hourly Forecast Hours</label>
+                    <input type="number" id="hourly-forecast-hours" value="5" min="1" max="24" step="1">
+                </div>
 
                 <div class="checkbox-group">
                     <label class="checkbox-item">
@@ -632,8 +640,12 @@
                         <span class="checkbox-text" data-i18n="windGust">Wind Gust</span>
                     </label>
                     <label class="checkbox-item">
-                        <input type="checkbox" id="show-forecast">
+                        <input type="checkbox" id="show-hourly-forecast">
                         <span class="checkbox-text" data-i18n="hourlyForecast">Hourly Forecast</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-daily-forecast">
+                        <span class="checkbox-text" data-i18n="dailyForecast">Daily Forecast</span>
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-sunrise-sunset">
@@ -643,6 +655,13 @@
                         <input type="checkbox" id="show-clock">
                         <span class="checkbox-text">Clock</span>
                     </label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Clock Position</label>
+                    <select id="clock-position-select">
+                        <option value="top">Top right</option>
+                        <option value="details">Details row</option>
+                    </select>
                 </div>
             </div>
 
@@ -796,11 +815,12 @@ function applyTranslations() {
             return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
         }
 
-        function generateForecast(baseTemp, count = 8) {
+        function generateForecast(baseTemp, days = 5) {
             const now = new Date();
             const forecast = [];
+            const hours = Math.max(8, Math.floor(days) * 24);
 
-            for (let i = 1; i <= count; i++) {
+            for (let i = 1; i <= hours; i++) {
                 const forecastTime = new Date(now.getTime() + i * 60 * 60 * 1000);
                 const hour = forecastTime.getHours();
 
@@ -821,7 +841,7 @@ function applyTranslations() {
             return forecast;
         }
 
-        function createMockHass(condition, temperature, humidity, windSpeed, windBearing) {
+        function createMockHass(condition, temperature, humidity, windSpeed, windBearing, days) {
             const now = new Date();
             const sunrise = new Date(now);
             sunrise.setHours(6, 30, 0, 0);
@@ -843,7 +863,7 @@ function applyTranslations() {
                             templow: temperature - 5,
                             pressure: 1013,
                             friendly_name: 'Demo Weather',
-                            forecast: generateForecast(temperature),
+                            forecast: generateForecast(temperature, days),
                             sunrise: sunrise.toISOString(),
                             sunset: sunset.toISOString(),
                         }
@@ -967,9 +987,19 @@ function applyTranslations() {
                 showWind: document.getElementById('show-wind').checked,
                 showWindDirection: document.getElementById('show-wind-direction').checked,
                 showWindGust: document.getElementById('show-wind-gust').checked,
-                showForecast: document.getElementById('show-forecast').checked,
+                showHourlyForecast: document.getElementById('show-hourly-forecast').checked,
+                showDailyForecast: document.getElementById('show-daily-forecast').checked,
+                hourlyForecastHours: Math.max(
+                    1,
+                    parseInt(document.getElementById('hourly-forecast-hours').value, 10) || 5
+                ),
+                dailyForecastDays: Math.max(
+                    1,
+                    parseInt(document.getElementById('daily-forecast-days').value, 10) || 5
+                ),
                 showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
                 showClock: document.getElementById('show-clock').checked,
+                clockPosition: document.getElementById('clock-position-select').value,
                 language: document.getElementById('language-select').value
             };
 
@@ -985,7 +1015,14 @@ function applyTranslations() {
             }
 
             const windBearing = parseInt(document.getElementById('wind-bearing-input').value);
-            mockHass = createMockHass(config.condition, config.temperature, config.humidity, config.windSpeed, windBearing);
+            mockHass = createMockHass(
+                config.condition,
+                config.temperature,
+                config.humidity,
+                config.windSpeed,
+                windBearing,
+                config.dailyForecastDays
+            );
 
             const cardConfig = {
                 entity: 'weather.test',
@@ -998,9 +1035,13 @@ function applyTranslations() {
                 show_wind_gust: config.showWindGust,
                 show_humidity: config.showHumidity,
                 show_min_temp: config.showMinTemp,
-                show_forecast: config.showForecast,
+                show_hourly_forecast: config.showHourlyForecast,
+                hourly_forecast_hours: config.hourlyForecastHours,
+                show_daily_forecast: config.showDailyForecast,
+                daily_forecast_days: config.dailyForecastDays,
                 show_sunrise_sunset: config.showSunriseSunset,
                 show_clock: config.showClock,
+                clock_position: config.clockPosition,
                 language: config.language,
             };
 
@@ -1054,7 +1095,7 @@ function applyTranslations() {
             const checkboxIds = [
                 'show-feels-like', 'show-min-temp', 'show-humidity',
                 'show-wind', 'show-wind-direction', 'show-wind-gust',
-                'show-forecast', 'show-sunrise-sunset', 'show-clock'
+                'show-hourly-forecast', 'show-sunrise-sunset', 'show-clock', 'show-daily-forecast'
             ];
 
             checkboxIds.forEach(id => {
@@ -1062,6 +1103,21 @@ function applyTranslations() {
                 checkbox?.addEventListener('change', () => {
                     if (card) updateCard();
                 });
+            });
+
+            const dailyForecastInput = document.getElementById('daily-forecast-days');
+            dailyForecastInput?.addEventListener('change', () => {
+                if (card) updateCard();
+            });
+
+            const hourlyForecastInput = document.getElementById('hourly-forecast-hours');
+            hourlyForecastInput?.addEventListener('change', () => {
+                if (card) updateCard();
+            });
+
+            const clockPositionSelect = document.getElementById('clock-position-select');
+            clockPositionSelect?.addEventListener('change', () => {
+                if (card) updateCard();
             });
 
             timeDisplay.textContent = formatTime(currentManualTime);

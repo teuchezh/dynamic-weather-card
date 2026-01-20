@@ -100,6 +100,7 @@ export const cardStyles = css`
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 12px;
   }
 
   .location {
@@ -122,10 +123,33 @@ export const cardStyles = css`
     gap: 12px;
   }
 
+  .details--clock {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .details--clock .info-grid {
+    flex: 1;
+  }
+
   .condition {
     font-size: 20px;
     font-weight: 400;
     opacity: 0.9;
+  }
+
+  .primary {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .primary-left {
+    display: flex;
+    flex-direction: column;
   }
 
   .feels-like {
@@ -256,13 +280,13 @@ export const cardStyles = css`
   }
 
   .clock {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
     font-size: 48px;
     font-weight: 200;
     line-height: 1;
     color: white;
+    text-align: right;
     text-shadow:
       0 1px 2px rgba(0, 0, 0, 0.4),
       0 2px 6px rgba(0, 0, 0, 0.3),
@@ -274,8 +298,8 @@ export const cardStyles = css`
   @media (max-width: 600px) {
     .clock {
       font-size: 36px;
-      bottom: 16px;
-      right: 16px;
+      margin-top: 0;
+      margin-bottom: 0;
     }
   }
 `;
