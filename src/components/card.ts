@@ -630,15 +630,58 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
+  /**
+   * Convert wind speed for legacy providers that don't specify wind_speed_unit
+   * If provider has wind_speed_unit attribute, returns value as-is (no conversion)
+   */
   private convertWindSpeed(speed: number | null): number | null {
     if (speed == null) return null;
+
+    const entityId = this.config.entity || 'weather.home';
+    const attrs = this.getAttributes(entityId);
+
+    // If provider specifies wind_speed_unit, trust it and don't convert
+    if (attrs.wind_speed_unit) {
+      return Math.round(speed * 10) / 10;
+    }
+
+    // Legacy provider without wind_speed_unit - use config option
+    // Assume provider returns m/s, convert to km/h if requested
     if (this.config.windSpeedUnit === 'kmh') {
       return Math.round(speed * 3.6 * 10) / 10;
     }
-    return speed;
+
+    return Math.round(speed * 10) / 10;
   }
 
   private getWindSpeedUnit(): string {
+    const entityId = this.config.entity || 'weather.home';
+    const attrs = this.getAttributes(entityId);
+    const unit = attrs.wind_speed_unit;
+
+    // If provider specifies wind_speed_unit, use it
+    if (unit) {
+      // Normalize the unit string
+      const normalizedUnit = unit.toLowerCase().replace(/[^a-z]/g, '');
+
+      // Map common wind speed unit formats to translation keys
+      if (normalizedUnit === 'kmh' || normalizedUnit === 'kmph') {
+        return i18n.t('wind_unit_kmh');
+      } else if (normalizedUnit === 'ms' || normalizedUnit === 'mps') {
+        return i18n.t('wind_unit_ms');
+      } else if (normalizedUnit === 'mph') {
+        return i18n.t('wind_unit_mph');
+      } else if (normalizedUnit === 'knots' || normalizedUnit === 'kn' || normalizedUnit === 'kt') {
+        return i18n.t('wind_unit_knots');
+      } else if (normalizedUnit === 'fts' || normalizedUnit === 'ftps') {
+        return i18n.t('wind_unit_fts');
+      }
+
+      // Fallback: return the original unit if we don't recognize it
+      return unit;
+    }
+
+    // Legacy provider - use config option
     return this.config.windSpeedUnit === 'kmh' ? i18n.t('wind_unit_kmh') : i18n.t('wind_unit_ms');
   }
 

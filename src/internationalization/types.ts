@@ -95,6 +95,9 @@ export interface Translation {
   language: string;
   wind_unit_kmh: string;
   wind_unit_ms: string;
+  wind_unit_mph: string;
+  wind_unit_knots: string;
+  wind_unit_fts: string;
   show_clock: string;
   demo: DemoTranslations;
 }
