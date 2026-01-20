@@ -123,6 +123,16 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 
 > **Примечание:** Яндекс.Погода не предоставляет данные восхода/заката в weather entity, поэтому необходимо указать отдельные сенсоры.
 
+### Данные о восходе и закате солнца
+
+Карточка автоматически получает данные о восходе и закате в следующем порядке приоритета:
+
+1. **Пользовательские сенсоры** (если указаны): параметры `sunrise_entity` и `sunset_entity`
+2. **Атрибуты weather entity**: `forecast_sunrise`, `sunrise`, `forecast_sunset`, `sunset`
+3. **Стандартная сущность солнца Home Assistant**: `sun.sun` с атрибутами `next_rising` и `next_setting`
+
+Это означает, что в большинстве случаев вам не нужно настраивать сенсоры восхода/заката - карточка автоматически использует встроенную интеграцию sun из Home Assistant.
+
 ## Параметры конфигурации
 
 | Параметр | Тип | По умолчанию | Описание |
@@ -146,8 +156,8 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_sunrise_sunset` | boolean | false | Показывать время восхода и заката |
 | `show_clock` | boolean | false | Показывать текущее время |
 | `clock_position` | string | `top` | Позиция часов (`top` — справа сверху, `details` — в строке информации) |
-| `sunrise_entity` | string | - | ID сенсора восхода солнца (опционально) |
-| `sunset_entity` | string | - | ID сенсора заката солнца (опционально) |
+| `sunrise_entity` | string | - | ID сенсора восхода солнца (опционально). Если не указан, карточка будет использовать атрибуты weather entity или стандартную сущность `sun.sun` |
+| `sunset_entity` | string | - | ID сенсора заката солнца (опционально). Если не указан, карточка будет использовать атрибуты weather entity или стандартную сущность `sun.sun` |
 | `templow_attribute` | string | - | Пользовательское имя атрибута для минимальной температуры (опционально). Если не указано, карточка автоматически ищет известные атрибуты: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |
 
 Если включены `show_hourly_forecast` и `show_daily_forecast`, показываются оба блока.
