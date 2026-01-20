@@ -64,6 +64,7 @@ export interface DemoTranslations {
     german: string;
     dutch: string;
     spanish: string;
+    italian: string;
   };
 }
 
@@ -94,7 +95,8 @@ export interface Translation {
   language: string;
   wind_unit_kmh: string;
   wind_unit_ms: string;
+  show_clock: string;
   demo: DemoTranslations;
 }
 
-export type SupportedLanguage = 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
+export type SupportedLanguage = 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es' | 'it';

@@ -27,6 +27,7 @@ const translation: Translation = {
   'language': 'Language',
   'wind_unit_kmh': 'км/ч',
   'wind_unit_ms': 'м/с',
+  'show_clock': 'Показывать часы',
   'demo': {
     'pageTitle': 'Динамическая карточка погоды',
     'pageSubtitle': 'Интерактивная демонстрация и настройка',
@@ -92,7 +93,8 @@ const translation: Translation = {
       'french': 'Français',
       'german': 'Deutsch',
       'dutch': 'Nederlands',
-      'spanish': 'Español'
+      'spanish': 'Español',
+      'italian': 'Italiano'
     }
   }
 };

@@ -27,6 +27,7 @@ const translation: Translation = {
   'language': 'Sprache',
   'wind_unit_kmh': 'km/h',
   'wind_unit_ms': 'm/s',
+  'show_clock': 'Aktuelle Uhrzeit anzeigen',
   'demo': {
     'pageTitle': 'Dynamische Wetterkarte',
     'pageSubtitle': 'Interaktive Demo & Konfiguration',
@@ -92,7 +93,8 @@ const translation: Translation = {
       'french': 'Français',
       'german': 'Deutsch',
       'dutch': 'Nederlands',
-      'spanish': 'Español'
+      'spanish': 'Español',
+      'italian': 'Italiano'
     }
   }
 };
