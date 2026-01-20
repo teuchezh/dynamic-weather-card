@@ -85,8 +85,10 @@ export default {
       'title': '🌍 Sprache',
       'english': '🇺🇸 English',
       'russian': '🇷🇺 Русский',
+      'french': '🇫🇷 Français',
       'german': '🇩🇪 Deutsch',
       'dutch': '🇳🇱 Nederlands',
+      'italy': '🇮🇹 Italia',
       'spanish': '🇪🇸 Español'
     }
   }
