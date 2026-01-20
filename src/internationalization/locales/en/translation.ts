@@ -27,6 +27,7 @@ const translation: Translation = {
   'language': 'Language',
   'wind_unit_kmh': 'km/h',
   'wind_unit_ms': 'm/s',
+  'show_clock': 'Show current time',
   'demo': {
     'pageTitle': 'Dynamic Weather Card',
     'pageSubtitle': 'Interactive Demo & Configuration Tool',

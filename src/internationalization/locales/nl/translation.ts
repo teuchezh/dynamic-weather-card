@@ -27,6 +27,7 @@ const translation: Translation = {
   'language': 'Taal',
   'wind_unit_kmh': 'km/u',
   'wind_unit_ms': 'm/s',
+  'show_clock': 'Huidige tijd weergeven',
   'demo': {
     'pageTitle': 'Dynamische Weerkaart',
     'pageSubtitle': 'Interactieve demo & configuratietool',
