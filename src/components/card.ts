@@ -1,8 +1,8 @@
 import { LitElement, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { DEFAULT_CONFIG, TEMPLOW_ATTRIBUTES } from '../constants.js';
-import { i18n } from '../internalization/index';
-import { resolveLanguage } from '../internalization/resolveLanguage';
+import { i18n } from '../internationalization/index';
+import { resolveLanguage } from '../internationalization/resolveLanguage';
 import {
   getBackgroundGradient,
   formatForecastTime,
