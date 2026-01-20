@@ -27,6 +27,9 @@ const translation: Translation = {
   'language': 'Language',
   'wind_unit_kmh': 'км/ч',
   'wind_unit_ms': 'м/с',
+  'wind_unit_mph': 'миль/ч',
+  'wind_unit_knots': 'узлы',
+  'wind_unit_fts': 'фут/с',
   'show_clock': 'Показывать часы',
   'demo': {
     'pageTitle': 'Динамическая карточка погоды',
