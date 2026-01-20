@@ -1,5 +1,6 @@
 import { LitElement, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
+import { DEFAULT_CONFIG } from '../constants';
 import type { HomeAssistant } from '../types';
 
 type HaFormSchema = Array<{
@@ -15,7 +16,29 @@ export class DynamicWeatherCardEditor extends LitElement {
   @state() private _config: WeatherCardEditorConfig = {};
 
   setConfig(config: WeatherCardEditorConfig): void {
-    this._config = { ...config };
+    this._config = {
+      name: '',
+      height: DEFAULT_CONFIG.height,
+      show_feels_like: DEFAULT_CONFIG.showFeelsLike,
+      show_wind: DEFAULT_CONFIG.showWind,
+      show_wind_gust: DEFAULT_CONFIG.showWindGust,
+      show_wind_direction: DEFAULT_CONFIG.showWindDirection,
+      show_humidity: DEFAULT_CONFIG.showHumidity,
+      show_min_temp: DEFAULT_CONFIG.showMinTemp,
+      show_hourly_forecast: DEFAULT_CONFIG.showHourlyForecast,
+      hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
+      show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
+      daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays,
+      show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
+      show_clock: DEFAULT_CONFIG.showClock,
+      clock_position: DEFAULT_CONFIG.clockPosition,
+      overlay_opacity: DEFAULT_CONFIG.overlayOpacity,
+      language: DEFAULT_CONFIG.language,
+      wind_speed_unit: DEFAULT_CONFIG.windSpeedUnit,
+      sunrise_entity: '',
+      sunset_entity: '',
+      ...config
+    };
   }
 
   private get _schema(): HaFormSchema {
@@ -34,6 +57,8 @@ export class DynamicWeatherCardEditor extends LitElement {
       { name: 'show_daily_forecast', selector: { boolean: {} } },
       { name: 'daily_forecast_days', selector: { number: { min: 1, max: 14, step: 1, mode: 'box' } } },
       { name: 'show_sunrise_sunset', selector: { boolean: {} } },
+      { name: 'sunrise_entity', selector: { entity: { domain: ['sensor'] } } },
+      { name: 'sunset_entity', selector: { entity: { domain: ['sensor'] } } },
       { name: 'show_clock', selector: { boolean: {} } },
       {
         name: 'clock_position',
@@ -73,10 +98,7 @@ export class DynamicWeatherCardEditor extends LitElement {
             ]
           }
         }
-      },
-      { name: 'sunrise_entity', selector: { entity: { domain: ['sensor'] } } },
-      { name: 'sunset_entity', selector: { entity: { domain: ['sensor'] } } },
-      { name: 'templow_attribute', selector: { text: {} } }
+      }
     ];
   }
 
@@ -102,8 +124,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       language: 'Language',
       wind_speed_unit: 'Wind Speed Unit',
       sunrise_entity: 'Sunrise Entity',
-      sunset_entity: 'Sunset Entity',
-      templow_attribute: 'Min Temp Attribute'
+      sunset_entity: 'Sunset Entity'
     };
 
     return labels[schema.name] ?? schema.name;

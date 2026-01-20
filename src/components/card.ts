@@ -621,13 +621,13 @@ export class AnimatedWeatherCard extends LitElement {
               <div class="primary-left">
                 <div class="condition">${i18n.t(weather.condition)}</div>
                 <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
-                ${this.config.showMinTemp && weather.templow ? html`
+                ${this.config.showMinTemp ? html`
                   <div class="temp-range">
-                    <span class="temp-min">↓ ${Math.round(weather.templow)}°</span>
+                    <span class="temp-min">↓ ${weather.templow != null ? `${Math.round(weather.templow)}°` : i18n.t('no_data')}</span>
                   </div>
                 ` : ''}
-                ${this.config.showFeelsLike && weather.apparentTemperature ? html`
-                  <div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
+                ${this.config.showFeelsLike ? html`
+                  <div class="feels-like">${i18n.t('feels_like')} ${weather.apparentTemperature != null ? `${Math.round(weather.apparentTemperature)}°` : i18n.t('no_data')}</div>
                 ` : ''}
               </div>
               ${this.config.showClock && this.config.clockPosition === 'top' ? html`
