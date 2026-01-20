@@ -32,7 +32,7 @@ The card will automatically detect the language from Home Assistant settings.
 type: custom:dynamic-weather-card
 entity: weather.home
 name: My Weather
-language: auto  # 'auto', 'ru', 'en', 'de', 'fr', 'nl', 'es'
+language: auto  # 'auto', 'ru', 'en', 'de', 'fr', 'nl', 'es', 'it'
 show_feels_like: true
 show_min_temp: true
 show_hourly_forecast: true
