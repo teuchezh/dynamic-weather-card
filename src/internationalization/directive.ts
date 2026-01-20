@@ -11,7 +11,7 @@ class TDirective extends AsyncDirective {
     return i18n.t(key);
   }
 
-  override connected(): void {
+  override reconnected(): void {
     this._onLangChange = () => {
       this.setValue(i18n.t(this._key));
     };

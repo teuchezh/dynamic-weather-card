@@ -61,6 +61,12 @@ export interface WeatherForecast {
   wind_bearing?: number;
 }
 
+// Forecast Event from subscription
+export interface ForecastEvent {
+  type: 'hourly' | 'daily' | 'twice_daily';
+  forecast: WeatherForecast[];
+}
+
 // Home Assistant Interface
 export interface HomeAssistant {
   states: { [entity_id: string]: HassEntity };
@@ -88,6 +94,12 @@ export interface HomeAssistant {
   };
   callService: (_domain: string, _service: string, _data?: Record<string, unknown>) => Promise<void>;
   callWS: (_msg: Record<string, unknown>) => Promise<unknown>;
+  connection: {
+    subscribeMessage: <T>(
+      callback: (event: T) => void,
+      subscribeMessage: Record<string, unknown>
+    ) => Promise<() => void>;
+  };
 }
 
 // Weather Card Configuration
