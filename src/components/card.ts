@@ -61,6 +61,7 @@ interface ActionConfig {
 }
 
 interface ConfigInput {
+  type?: string;
   entity: string;
   icons_path?: string;
   name?: string;
@@ -145,6 +146,21 @@ export class AnimatedWeatherCard extends LitElement {
     return cardStyles;
   }
 
+  static getConfigElement(): HTMLElement {
+    return document.createElement('dynamic-weather-card-editor');
+  }
+
+  static getStubConfig(): ConfigInput {
+    return {
+      type: 'custom:dynamic-weather-card',
+      entity: 'weather.home',
+      show_hourly_forecast: true,
+      hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
+      show_daily_forecast: true,
+      daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays
+    };
+  }
+
   constructor() {
     super();
     this.config = {} as WeatherCardConfigInternal;
@@ -196,6 +212,9 @@ export class AnimatedWeatherCard extends LitElement {
         this.resizeCanvas();
       }
       this.setupForecastScroll();
+    }
+    if (changedProperties.has('config')) {
+      this.startClock();
     }
 
     const resolvedLang = resolveLanguage({
@@ -546,6 +565,10 @@ export class AnimatedWeatherCard extends LitElement {
   }
 
   private startClock(): void {
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+      this.clockInterval = null;
+    }
     if (!this.config.showClock) return;
 
     this.currentTime = this.formatCurrentTime();
@@ -673,7 +696,7 @@ export class AnimatedWeatherCard extends LitElement {
     }
     const showHourlyForecast = config.show_hourly_forecast ?? config.show_forecast;
     this.config = {
-      type: 'custom:animated-weather-card',
+      type: 'custom:dynamic-weather-card',
       entity: config.entity,
       icons_path: config.icons_path,
       name: config.name,
