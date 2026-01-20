@@ -64,7 +64,7 @@ resources:
 
 ## Configuration
 
-> **Note:** The card is configured only through YAML. Visual editor is not supported.
+> **Note:** The card supports the visual editor in Home Assistant (basic options). YAML configuration remains supported.
 
 ### Basic configuration
 
