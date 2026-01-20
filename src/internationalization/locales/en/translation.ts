@@ -92,7 +92,8 @@ const translation: Translation = {
       'french': 'French',
       'german': 'German',
       'dutch': 'Dutch',
-      'spanish': 'Spanish'
+      'spanish': 'Spanish',
+      'italian': 'Italian'
     }
   }
 };

@@ -4,6 +4,7 @@ import nl from './locales/nl/translation';
 import fr from './locales/fr/translation';
 import en from './locales/en/translation';
 import es from './locales/es/translation';
+import it from './locales/it/translation';
 import type { Translation, SupportedLanguage } from './types';
 
 const translations: Record<SupportedLanguage, Translation> = {
@@ -12,7 +13,8 @@ const translations: Record<SupportedLanguage, Translation> = {
   de,
   nl,
   fr,
-  es
+  es,
+  it
 };
 
 class I18n {
