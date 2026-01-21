@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Weather Card - Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --success: #48bb78;
+            --danger: #f56565;
+            --warning: #ed8936;
+            --bg-dark: #1a202c;
+            --bg-card: #2d3748;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --border: #4a5568;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .page-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-preview {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        #card-container {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .controls-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .controls-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .controls-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .controls-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .panel-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-section {
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-header {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        select:focus, input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-demo.active {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        .btn-preset {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+        }
+
+        .btn-preset:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary);
+        }
+
+        .time-controls {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .time-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .time-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .time-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+            margin-bottom: 16px;
+        }
+
+        .time-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .time-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .time-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            user-select: none;
+            flex: 1;
+        }
+
+        .message {
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .error-message {
+            background: rgba(245, 101, 101, 0.15);
+            border: 1px solid var(--danger);
+            color: #fc8181;
+        }
+
+        .loading-message {
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .quick-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .preset-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .preset-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .preset-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .preset-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding: 24px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 32px;
+            }
+
+            .main-container {
+                padding: 0 10px;
+            }
+
+            .controls-panel {
+                position: static;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1 class="page-title" data-i18n="pageTitle">🌤️ Dynamic Weather Card</h1>
+        <p class="page-subtitle" data-i18n="pageSubtitle">Interactive Demo & Configuration Tool</p>
+    </div>
+
+    <div class="main-container">
+        <!-- Card Preview -->
+        <div class="card-preview">
+            <div class="preview-label" data-i18n="livePreview">Live Preview</div>
+            <div id="card-container"></div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="controls-panel">
+            <h2 class="panel-title" data-i18n="configuration">⚙️ Configuration</h2>
+
+            <!-- Quick Presets -->
+            <div class="control-section">
+                <div class="section-header" data-i18n="quickPresets">🎨 Quick Presets</div>
+                <div class="quick-presets">
+                    <div class="preset-card" onclick="applyPreset('sunny')">
+                        <div class="preset-icon">☀️</div>
+                        <div class="preset-name" data-i18n="sunnyDay">Sunny Day</div>
+                    </div>
+                    <div class="preset-card" onclick="applyPreset('rainy')">
+                        <div class="preset-icon">🌧️</div>
+                        <div class="preset-name" data-i18n="rainy">Rainy</div>
+                    </div>
+                    <div class="preset-card" onclick="applyPreset('snowy')">
+                        <div class="preset-icon">❄️</div>
+                        <div class="preset-name" data-i18n="snowy">Snowy</div>
+                    </div>
+                    <div class="preset-card" onclick="applyPreset('night')">
+                        <div class="preset-icon">🌙</div>
+                        <div class="preset-name" data-i18n="clearNight">Clear Night</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="section-header" data-i18n="language.title">🌍 Language</div>
+
+                <div class="control-group">
+                    <select id="language-select">
+                        <option value="en" data-i18n="language.english">🇺🇸 English</option>
+                        <option value="ru" data-i18n="language.russian">🇷🇺 Русский</option>
+                        <option value="fr" data-i18n="language.french">🇫🇷 Français</option>
+                        <option value="de" data-i18n="language.german">🇩🇪 Deutsch</option>
+                        <option value="nl" data-i18n="language.dutch">🇳🇱 Nederlands</option>
+                        <option value="it" data-i18n="language.italian">🇮🇹 Italiano</option>
+                        <option value="es" data-i18n="language.spanish">🇪🇸 Español</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Weather Settings -->
+            <div class="control-section">
+                <div class="section-header" data-i18n="weatherCondition">🌦️ Weather Condition</div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="condition">Condition</label>
+                    <select id="condition-select">
+                        <option value="sunny" data-i18n="weatherConditions.sunny">☀️ Sunny</option>
+                        <option value="clear" data-i18n="weatherConditions.clear">☀️ Clear</option>
+                        <option value="clear-night" data-i18n="weatherConditions.clearNight">🌙 Clear Night</option>
+                        <option value="partlycloudy" data-i18n="weatherConditions.partlyCloudy">⛅ Partly Cloudy</option>
+                        <option value="cloudy" data-i18n="weatherConditions.cloudy">☁️ Cloudy</option>
+                        <option value="rainy" data-i18n="weatherConditions.rainy">🌧️ Rainy</option>
+                        <option value="pouring" data-i18n="weatherConditions.pouring">⛈️ Pouring</option>
+                        <option value="snowy" data-i18n="weatherConditions.snowy">❄️ Snowy</option>
+                        <option value="snowy-rainy" data-i18n="weatherConditions.sleet">🌨️ Sleet</option>
+                        <option value="hail" data-i18n="weatherConditions.hail">🧊 Hail</option>
+                        <option value="foggy" data-i18n="weatherConditions.foggy">🌫️ Foggy</option>
+                        <option value="lightning" data-i18n="weatherConditions.lightning">⚡ Lightning</option>
+                        <option value="lightning-rainy" data-i18n="weatherConditions.thunderstorm">⛈️ Thunderstorm</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="temperature">Temperature (°C)</label>
+                    <input type="number" id="temperature-input" value="20" min="-50" max="50">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="humidity">Humidity (%)</label>
+                    <input type="number" id="humidity-input" value="65" min="0" max="100">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="windSpeed">Wind Speed (km/h)</label>
+                    <input type="number" id="wind-input" value="15" min="0" max="150">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Wind Direction (°)</label>
+                    <input type="number" id="wind-bearing-input" value="200" min="0" max="359">
+                    <div style="margin-top: 8px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+                        <button class="btn btn-preset" onclick="setWindBearing(0)" style="font-size: 11px; padding: 8px;">↑ N</button>
+                        <button class="btn btn-preset" onclick="setWindBearing(90)" style="font-size: 11px; padding: 8px;">→ E</button>
+                        <button class="btn btn-preset" onclick="setWindBearing(180)" style="font-size: 11px; padding: 8px;">↓ S</button>
+                        <button class="btn btn-preset" onclick="setWindBearing(270)" style="font-size: 11px; padding: 8px;">← W</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Settings -->
+            <div class="control-section">
+                <div class="section-header" data-i18n="timeOfDay">🕐 Time of Day</div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="timeMode">Time Mode</label>
+                    <select id="time-select">
+                        <option value="auto" data-i18n="autoTime">🕐 Auto (Current Time)</option>
+                        <option value="manual" data-i18n="manualControl">⏱️ Manual Control</option>
+                        <option value="sunrise" data-i18n="sunrise">🌅 Sunrise</option>
+                        <option value="day" data-i18n="day">☀️ Day</option>
+                        <option value="sunset" data-i18n="sunset">🌇 Sunset</option>
+                        <option value="night" data-i18n="night">🌙 Night</option>
+                    </select>
+
+                    <div id="time-slider-container" class="time-controls" style="display: none;">
+                        <div class="time-display">
+                            <span class="control-label">Current Time</span>
+                            <span id="time-display" class="time-value">12:00</span>
+                        </div>
+                        <input type="range" id="time-slider" class="time-slider" min="0" max="1439" value="720">
+                        <div class="preset-grid">
+                            <button class="btn btn-preset" onclick="setTime(360)">🌅 6:00</button>
+                            <button class="btn btn-preset" onclick="setTime(720)">☀️ 12:00</button>
+                            <button class="btn btn-preset" onclick="setTime(1080)">🌇 18:00</button>
+                            <button class="btn btn-preset" onclick="setTime(0)">🌙 0:00</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="control-section">
+                <div class="section-header" data-i18n="displayOptions">👁️ Display Options</div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="cardName">Card Name</label>
+                    <input type="text" id="name-input" value="" placeholder="Leave empty to hide" data-i18n-placeholder="placeholderEmpty">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="height">Height (px)</label>
+                    <input type="number" id="height-input" value="200" min="150" max="400" step="10">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="overlayOpacity">Overlay Opacity (0-1)</label>
+                    <input type="number" id="overlay-opacity-input" value="0.1" min="0" max="1" step="0.05">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="windSpeedUnit">Wind Speed Unit</label>
+                    <select id="wind-speed-unit-select">
+                        <option value="ms">m/s</option>
+                        <option value="kmh">km/h</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" data-i18n="dailyForecastDays">Daily Forecast Days</label>
+                    <input type="number" id="daily-forecast-days" value="5" min="1" max="14" step="1">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" data-i18n="hourlyForecastHours">Hourly Forecast Hours</label>
+                    <input type="number" id="hourly-forecast-hours" value="5" min="1" max="24" step="1">
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-feels-like" checked>
+                        <span class="checkbox-text" data-i18n="feelsLike">Feels Like Temperature</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-min-temp" checked>
+                        <span class="checkbox-text" data-i18n="minTemp">Min Temperature</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-humidity">
+                        <span class="checkbox-text" data-i18n="humidity">Humidity</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-wind">
+                        <span class="checkbox-text" data-i18n="windSpeed">Wind Speed</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-wind-direction">
+                        <span class="checkbox-text" data-i18n="windDirection">Wind Direction</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-wind-gust">
+                        <span class="checkbox-text" data-i18n="windGust">Wind Gust</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-hourly-forecast">
+                        <span class="checkbox-text" data-i18n="hourlyForecast">Hourly Forecast</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-daily-forecast">
+                        <span class="checkbox-text" data-i18n="dailyForecast">Daily Forecast</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-sunrise-sunset">
+                        <span class="checkbox-text" data-i18n="sunriseSunset">Sunrise/Sunset</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-clock">
+                        <span class="checkbox-text" data-i18n="showClock">Clock</span>
+                    </label>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" data-i18n="clockPosition">Clock Position</label>
+                    <select id="clock-position-select">
+                        <option value="top" data-i18n="clockPositionTop">Top right</option>
+                        <option value="details" data-i18n="clockPositionDetails">Details row</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" data-i18n="clockFormat">Clock Format</label>
+                    <select id="clock-format-select">
+                        <option value="24h" data-i18n="clockFormat24h">24-hour</option>
+                        <option value="12h" data-i18n="clockFormat12h">12-hour (AM/PM)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="control-section">
+                <button class="btn btn-primary" onclick="updateCard()" data-i18n="updateCard">
+                    🔄 Update Card
+                </button>
+                <div style="height: 12px;"></div>
+                <button class="btn btn-demo" id="demo-btn" onclick="toggleDemoMode()" data-i18n="startDemo">
+                    🎬 Start Demo Mode
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Made with ❤️ for Home Assistant |
+        <a href="https://github.com/teuchezh/dynamic-weather-card" target="_blank">GitHub</a>
+    </div>
+
+    <!-- Import map for Lit dependencies -->
+    <script type="importmap">
+    {
+        "imports": {
+            "lit": "https://esm.sh/lit@3.1.3",
+            "lit/": "https://esm.sh/lit@3.1.3/",
+            "@lit/reactive-element": "https://esm.sh/@lit/reactive-element@2.0.4",
+            "@lit/reactive-element/": "https://esm.sh/@lit/reactive-element@2.0.4/",
+            "lit-element": "https://esm.sh/lit-element@4.0.4",
+            "lit-element/": "https://esm.sh/lit-element@4.0.4/",
+            "lit-html": "https://esm.sh/lit-html@3.1.2",
+            "lit-html/": "https://esm.sh/lit-html@3.1.2/"
+        }
+    }
+    </script>
+
+    <!-- Load card module -->
+    <script type="module">
+        // Detect browser language early
+        let currentLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+        currentLang = currentLang.startsWith('ru') ? 'ru' : currentLang.startsWith('es') ? 'es' : 'en';
+
+        // Mini translations for error messages
+        const errorMessages = {
+            en: {
+                title: '⚠️ Failed to load card',
+                details: 'Check the browser console (F12) for details',
+                server: 'Make sure the file is served via a local server (not file://)'
+            },
+            ru: {
+                title: '⚠️ Не удалось загрузить карточку',
+                details: 'Проверьте консоль браузера (F12) для деталей',
+                server: 'Убедитесь, что файл открыт через локальный сервер (не file://)'
+            }
+        };
+
+        // Mock ha-card element
+        if (!customElements.get('ha-card')) {
+            customElements.define('ha-card', class extends HTMLElement {
+                connectedCallback() {
+                    this.style.display = 'block';
+                    this.style.width = '100%';
+                }
+            });
+        }
+
+        // Load main card
+        import('./dynamic-weather-card.js').then(() => {
+            window.cardLoaded = true;
+            if (window.initCard) window.initCard();
+        }).catch(err => {
+            console.error('Failed to load card:', err);
+            const container = document.getElementById('card-container');
+            const msgs = errorMessages[currentLang];
+            container.innerHTML = `
+                <div class="error-message">
+                    <strong>${msgs.title}</strong><br>
+                    ${msgs.details}<br>
+                    <small>${msgs.server}</small>
+                </div>
+            `;
+        });
+
+        import { i18n, resolveLanguage } from './dynamic-weather-card.js';
+
+        const lang = resolveLanguage();
+        i18n.setLanguage(lang);
+
+        window.i18n = i18n;
+    </script>
+
+    <!-- Main application logic -->
+    <script>
+        // ============================================================================
+        // UTILS
+        // ============================================================================
+        const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+        // ============================================================================
+        // TRANSLATIONS
+        // ============================================================================
+function applyTranslations() {
+          $$('[data-i18n]').forEach(el => {
+            el.textContent = i18n.t(`demo.${el.dataset.i18n}`);
+          });
+
+          $$('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = i18n.t(`demo.${el.dataset.i18nPlaceholder}`);
+          });
+
+          document.title = i18n.t('demo.pageTitle');
+        }
+
+        // ============================================================================
+        // STATE & CONFIGURATION
+        // ============================================================================
+
+        let card = null;
+        let mockHass = null;
+        let currentManualTime = 720; // 12:00
+        let demoModeActive = false;
+        let demoInterval = null;
+        let demoStep = 0;
+
+        const WEATHER_CONDITIONS = [
+            'sunny', 'clear', 'partlycloudy', 'cloudy', 'rainy', 'pouring', 'snowy', 'snowy-rainy', 'foggy'
+        ];
+
+        const DEMO_SEQUENCE = [
+            { condition: 'sunny', temp: 25, time: 'day', humidity: 45, wind: 10, windBearing: 180 },
+            { condition: 'partlycloudy', temp: 22, time: 'day', humidity: 55, wind: 15, windBearing: 225 },
+            { condition: 'rainy', temp: 15, time: 'day', humidity: 80, wind: 25, windBearing: 270 },
+            { condition: 'lightning-rainy', temp: 14, time: 'sunset', humidity: 85, wind: 30, windBearing: 315 },
+            { condition: 'snowy-rainy', temp: 2, time: 'day', humidity: 75, wind: 20, windBearing: 0 },
+            { condition: 'snowy', temp: -5, time: 'day', humidity: 70, wind: 15, windBearing: 45 },
+            { condition: 'foggy', temp: 8, time: 'sunrise', humidity: 90, wind: 5, windBearing: 90 },
+            { condition: 'clear-night', temp: 12, time: 'night', humidity: 60, wind: 8, windBearing: 135 }
+        ];
+
+        const PRESETS = {
+            sunny: { condition: 'sunny', temp: 25, time: 'day', humidity: 45, wind: 10, windBearing: 180 },
+            rainy: { condition: 'rainy', temp: 15, time: 'day', humidity: 80, wind: 25, windBearing: 270 },
+            snowy: { condition: 'snowy', temp: -5, time: 'day', humidity: 70, wind: 15, windBearing: 0 },
+            night: { condition: 'clear-night', temp: 12, time: 'night', humidity: 60, wind: 8, windBearing: 135 }
+        };
+
+        function formatTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+        }
+
+        function generateForecast(baseTemp, days = 5) {
+            const now = new Date();
+            const forecast = [];
+            const hours = Math.max(8, Math.floor(days) * 24);
+
+            for (let i = 1; i <= hours; i++) {
+                const forecastTime = new Date(now.getTime() + i * 60 * 60 * 1000);
+                const hour = forecastTime.getHours();
+
+                let temp = baseTemp;
+                if (hour >= 6 && hour < 12) temp += Math.floor(Math.random() * 3);
+                else if (hour >= 12 && hour < 18) temp += 2 + Math.floor(Math.random() * 4);
+                else if (hour >= 18 && hour < 22) temp += Math.floor(Math.random() * 3);
+                else temp -= 2 + Math.floor(Math.random() * 3);
+
+                forecast.push({
+                    datetime: forecastTime.toISOString(),
+                    condition: WEATHER_CONDITIONS[Math.floor(Math.random() * WEATHER_CONDITIONS.length)],
+                    temperature: temp,
+                    temp: temp
+                });
+            }
+
+            return forecast;
+        }
+
+        function createMockHass(condition, temperature, humidity, windSpeed, windBearing, days) {
+            const now = new Date();
+            const sunrise = new Date(now);
+            sunrise.setHours(6, 30, 0, 0);
+            const sunset = new Date(now);
+            sunset.setHours(18, 45, 0, 0);
+
+            return {
+                states: {
+                    'weather.test': {
+                        state: condition,
+                        attributes: {
+                            condition: condition,
+                            temperature: temperature,
+                            humidity: humidity,
+                            wind_speed: windSpeed,
+                            wind_bearing: windBearing,
+                            wind_gust_speed: windSpeed * 1.5,
+                            apparent_temperature: temperature - 3,
+                            templow: temperature - 5,
+                            pressure: 1013,
+                            friendly_name: 'Demo Weather',
+                            forecast: generateForecast(temperature, days),
+                            sunrise: sunrise.toISOString(),
+                            sunset: sunset.toISOString(),
+                        }
+                    }
+                }
+            };
+        }
+
+        function applyPreset(presetName) {
+            const preset = PRESETS[presetName];
+            if (!preset) return;
+
+            document.getElementById('condition-select').value = preset.condition;
+            document.getElementById('temperature-input').value = preset.temp;
+            document.getElementById('humidity-input').value = preset.humidity;
+            document.getElementById('wind-input').value = preset.wind;
+            document.getElementById('wind-bearing-input').value = preset.windBearing;
+            document.getElementById('time-select').value = preset.time;
+
+            updateCard();
+        }
+
+        function toggleDemoMode() {
+            const demoBtn = document.getElementById('demo-btn');
+
+            if (demoModeActive) {
+                stopDemoMode();
+            } else {
+                startDemoMode();
+            }
+        }
+
+        function startDemoMode() {
+            demoModeActive = true;
+            demoStep = 0;
+            const demoBtn = document.getElementById('demo-btn');
+            demoBtn.textContent = i18n.t('demo.stopDemo');
+            demoBtn.classList.add('active');
+
+            runDemoStep();
+            demoInterval = setInterval(runDemoStep, 3000);
+        }
+
+        function stopDemoMode() {
+            demoModeActive = false;
+            if (demoInterval) {
+                clearInterval(demoInterval);
+                demoInterval = null;
+            }
+            const demoBtn = document.getElementById('demo-btn');
+            demoBtn.textContent = i18n.t('demo.startDemo');
+            demoBtn.classList.remove('active');
+        }
+
+        function runDemoStep() {
+            const demo = DEMO_SEQUENCE[demoStep];
+
+            document.getElementById('condition-select').value = demo.condition;
+            document.getElementById('temperature-input').value = demo.temp;
+            document.getElementById('humidity-input').value = demo.humidity;
+            document.getElementById('wind-input').value = demo.wind;
+            document.getElementById('wind-bearing-input').value = demo.windBearing;
+            document.getElementById('time-select').value = demo.time;
+
+            updateCard();
+            demoStep = (demoStep + 1) % DEMO_SEQUENCE.length;
+        }
+
+        function setTime(minutes) {
+            currentManualTime = minutes;
+            document.getElementById('time-slider').value = minutes;
+            document.getElementById('time-display').textContent = formatTime(minutes);
+            if (document.getElementById('time-select').value === 'manual') {
+                updateCard();
+            }
+        }
+
+        function setWindBearing(degrees) {
+            document.getElementById('wind-bearing-input').value = degrees;
+            updateCard();
+        }
+
+        function getTimeOfDayFromMinutes(totalMinutes) {
+            if (totalMinutes >= 360 && totalMinutes < 480) {
+                const progress = (totalMinutes - 360) / 120;
+                return { type: 'sunrise', progress };
+            }
+            if (totalMinutes >= 480 && totalMinutes < 1080) {
+                const progress = (totalMinutes - 480) / 600;
+                return { type: 'day', progress };
+            }
+            if (totalMinutes >= 1080 && totalMinutes < 1200) {
+                const progress = (totalMinutes - 1080) / 120;
+                return { type: 'sunset', progress };
+            }
+            return { type: 'night', progress: 0 };
+        }
+
+        function updateCard() {
+            const container = document.getElementById('card-container');
+            container.innerHTML = '';
+
+            if (!window.cardLoaded) {
+                container.innerHTML = `<div class="loading-message">${i18n.t('loading')}</div>`;
+                return;
+            }
+
+            const config = {
+                condition: document.getElementById('condition-select').value,
+                name: document.getElementById('name-input').value.trim(),
+                temperature: parseInt(document.getElementById('temperature-input').value),
+                humidity: parseInt(document.getElementById('humidity-input').value),
+                windSpeed: parseInt(document.getElementById('wind-input').value),
+                height: parseInt(document.getElementById('height-input').value),
+                overlayOpacity: parseFloat(document.getElementById('overlay-opacity-input').value),
+                windSpeedUnit: document.getElementById('wind-speed-unit-select').value,
+                timeSelect: document.getElementById('time-select').value,
+                showFeelsLike: document.getElementById('show-feels-like').checked,
+                showMinTemp: document.getElementById('show-min-temp').checked,
+                showHumidity: document.getElementById('show-humidity').checked,
+                showWind: document.getElementById('show-wind').checked,
+                showWindDirection: document.getElementById('show-wind-direction').checked,
+                showWindGust: document.getElementById('show-wind-gust').checked,
+                showHourlyForecast: document.getElementById('show-hourly-forecast').checked,
+                showDailyForecast: document.getElementById('show-daily-forecast').checked,
+                hourlyForecastHours: Math.max(
+                    1,
+                    parseInt(document.getElementById('hourly-forecast-hours').value, 10) || 5
+                ),
+                dailyForecastDays: Math.max(
+                    1,
+                    parseInt(document.getElementById('daily-forecast-days').value, 10) || 5
+                ),
+                showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
+                showClock: document.getElementById('show-clock').checked,
+                clockPosition: document.getElementById('clock-position-select').value,
+                clockFormat: document.getElementById('clock-format-select').value,
+                language: document.getElementById('language-select').value
+            };
+
+            card = document.createElement('dynamic-weather-card');
+
+            if (config.timeSelect === 'manual') {
+                card._testTimeOfDay = getTimeOfDayFromMinutes(currentManualTime);
+            } else if (config.timeSelect !== 'auto') {
+                const progress = (config.timeSelect === 'sunrise' || config.timeSelect === 'sunset') ? 0.5 : 0;
+                card._testTimeOfDay = { type: config.timeSelect, progress };
+            } else {
+                card._testTimeOfDay = null;
+            }
+
+            const windBearing = parseInt(document.getElementById('wind-bearing-input').value);
+            mockHass = createMockHass(
+                config.condition,
+                config.temperature,
+                config.humidity,
+                config.windSpeed,
+                windBearing,
+                config.dailyForecastDays
+            );
+
+            const cardConfig = {
+                entity: 'weather.test',
+                height: config.height,
+                overlay_opacity: config.overlayOpacity,
+                wind_speed_unit: config.windSpeedUnit,
+                show_feels_like: config.showFeelsLike,
+                show_wind: config.showWind,
+                show_wind_direction: config.showWindDirection,
+                show_wind_gust: config.showWindGust,
+                show_humidity: config.showHumidity,
+                show_min_temp: config.showMinTemp,
+                show_hourly_forecast: config.showHourlyForecast,
+                hourly_forecast_hours: config.hourlyForecastHours,
+                show_daily_forecast: config.showDailyForecast,
+                daily_forecast_days: config.dailyForecastDays,
+                show_sunrise_sunset: config.showSunriseSunset,
+                show_clock: config.showClock,
+                clock_position: config.clockPosition,
+                clock_format: config.clockFormat,
+                language: config.language,
+            };
+
+            if (config.name) {
+                cardConfig.name = config.name;
+            }
+
+            card.setConfig(cardConfig);
+            card.hass = mockHass;
+            container.appendChild(card);
+        }
+
+        function setupLanguageSelect() {
+          const languageSelect = document.getElementById('language-select');
+
+          languageSelect.value = i18n.lang;
+
+          languageSelect.addEventListener('change', (e) => {
+            i18n.setLanguage(e.target.value);
+            applyTranslations();
+            updateCard();
+          });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const timeSlider = document.getElementById('time-slider');
+            const timeDisplay = document.getElementById('time-display');
+            const timeSelect = document.getElementById('time-select');
+            const sliderContainer = document.getElementById('time-slider-container');
+
+            timeSlider.addEventListener('input', () => {
+                currentManualTime = parseInt(timeSlider.value);
+                timeDisplay.textContent = formatTime(currentManualTime);
+                if (timeSelect.value === 'manual') {
+                    updateCard();
+                }
+            });
+
+            timeSelect.addEventListener('change', () => {
+                sliderContainer.style.display = timeSelect.value === 'manual' ? 'block' : 'none';
+                updateCard();
+            });
+
+          setupLanguageSelect();
+          applyTranslations();
+
+          window.addEventListener('language-changed', () => {
+            applyTranslations();
+          });
+
+            const checkboxIds = [
+                'show-feels-like', 'show-min-temp', 'show-humidity',
+                'show-wind', 'show-wind-direction', 'show-wind-gust',
+                'show-hourly-forecast', 'show-sunrise-sunset', 'show-clock', 'show-daily-forecast'
+            ];
+
+            checkboxIds.forEach(id => {
+                const checkbox = document.getElementById(id);
+                checkbox?.addEventListener('change', () => {
+                    if (card) updateCard();
+                });
+            });
+
+            const dailyForecastInput = document.getElementById('daily-forecast-days');
+            dailyForecastInput?.addEventListener('change', () => {
+                if (card) updateCard();
+            });
+
+            const hourlyForecastInput = document.getElementById('hourly-forecast-hours');
+            hourlyForecastInput?.addEventListener('change', () => {
+                if (card) updateCard();
+            });
+
+            const clockPositionSelect = document.getElementById('clock-position-select');
+            clockPositionSelect?.addEventListener('change', () => {
+                if (card) updateCard();
+            });
+
+            const clockFormatSelect = document.getElementById('clock-format-select');
+            clockFormatSelect?.addEventListener('change', () => {
+                if (card) updateCard();
+            });
+
+            timeDisplay.textContent = formatTime(currentManualTime);
+        });
+
+        window.initCard = () => updateCard();
+
+        setInterval(() => {
+            if (card && document.getElementById('time-select').value === 'auto') {
+                updateCard();
+            }
+        }, 60_000);
+    </script>
+</body>
+</html>

@@ -1,53 +1,60 @@
-# 🌤️ Dynamic Weather Card
+# Dynamic Weather Card
 
 Dynamic weather card for Home Assistant with realistic animations.
+
 ![demo](/docs/demo.gif)
 
-**[Try Live Demo →](https://teuchezh.github.io/dynamic-weather-card/test.html)**
+**[Try Live Demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)**
 
 ## Features
 
-- 🎨 Animated weather effects on Canvas
-- ☀️ Dynamic background based on time of day (sunrise, day, sunset, night)
-- 🌧️ Realistic animations: rain, snow, hail, fog, thunderstorm
-- 📊 Hourly forecast for today
-- 🌍 Automatic language detection from Home Assistant settings (Russian/English)
-- ⚙️ Full customization of displayed elements
-- 📱 Responsive design
+- Realistic Canvas animations (rain, snow, fog, thunderstorms)
+- Dynamic backgrounds based on time of day
+- Hourly and daily forecasts
+- Automatic language detection
+- Visual editor in Home Assistant UI
+- Fully responsive design
+- Works with all weather integrations
 
 ## Quick Start
 
-### Basic configuration
+### Minimal Configuration
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
 ```
 
-The card will automatically detect the language from Home Assistant settings.
-
-### Extended configuration
+### Extended Configuration
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
-name: My Weather
-language: auto  # 'auto', 'ru', 'es' or 'en'
+name: My Weather Station
+language: auto  # auto, en, ru, de, fr, nl, es, it
 show_feels_like: true
-show_min_temp: true
-show_forecast: true
+show_wind: true
+show_hourly_forecast: true
+hourly_forecast_hours: 8
+show_daily_forecast: true
+daily_forecast_days: 5
 show_sunrise_sunset: true
+show_clock: true
+clock_format: 24h  # 12h or 24h
 ```
 
 ## Supported Languages
+
 - English
-- Russian
-- German
-- French
-- Dutch
+- Русский (Russian)
+- Deutsch (German)
+- Français (French)
+- Nederlands (Dutch)
+- Español (Spanish)
+- Italiano (Italian)
 
 ## Documentation
 
-Full documentation is available in [README](https://github.com/teuchezh/dynamic-weather-card#readme)
+[Full English Documentation](https://github.com/teuchezh/animated-weather-card#readme)
 
-[Russian documentation](https://github.com/teuchezh/dynamic-weather-card/blob/main/README.ru.md)
+[Русская документация](https://github.com/teuchezh/animated-weather-card/blob/main/README.ru.md)

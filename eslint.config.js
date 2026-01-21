@@ -1,16 +1,23 @@
 import js from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
 import litPlugin from 'eslint-plugin-lit';
 
 export default [
   js.configs.recommended,
   {
-    files: ['src/**/*.js'],
+    files: ['src/**/*.ts'],
     plugins: {
+      '@typescript-eslint': tseslint,
       lit: litPlugin
     },
     languageOptions: {
+      parser: tsparser,
       ecmaVersion: 2022,
       sourceType: 'module',
+      parserOptions: {
+        project: './tsconfig.json'
+      },
       globals: {
         window: 'readonly',
         navigator: 'readonly',
@@ -31,17 +38,24 @@ export default [
         clearTimeout: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
-        DOMParser: 'readonly',
-        __VERSION__: 'readonly'
+        DOMParser: 'readonly'
       }
     },
     rules: {
-      // General JavaScript rules
-      'no-unused-vars': ['error', {
+      // Disable base rule as TypeScript version is used
+      'no-unused-vars': 'off',
+      // TypeScript-specific rules
+      '@typescript-eslint/no-unused-vars': ['error', {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_'
       }],
-      'no-console': 'off', // Allow console for logging
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+
+      // General JavaScript rules
+      'no-console': 'off',
       'no-debugger': 'error',
       'semi': ['error', 'always'],
       'quotes': ['error', 'single', { avoidEscape: true }],
