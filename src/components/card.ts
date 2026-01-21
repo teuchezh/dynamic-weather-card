@@ -62,6 +62,7 @@ interface ActionConfig {
 }
 
 interface ConfigInput {
+  type?: string;
   entity: string;
   icons_path?: string;
   name?: string;
@@ -150,6 +151,21 @@ export class AnimatedWeatherCard extends LitElement {
     return cardStyles;
   }
 
+  static getConfigElement(): HTMLElement {
+    return document.createElement('dynamic-weather-card-editor');
+  }
+
+  static getStubConfig(): ConfigInput {
+    return {
+      type: 'custom:dynamic-weather-card',
+      entity: 'weather.home',
+      show_hourly_forecast: true,
+      hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
+      show_daily_forecast: true,
+      daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays
+    };
+  }
+
   constructor() {
     super();
     this.config = {} as WeatherCardConfigInternal;
@@ -209,6 +225,9 @@ export class AnimatedWeatherCard extends LitElement {
       if (this.hass && this.config.entity) {
         this.subscribeForecastUpdates();
       }
+    }
+    if (changedProperties.has('config')) {
+      this.startClock();
     }
 
     const resolvedLang = resolveLanguage({
@@ -693,6 +712,10 @@ export class AnimatedWeatherCard extends LitElement {
   }
 
   private startClock(): void {
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+      this.clockInterval = null;
+    }
     if (!this.config.showClock) return;
 
     this.currentTime = this.formatCurrentTime();
@@ -736,22 +759,26 @@ export class AnimatedWeatherCard extends LitElement {
         <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} cursor: pointer;">
           <div class="canvas-container"></div>
           <div class="content">
-            ${this.config.name !== undefined ? html`
+            ${this.config.name === undefined ? html`
               <div class="header">
-                <div class="location">${this.config.name || weather.friendlyName}</div>
+                <div class="location">${weather.friendlyName}</div>
               </div>
-            ` : ''}
+            ` : (this.config.name && this.config.name.trim() !== '' ? html`
+              <div class="header">
+                <div class="location">${this.config.name}</div>
+              </div>
+            ` : '')}
             <div class="primary">
               <div class="primary-left">
                 <div class="condition">${i18n.t(weather.condition)}</div>
                 <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
-                ${this.config.showMinTemp && weather.templow ? html`
+                ${this.config.showMinTemp ? html`
                   <div class="temp-range">
-                    <span class="temp-min">↓ ${Math.round(weather.templow)}°</span>
+                    <span class="temp-min">↓ ${weather.templow != null ? `${Math.round(weather.templow)}°` : i18n.t('no_data')}</span>
                   </div>
                 ` : ''}
-                ${this.config.showFeelsLike && weather.apparentTemperature ? html`
-                  <div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>
+                ${this.config.showFeelsLike ? html`
+                  <div class="feels-like">${i18n.t('feels_like')} ${weather.apparentTemperature != null ? `${Math.round(weather.apparentTemperature)}°` : i18n.t('no_data')}</div>
                 ` : ''}
               </div>
               ${this.config.showClock && this.config.clockPosition === 'top' ? html`
@@ -820,7 +847,7 @@ export class AnimatedWeatherCard extends LitElement {
     }
     const showHourlyForecast = config.show_hourly_forecast ?? config.show_forecast;
     this.config = {
-      type: 'custom:animated-weather-card',
+      type: 'custom:dynamic-weather-card',
       entity: config.entity,
       icons_path: config.icons_path,
       name: config.name,

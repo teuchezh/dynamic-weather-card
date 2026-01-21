@@ -186,6 +186,10 @@ export const cardStyles = css`
     gap: 6px;
   }
 
+  .info-item span:last-child {
+    white-space: nowrap;
+  }
+
   .info-icon {
     font-size: 16px;
     width: 20px;
