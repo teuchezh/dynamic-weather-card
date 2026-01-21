@@ -1,6 +1,8 @@
 import { LitElement, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { DEFAULT_CONFIG } from '../constants';
+import { i18n } from '../internationalization/index';
+import { resolveLanguage } from '../internationalization/resolveLanguage';
 import type { HomeAssistant } from '../types';
 
 type HaFormSchema = Array<{
@@ -41,6 +43,17 @@ export class DynamicWeatherCardEditor extends LitElement {
     };
   }
 
+  updated(changedProperties: Map<string, unknown>): void {
+    super.updated(changedProperties);
+    if (changedProperties.has('hass')) {
+      const resolvedLang = resolveLanguage({ hassLang: this.hass?.language });
+      if (i18n.lang !== resolvedLang) {
+        i18n.setLanguage(resolvedLang);
+        this.requestUpdate();
+      }
+    }
+  }
+
   private get _schema(): HaFormSchema {
     return [
       { name: 'entity', required: true, selector: { entity: { domain: ['weather'] } } },
@@ -65,8 +78,8 @@ export class DynamicWeatherCardEditor extends LitElement {
         selector: {
           select: {
             options: [
-              { label: 'Top', value: 'top' },
-              { label: 'Details', value: 'details' }
+              { label: i18n.t('editor.clock_position_top'), value: 'top' },
+              { label: i18n.t('editor.clock_position_details'), value: 'details' }
             ]
           }
         }
@@ -77,13 +90,13 @@ export class DynamicWeatherCardEditor extends LitElement {
         selector: {
           select: {
             options: [
-              { label: 'Auto', value: 'auto' },
-              { label: 'English', value: 'en' },
-              { label: 'Russian', value: 'ru' },
-              { label: 'German', value: 'de' },
-              { label: 'Dutch', value: 'nl' },
-              { label: 'French', value: 'fr' },
-              { label: 'Spanish', value: 'es' }
+              { label: i18n.t('editor.language_auto'), value: 'auto' },
+              { label: i18n.t('editor.language_en'), value: 'en' },
+              { label: i18n.t('editor.language_ru'), value: 'ru' },
+              { label: i18n.t('editor.language_de'), value: 'de' },
+              { label: i18n.t('editor.language_nl'), value: 'nl' },
+              { label: i18n.t('editor.language_fr'), value: 'fr' },
+              { label: i18n.t('editor.language_es'), value: 'es' }
             ]
           }
         }
@@ -93,8 +106,8 @@ export class DynamicWeatherCardEditor extends LitElement {
         selector: {
           select: {
             options: [
-              { label: 'm/s', value: 'ms' },
-              { label: 'km/h', value: 'kmh' }
+              { label: i18n.t('editor.wind_speed_unit_ms'), value: 'ms' },
+              { label: i18n.t('editor.wind_speed_unit_kmh'), value: 'kmh' }
             ]
           }
         }
@@ -103,31 +116,9 @@ export class DynamicWeatherCardEditor extends LitElement {
   }
 
   private _computeLabel = (schema: { name: string }): string => {
-    const labels: Record<string, string> = {
-      entity: 'Weather Entity',
-      name: 'Card Title',
-      height: 'Card Height',
-      show_feels_like: 'Show Feels Like',
-      show_wind: 'Show Wind Speed',
-      show_wind_gust: 'Show Wind Gust',
-      show_wind_direction: 'Show Wind Direction',
-      show_humidity: 'Show Humidity',
-      show_min_temp: 'Show Min Temperature',
-      show_hourly_forecast: 'Show Hourly Forecast',
-      hourly_forecast_hours: 'Hourly Forecast Hours',
-      show_daily_forecast: 'Show Daily Forecast',
-      daily_forecast_days: 'Daily Forecast Days',
-      show_sunrise_sunset: 'Show Sunrise/Sunset',
-      show_clock: 'Show Clock',
-      clock_position: 'Clock Position',
-      overlay_opacity: 'Overlay Opacity',
-      language: 'Language',
-      wind_speed_unit: 'Wind Speed Unit',
-      sunrise_entity: 'Sunrise Entity',
-      sunset_entity: 'Sunset Entity'
-    };
-
-    return labels[schema.name] ?? schema.name;
+    const key = `editor.${schema.name}`;
+    const label = i18n.t(key);
+    return label === key ? schema.name : label;
   };
 
   private _valueChanged(ev: CustomEvent): void {

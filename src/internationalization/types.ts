@@ -68,6 +68,41 @@ export interface DemoTranslations {
   };
 }
 
+export interface EditorTranslations {
+  entity: string;
+  name: string;
+  height: string;
+  show_feels_like: string;
+  show_wind: string;
+  show_wind_gust: string;
+  show_wind_direction: string;
+  show_humidity: string;
+  show_min_temp: string;
+  show_hourly_forecast: string;
+  hourly_forecast_hours: string;
+  show_daily_forecast: string;
+  daily_forecast_days: string;
+  show_sunrise_sunset: string;
+  sunrise_entity: string;
+  sunset_entity: string;
+  show_clock: string;
+  clock_position: string;
+  clock_position_top: string;
+  clock_position_details: string;
+  overlay_opacity: string;
+  language: string;
+  language_auto: string;
+  language_en: string;
+  language_ru: string;
+  language_de: string;
+  language_nl: string;
+  language_fr: string;
+  language_es: string;
+  wind_speed_unit: string;
+  wind_speed_unit_ms: string;
+  wind_speed_unit_kmh: string;
+}
+
 export interface Translation {
   sunny: string;
   clear: string;
@@ -99,6 +134,7 @@ export interface Translation {
   wind_unit_knots: string;
   wind_unit_fts: string;
   show_clock: string;
+  editor: EditorTranslations;
   demo: DemoTranslations;
 }
 
