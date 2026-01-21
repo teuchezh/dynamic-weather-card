@@ -159,7 +159,7 @@ export class MyAnimation extends BaseAnimation {
 
 ### Manual Testing
 
-1. Open `test.html` in your browser
+1. Open `demo.html` in your browser
 2. Test various weather conditions
 3. Test different configurations
 4. Check browser console for errors
@@ -220,7 +220,7 @@ Check existing translations in `src/internationalization/locales/` for the compl
 2. Extend `BaseAnimation`
 3. Implement `draw()` method
 4. Register in `src/components/card.ts` (initializeAnimations + draw method)
-5. Test with `test.html`
+5. Test with `demo.html`
 6. Update documentation
 
 ### New Configuration Option

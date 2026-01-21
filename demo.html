@@ -595,23 +595,23 @@
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label">Overlay Opacity (0-1)</label>
+                    <label class="control-label" data-i18n="overlayOpacity">Overlay Opacity (0-1)</label>
                     <input type="number" id="overlay-opacity-input" value="0.1" min="0" max="1" step="0.05">
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label">Wind Speed Unit</label>
+                    <label class="control-label" data-i18n="windSpeedUnit">Wind Speed Unit</label>
                     <select id="wind-speed-unit-select">
                         <option value="ms">m/s</option>
                         <option value="kmh">km/h</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label class="control-label">Daily Forecast Days</label>
+                    <label class="control-label" data-i18n="dailyForecastDays">Daily Forecast Days</label>
                     <input type="number" id="daily-forecast-days" value="5" min="1" max="14" step="1">
                 </div>
                 <div class="control-group">
-                    <label class="control-label">Hourly Forecast Hours</label>
+                    <label class="control-label" data-i18n="hourlyForecastHours">Hourly Forecast Hours</label>
                     <input type="number" id="hourly-forecast-hours" value="5" min="1" max="24" step="1">
                 </div>
 
@@ -654,14 +654,21 @@
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-clock">
-                        <span class="checkbox-text">Clock</span>
+                        <span class="checkbox-text" data-i18n="showClock">Clock</span>
                     </label>
                 </div>
                 <div class="control-group">
-                    <label class="control-label">Clock Position</label>
+                    <label class="control-label" data-i18n="clockPosition">Clock Position</label>
                     <select id="clock-position-select">
-                        <option value="top">Top right</option>
-                        <option value="details">Details row</option>
+                        <option value="top" data-i18n="clockPositionTop">Top right</option>
+                        <option value="details" data-i18n="clockPositionDetails">Details row</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" data-i18n="clockFormat">Clock Format</label>
+                    <select id="clock-format-select">
+                        <option value="24h" data-i18n="clockFormat24h">24-hour</option>
+                        <option value="12h" data-i18n="clockFormat12h">12-hour (AM/PM)</option>
                     </select>
                 </div>
             </div>
@@ -1001,6 +1008,7 @@ function applyTranslations() {
                 showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
                 showClock: document.getElementById('show-clock').checked,
                 clockPosition: document.getElementById('clock-position-select').value,
+                clockFormat: document.getElementById('clock-format-select').value,
                 language: document.getElementById('language-select').value
             };
 
@@ -1043,6 +1051,7 @@ function applyTranslations() {
                 show_sunrise_sunset: config.showSunriseSunset,
                 show_clock: config.showClock,
                 clock_position: config.clockPosition,
+                clock_format: config.clockFormat,
                 language: config.language,
             };
 
@@ -1118,6 +1127,11 @@ function applyTranslations() {
 
             const clockPositionSelect = document.getElementById('clock-position-select');
             clockPositionSelect?.addEventListener('change', () => {
+                if (card) updateCard();
+            });
+
+            const clockFormatSelect = document.getElementById('clock-format-select');
+            clockFormatSelect?.addEventListener('change', () => {
                 if (card) updateCard();
             });
 
