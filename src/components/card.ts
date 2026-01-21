@@ -759,11 +759,15 @@ export class AnimatedWeatherCard extends LitElement {
         <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} cursor: pointer;">
           <div class="canvas-container"></div>
           <div class="content">
-            ${this.config.name !== undefined ? html`
+            ${this.config.name === undefined ? html`
               <div class="header">
-                <div class="location">${this.config.name || weather.friendlyName}</div>
+                <div class="location">${weather.friendlyName}</div>
               </div>
-            ` : ''}
+            ` : (this.config.name && this.config.name.trim() !== '' ? html`
+              <div class="header">
+                <div class="location">${this.config.name}</div>
+              </div>
+            ` : '')}
             <div class="primary">
               <div class="primary-left">
                 <div class="condition">${i18n.t(weather.condition)}</div>
