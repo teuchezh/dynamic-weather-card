@@ -34,6 +34,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
       show_clock: DEFAULT_CONFIG.showClock,
       clock_position: DEFAULT_CONFIG.clockPosition,
+      clock_format: DEFAULT_CONFIG.clockFormat,
       overlay_opacity: DEFAULT_CONFIG.overlayOpacity,
       language: DEFAULT_CONFIG.language,
       wind_speed_unit: DEFAULT_CONFIG.windSpeedUnit,
@@ -80,6 +81,17 @@ export class DynamicWeatherCardEditor extends LitElement {
             options: [
               { label: i18n.t('editor.clock_position_top'), value: 'top' },
               { label: i18n.t('editor.clock_position_details'), value: 'details' }
+            ]
+          }
+        }
+      },
+      {
+        name: 'clock_format',
+        selector: {
+          select: {
+            options: [
+              { label: i18n.t('editor.clock_format_24h'), value: '24h' },
+              { label: i18n.t('editor.clock_format_12h'), value: '12h' }
             ]
           }
         }

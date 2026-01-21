@@ -120,6 +120,7 @@ export interface WeatherCardConfig {
   showSunriseSunset?: boolean;
   showClock?: boolean;
   clockPosition?: 'top' | 'details';
+  clockFormat?: '12h' | '24h';
   overlayOpacity?: number;
   language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
   height?: number | null;

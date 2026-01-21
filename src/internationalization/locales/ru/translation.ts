@@ -31,6 +31,8 @@ const translation: Translation = {
   'wind_unit_knots': 'узлы',
   'wind_unit_fts': 'фут/с',
   'show_clock': 'Показывать часы',
+  'am': 'ДП',
+  'pm': 'ПП',
   'editor': {
     'entity': 'Погодная сущность',
     'name': 'Название карточки',
@@ -52,6 +54,9 @@ const translation: Translation = {
     'clock_position': 'Позиция часов',
     'clock_position_top': 'Вверху',
     'clock_position_details': 'Детали',
+    'clock_format': 'Формат времени',
+    'clock_format_12h': '12-часовой (AM/PM)',
+    'clock_format_24h': '24-часовой',
     'overlay_opacity': 'Прозрачность подложки',
     'language': 'Язык',
     'language_auto': 'Авто',

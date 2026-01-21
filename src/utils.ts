@@ -133,14 +133,21 @@ export function formatForecastDay(datetime: string, locale?: string): string {
 }
 
 /**
- * Format time as HH:MM
+ * Format time as HH:MM or HH:MM AM/PM
  */
-export function formatTime(datetime: Date | string): string {
+export function formatTime(datetime: Date | string, format: '12h' | '24h' = '24h', amText = 'AM', pmText = 'PM'): string {
   if (!datetime) return '';
   const date = typeof datetime === 'string' ? new Date(datetime) : datetime;
-  const hours = date.getHours();
+  let hours = date.getHours();
   const minutes = date.getMinutes();
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+  if (format === '12h') {
+    const period = hours >= 12 ? pmText : amText;
+    hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+    return `${hours}:${minutes.toString().padStart(2, '0')} ${period}`;
+  } else {
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }
 }
 
 /**

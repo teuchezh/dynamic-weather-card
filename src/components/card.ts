@@ -81,6 +81,7 @@ interface ConfigInput {
   show_sunrise_sunset?: boolean;
   show_clock?: boolean;
   clock_position?: 'top' | 'details';
+  clock_format?: '12h' | '24h';
   overlay_opacity?: number;
   language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
   wind_speed_unit?: 'ms' | 'kmh';
@@ -706,9 +707,19 @@ export class AnimatedWeatherCard extends LitElement {
 
   private formatCurrentTime(): string {
     const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+    const is12h = this.config.clockFormat === '12h';
+
+    if (is12h) {
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const period = hours >= 12 ? i18n.t('pm') : i18n.t('am');
+      hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+      return `${hours}:${minutes} ${period}`;
+    } else {
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
   }
 
   private startClock(): void {
@@ -759,15 +770,11 @@ export class AnimatedWeatherCard extends LitElement {
         <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} cursor: pointer;">
           <div class="canvas-container"></div>
           <div class="content">
-            ${this.config.name === undefined ? html`
-              <div class="header">
-                <div class="location">${weather.friendlyName}</div>
-              </div>
-            ` : (this.config.name && this.config.name.trim() !== '' ? html`
+            ${this.config.name && this.config.name.trim() !== '' ? html`
               <div class="header">
                 <div class="location">${this.config.name}</div>
               </div>
-            ` : '')}
+            ` : ''}
             <div class="primary">
               <div class="primary-left">
                 <div class="condition">${i18n.t(weather.condition)}</div>
@@ -796,7 +803,7 @@ export class AnimatedWeatherCard extends LitElement {
                 ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunrise ? html`
                   <div class="info-item">
                     <span class="info-icon">${getSVGIcon('sunrise')}</span>
-                    <span>${formatTime(sunData.sunrise)}</span>
+                    <span>${formatTime(sunData.sunrise, this.config.clockFormat, i18n.t('am'), i18n.t('pm'))}</span>
                   </div>
                 ` : ''}
                 ${this.config.showWind && weather.windSpeed != null ? html`
@@ -815,7 +822,7 @@ export class AnimatedWeatherCard extends LitElement {
                 ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunset ? html`
                   <div class="info-item">
                     <span class="info-icon">${getSVGIcon('sunset')}</span>
-                    <span>${formatTime(sunData.sunset)}</span>
+                    <span>${formatTime(sunData.sunset, this.config.clockFormat, i18n.t('am'), i18n.t('pm'))}</span>
                   </div>
                 ` : ''}
               </div>
@@ -866,6 +873,7 @@ export class AnimatedWeatherCard extends LitElement {
       showSunriseSunset: config.show_sunrise_sunset !== false,
       showClock: config.show_clock === true,
       clockPosition: config.clock_position || DEFAULT_CONFIG.clockPosition,
+      clockFormat: config.clock_format || DEFAULT_CONFIG.clockFormat,
       overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
       language: config.language || DEFAULT_CONFIG.language,
       windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,

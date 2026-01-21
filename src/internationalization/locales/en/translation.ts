@@ -31,6 +31,8 @@ const translation: Translation = {
   'wind_unit_knots': 'knots',
   'wind_unit_fts': 'ft/s',
   'show_clock': 'Show current time',
+  'am': 'AM',
+  'pm': 'PM',
   'editor': {
     'entity': 'Weather Entity',
     'name': 'Card Title',
@@ -52,6 +54,9 @@ const translation: Translation = {
     'clock_position': 'Clock Position',
     'clock_position_top': 'Top',
     'clock_position_details': 'Details',
+    'clock_format': 'Clock Format',
+    'clock_format_12h': '12-hour (AM/PM)',
+    'clock_format_24h': '24-hour',
     'overlay_opacity': 'Overlay Opacity',
     'language': 'Language',
     'language_auto': 'Auto',

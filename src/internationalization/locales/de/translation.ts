@@ -31,6 +31,8 @@ const translation: Translation = {
   'wind_unit_knots': 'Knoten',
   'wind_unit_fts': 'ft/s',
   'show_clock': 'Aktuelle Uhrzeit anzeigen',
+  'am': 'AM',
+  'pm': 'PM',
   'editor': {
     'entity': 'Wetter-Entität',
     'name': 'Kartentitel',
@@ -52,6 +54,9 @@ const translation: Translation = {
     'clock_position': 'Uhrposition',
     'clock_position_top': 'Oben',
     'clock_position_details': 'Details',
+    'clock_format': 'Zeitformat',
+    'clock_format_12h': '12-Stunden (AM/PM)',
+    'clock_format_24h': '24-Stunden',
     'overlay_opacity': 'Überlagerungs-Transparenz',
     'language': 'Sprache',
     'language_auto': 'Automatisch',
