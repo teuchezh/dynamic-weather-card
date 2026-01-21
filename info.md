@@ -4,7 +4,7 @@ Dynamic weather card for Home Assistant with realistic animations.
 
 ![demo](/docs/demo.gif)
 
-**[Try Live Demo](https://teuchezh.github.io/dynamic-weather-card/test.html)**
+**[Try Live Demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)**
 
 ## Features
 

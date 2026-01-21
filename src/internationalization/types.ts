@@ -32,6 +32,17 @@ export interface DemoTranslations {
   hourlyForecast: string;
   dailyForecast: string;
   sunriseSunset: string;
+  showClock: string;
+  clockPosition: string;
+  clockPositionTop: string;
+  clockPositionDetails: string;
+  clockFormat: string;
+  clockFormat12h: string;
+  clockFormat24h: string;
+  overlayOpacity: string;
+  windSpeedUnit: string;
+  dailyForecastDays: string;
+  hourlyForecastHours: string;
   updateCard: string;
   startDemo: string;
   stopDemo: string;

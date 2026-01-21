@@ -13,7 +13,7 @@
 
 **[English](#)** | [Русский](README.ru.md)
 
-**[🎮 Try Live Demo](https://teuchezh.github.io/dynamic-weather-card/test.html)** • **[📖 Documentation](#configuration)** • **[🐛 Report Issue](https://github.com/teuchezh/dynamic-weather-card/issues)**
+**[🎮 Try Live Demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)** • **[📖 Documentation](#configuration)** • **[🐛 Report Issue](https://github.com/teuchezh/dynamic-weather-card/issues)**
 
 </div>
 

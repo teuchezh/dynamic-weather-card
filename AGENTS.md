@@ -402,7 +402,7 @@ bun run typecheck
 
 ## Testing
 
-Local testing via `test.html` - a static page with various configurations and weather conditions.
+Local testing via `demo.html` - a static page with various configurations and weather conditions.
 
 ## Compatibility
 
@@ -414,7 +414,7 @@ Local testing via `test.html` - a static page with various configurations and we
 
 - [GitHub Repository](https://github.com/teuchezh/dynamic-weather-card)
 - [HACS Integration](https://github.com/hacs/integration)
-- [Live Demo](https://teuchezh.github.io/dynamic-weather-card/test.html)
+- [Live Demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)
 - [Basmilius Weather Icons](https://github.com/basmilius/weather-icons) - Icons used
 
 ## License
