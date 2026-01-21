@@ -89,6 +89,9 @@ export interface EditorTranslations {
   clock_position: string;
   clock_position_top: string;
   clock_position_details: string;
+  clock_format: string;
+  clock_format_12h: string;
+  clock_format_24h: string;
   overlay_opacity: string;
   language: string;
   language_auto: string;
@@ -134,6 +137,8 @@ export interface Translation {
   wind_unit_knots: string;
   wind_unit_fts: string;
   show_clock: string;
+  am: string;
+  pm: string;
   editor: EditorTranslations;
   demo: DemoTranslations;
 }

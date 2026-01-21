@@ -97,6 +97,7 @@ daily_forecast_days: 5
 show_sunrise_sunset: true
 show_clock: true  # Show current time
 clock_position: top  # 'top' or 'details'
+clock_format: 24h  # '12h' or '24h'
 sunrise_entity: sensor.sun_next_rising  # Optional
 sunset_entity: sensor.sun_next_setting  # Optional
 ```
@@ -177,6 +178,7 @@ This means that in most cases, you don't need to configure sunrise/sunset sensor
 | `show_sunrise_sunset` | boolean | false | Show sunrise and sunset times |
 | `show_clock` | boolean | false | Show current time |
 | `clock_position` | string | `top` | Clock position (`top` for top right, `details` for info row) |
+| `clock_format` | string | `24h` | Clock format (`12h` for 12-hour format with AM/PM, `24h` for 24-hour format) |
 | `sunrise_entity` | string | - | Sunrise sensor entity ID (optional). If not specified, the card will use the weather entity attributes or the default `sun.sun` entity |
 | `sunset_entity` | string | - | Sunset sensor entity ID (optional). If not specified, the card will use the weather entity attributes or the default `sun.sun` entity |
 | `templow_attribute` | string | - | Custom attribute name for minimum temperature (optional). If not specified, the card will automatically search for known attributes: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |

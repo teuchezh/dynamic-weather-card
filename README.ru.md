@@ -97,6 +97,7 @@ daily_forecast_days: 5
 show_sunrise_sunset: true
 show_clock: true  # Показывать текущее время
 clock_position: top  # 'top' или 'details'
+clock_format: 24h  # '12h' или '24h'
 sunrise_entity: sensor.sun_next_setting  # Опционально
 sunset_entity: sensor.sun_next_setting    # Опционально
 ```
@@ -177,6 +178,7 @@ wind_speed_unit: kmh  # Требуется только для legacy интег
 | `show_sunrise_sunset` | boolean | false | Показывать время восхода и заката |
 | `show_clock` | boolean | false | Показывать текущее время |
 | `clock_position` | string | `top` | Позиция часов (`top` — справа сверху, `details` — в строке информации) |
+| `clock_format` | string | `24h` | Формат времени (`12h` — 12-часовой формат с AM/PM, `24h` — 24-часовой формат) |
 | `sunrise_entity` | string | - | ID сенсора восхода солнца (опционально). Если не указан, карточка будет использовать атрибуты weather entity или стандартную сущность `sun.sun` |
 | `sunset_entity` | string | - | ID сенсора заката солнца (опционально). Если не указан, карточка будет использовать атрибуты weather entity или стандартную сущность `sun.sun` |
 | `templow_attribute` | string | - | Пользовательское имя атрибута для минимальной температуры (опционально). Если не указано, карточка автоматически ищет известные атрибуты: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |

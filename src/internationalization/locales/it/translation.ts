@@ -31,6 +31,8 @@ const translation: Translation = {
   'wind_unit_knots': 'knots',
   'wind_unit_fts': 'ft/s',
   'show_clock': 'Mostra ora corrente',
+  'am': 'AM',
+  'pm': 'PM',
   'editor': {
     'entity': 'Entità meteo',
     'name': 'Titolo della scheda',
@@ -52,6 +54,9 @@ const translation: Translation = {
     'clock_position': 'Posizione orologio',
     'clock_position_top': 'In alto',
     'clock_position_details': 'Dettagli',
+    'clock_format': 'Formato orario',
+    'clock_format_12h': '12 ore (AM/PM)',
+    'clock_format_24h': '24 ore',
     'overlay_opacity': 'Opacità sovrapposizione',
     'language': 'Lingua',
     'language_auto': 'Auto',

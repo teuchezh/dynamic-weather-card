@@ -31,6 +31,8 @@ const translation: Translation = {
   'wind_unit_knots': 'knots',
   'wind_unit_fts': 'ft/s',
   'show_clock': 'Huidige tijd weergeven',
+  'am': 'AM',
+  'pm': 'PM',
   'editor': {
     'entity': 'Weer-entiteit',
     'name': 'Kaarttitel',
@@ -52,6 +54,9 @@ const translation: Translation = {
     'clock_position': 'Klokpositie',
     'clock_position_top': 'Boven',
     'clock_position_details': 'Details',
+    'clock_format': 'Tijdformaat',
+    'clock_format_12h': '12-uurs (AM/PM)',
+    'clock_format_24h': '24-uurs',
     'overlay_opacity': 'Overlay-doorzichtigheid',
     'language': 'Taal',
     'language_auto': 'Automatisch',
