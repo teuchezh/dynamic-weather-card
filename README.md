@@ -123,6 +123,37 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 
 > **Note:** Yandex Weather does not provide sunrise/sunset data in the weather entity, so separate sensors must be specified.
 
+### Wind Speed Units
+
+The card automatically detects and displays wind speed in the units provided by your weather integration:
+
+**Modern Integrations** (with `wind_speed_unit` attribute):
+- The card uses the units provided by the integration (m/s, km/h, mph, knots, ft/s)
+- No configuration needed - units are detected automatically
+- Examples: Met.no, OpenWeatherMap, Yandex Weather
+
+**Legacy Integrations** (without `wind_speed_unit` attribute):
+- Use the `wind_speed_unit` parameter to set display units
+- Default: `ms` (m/s)
+- Options: `ms` or `kmh`
+- The card assumes the integration provides data in m/s and converts if needed
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.legacy_integration
+wind_speed_unit: kmh  # Only needed for legacy integrations
+```
+
+### Sunrise and Sunset Data
+
+The card automatically retrieves sunrise and sunset data in the following priority:
+
+1. **Custom sensors** (if specified): `sunrise_entity` and `sunset_entity` parameters
+2. **Weather entity attributes**: `forecast_sunrise`, `sunrise`, `forecast_sunset`, `sunset`
+3. **Default Home Assistant sun entity**: `sun.sun` with `next_rising` and `next_setting` attributes
+
+This means that in most cases, you don't need to configure sunrise/sunset sensors - the card will automatically use Home Assistant's built-in sun integration.
+
 ## Configuration Parameters
 
 | Parameter | Type | Default | Description |
@@ -132,7 +163,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `height` | number | 200 | Card height in pixels |
 | `language` | string | `auto` | Interface language (`auto`, `ru`, `en`, `de`, `fr`, `nl`, `es`). `auto` detects language from Home Assistant settings |
 | `overlay_opacity` | number | 0.1 | Dark overlay opacity for better text readability (0-1). Higher values create darker overlay |
-| `wind_speed_unit` | string | `ms` | Wind speed unit (`ms` for m/s or `kmh` for km/h) |
+| `wind_speed_unit` | string | `ms` | Wind speed unit for legacy integrations without `wind_speed_unit` attribute (`ms` for m/s or `kmh` for km/h). Modern integrations automatically use the correct units |
 | `show_feels_like` | boolean | true | Show feels like temperature |
 | `show_min_temp` | boolean | true | Show minimum temperature |
 | `show_humidity` | boolean | false | Show humidity |
@@ -146,8 +177,8 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_sunrise_sunset` | boolean | false | Show sunrise and sunset times |
 | `show_clock` | boolean | false | Show current time |
 | `clock_position` | string | `top` | Clock position (`top` for top right, `details` for info row) |
-| `sunrise_entity` | string | - | Sunrise sensor entity ID (optional) |
-| `sunset_entity` | string | - | Sunset sensor entity ID (optional) |
+| `sunrise_entity` | string | - | Sunrise sensor entity ID (optional). If not specified, the card will use the weather entity attributes or the default `sun.sun` entity |
+| `sunset_entity` | string | - | Sunset sensor entity ID (optional). If not specified, the card will use the weather entity attributes or the default `sun.sun` entity |
 | `templow_attribute` | string | - | Custom attribute name for minimum temperature (optional). If not specified, the card will automatically search for known attributes: `templow`, `temperature_low`, `temp_low`, `min_temp`, `yandex_pogoda_minimal_forecast_temperature` |
 
 If both `show_hourly_forecast` and `show_daily_forecast` are enabled, both sections are shown.

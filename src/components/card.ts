@@ -27,7 +27,8 @@ import type {
   TimeOfDay,
   WeatherForecast,
   BackgroundGradient,
-  WeatherEntityAttributes
+  WeatherEntityAttributes,
+  ForecastEvent
 } from '../types';
 
 interface ForecastItemExtended extends WeatherForecast {
@@ -126,6 +127,8 @@ export class AnimatedWeatherCard extends LitElement {
   @property({ type: Object }) hass?: HomeAssistant;
   @property({ type: Object }) config!: WeatherCardConfigInternal;
   @state() private currentTime: string = '';
+  @state() private hourlyForecast: WeatherForecast[] = [];
+  @state() private dailyForecast: WeatherForecast[] = [];
 
   private animationFrame: number | null = null;
   private canvas: HTMLCanvasElement | null = null;
@@ -140,6 +143,8 @@ export class AnimatedWeatherCard extends LitElement {
   private _wheelHandler: EventListener | null = null;
   private lastTap: number | null = null;
   private holdFired: boolean = false;
+  private hourlyForecastSubscription: Promise<(() => void)> | null = null;
+  private dailyForecastSubscription: Promise<(() => void)> | null = null;
   _testTimeOfDay?: TimeOfDay;
 
   static get styles() {
@@ -203,6 +208,8 @@ export class AnimatedWeatherCard extends LitElement {
       clearInterval(this.clockInterval);
       this.clockInterval = null;
     }
+    // Unsubscribe from forecast updates
+    this.unsubscribeForecastUpdates();
   }
 
   updated(changedProperties: Map<string, unknown>): void {
@@ -212,6 +219,12 @@ export class AnimatedWeatherCard extends LitElement {
         this.resizeCanvas();
       }
       this.setupForecastScroll();
+
+      // Subscribe to forecast updates when hass or config changes
+      // This will handle both initial load and weather state updates
+      if (this.hass && this.config.entity) {
+        this.subscribeForecastUpdates();
+      }
     }
     if (changedProperties.has('config')) {
       this.startClock();
@@ -358,14 +371,99 @@ export class AnimatedWeatherCard extends LitElement {
       windBearing: attrs.wind_bearing != null ? attrs.wind_bearing : null,
       windDirection: attrs.wind_direction || null,
       pressure: attrs.pressure || null,
-      forecast: attrs.forecast || attrs.forecast_hourly || [],
+      forecast: attrs.forecast || attrs.forecast_hourly || this.hourlyForecast || [],
       friendlyName: attrs.friendly_name || i18n.t('weather'),
       templow: templow
     };
   }
 
+  /**
+   * Subscribe to forecast updates using weather/subscribe_forecast
+   * Used by integrations like DWD, Met.no, etc.
+   */
+  private async subscribeForecastUpdates(): Promise<void> {
+    if (!this.hass || !this.config.entity) {
+      return;
+    }
+
+    // Unsubscribe from previous subscriptions
+    this.unsubscribeForecastUpdates();
+
+    try {
+      // Subscribe to hourly forecast updates
+      this.hourlyForecastSubscription = this.hass.connection.subscribeMessage<ForecastEvent>(
+        (event: ForecastEvent) => {
+          if (event.forecast && event.forecast.length > 0) {
+            this.hourlyForecast = event.forecast;
+          }
+        },
+        {
+          type: 'weather/subscribe_forecast',
+          forecast_type: 'hourly',
+          entity_id: this.config.entity
+        }
+      );
+
+      // Subscribe to daily forecast updates if needed
+      if (this.config.showDailyForecast) {
+        this.dailyForecastSubscription = this.hass.connection.subscribeMessage<ForecastEvent>(
+          (event: ForecastEvent) => {
+            if (event.forecast && event.forecast.length > 0) {
+              this.dailyForecast = event.forecast;
+            }
+          },
+          {
+            type: 'weather/subscribe_forecast',
+            forecast_type: 'daily',
+            entity_id: this.config.entity
+          }
+        );
+      }
+    } catch {
+      // Silently fail - old integrations don't support this API
+      // They will use forecast from attributes instead
+    }
+  }
+
+  /**
+   * Unsubscribe from forecast updates
+   */
+  private async unsubscribeForecastUpdates(): Promise<void> {
+    if (this.hourlyForecastSubscription) {
+      try {
+        const unsubscribe = await this.hourlyForecastSubscription;
+        unsubscribe();
+      } catch {
+        // Ignore unsubscribe errors
+      }
+      this.hourlyForecastSubscription = null;
+    }
+
+    if (this.dailyForecastSubscription) {
+      try {
+        const unsubscribe = await this.dailyForecastSubscription;
+        unsubscribe();
+      } catch {
+        // Ignore unsubscribe errors
+      }
+      this.dailyForecastSubscription = null;
+    }
+  }
+
   private getTodayForecast(): WeatherForecast[] {
     if (!this.hass || !this.config) return [];
+
+    const hours = Math.max(
+      1,
+      Math.floor(Number(this.config.hourlyForecastHours ?? DEFAULT_CONFIG.hourlyForecastHours))
+    );
+
+    // If we have hourly forecast from new API, use it directly
+    if (this.hourlyForecast && this.hourlyForecast.length > 0) {
+      return this.hourlyForecast.slice(0, hours);
+    }
+
+    // Otherwise fall back to attributes forecast
     const weather = this.getWeatherData();
     if (!weather.forecast || weather.forecast.length === 0) return [];
 
@@ -382,11 +480,6 @@ export class AnimatedWeatherCard extends LitElement {
         (itemDay.getTime() === tomorrow.getTime() && itemDate.getHours() <= now.getHours());
     });
 
-    const hours = Math.max(
-      1,
-      Math.floor(Number(this.config.hourlyForecastHours ?? DEFAULT_CONFIG.hourlyForecastHours))
-    );
-
     return todayForecast
       .sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime())
       .slice(0, hours);
@@ -394,6 +487,17 @@ export class AnimatedWeatherCard extends LitElement {
 
   private getWeekForecast(): WeatherForecast[] {
     if (!this.hass || !this.config) return [];
+
+    // If we have daily forecast from new API, use it directly
+    if (this.dailyForecast && this.dailyForecast.length > 0) {
+      const days = Math.max(
+        1,
+        Math.floor(Number(this.config.dailyForecastDays ?? DEFAULT_CONFIG.dailyForecastDays))
+      );
+      return this.dailyForecast.slice(0, days);
+    }
+
+    // Otherwise fall back to processing hourly forecast
     const weather = this.getWeatherData();
     if (!weather.forecast || weather.forecast.length === 0) return [];
 
@@ -545,15 +649,58 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
+  /**
+   * Convert wind speed for legacy providers that don't specify wind_speed_unit
+   * If provider has wind_speed_unit attribute, returns value as-is (no conversion)
+   */
   private convertWindSpeed(speed: number | null): number | null {
     if (speed == null) return null;
+
+    const entityId = this.config.entity || 'weather.home';
+    const attrs = this.getAttributes(entityId);
+
+    // If provider specifies wind_speed_unit, trust it and don't convert
+    if (attrs.wind_speed_unit) {
+      return Math.round(speed * 10) / 10;
+    }
+
+    // Legacy provider without wind_speed_unit - use config option
+    // Assume provider returns m/s, convert to km/h if requested
     if (this.config.windSpeedUnit === 'kmh') {
       return Math.round(speed * 3.6 * 10) / 10;
     }
-    return speed;
+
+    return Math.round(speed * 10) / 10;
   }
 
   private getWindSpeedUnit(): string {
+    const entityId = this.config.entity || 'weather.home';
+    const attrs = this.getAttributes(entityId);
+    const unit = attrs.wind_speed_unit;
+
+    // If provider specifies wind_speed_unit, use it
+    if (unit) {
+      // Normalize the unit string
+      const normalizedUnit = unit.toLowerCase().replace(/[^a-z]/g, '');
+
+      // Map common wind speed unit formats to translation keys
+      if (normalizedUnit === 'kmh' || normalizedUnit === 'kmph') {
+        return i18n.t('wind_unit_kmh');
+      } else if (normalizedUnit === 'ms' || normalizedUnit === 'mps') {
+        return i18n.t('wind_unit_ms');
+      } else if (normalizedUnit === 'mph') {
+        return i18n.t('wind_unit_mph');
+      } else if (normalizedUnit === 'knots' || normalizedUnit === 'kn' || normalizedUnit === 'kt') {
+        return i18n.t('wind_unit_knots');
+      } else if (normalizedUnit === 'fts' || normalizedUnit === 'ftps') {
+        return i18n.t('wind_unit_fts');
+      }
+
+      // Fallback: return the original unit if we don't recognize it
+      return unit;
+    }
+
+    // Legacy provider - use config option
     return this.config.windSpeedUnit === 'kmh' ? i18n.t('wind_unit_kmh') : i18n.t('wind_unit_ms');
   }
 

@@ -172,12 +172,26 @@ export function getSunriseSunsetData(
       const attrs = weatherState.attributes;
 
       if (!sunrise && (attrs.forecast_sunrise || attrs.sunrise)) {
-        sunrise = new Date(attrs.forecast_sunrise || attrs.sunrise);
+        sunrise = new Date(attrs.forecast_sunrise as string || attrs.sunrise as string);
       }
 
       if (!sunset && (attrs.forecast_sunset || attrs.sunset)) {
-        sunset = new Date(attrs.forecast_sunset || attrs.sunset);
+        sunset = new Date(attrs.forecast_sunset as string || attrs.sunset as string);
       }
+    }
+  }
+
+  // If still no sun data, try default sun.sun entity from Home Assistant
+  if ((!sunrise || !sunset) && hass && hass.states['sun.sun']) {
+    const sunEntity = hass.states['sun.sun'];
+    const sunAttrs = sunEntity.attributes;
+
+    if (!sunrise && sunAttrs.next_rising) {
+      sunrise = new Date(sunAttrs.next_rising as string);
+    }
+
+    if (!sunset && sunAttrs.next_setting) {
+      sunset = new Date(sunAttrs.next_setting as string);
     }
   }
 

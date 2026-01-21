@@ -27,6 +27,9 @@ const translation: Translation = {
   'language': 'Sprache',
   'wind_unit_kmh': 'km/h',
   'wind_unit_ms': 'm/s',
+  'wind_unit_mph': 'mph',
+  'wind_unit_knots': 'Knoten',
+  'wind_unit_fts': 'ft/s',
   'show_clock': 'Aktuelle Uhrzeit anzeigen',
   'demo': {
     'pageTitle': 'Dynamische Wetterkarte',
