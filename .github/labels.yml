@@ -1,0 +1,119 @@
+# GitHub Labels Configuration
+# You can sync these labels using: gh label sync --file .github/labels.yml
+
+# Type labels
+- name: "bug"
+  description: "Something isn't working"
+  color: "d73a4a"
+
+- name: "enhancement"
+  description: "New feature or request"
+  color: "a2eeef"
+
+- name: "documentation"
+  description: "Improvements or additions to documentation"
+  color: "0075ca"
+
+- name: "translation"
+  description: "Translation related issues"
+  color: "0e8a16"
+
+# Priority labels
+- name: "priority: critical"
+  description: "Critical priority - needs immediate attention"
+  color: "b60205"
+
+- name: "priority: high"
+  description: "High priority"
+  color: "d93f0b"
+
+- name: "priority: medium"
+  description: "Medium priority"
+  color: "fbca04"
+
+- name: "priority: low"
+  description: "Low priority"
+  color: "0e8a16"
+
+# Status labels
+- name: "triage"
+  description: "Needs triage"
+  color: "ededed"
+
+- name: "in progress"
+  description: "Currently being worked on"
+  color: "fbca04"
+
+- name: "blocked"
+  description: "Blocked by another issue or dependency"
+  color: "d73a4a"
+
+- name: "ready for review"
+  description: "Ready for code review"
+  color: "0e8a16"
+
+- name: "needs more info"
+  description: "Needs more information from the reporter"
+  color: "d876e3"
+
+# Component labels
+- name: "component: animation"
+  description: "Related to weather animations"
+  color: "1d76db"
+
+- name: "component: ui"
+  description: "Related to user interface"
+  color: "1d76db"
+
+- name: "component: i18n"
+  description: "Related to internationalization"
+  color: "1d76db"
+
+- name: "component: forecast"
+  description: "Related to forecast display"
+  color: "1d76db"
+
+- name: "component: config"
+  description: "Related to configuration options"
+  color: "1d76db"
+
+# Other labels
+- name: "dependencies"
+  description: "Pull requests that update a dependency file"
+  color: "0366d6"
+
+- name: "automated"
+  description: "Automated pull request (Dependabot, etc.)"
+  color: "ededed"
+
+- name: "ci"
+  description: "Continuous Integration related"
+  color: "0e8a16"
+
+- name: "good first issue"
+  description: "Good for newcomers"
+  color: "7057ff"
+
+- name: "help wanted"
+  description: "Extra attention is needed"
+  color: "008672"
+
+- name: "duplicate"
+  description: "This issue or pull request already exists"
+  color: "cfd3d7"
+
+- name: "invalid"
+  description: "This doesn't seem right"
+  color: "e4e669"
+
+- name: "wontfix"
+  description: "This will not be worked on"
+  color: "ffffff"
+
+- name: "question"
+  description: "Further information is requested"
+  color: "d876e3"
+
+- name: "breaking change"
+  description: "Contains breaking changes"
+  color: "d73a4a"
