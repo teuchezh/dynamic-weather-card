@@ -93,13 +93,13 @@
 ### Вариант 2: Ручная установка
 
 1. Скачайте `dynamic-weather-card.js` из [последнего релиза](https://github.com/teuchezh/dynamic-weather-card/releases)
-2. Скопируйте файл в директорию `config/www/`
+2. Скопируйте файл в директорию `config/www/community/dynamic-weather-card/`
 3. Добавьте ресурс в Home Assistant:
 
    **Настройки** → **Панели управления** → **Ресурсы** → **Добавить ресурс**
 
    ```
-   URL: /local/dynamic-weather-card.js
+   URL: /local/community/dynamic-weather-card/dynamic-weather-card.js
    Тип: JavaScript Module
    ```
 
