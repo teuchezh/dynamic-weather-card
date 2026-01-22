@@ -576,6 +576,20 @@
                             <button class="btn btn-preset" onclick="setTime(1080)">🌇 18:00</button>
                             <button class="btn btn-preset" onclick="setTime(0)">🌙 0:00</button>
                         </div>
+                        <div style="margin-top: 12px;">
+                            <button class="btn btn-demo" id="time-animation-btn" onclick="toggleTimeAnimation()">
+                                🎬 Animate 24h Cycle
+                            </button>
+                        </div>
+                        <div class="control-group" style="margin-top: 12px;">
+                            <label class="control-label">Animation Speed</label>
+                            <select id="animation-speed-select">
+                                <option value="10">Very Fast (10s)</option>
+                                <option value="20">Fast (20s)</option>
+                                <option value="30" selected>Normal (30s)</option>
+                                <option value="60">Slow (60s)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -794,6 +808,9 @@ function applyTranslations() {
         let demoModeActive = false;
         let demoInterval = null;
         let demoStep = 0;
+        let timeAnimationActive = false;
+        let timeAnimationInterval = null;
+        let timeAnimationStartTime = 0;
 
         const WEATHER_CONDITIONS = [
             'sunny', 'clear', 'partlycloudy', 'cloudy', 'rainy', 'pouring', 'snowy', 'snowy-rainy', 'foggy'
@@ -940,12 +957,84 @@ function applyTranslations() {
             demoStep = (demoStep + 1) % DEMO_SEQUENCE.length;
         }
 
-        function setTime(minutes) {
+        function toggleTimeAnimation() {
+            if (timeAnimationActive) {
+                stopTimeAnimation();
+            } else {
+                startTimeAnimation();
+            }
+        }
+
+        function startTimeAnimation() {
+            // Switch to manual time mode if not already
+            const timeSelect = document.getElementById('time-select');
+            if (timeSelect.value !== 'manual') {
+                timeSelect.value = 'manual';
+                document.getElementById('time-slider-container').style.display = 'block';
+            }
+
+            // Start from 00:00
+            currentManualTime = 0;
+            setTime(0); // Initial card creation
+
+            timeAnimationActive = true;
+            const btn = document.getElementById('time-animation-btn');
+            btn.textContent = '⏸️ Stop Animation';
+            btn.classList.add('active');
+
+            // Get animation duration in seconds
+            const durationSeconds = parseInt(document.getElementById('animation-speed-select').value);
+            const totalMinutes = 1440; // 24 hours = 1440 minutes
+
+            // Use requestAnimationFrame for smoother updates
+            timeAnimationStartTime = Date.now();
+
+            function animateTime() {
+                if (!timeAnimationActive) return;
+
+                const elapsed = Date.now() - timeAnimationStartTime;
+                const progress = elapsed / (durationSeconds * 1000);
+
+                if (progress >= 1) {
+                    // Animation complete
+                    stopTimeAnimation();
+                    return;
+                }
+
+                const newTime = Math.floor(progress * totalMinutes);
+                // Update time without recreating the card
+                setTime(newTime, true);
+
+                timeAnimationInterval = requestAnimationFrame(animateTime);
+            }
+
+            timeAnimationInterval = requestAnimationFrame(animateTime);
+        }
+
+        function stopTimeAnimation() {
+            timeAnimationActive = false;
+            if (timeAnimationInterval) {
+                cancelAnimationFrame(timeAnimationInterval);
+                timeAnimationInterval = null;
+            }
+            const btn = document.getElementById('time-animation-btn');
+            btn.textContent = '🎬 Animate 24h Cycle';
+            btn.classList.remove('active');
+        }
+
+        function setTime(minutes, skipCardUpdate = false) {
             currentManualTime = minutes;
             document.getElementById('time-slider').value = minutes;
             document.getElementById('time-display').textContent = formatTime(minutes);
             if (document.getElementById('time-select').value === 'manual') {
-                updateCard();
+                if (skipCardUpdate && card) {
+                    // Update only the time of day without recreating the card
+                    card._testTimeOfDay = getTimeOfDayFromMinutes(currentManualTime);
+                    // Request Lit to re-render for background gradient update
+                    card.requestUpdate();
+                } else {
+                    updateCard();
+                }
             }
         }
 
@@ -1133,6 +1222,15 @@ function applyTranslations() {
             const clockFormatSelect = document.getElementById('clock-format-select');
             clockFormatSelect?.addEventListener('change', () => {
                 if (card) updateCard();
+            });
+
+            const animationSpeedSelect = document.getElementById('animation-speed-select');
+            animationSpeedSelect?.addEventListener('change', () => {
+                // If animation is running, restart with new speed
+                if (timeAnimationActive) {
+                    stopTimeAnimation();
+                    setTimeout(() => startTimeAnimation(), 100);
+                }
             });
 
             timeDisplay.textContent = formatTime(currentManualTime);
