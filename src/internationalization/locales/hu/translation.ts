@@ -46,7 +46,7 @@ const translation: Translation = {
     'show_hourly_forecast': 'Óránkénti előrejelzés',
     'hourly_forecast_hours': 'Óránkénti órák száma',
     'show_daily_forecast': 'Napi előrejelzés',
-    'daily_forecast_days': 'Napi napok száma',
+    'daily_forecast_days': 'Napok száma a napi előrejelzésben',
     'show_sunrise_sunset': 'Napkelte/Napnyugta',
     'sunrise_entity': 'Napkelte entitás',
     'sunset_entity': 'Napnyugta entitás',
@@ -66,12 +66,13 @@ const translation: Translation = {
     'language_nl': 'Holland',
     'language_fr': 'Francia',
     'language_es': 'Spanyol',
+    'language_hu': 'Spanyol',
     'wind_speed_unit': 'Szélsebesség egység',
     'wind_speed_unit_ms': 'm/s',
     'wind_speed_unit_kmh': 'km/h'
   },
   'demo': {
-    'pageTitle': 'Dinamikus Időjárás Kártya',
+    'pageTitle': 'Dynamic Weather Card',
     'pageSubtitle': 'Interaktív demó és beállító eszköz',
     'livePreview': 'Élő előnézet',
     'configuration': 'Beállítások',
