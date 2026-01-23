@@ -31,7 +31,7 @@ entity: weather.home
 type: custom:dynamic-weather-card
 entity: weather.home
 name: My Weather Station
-language: auto  # auto, en, ru, de, fr, nl, es, it
+language: auto  # auto, en, ru, de, fr, nl, es, it, hu
 show_feels_like: true
 show_wind: true
 show_hourly_forecast: true
@@ -52,6 +52,7 @@ clock_format: 24h  # 12h or 24h
 - Nederlands (Dutch)
 - Español (Spanish)
 - Italiano (Italian)
+- Magyar (Hungarian)
 
 ## Documentation
 
