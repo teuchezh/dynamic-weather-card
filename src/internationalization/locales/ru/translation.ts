@@ -143,13 +143,13 @@ const translation: Translation = {
     },
     'language': {
       'title': 'Язык',
-      'english': 'English',
+      'english': 'Английский',
       'russian': 'Русский',
-      'french': 'Français',
-      'german': 'Deutsch',
-      'dutch': 'Nederlands',
-      'spanish': 'Español',
-      'italian': 'Italiano',
+      'french': 'Французский',
+      'german': 'Немецкий',
+      'dutch': 'Нидерландский',
+      'spanish': 'Испанский',
+      'italian': 'Итальянский',
       'hungarian': 'Венгерский'
     }
   }
