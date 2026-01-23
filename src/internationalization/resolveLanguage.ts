@@ -18,6 +18,7 @@ export const resolveLanguage = ({ configLang, hassLang }: ResolveLanguageOptions
     if (lang.startsWith('fr')) return 'fr';
     if (lang.startsWith('it')) return 'it';
     if (lang.startsWith('es')) return 'es';
+    if (lang.startsWith('hu')) return 'hu';
   }
 
   return 'en';
