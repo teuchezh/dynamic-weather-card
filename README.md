@@ -135,7 +135,7 @@ type: custom:dynamic-weather-card
 entity: weather.home
 name: My Weather Station
 height: 300
-language: auto                    # auto, en, ru, de, fr, nl, es, it
+language: auto                    # auto, en, ru, de, fr, nl, es, it, hu
 overlay_opacity: 0.15             # 0-1 (dark overlay for better readability)
 wind_speed_unit: ms               # ms or kmh (for legacy integrations)
 
@@ -175,7 +175,7 @@ clock_format: 24h                         # 12h or 24h
 | **Display** |
 | `name` | string | - | Custom card title (leave empty to hide) |
 | `height` | number | `200` | Card height in pixels |
-| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it` |
+| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu` |
 | `overlay_opacity` | number | `0.1` | Dark overlay opacity (0-1) for text readability |
 | **Temperature** |
 | `show_feels_like` | boolean | `true` | Display "feels like" temperature |
@@ -250,6 +250,7 @@ The card automatically detects your Home Assistant language or you can set it ma
 | Nederlands | `nl` | ✅ Complete |
 | Español | `es` | ✅ Complete |
 | Italiano | `it` | ✅ Complete |
+| Magyar | `hu` | ✅ Complete |
 
 Want to add your language? [Contribute here!](https://github.com/teuchezh/dynamic-weather-card/tree/main/src/internationalization/locales)
 
