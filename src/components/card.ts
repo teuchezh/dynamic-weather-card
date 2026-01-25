@@ -1,15 +1,12 @@
 import { LitElement, html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { DEFAULT_CONFIG, TEMPLOW_ATTRIBUTES } from '../constants.js';
-import { i18n } from '../internationalization/index';
-import { resolveLanguage } from '../internationalization/resolveLanguage';
+import { i18n } from '../internationalization/index.js';
+import { resolveLanguage } from '../internationalization/resolveLanguage.js';
 import {
   getBackgroundGradient,
-  formatForecastTime,
-  formatForecastDay,
   getSunriseSunsetData,
-  getTimeOfDayWithSunData,
-  formatTime
+  getTimeOfDayWithSunData
 } from '../utils.js';
 import { SunnyAnimation } from '../animations/sunny.js';
 import { RainyAnimation } from '../animations/rainy.js';
@@ -19,94 +16,25 @@ import { FoggyAnimation } from '../animations/foggy.js';
 import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { cardStyles } from './styles.js';
-import { getSVGIcon, getWeatherConditionIcon, windDirection } from '../icons/svg-icons.js';
+import './clock.js';
+import './details.js';
+import './hourly-forecast.js';
+import './daily-forecast.js';
 import type {
   HomeAssistant,
   HassEntity,
-  WeatherCardConfig,
   TimeOfDay,
   WeatherForecast,
   BackgroundGradient,
   WeatherEntityAttributes,
-  ForecastEvent
-} from '../types';
-
-interface ForecastItemExtended extends WeatherForecast {
-  temp?: number;
-  native_temperature?: number;
-}
-
-interface WeatherCardConfigInternal extends WeatherCardConfig {
-  name?: string;
-  icons_path?: string;
-  sunriseEntity?: string | null;
-  sunsetEntity?: string | null;
-  templowAttribute?: string | null;
-  showHourlyForecast?: boolean;
-  showDailyForecast?: boolean;
-  hourlyForecastHours?: number;
-  dailyForecastDays?: number;
-  clockPosition?: 'top' | 'details';
-  tapAction?: ActionConfig;
-  holdAction?: ActionConfig;
-  doubleTapAction?: ActionConfig;
-}
-
-interface ActionConfig {
-  action: 'more-info' | 'toggle' | 'call-service' | 'navigate' | 'url' | 'none';
-  entity?: string;
-  service?: string;
-  service_data?: Record<string, unknown>;
-  navigation_path?: string;
-  url_path?: string;
-}
-
-interface ConfigInput {
-  type?: string;
-  entity: string;
-  icons_path?: string;
-  name?: string;
-  height?: number;
-  show_feels_like?: boolean;
-  show_wind?: boolean;
-  show_wind_gust?: boolean;
-  show_wind_direction?: boolean;
-  show_humidity?: boolean;
-  show_min_temp?: boolean;
-  show_forecast?: boolean;
-  show_hourly_forecast?: boolean;
-  show_daily_forecast?: boolean;
-  hourly_forecast_hours?: number;
-  daily_forecast_days?: number;
-  show_sunrise_sunset?: boolean;
-  show_clock?: boolean;
-  clock_position?: 'top' | 'details';
-  clock_format?: '12h' | '24h';
-  overlay_opacity?: number;
-  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
-  wind_speed_unit?: 'ms' | 'kmh';
-  sunrise_entity?: string;
-  sunset_entity?: string;
-  templow_attribute?: string;
-  tap_action?: ActionConfig;
-  hold_action?: ActionConfig;
-  double_tap_action?: ActionConfig;
-}
-
-interface WeatherData {
-  condition: string;
-  temperature: number | null;
-  apparentTemperature: number | null;
-  humidity: number | null;
-  windSpeed: number | null;
-  windGust: number | null;
-  windBearing: number | null;
-  windDirection: string | null;
-  pressure: number | null;
-  forecast: WeatherForecast[];
-  friendlyName: string;
-  templow: number | null;
-}
+  ForecastEvent,
+  WeatherData,
+  ActionConfig,
+  SunData,
+  ConfigInput,
+  WeatherCardConfigInternal,
+  DetailsConfig
+} from '../types.js';
 
 interface Animations {
   sunny: SunnyAnimation;
@@ -118,16 +46,9 @@ interface Animations {
   thunderstorm: ThunderstormAnimation;
 }
 
-interface SunData {
-  sunrise: Date | null;
-  sunset: Date | null;
-  hasSunData: boolean;
-}
-
 export class AnimatedWeatherCard extends LitElement {
   @property({ type: Object }) hass?: HomeAssistant;
   @property({ type: Object }) config!: WeatherCardConfigInternal;
-  @state() private currentTime: string = '';
   @state() private hourlyForecast: WeatherForecast[] = [];
   @state() private dailyForecast: WeatherForecast[] = [];
 
@@ -139,9 +60,7 @@ export class AnimatedWeatherCard extends LitElement {
   private animations: Partial<Animations> = {};
   private holdTimer: number | null = null;
   private readonly holdDelay: number = 500;
-  private clockInterval: number | null = null;
   private resizeObserver: ResizeObserver | null = null;
-  private _wheelHandler: EventListener | null = null;
   private lastTap: number | null = null;
   private holdFired: boolean = false;
   private hourlyForecastSubscription: Promise<(() => void)> | null = null;
@@ -182,8 +101,6 @@ export class AnimatedWeatherCard extends LitElement {
           this.startAnimation();
           this.setupResizeObserver();
         }
-        this.setupForecastScroll();
-        this.startClock();
       }, 100);
     });
   }
@@ -198,18 +115,6 @@ export class AnimatedWeatherCard extends LitElement {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
     }
-    if (this._wheelHandler && this.shadowRoot) {
-      const forecastScroll = this.shadowRoot.querySelector('.forecast-scroll');
-      if (forecastScroll) {
-        forecastScroll.removeEventListener('wheel', this._wheelHandler);
-      }
-      this._wheelHandler = null;
-    }
-    if (this.clockInterval) {
-      clearInterval(this.clockInterval);
-      this.clockInterval = null;
-    }
-    // Unsubscribe from forecast updates
     this.unsubscribeForecastUpdates();
   }
 
@@ -219,16 +124,11 @@ export class AnimatedWeatherCard extends LitElement {
       if (this.canvas && this.ctx) {
         this.resizeCanvas();
       }
-      this.setupForecastScroll();
 
       // Subscribe to forecast updates when hass or config changes
-      // This will handle both initial load and weather state updates
       if (this.hass && this.config.entity) {
         this.subscribeForecastUpdates();
       }
-    }
-    if (changedProperties.has('config')) {
-      this.startClock();
     }
 
     const resolvedLang = resolveLanguage({
@@ -264,25 +164,6 @@ export class AnimatedWeatherCard extends LitElement {
       this.resizeCanvas();
     });
     this.resizeObserver.observe(container);
-  }
-
-  private setupForecastScroll(): void {
-    if (!this.shadowRoot) return;
-    const forecastScroll = this.shadowRoot.querySelector('.forecast-scroll');
-    if (!forecastScroll) return;
-
-    if (this._wheelHandler) {
-      forecastScroll.removeEventListener('wheel', this._wheelHandler as EventListener);
-    }
-
-    this._wheelHandler = ((e: Event) => {
-      const wheelEvent = e as WheelEvent;
-      if (wheelEvent.deltaY !== 0) {
-        e.preventDefault();
-        (forecastScroll as HTMLElement).scrollLeft += wheelEvent.deltaY;
-      }
-    }) as EventListener;
-    forecastScroll.addEventListener('wheel', this._wheelHandler, { passive: false });
   }
 
   private resizeCanvas(): void {
@@ -612,240 +493,16 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  private renderTodayForecast(): TemplateResult {
-    const forecast = this.getTodayForecast();
-    if (forecast.length === 0) {
-      return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unavailable')}</div>`;
-    }
-
-    return html`
-      <div class="forecast-scroll">
-        ${forecast.map(item => html`
-          <div class="forecast-item">
-            <div class="forecast-time">${formatForecastTime(item.datetime)}</div>
-            <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
-            <div class="forecast-temp">${Math.round(item.temperature || (item as ForecastItemExtended).temp || (item as ForecastItemExtended).native_temperature || 0)}°</div>
-          </div>
-        `)}
-      </div>
-    `;
-  }
-
-  private renderDailyForecast(): TemplateResult {
-    const forecast = this.getWeekForecast();
-    if (forecast.length === 0) {
-      return html`<div style="opacity: 0.6; font-size: 14px;">${i18n.t('forecast_unavailable')}</div>`;
-    }
-
-    return html`
-      <div class="forecast-scroll">
-        ${forecast.map(item => html`
-          <div class="forecast-item">
-            <div class="forecast-time">${formatForecastDay(item.datetime, i18n.lang)}</div>
-            <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
-            <div class="forecast-temp">${Math.round(item.temperature || (item as ForecastItemExtended).temp || (item as ForecastItemExtended).native_temperature || 0)}°</div>
-          </div>
-        `)}
-      </div>
-    `;
-  }
-
-  /**
-   * Convert wind speed for legacy providers that don't specify wind_speed_unit
-   * If provider has wind_speed_unit attribute, returns value as-is (no conversion)
-   */
-  private convertWindSpeed(speed: number | null): number | null {
-    if (speed == null) return null;
-
-    const entityId = this.config.entity || 'weather.home';
-    const attrs = this.getAttributes(entityId);
-
-    // If provider specifies wind_speed_unit, trust it and don't convert
-    if (attrs.wind_speed_unit) {
-      return Math.round(speed * 10) / 10;
-    }
-
-    // Legacy provider without wind_speed_unit - use config option
-    // Assume provider returns m/s, convert to km/h if requested
-    if (this.config.windSpeedUnit === 'kmh') {
-      return Math.round(speed * 3.6 * 10) / 10;
-    }
-
-    return Math.round(speed * 10) / 10;
-  }
-
-  private getWindSpeedUnit(): string {
-    const entityId = this.config.entity || 'weather.home';
-    const attrs = this.getAttributes(entityId);
-    const unit = attrs.wind_speed_unit;
-
-    // If provider specifies wind_speed_unit, use it
-    if (unit) {
-      // Normalize the unit string
-      const normalizedUnit = unit.toLowerCase().replace(/[^a-z]/g, '');
-
-      // Map common wind speed unit formats to translation keys
-      if (normalizedUnit === 'kmh' || normalizedUnit === 'kmph') {
-        return i18n.t('wind_unit_kmh');
-      } else if (normalizedUnit === 'ms' || normalizedUnit === 'mps') {
-        return i18n.t('wind_unit_ms');
-      } else if (normalizedUnit === 'mph') {
-        return i18n.t('wind_unit_mph');
-      } else if (normalizedUnit === 'knots' || normalizedUnit === 'kn' || normalizedUnit === 'kt') {
-        return i18n.t('wind_unit_knots');
-      } else if (normalizedUnit === 'fts' || normalizedUnit === 'ftps') {
-        return i18n.t('wind_unit_fts');
-      }
-
-      // Fallback: return the original unit if we don't recognize it
-      return unit;
-    }
-
-    // Legacy provider - use config option
-    return this.config.windSpeedUnit === 'kmh' ? i18n.t('wind_unit_kmh') : i18n.t('wind_unit_ms');
-  }
-
-  private formatCurrentTime(): string {
-    const now = new Date();
-    const is12h = this.config.clockFormat === '12h';
-
-    if (is12h) {
-      let hours = now.getHours();
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const period = hours >= 12 ? i18n.t('pm') : i18n.t('am');
-      hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
-      return `${hours}:${minutes} ${period}`;
-    } else {
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      return `${hours}:${minutes}`;
-    }
-  }
-
-  private startClock(): void {
-    if (this.clockInterval) {
-      clearInterval(this.clockInterval);
-      this.clockInterval = null;
-    }
-    if (!this.config.showClock) return;
-
-    this.currentTime = this.formatCurrentTime();
-
-    this.clockInterval = window.setInterval(() => {
-      this.currentTime = this.formatCurrentTime();
-    }, 1000);
-  }
-
-  render(): TemplateResult {
-    if (!this.hass) {
-      return html`<div>No Home Assistant connection</div>`;
-    }
-
-    const weather = this.getWeatherData();
-    const weatherState = this.hass.states[this.config.entity];
-    const sunData = getSunriseSunsetData(weatherState, this.config.sunriseEntity, this.config.sunsetEntity, this.hass) as SunData;
-
-    const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
-    const cardClasses = `weather-card ${timeOfDay.type}`;
-
-    const minHeight = this.config.height ? `${this.config.height}px` : '200px';
-
-    const bgGradient: BackgroundGradient | null = getBackgroundGradient(timeOfDay);
-    const bgStyle = bgGradient
-      ? `background: linear-gradient(135deg, rgb(${bgGradient.start.r}, ${bgGradient.start.g}, ${bgGradient.start.b}), rgb(${bgGradient.end.r}, ${bgGradient.end.g}, ${bgGradient.end.b}));`
-      : '';
-
-    const overlayOpacity = this.config.overlayOpacity !== undefined
-      ? this.config.overlayOpacity
-      : DEFAULT_CONFIG.overlayOpacity;
-    const overlayStyle = `--overlay-opacity: ${overlayOpacity};`;
-
-    return html`
-      <ha-card
-        @click=${this.handleTap}
-        @pointerdown=${this.handlePointerDown}
-        @pointerup=${this.handlePointerUp}
-        @pointercancel=${this.handlePointerUp}
-      >
-        <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} cursor: pointer;">
-          <div class="canvas-container"></div>
-          <div class="content">
-            ${this.config.name && this.config.name.trim() !== '' ? html`
-              <div class="header">
-                <div class="location">${this.config.name}</div>
-              </div>
-            ` : ''}
-            <div class="primary">
-              <div class="primary-left">
-                <div class="condition">${i18n.t(weather.condition)}</div>
-                <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
-                ${this.config.showMinTemp ? html`
-                  <div class="temp-range">
-                    <span class="temp-min">↓ ${weather.templow != null ? `${Math.round(weather.templow)}°` : i18n.t('no_data')}</span>
-                  </div>
-                ` : ''}
-                ${this.config.showFeelsLike ? html`
-                  <div class="feels-like">${i18n.t('feels_like')} ${weather.apparentTemperature != null ? `${Math.round(weather.apparentTemperature)}°` : i18n.t('no_data')}</div>
-                ` : ''}
-              </div>
-              ${this.config.showClock && this.config.clockPosition === 'top' ? html`
-                <div class="clock">${this.currentTime}</div>
-              ` : ''}
-            </div>
-            <div class="details ${this.config.showClock && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
-              <div class="info-grid">
-                ${this.config.showHumidity && weather.humidity != null ? html`
-                  <div class="info-item">
-                    <span class="info-icon">${getSVGIcon('humidity')}</span>
-                    <span>${weather.humidity} %</span>
-                  </div>
-                ` : ''}
-                ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunrise ? html`
-                  <div class="info-item">
-                    <span class="info-icon">${getSVGIcon('sunrise')}</span>
-                    <span>${formatTime(sunData.sunrise, this.config.clockFormat, i18n.t('am'), i18n.t('pm'))}</span>
-                  </div>
-                ` : ''}
-                ${this.config.showWind && weather.windSpeed != null ? html`
-                  ${this.config.showWindDirection && weather.windBearing != null ? html`
-                    <div class="info-item">
-                      <span class="info-icon">${windDirection(weather.windBearing)}</span>
-                      <span>${this.convertWindSpeed(weather.windSpeed)} ${this.getWindSpeedUnit()}${this.config.showWindGust && weather.windGust ? ` / ${this.convertWindSpeed(weather.windGust)} ${this.getWindSpeedUnit()}` : ''}</span>
-                    </div>
-                  ` : html`
-                    <div class="info-item">
-                      <span class="info-icon">${getSVGIcon('wind')}</span>
-                      <span>${this.convertWindSpeed(weather.windSpeed)} ${this.getWindSpeedUnit()}${this.config.showWindGust && weather.windGust ? ` / ${this.convertWindSpeed(weather.windGust)} ${this.getWindSpeedUnit()}` : ''}</span>
-                    </div>
-                  `}
-                ` : ''}
-                ${this.config.showSunriseSunset && sunData.hasSunData && sunData.sunset ? html`
-                  <div class="info-item">
-                    <span class="info-icon">${getSVGIcon('sunset')}</span>
-                    <span>${formatTime(sunData.sunset, this.config.clockFormat, i18n.t('am'), i18n.t('pm'))}</span>
-                  </div>
-                ` : ''}
-              </div>
-              ${this.config.showClock && this.config.clockPosition === 'details' ? html`
-                <div class="clock">${this.currentTime}</div>
-              ` : ''}
-            </div>
-            ${this.config.showHourlyForecast ? html`
-              <div class="forecast-container">
-                <div class="forecast-title">${i18n.t('forecast_title')}</div>
-                ${this.renderTodayForecast()}
-              </div>
-            ` : ''}
-            ${this.config.showDailyForecast ? html`
-              <div class="forecast-container">
-                <div class="forecast-title">${i18n.t('daily_forecast_title')}</div>
-                ${this.renderDailyForecast()}
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      </ha-card>
-    `;
+  private getDetailsConfig(): DetailsConfig {
+    return {
+      showHumidity: this.config.showHumidity ?? true,
+      showWind: this.config.showWind ?? true,
+      showWindGust: this.config.showWindGust ?? true,
+      showWindDirection: this.config.showWindDirection ?? true,
+      showSunriseSunset: this.config.showSunriseSunset ?? true,
+      clockFormat: this.config.clockFormat ?? '24h',
+      windSpeedUnit: this.config.windSpeedUnit ?? 'ms'
+    };
   }
 
   setConfig(config: ConfigInput): void {
@@ -985,5 +642,85 @@ export class AnimatedWeatherCard extends LitElement {
 
   getCardSize(): number {
     return 1;
+  }
+
+  render(): TemplateResult {
+    if (!this.hass) {
+      return html`<div>No Home Assistant connection</div>`;
+    }
+
+    const weather = this.getWeatherData();
+    const weatherState = this.hass.states[this.config.entity];
+    const sunData = getSunriseSunsetData(weatherState, this.config.sunriseEntity, this.config.sunsetEntity, this.hass) as SunData;
+
+    const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
+    const cardClasses = `weather-card ${timeOfDay.type}`;
+
+    const minHeight = this.config.height ? `${this.config.height}px` : '200px';
+
+    const bgGradient: BackgroundGradient | null = getBackgroundGradient(timeOfDay);
+    const bgStyle = bgGradient
+      ? `background: linear-gradient(135deg, rgb(${bgGradient.start.r}, ${bgGradient.start.g}, ${bgGradient.start.b}), rgb(${bgGradient.end.r}, ${bgGradient.end.g}, ${bgGradient.end.b}));`
+      : '';
+
+    const overlayOpacity = this.config.overlayOpacity !== undefined
+      ? this.config.overlayOpacity
+      : DEFAULT_CONFIG.overlayOpacity;
+    const overlayStyle = `--overlay-opacity: ${overlayOpacity};`;
+
+    return html`
+      <ha-card
+        @click=${this.handleTap}
+        @pointerdown=${this.handlePointerDown}
+        @pointerup=${this.handlePointerUp}
+        @pointercancel=${this.handlePointerUp}
+      >
+        <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} cursor: pointer;">
+          <div class="canvas-container"></div>
+          <div class="content">
+            ${this.config.name && this.config.name.trim() !== '' ? html`
+              <div class="header">
+                <div class="location">${this.config.name}</div>
+              </div>
+            ` : ''}
+            <div class="primary">
+              <div class="primary-left">
+                <div class="condition">${i18n.t(weather.condition)}</div>
+                <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
+                ${this.config.showMinTemp ? html`
+                  <div class="temp-range">
+                    <span class="temp-min">↓ ${weather.templow != null ? `${Math.round(weather.templow)}°` : i18n.t('no_data')}</span>
+                  </div>
+                ` : ''}
+                ${this.config.showFeelsLike ? html`
+                  <div class="feels-like">${i18n.t('feels_like')} ${weather.apparentTemperature != null ? `${Math.round(weather.apparentTemperature)}°` : i18n.t('no_data')}</div>
+                ` : ''}
+              </div>
+              <weather-clock
+                .format=${this.config.showClock && this.config.clockPosition === 'top' ? this.config.clockFormat : null}
+              ></weather-clock>
+            </div>
+            <div class="details ${this.config.showClock && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
+              <weather-details
+                .weather=${weather}
+                .sunData=${sunData}
+                .config=${this.getDetailsConfig()}
+                .entityAttributes=${this.getAttributes(this.config.entity)}
+              ></weather-details>
+              <weather-clock
+                .format=${this.config.showClock && this.config.clockPosition === 'details' ? this.config.clockFormat : null}
+              ></weather-clock>
+            </div>
+            <hourly-forecast
+              .forecast=${this.config.showHourlyForecast ? this.getTodayForecast() : []}
+            ></hourly-forecast>
+            <daily-forecast
+              .forecast=${this.config.showDailyForecast ? this.getWeekForecast() : []}
+              .lang=${i18n.lang}
+            ></daily-forecast>
+          </div>
+        </div>
+      </ha-card>
+    `;
   }
 }

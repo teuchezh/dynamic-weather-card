@@ -6,7 +6,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "bun run build.ts",
-    "dev": "bun build src/index.ts --outfile=dynamic-weather-card.js --target=browser --format=esm --watch",
+    "dev": "bun build src/index.ts --outfile=dynamic-weather-card.js --target=browser --format=esm --watch --define __VERSION__='\"dev\"'",
     "lint": "bun run eslint src/",
     "lint:fix": "bun run eslint src/ --fix",
     "prebuild": "bun run lint",

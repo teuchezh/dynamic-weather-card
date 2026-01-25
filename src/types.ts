@@ -59,6 +59,9 @@ export interface WeatherForecast {
   precipitation_probability?: number;
   wind_speed?: number;
   wind_bearing?: number;
+  // Alternative temperature property names from various providers
+  temp?: number;
+  native_temperature?: number;
 }
 
 // Forecast Event from subscription
@@ -122,7 +125,7 @@ export interface WeatherCardConfig {
   clockPosition?: 'top' | 'details';
   clockFormat?: '12h' | '24h';
   overlayOpacity?: number;
-  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es';
+  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es' | 'it';
   height?: number | null;
   windSpeedUnit?: 'ms' | 'kmh';
 }
@@ -156,6 +159,95 @@ export interface BackgroundGradient {
 export interface SunMoonData {
   sunrise: Date | null;
   sunset: Date | null;
+}
+
+// Sun Data with hasSunData flag (used by components)
+export interface SunData {
+  sunrise: Date | null;
+  sunset: Date | null;
+  hasSunData: boolean;
+}
+
+// Weather Data (processed from entity)
+export interface WeatherData {
+  condition: string;
+  temperature: number | null;
+  apparentTemperature: number | null;
+  humidity: number | null;
+  windSpeed: number | null;
+  windGust: number | null;
+  windBearing: number | null;
+  windDirection: string | null;
+  pressure: number | null;
+  forecast: WeatherForecast[];
+  friendlyName: string;
+  templow: number | null;
+}
+
+// Action Configuration
+export interface ActionConfig {
+  action: 'more-info' | 'toggle' | 'call-service' | 'navigate' | 'url' | 'none';
+  entity?: string;
+  service?: string;
+  service_data?: Record<string, unknown>;
+  navigation_path?: string;
+  url_path?: string;
+}
+
+// Config Input (from user YAML)
+export interface ConfigInput {
+  type?: string;
+  entity: string;
+  icons_path?: string;
+  name?: string;
+  height?: number;
+  show_feels_like?: boolean;
+  show_wind?: boolean;
+  show_wind_gust?: boolean;
+  show_wind_direction?: boolean;
+  show_humidity?: boolean;
+  show_min_temp?: boolean;
+  show_forecast?: boolean;
+  show_hourly_forecast?: boolean;
+  show_daily_forecast?: boolean;
+  hourly_forecast_hours?: number;
+  daily_forecast_days?: number;
+  show_sunrise_sunset?: boolean;
+  show_clock?: boolean;
+  clock_position?: 'top' | 'details';
+  clock_format?: '12h' | '24h';
+  overlay_opacity?: number;
+  language?: 'auto' | 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es' | 'it';
+  wind_speed_unit?: 'ms' | 'kmh';
+  sunrise_entity?: string;
+  sunset_entity?: string;
+  templow_attribute?: string;
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
+}
+
+// Internal Card Configuration (normalized)
+export interface WeatherCardConfigInternal extends WeatherCardConfig {
+  name?: string;
+  icons_path?: string;
+  sunriseEntity?: string | null;
+  sunsetEntity?: string | null;
+  templowAttribute?: string | null;
+  tapAction?: ActionConfig;
+  holdAction?: ActionConfig;
+  doubleTapAction?: ActionConfig;
+}
+
+// Details Component Configuration
+export interface DetailsConfig {
+  showHumidity: boolean;
+  showWind: boolean;
+  showWindGust: boolean;
+  showWindDirection: boolean;
+  showSunriseSunset: boolean;
+  clockFormat: '12h' | '24h';
+  windSpeedUnit: 'ms' | 'kmh';
 }
 
 // Custom Card Registration
