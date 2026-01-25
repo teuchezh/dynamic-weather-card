@@ -774,6 +774,7 @@
         i18n.setLanguage(lang);
 
         window.i18n = i18n;
+        window.dispatchEvent(new CustomEvent('i18n-ready'));
     </script>
 
     <!-- Main application logic -->
@@ -788,14 +789,14 @@
         // ============================================================================
 function applyTranslations() {
           $$('[data-i18n]').forEach(el => {
-            el.textContent = i18n.t(`demo.${el.dataset.i18n}`);
+            el.textContent = window.i18n.t(`demo.${el.dataset.i18n}`);
           });
 
           $$('[data-i18n-placeholder]').forEach(el => {
-            el.placeholder = i18n.t(`demo.${el.dataset.i18nPlaceholder}`);
+            el.placeholder = window.i18n.t(`demo.${el.dataset.i18nPlaceholder}`);
           });
 
-          document.title = i18n.t('demo.pageTitle');
+          document.title = window.i18n.t('demo.pageTitle');
         }
 
         // ============================================================================
@@ -925,7 +926,7 @@ function applyTranslations() {
             demoModeActive = true;
             demoStep = 0;
             const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = i18n.t('demo.stopDemo');
+            demoBtn.textContent = window.i18n.t('demo.stopDemo');
             demoBtn.classList.add('active');
 
             runDemoStep();
@@ -939,7 +940,7 @@ function applyTranslations() {
                 demoInterval = null;
             }
             const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = i18n.t('demo.startDemo');
+            demoBtn.textContent = window.i18n.t('demo.startDemo');
             demoBtn.classList.remove('active');
         }
 
@@ -1064,7 +1065,7 @@ function applyTranslations() {
             container.innerHTML = '';
 
             if (!window.cardLoaded) {
-                container.innerHTML = `<div class="loading-message">${i18n.t('loading')}</div>`;
+                container.innerHTML = `<div class="loading-message">${window.i18n.t('loading')}</div>`;
                 return;
             }
 
@@ -1156,13 +1157,19 @@ function applyTranslations() {
         function setupLanguageSelect() {
           const languageSelect = document.getElementById('language-select');
 
-          languageSelect.value = i18n.lang;
+          languageSelect.value = window.i18n.lang;
 
           languageSelect.addEventListener('change', (e) => {
-            i18n.setLanguage(e.target.value);
+            window.i18n.setLanguage(e.target.value);
             applyTranslations();
             updateCard();
           });
+        }
+
+        function initI18nDependentFeatures() {
+          setupLanguageSelect();
+          applyTranslations();
+          updateCard();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1184,8 +1191,12 @@ function applyTranslations() {
                 updateCard();
             });
 
-          setupLanguageSelect();
-          applyTranslations();
+          // Wait for i18n to be ready before using it
+          if (window.i18n) {
+            initI18nDependentFeatures();
+          } else {
+            window.addEventListener('i18n-ready', initI18nDependentFeatures, { once: true });
+          }
 
           window.addEventListener('language-changed', () => {
             applyTranslations();

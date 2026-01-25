@@ -261,3 +261,107 @@ export function getTimeOfDayWithSunData(sunData: SunMoonData & { hasSunData: boo
   // Fallback to static time-based calculation
   return getTimeOfDay();
 }
+
+/**
+ * Convert wind speed for legacy providers that don't specify wind_speed_unit
+ * If provider has wind_speed_unit attribute, returns value as-is (no conversion)
+ */
+export function convertWindSpeed(
+  speed: number | null,
+  attrs: { wind_speed_unit?: string },
+  configUnit: 'ms' | 'kmh'
+): number | null {
+  if (speed == null) return null;
+
+  // If provider specifies wind_speed_unit, trust it and don't convert
+  if (attrs.wind_speed_unit) {
+    return Math.round(speed * 10) / 10;
+  }
+
+  // Legacy provider without wind_speed_unit - use config option
+  // Assume provider returns m/s, convert to km/h if requested
+  if (configUnit === 'kmh') {
+    return Math.round(speed * 3.6 * 10) / 10;
+  }
+
+  return Math.round(speed * 10) / 10;
+}
+
+/**
+ * Get wind speed unit label based on entity attributes or config
+ */
+export function getWindSpeedUnit(
+  attrs: { wind_speed_unit?: string },
+  configUnit: 'ms' | 'kmh',
+  t: (key: string) => string
+): string {
+  const unit = attrs.wind_speed_unit;
+
+  // If provider specifies wind_speed_unit, use it
+  if (unit) {
+    const normalizedUnit = unit.toLowerCase().replace(/[^a-z]/g, '');
+
+    if (normalizedUnit === 'kmh' || normalizedUnit === 'kmph') {
+      return t('wind_unit_kmh');
+    } else if (normalizedUnit === 'ms' || normalizedUnit === 'mps') {
+      return t('wind_unit_ms');
+    } else if (normalizedUnit === 'mph') {
+      return t('wind_unit_mph');
+    } else if (normalizedUnit === 'knots' || normalizedUnit === 'kn' || normalizedUnit === 'kt') {
+      return t('wind_unit_knots');
+    } else if (normalizedUnit === 'fts' || normalizedUnit === 'ftps') {
+      return t('wind_unit_fts');
+    }
+
+    // Fallback: return the original unit if we don't recognize it
+    return unit;
+  }
+
+  // Legacy provider - use config option
+  return configUnit === 'kmh' ? t('wind_unit_kmh') : t('wind_unit_ms');
+}
+
+/**
+ * Format current time for clock display
+ */
+export function formatClockTime(
+  date: Date,
+  format: '12h' | '24h',
+  amLabel: string,
+  pmLabel: string
+): string {
+  if (format === '12h') {
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const period = hours >= 12 ? pmLabel : amLabel;
+    hours = hours % 12 || 12;
+    return `${hours}:${minutes} ${period}`;
+  } else {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+}
+
+/**
+ * Setup horizontal scroll with mouse wheel for containers
+ * Returns cleanup function to remove event listener
+ */
+export function setupHorizontalScroll(
+  root: ShadowRoot | null,
+  selector: string
+): (() => void) | null {
+  const element = root?.querySelector(selector) as HTMLElement | null;
+  if (!element) return null;
+
+  const handler = (e: Event) => {
+    const wheelEvent = e as WheelEvent;
+    if (wheelEvent.deltaY !== 0) {
+      e.preventDefault();
+      element.scrollLeft += wheelEvent.deltaY;
+    }
+  };
+  element.addEventListener('wheel', handler, { passive: false });
+
+  return () => element.removeEventListener('wheel', handler);
+}
