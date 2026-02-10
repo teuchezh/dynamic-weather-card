@@ -27,6 +27,13 @@ export class AnimationManager {
   private height: number = 0;
   private container: Element | null = null;
   private getDrawParams: () => { condition: string; timeOfDay: TimeOfDay } | null;
+  private handleVisibilityChange = (): void => {
+    if (document.hidden) {
+      this.stopAnimation();
+    } else {
+      this.startAnimation();
+    }
+  };
 
   constructor(getDrawParams: () => { condition: string; timeOfDay: TimeOfDay } | null) {
     this.getDrawParams = getDrawParams;
@@ -39,14 +46,13 @@ export class AnimationManager {
       this.initializeAnimations();
       this.startAnimation();
       this.setupResizeObserver();
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
     }
   }
 
   destroy(): void {
-    if (this.animationFrame) {
-      cancelAnimationFrame(this.animationFrame);
-      this.animationFrame = null;
-    }
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    this.stopAnimation();
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
@@ -122,11 +128,19 @@ export class AnimationManager {
   }
 
   private startAnimation(): void {
+    if (this.animationFrame) return;
     const animate = () => {
       this.draw();
       this.animationFrame = requestAnimationFrame(animate);
     };
     animate();
+  }
+
+  private stopAnimation(): void {
+    if (this.animationFrame) {
+      cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = null;
+    }
   }
 
   private draw(): void {

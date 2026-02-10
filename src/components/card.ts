@@ -35,6 +35,8 @@ export class AnimatedWeatherCard extends LitElement {
   private animationManager: AnimationManager;
   private forecastService: ForecastService;
   private actionHandler: ActionHandler;
+  private subscribedEntity: string | null = null;
+  private subscribedShowDaily: boolean = false;
   _testTimeOfDay?: TimeOfDay;
 
   static get styles() {
@@ -90,14 +92,13 @@ export class AnimatedWeatherCard extends LitElement {
   updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
     if (changedProperties.has('hass') || changedProperties.has('config')) {
-      this.animationManager.resize();
+      const entity = this.config.entity;
+      const showDaily = this.config.showDailyForecast ?? false;
 
-      if (this.hass && this.config.entity) {
-        this.forecastService.subscribe(
-          this.hass,
-          this.config.entity,
-          this.config.showDailyForecast ?? false
-        );
+      if (this.hass && entity && (entity !== this.subscribedEntity || showDaily !== this.subscribedShowDaily)) {
+        this.subscribedEntity = entity;
+        this.subscribedShowDaily = showDaily;
+        this.forecastService.subscribe(this.hass, entity, showDaily);
       }
     }
 
