@@ -8,6 +8,7 @@ import type { WeatherForecast } from '../types.js';
 
 export class HourlyForecast extends LitElement {
   @property({ type: Array }) forecast: WeatherForecast[] = [];
+  @property({ type: String }) clockFormat: '12h' | '24h' = '24h';
 
   static styles = forecastStyles;
 
@@ -39,7 +40,7 @@ export class HourlyForecast extends LitElement {
         <div class="forecast-scroll">
           ${this.forecast.map(item => html`
             <div class="forecast-item">
-              <div class="forecast-time">${formatForecastTime(item.datetime)}</div>
+              <div class="forecast-time">${formatForecastTime(item.datetime, this.clockFormat, i18n.t('am'), i18n.t('pm'))}</div>
               <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
               <div class="forecast-temp">${this.getTemperature(item)}°</div>
             </div>

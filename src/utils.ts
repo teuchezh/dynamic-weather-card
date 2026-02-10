@@ -109,12 +109,17 @@ export function getBackgroundGradient(timeOfDay: TimeOfDay): BackgroundGradient 
 }
 
 /**
- * Format forecast time as HH:00
+ * Format forecast time as HH:00 (24h) or H AM/PM (12h)
  */
-export function formatForecastTime(datetime: string): string {
+export function formatForecastTime(datetime: string, format: '12h' | '24h' = '24h', am = 'AM', pm = 'PM'): string {
   if (!datetime) return '';
   const date = new Date(datetime);
   const hours = date.getHours();
+  if (format === '12h') {
+    const h = hours % 12 || 12;
+    const period = hours < 12 ? am : pm;
+    return `${h} ${period}`;
+  }
   return `${hours.toString().padStart(2, '0')}:00`;
 }
 
