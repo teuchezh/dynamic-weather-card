@@ -33,7 +33,7 @@ animated-weather-card/
 │   │   ├── weather-conditions.ts
 │   │   └── svg-icons.ts
 │   ├── internationalization/ # Localization
-│   │   ├── locales/        # Translations (en, ru, de, fr, nl, es, it)
+│   │   ├── locales/        # Translations (en, ru, de, fr, nl, es, it, hu)
 │   │   ├── directive.ts
 │   │   ├── index.ts
 │   │   ├── resolveLanguage.ts
@@ -155,6 +155,7 @@ private draw(): void {
 - Nederlands (nl)
 - Español (es)
 - Italiano (it)
+- Magyar (hu)
 
 **Usage:**
 ```typescript
