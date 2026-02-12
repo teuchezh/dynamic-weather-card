@@ -1,37 +1,10 @@
 # Release Process
 
-This project uses automated workflows for creating releases and managing changelogs.
+This project uses manual workflows for creating releases and managing changelogs.
 
-## Automated Release Process
+## Release Methods
 
-### Option 1: Automatic Tag Creation (Recommended)
-
-1. Update the version in `package.json`:
-   ```bash
-   npm version patch  # for bug fixes (0.2.1 -> 0.2.2)
-   npm version minor  # for new features (0.2.1 -> 0.3.0)
-   npm version major  # for breaking changes (0.2.1 -> 1.0.0)
-   ```
-
-2. Commit and push to main:
-   ```bash
-   git add package.json
-   git commit -m "chore: bump version to v0.2.2"
-   git push
-   ```
-
-3. The `auto-tag.yml` workflow will automatically:
-   - Detect the version change in package.json
-   - Create a git tag (e.g., `v0.2.2`)
-   - Push the tag to GitHub
-
-4. The `release.yml` workflow will automatically:
-   - Build the project
-   - Generate a changelog from commits since the last release
-   - Create a GitHub Release with the changelog
-   - Update CHANGELOG.md and commit it back to main
-
-### Option 2: Manual Tag Creation
+### Option 1: Manual Tag Creation
 
 1. Create and push a tag manually:
    ```bash
@@ -41,7 +14,7 @@ This project uses automated workflows for creating releases and managing changel
 
 2. The `release.yml` workflow will run automatically
 
-### Option 3: Manual Workflow Trigger
+### Option 2: Manual Workflow Trigger
 
 1. Go to GitHub Actions → Release workflow
 2. Click "Run workflow"
