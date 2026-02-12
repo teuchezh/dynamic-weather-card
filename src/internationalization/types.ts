@@ -77,6 +77,7 @@ export interface DemoTranslations {
     spanish: string;
     italian: string;
     slovak: string;
+    hungarian: string;
   };
 }
 
@@ -115,6 +116,7 @@ export interface EditorTranslations {
   language_es: string;
   language_it: string;
   language_sk: string;
+  language_hu: string;
   wind_speed_unit: string;
   wind_speed_unit_ms: string;
   wind_speed_unit_kmh: string;
@@ -157,4 +159,4 @@ export interface Translation {
   demo: DemoTranslations;
 }
 
-export type SupportedLanguage = 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es' | 'it' | 'sk';
+export type SupportedLanguage = 'en' | 'ru' | 'de' | 'nl' | 'fr' | 'es' | 'it' | 'sk' | 'hu';
