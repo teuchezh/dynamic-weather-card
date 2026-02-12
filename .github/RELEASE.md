@@ -2,19 +2,7 @@
 
 This project uses manual workflows for creating releases and managing changelogs.
 
-## Release Methods
-
-### Option 1: Manual Tag Creation
-
-1. Create and push a tag manually:
-   ```bash
-   git tag -a v0.2.2 -m "Release v0.2.2"
-   git push origin v0.2.2
-   ```
-
-2. The `release.yml` workflow will run automatically
-
-### Option 2: Manual Workflow Trigger
+## How to Release
 
 1. Go to GitHub Actions → Release workflow
 2. Click "Run workflow"
