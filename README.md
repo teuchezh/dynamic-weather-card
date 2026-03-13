@@ -252,6 +252,7 @@ The card automatically detects your Home Assistant language or you can set it ma
 | Italiano | `it` | ✅ Complete |
 | Magyar | `hu` | ✅ Complete |
 | Slovenčina | `sk` | ✅ Complete |
+| Polski | `pl` | ✅ Complete |
 
 Want to add your language? [Contribute here!](https://github.com/teuchezh/dynamic-weather-card/tree/main/src/internationalization/locales)
 
