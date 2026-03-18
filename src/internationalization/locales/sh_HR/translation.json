@@ -1,4 +1,10 @@
 {
     "sunny": "Sunčano",
-    "clear": "Vedro"
+    "clear": "Vedro",
+    "overcast": "Oblačno",
+    "cloudy": "Oblačno",
+    "partlycloudy": "'Delimično oblačno",
+    "rainy": "Kišovito",
+    "rain": "Kiša",
+    "snowy": "Snežno"
 }
