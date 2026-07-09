@@ -22,3 +22,6 @@ yarn-error.log
 # Logs
 *.log
 npm-debug.log*
+
+# Git worktrees
+.worktrees/
