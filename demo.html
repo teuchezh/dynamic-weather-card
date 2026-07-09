@@ -110,28 +110,46 @@
             gap: 10px;
         }
 
-        .control-section {
-            margin-bottom: 28px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .control-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .section-header {
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
+        .tab-bar {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .tab-button {
+            flex-shrink: 0;
+            margin-right: 20px;
+            padding: 10px 2px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            transform: translateY(1px);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .tab-button:last-child {
+            margin-right: 0;
+        }
+
+        .tab-button:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .action-buttons {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
         }
 
         .control-group {
@@ -429,11 +447,18 @@
 
         <!-- Controls Panel -->
         <div class="controls-panel">
-            <h2 class="panel-title" data-i18n="configuration">⚙️ Configuration</h2>
+            <h2 class="panel-title" data-i18n="configuration">Configuration</h2>
+
+            <div class="tab-bar" role="tablist">
+                <button type="button" class="tab-button active" data-tab="presets" data-i18n="quickPresets" role="tab">Quick Presets</button>
+                <button type="button" class="tab-button" data-tab="language" data-i18n="language.title" role="tab">Language</button>
+                <button type="button" class="tab-button" data-tab="weather" data-i18n="weatherCondition" role="tab">Weather Condition</button>
+                <button type="button" class="tab-button" data-tab="time" data-i18n="timeOfDay" role="tab">Time of Day</button>
+                <button type="button" class="tab-button" data-tab="display" data-i18n="displayOptions" role="tab">Display Options</button>
+            </div>
 
             <!-- Quick Presets -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="quickPresets">🎨 Quick Presets</div>
+            <div class="tab-panel" data-tab-panel="presets" role="tabpanel">
                 <div class="quick-presets">
                     <div class="preset-card" onclick="applyPreset('sunny')">
                         <div class="preset-icon">☀️</div>
@@ -454,9 +479,7 @@
                 </div>
             </div>
 
-            <div class="control-section">
-                <div class="section-header" data-i18n="language.title">🌍 Language</div>
-
+            <div class="tab-panel" data-tab-panel="language" role="tabpanel" hidden>
                 <div class="control-group">
                     <select id="language-select">
                         <option value="en" data-i18n="language.english">🇺🇸 English</option>
@@ -471,9 +494,7 @@
             </div>
 
             <!-- Weather Settings -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="weatherCondition">🌦️ Weather Condition</div>
-
+            <div class="tab-panel" data-tab-panel="weather" role="tabpanel" hidden>
                 <div class="control-group">
                     <label class="control-label" data-i18n="condition">Condition</label>
                     <select id="condition-select">
@@ -521,9 +542,7 @@
             </div>
 
             <!-- Time Settings -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="timeOfDay">🕐 Time of Day</div>
-
+            <div class="tab-panel" data-tab-panel="time" role="tabpanel" hidden>
                 <div class="control-group">
                     <label class="control-label" data-i18n="timeMode">Time Mode</label>
                     <select id="time-select">
@@ -566,9 +585,7 @@
             </div>
 
             <!-- Display Options -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="displayOptions">👁️ Display Options</div>
-
+            <div class="tab-panel" data-tab-panel="display" role="tabpanel" hidden>
                 <div class="control-group">
                     <label class="control-label" data-i18n="cardName">Card Name</label>
                     <input type="text" id="name-input" value="" placeholder="Leave empty to hide" data-i18n-placeholder="placeholderEmpty">
@@ -672,7 +689,7 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="control-section">
+            <div class="action-buttons">
                 <button class="btn btn-primary" onclick="updateCard()" data-i18n="updateCard">
                     🔄 Update Card
                 </button>
