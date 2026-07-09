@@ -75,6 +75,8 @@
     "language_da": "Danish",
     "language_sr": "Serbian",
     "language_pl": "Polish",
+    "language_zh": "Chinese",
+    "language_tr": "Turkish",
     "wind_speed_unit": "Wind Speed Unit",
     "wind_speed_unit_ms": "m/s",
     "wind_speed_unit_kmh": "km/h",
@@ -163,7 +165,9 @@
       "danish": "Danish",
       "polish": "Polish",
       "portuguese": "Portuguese",
-      "serbian": "Serbian"
+      "serbian": "Serbian",
+      "chinese": "Chinese",
+      "turkish": "Turkish"
     }
   }
 }
