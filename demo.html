@@ -801,6 +801,25 @@ function applyTranslations() {
         }
 
         // ============================================================================
+        // TABS
+        // ============================================================================
+        function initTabs() {
+            const buttons = $$('.tab-button');
+            const panels = $$('.tab-panel');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.dataset.tab;
+
+                    buttons.forEach(b => b.classList.toggle('active', b === button));
+                    panels.forEach(p => {
+                        p.hidden = p.dataset.tabPanel !== target;
+                    });
+                });
+            });
+        }
+
+        // ============================================================================
         // STATE & CONFIGURATION
         // ============================================================================
 
@@ -1178,6 +1197,8 @@ function applyTranslations() {
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+
             const timeSlider = document.getElementById('time-slider');
             const timeDisplay = document.getElementById('time-display');
             const timeSelect = document.getElementById('time-select');
