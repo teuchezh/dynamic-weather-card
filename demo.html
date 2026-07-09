@@ -12,23 +12,19 @@
         }
 
         :root {
-            --primary: #667eea;
-            --primary-dark: #5568d3;
-            --secondary: #764ba2;
-            --accent: #f093fb;
-            --success: #48bb78;
-            --danger: #f56565;
-            --warning: #ed8936;
-            --bg-dark: #1a202c;
-            --bg-card: #2d3748;
-            --text-primary: #e2e8f0;
-            --text-secondary: #a0aec0;
-            --border: #4a5568;
+            --primary: #007aff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --border: #d2d2d7;
+            --surface: #ffffff;
+            --surface-muted: #f5f5f7;
+            --surface-hover: #ebebed;
+            --danger: #ff3b30;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            background: var(--surface-muted);
             min-height: 100vh;
             color: var(--text-primary);
             padding: 20px;
@@ -43,12 +39,8 @@
         .page-title {
             font-size: 48px;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
             margin-bottom: 12px;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .page-subtitle {
@@ -73,15 +65,15 @@
         }
 
         .card-preview {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: var(--surface);
+            border-radius: 16px;
             padding: 32px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: sticky;
+            top: 20px;
         }
 
         .preview-label {
@@ -96,40 +88,18 @@
         #card-container {
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             max-width: 450px;
             width: 100%;
         }
 
         .controls-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: var(--surface);
+            border-radius: 16px;
             padding: 28px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
             position: sticky;
             top: 20px;
-        }
-
-        .controls-panel::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .controls-panel::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-        }
-
-        .controls-panel::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
-
-        .controls-panel::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .panel-title {
@@ -145,7 +115,7 @@
         .control-section {
             margin-bottom: 28px;
             padding-bottom: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border);
         }
 
         .control-section:last-child {
@@ -183,8 +153,8 @@
         select, input[type="number"], input[type="text"] {
             width: 100%;
             padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
             border-radius: 10px;
             font-size: 14px;
             color: var(--text-primary);
@@ -195,12 +165,12 @@
         select:focus, input[type="number"]:focus, input[type="text"]:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
         }
 
         select option {
-            background: var(--bg-card);
+            background: var(--surface);
             color: var(--text-primary);
         }
 
@@ -222,42 +192,46 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: var(--primary);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.35);
         }
 
         .btn-demo {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
         }
 
         .btn-demo:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+            background: var(--surface-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .btn-demo.active {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
         }
 
         .btn-preset {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
             color: var(--text-primary);
         }
 
         .btn-preset:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--surface-hover);
             border-color: var(--primary);
         }
 
         .time-controls {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--surface-muted);
             padding: 20px;
             border-radius: 12px;
             margin-top: 12px;
@@ -281,7 +255,7 @@
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--border);
             outline: none;
             -webkit-appearance: none;
             margin-bottom: 16px;
@@ -293,10 +267,10 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .time-slider::-webkit-slider-thumb:hover {
@@ -307,10 +281,10 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             cursor: pointer;
             border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .preset-grid {
@@ -329,7 +303,7 @@
             align-items: center;
             gap: 12px;
             padding: 10px 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--surface-muted);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -337,8 +311,8 @@
         }
 
         .checkbox-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: var(--surface-hover);
+            border-color: var(--border);
         }
 
         input[type="checkbox"] {
@@ -363,13 +337,13 @@
         }
 
         .error-message {
-            background: rgba(245, 101, 101, 0.15);
+            background: #fff2f1;
             border: 1px solid var(--danger);
-            color: #fc8181;
+            color: #c9262e;
         }
 
         .loading-message {
-            background: rgba(102, 126, 234, 0.15);
+            background: rgba(0, 122, 255, 0.08);
             border: 1px solid var(--primary);
             color: var(--text-secondary);
             text-align: center;
@@ -383,17 +357,17 @@
         }
 
         .preset-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--surface-muted);
             padding: 12px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
         }
 
         .preset-card:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--surface-hover);
             border-color: var(--primary);
             transform: translateY(-2px);
         }
@@ -438,7 +412,6 @@
 
             .controls-panel {
                 position: static;
-                max-height: none;
             }
         }
     </style>
@@ -458,11 +431,11 @@
 
         <!-- Controls Panel -->
         <div class="controls-panel">
-            <h2 class="panel-title" data-i18n="configuration">⚙️ Configuration</h2>
+            <h2 class="panel-title" data-i18n="configuration">Configuration</h2>
 
             <!-- Quick Presets -->
             <div class="control-section">
-                <div class="section-header" data-i18n="quickPresets">🎨 Quick Presets</div>
+                <div class="section-header" data-i18n="quickPresets">Quick Presets</div>
                 <div class="quick-presets">
                     <div class="preset-card" onclick="applyPreset('sunny')">
                         <div class="preset-icon">☀️</div>
@@ -484,8 +457,7 @@
             </div>
 
             <div class="control-section">
-                <div class="section-header" data-i18n="language.title">🌍 Language</div>
-
+                <div class="section-header" data-i18n="language.title">Language</div>
                 <div class="control-group">
                     <select id="language-select">
                         <option value="en" data-i18n="language.english">🇺🇸 English</option>
@@ -495,14 +467,19 @@
                         <option value="nl" data-i18n="language.dutch">🇳🇱 Nederlands</option>
                         <option value="it" data-i18n="language.italian">🇮🇹 Italiano</option>
                         <option value="es" data-i18n="language.spanish">🇪🇸 Español</option>
+                        <option value="sk" data-i18n="language.slovak">🇸🇰 Slovenčina</option>
+                        <option value="hu" data-i18n="language.hungarian">🇭🇺 Magyar</option>
+                        <option value="da" data-i18n="language.danish">🇩🇰 Dansk</option>
+                        <option value="pl" data-i18n="language.polish">🇵🇱 Polski</option>
+                        <option value="pt" data-i18n="language.portuguese">🇵🇹 Português</option>
+                        <option value="sr" data-i18n="language.serbian">🇷🇸 Srpski</option>
                     </select>
                 </div>
             </div>
 
             <!-- Weather Settings -->
             <div class="control-section">
-                <div class="section-header" data-i18n="weatherCondition">🌦️ Weather Condition</div>
-
+                <div class="section-header" data-i18n="weatherCondition">Weather Condition</div>
                 <div class="control-group">
                     <label class="control-label" data-i18n="condition">Condition</label>
                     <select id="condition-select">
@@ -551,8 +528,7 @@
 
             <!-- Time Settings -->
             <div class="control-section">
-                <div class="section-header" data-i18n="timeOfDay">🕐 Time of Day</div>
-
+                <div class="section-header" data-i18n="timeOfDay">Time of Day</div>
                 <div class="control-group">
                     <label class="control-label" data-i18n="timeMode">Time Mode</label>
                     <select id="time-select">
@@ -596,8 +572,7 @@
 
             <!-- Display Options -->
             <div class="control-section">
-                <div class="section-header" data-i18n="displayOptions">👁️ Display Options</div>
-
+                <div class="section-header" data-i18n="displayOptions">Display Options</div>
                 <div class="control-group">
                     <label class="control-label" data-i18n="cardName">Card Name</label>
                     <input type="text" id="name-input" value="" placeholder="Leave empty to hide" data-i18n-placeholder="placeholderEmpty">

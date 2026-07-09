@@ -156,7 +156,11 @@
       "spanish": "Español",
       "italian": "Italiano",
       "slovak": "Slovenčina",
-      "hungarian": "Magyar"
+      "hungarian": "Magyar",
+      "danish": "Датский",
+      "polish": "Польский",
+      "portuguese": "Португальский",
+      "serbian": "Сербский"
     }
   }
 }
