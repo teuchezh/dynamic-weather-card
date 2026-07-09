@@ -14,8 +14,10 @@ import pt from './locales/pt/translation.json';
 import ru from './locales/ru/translation.json';
 import sk from './locales/sk/translation.json';
 import sr from './locales/sr/translation.json';
+import tr from './locales/tr/translation.json';
+import zh from './locales/zh/translation.json';
 
-export type SupportedLanguage = 'da' | 'de' | 'en' | 'es' | 'fr' | 'hu' | 'it' | 'nl' | 'pl' | 'pt' | 'ru' | 'sk' | 'sr';
+export type SupportedLanguage = 'da' | 'de' | 'en' | 'es' | 'fr' | 'hu' | 'it' | 'nl' | 'pl' | 'pt' | 'ru' | 'sk' | 'sr' | 'tr' | 'zh';
 
 export const translations: Record<SupportedLanguage, Translation> = {
   da: da as Translation,
@@ -30,5 +32,7 @@ export const translations: Record<SupportedLanguage, Translation> = {
   pt: pt as Translation,
   ru: ru as Translation,
   sk: sk as Translation,
-  sr: sr as Translation
+  sr: sr as Translation,
+  tr: tr as Translation,
+  zh: zh as Translation
 };
