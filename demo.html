@@ -151,8 +151,8 @@
         select, input[type="number"], input[type="text"] {
             width: 100%;
             padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
             border-radius: 10px;
             font-size: 14px;
             color: var(--text-primary);
@@ -163,12 +163,12 @@
         select:focus, input[type="number"]:focus, input[type="text"]:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
         }
 
         select option {
-            background: var(--bg-card);
+            background: var(--surface);
             color: var(--text-primary);
         }
 
@@ -190,42 +190,46 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: var(--primary);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.35);
         }
 
         .btn-demo {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
         }
 
         .btn-demo:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.4);
+            background: var(--surface-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .btn-demo.active {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
         }
 
         .btn-preset {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--surface-muted);
+            border: 1px solid var(--border);
             color: var(--text-primary);
         }
 
         .btn-preset:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--surface-hover);
             border-color: var(--primary);
         }
 
         .time-controls {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--surface-muted);
             padding: 20px;
             border-radius: 12px;
             margin-top: 12px;
@@ -249,7 +253,7 @@
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--border);
             outline: none;
             -webkit-appearance: none;
             margin-bottom: 16px;
@@ -261,10 +265,10 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .time-slider::-webkit-slider-thumb:hover {
@@ -275,10 +279,10 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             cursor: pointer;
             border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .preset-grid {
@@ -297,7 +301,7 @@
             align-items: center;
             gap: 12px;
             padding: 10px 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--surface-muted);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -305,8 +309,8 @@
         }
 
         .checkbox-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: var(--surface-hover);
+            border-color: var(--border);
         }
 
         input[type="checkbox"] {
@@ -331,13 +335,13 @@
         }
 
         .error-message {
-            background: rgba(245, 101, 101, 0.15);
+            background: #fff2f1;
             border: 1px solid var(--danger);
-            color: #fc8181;
+            color: #c9262e;
         }
 
         .loading-message {
-            background: rgba(102, 126, 234, 0.15);
+            background: rgba(0, 122, 255, 0.08);
             border: 1px solid var(--primary);
             color: var(--text-secondary);
             text-align: center;
@@ -351,17 +355,17 @@
         }
 
         .preset-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--surface-muted);
             padding: 12px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
         }
 
         .preset-card:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--surface-hover);
             border-color: var(--primary);
             transform: translateY(-2px);
         }
