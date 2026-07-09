@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Weer-entiteit",
     "name": "Kaarttitel",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_minimal": "Minimal",
     "height": "Kaart hoogte",
     "show_feels_like": "Gevoelstemperatuur tonen",
     "show_wind": "Windsnelheid tonen",

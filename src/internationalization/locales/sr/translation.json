@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Entitet",
     "name": "Naziv (opciono)",
+    "layout": "Izgled",
+    "layout_default": "Podrazumevano",
+    "layout_minimal": "Minimalno",
     "height": "Visina kartice",
     "show_feels_like": "Prikaži subjektivni osećaj",
     "show_wind": "Prikaži vetar",

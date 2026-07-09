@@ -301,4 +301,54 @@ export const cardStyles = css`
       margin-bottom: 0;
     }
   }
+
+  /* ---- Minimal layout ---- */
+  .weather-card.layout--minimal {
+    min-height: 56px;
+  }
+
+  .weather-card.layout--minimal .content {
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 12px;
+    gap: 12px;
+    min-height: inherit;
+  }
+
+  .mini-primary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    gap: 0;
+  }
+
+  .mini-condition {
+    font-size: 11px;
+    opacity: 0.85;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .mini-temp {
+    font-size: 44px;
+    font-weight: 100;
+    line-height: 1;
+  }
+
+  .mini-temp-low {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 1px;
+  }
+
+  .mini-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+  }
+
 `;

@@ -32,6 +32,7 @@ export class DynamicWeatherCardEditor extends LitElement {
   setConfig(config: WeatherCardEditorConfig): void {
     this._config = {
       name: '',
+      layout: DEFAULT_CONFIG.layout,
       height: DEFAULT_CONFIG.height,
       show_feels_like: DEFAULT_CONFIG.showFeelsLike,
       show_wind: DEFAULT_CONFIG.showWind,
@@ -73,7 +74,18 @@ export class DynamicWeatherCardEditor extends LitElement {
     return [
       { name: 'entity', required: true, selector: { entity: { domain: ['weather'] } } },
       { name: 'name', selector: { text: {} } },
-      { name: 'height', selector: { number: { min: 200, max: 800, step: 10, mode: 'box' } } },
+      {
+        name: 'layout',
+        selector: {
+          select: {
+            options: [
+              { label: i18n.t('editor.layout_default'), value: 'default' },
+              { label: i18n.t('editor.layout_minimal'), value: 'minimal' }
+            ]
+          }
+        }
+      },
+      { name: 'height', selector: { number: { min: 50, max: 800, step: 10, mode: 'box' } } },
       { name: 'show_feels_like', selector: { boolean: {} } },
       { name: 'show_wind', selector: { boolean: {} } },
       { name: 'show_wind_gust', selector: { boolean: {} } },

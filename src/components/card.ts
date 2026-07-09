@@ -194,6 +194,7 @@ export class AnimatedWeatherCard extends LitElement {
       language: config.language || DEFAULT_CONFIG.language,
       windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,
       showAnimations: config.show_animations !== false,
+      layout: config.layout || DEFAULT_CONFIG.layout,
       sunriseEntity: config.sunrise_entity || null,
       sunsetEntity: config.sunset_entity || null,
       templowAttribute: config.templow_attribute || null,
@@ -242,7 +243,9 @@ export class AnimatedWeatherCard extends LitElement {
     const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
     const cardClasses = `weather-card ${timeOfDay.type}`;
 
-    const minHeight = this.config.height ? `${this.config.height}px` : '200px';
+    const isMinimal = this.config.layout === 'minimal';
+    const defaultHeight = isMinimal ? '56px' : '200px';
+    const minHeight = this.config.height ? `${this.config.height}px` : defaultHeight;
 
     const bgGradient: BackgroundGradient | null = getBackgroundGradient(timeOfDay);
     const bgStyle = bgGradient
@@ -281,6 +284,9 @@ export class AnimatedWeatherCard extends LitElement {
       )
       : [];
 
+    const cardStyle = `min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} ${shadowStyle} cursor: pointer;`;
+    const hass = this.hass;
+
     return html`
       <ha-card
         @click=${(e: MouseEvent) => this.actionHandler.handleTap(e)}
@@ -288,53 +294,103 @@ export class AnimatedWeatherCard extends LitElement {
         @pointerup=${(e: PointerEvent) => this.actionHandler.handlePointerUp(e)}
         @pointercancel=${(e: PointerEvent) => this.actionHandler.handlePointerUp(e)}
       >
-        <div class="${cardClasses}" style="min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} ${shadowStyle} cursor: pointer;">
-          ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
-          <div class="content">
-            ${this.config.name && this.config.name.trim() !== '' ? html`
-              <div class="header">
-                <div class="location">${this.config.name}</div>
-              </div>
-            ` : ''}
-            <div class="primary">
-              <div class="primary-left">
-                <div class="condition">${i18n.t(weather.condition)}</div>
-                <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
-                ${this.config.showMinTemp ? html`
-                  <div class="temp-range">
-                    <span class="temp-min">↓ ${weather.templow != null ? `${Math.round(weather.templow)}°` : i18n.t('no_data')}</span>
-                  </div>
-                ` : ''}
-                ${this.config.showFeelsLike ? html`
-                  <div class="feels-like">${i18n.t('feels_like')} ${weather.apparentTemperature != null ? `${Math.round(weather.apparentTemperature)}°` : i18n.t('no_data')}</div>
-                ` : ''}
-              </div>
-              <weather-clock
-                .format=${this.config.showClock && this.config.clockPosition === 'top' ? this.config.clockFormat : null}
-              ></weather-clock>
-            </div>
-            <div class="details ${this.config.showClock && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
-              <weather-details
-                .weather=${weather}
-                .sunData=${sunData}
-                .config=${this.getDetailsConfig()}
-                .entityAttributes=${getWeatherAttributes(this.hass, this.config.entity)}
-              ></weather-details>
-              <weather-clock
-                .format=${this.config.showClock && this.config.clockPosition === 'details' ? this.config.clockFormat : null}
-              ></weather-clock>
-            </div>
-            <hourly-forecast
-              .forecast=${hourlyForecast}
-              .clockFormat=${this.config.clockFormat ?? '24h'}
-            ></hourly-forecast>
-            <daily-forecast
-              .forecast=${dailyForecast}
-              .lang=${i18n.lang}
-            ></daily-forecast>
-          </div>
-        </div>
+        ${isMinimal ? this.renderMinimal(weather, sunData, hass, cardClasses, cardStyle) : this.renderDefault(weather, sunData, hourlyForecast, dailyForecast, hass, cardClasses, cardStyle)}
       </ha-card>
+    `;
+  }
+
+  private renderDefault(
+    weather: ReturnType<typeof getWeatherData>,
+    sunData: SunData,
+    hourlyForecast: import('../types.js').WeatherForecast[],
+    dailyForecast: import('../types.js').WeatherForecast[],
+    hass: HomeAssistant,
+    cardClasses: string,
+    cardStyle: string
+  ): TemplateResult {
+    return html`
+      <div class="${cardClasses}" style="${cardStyle}">
+        ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
+        <div class="content">
+          ${this.config.name && this.config.name.trim() !== '' ? html`
+            <div class="header">
+              <div class="location">${this.config.name}</div>
+            </div>
+          ` : ''}
+          <div class="primary">
+            <div class="primary-left">
+              <div class="condition">${i18n.t(weather.condition)}</div>
+              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
+              ${this.config.showMinTemp ? html`
+                <div class="temp-range">
+                  <span class="temp-min">↓ ${weather.templow != null ? `${Math.round(weather.templow)}°` : i18n.t('no_data')}</span>
+                </div>
+              ` : ''}
+              ${this.config.showFeelsLike ? html`
+                <div class="feels-like">${i18n.t('feels_like')} ${weather.apparentTemperature != null ? `${Math.round(weather.apparentTemperature)}°` : i18n.t('no_data')}</div>
+              ` : ''}
+            </div>
+            <weather-clock
+              .format=${this.config.showClock && this.config.clockPosition === 'top' ? this.config.clockFormat : null}
+            ></weather-clock>
+          </div>
+          <div class="details ${this.config.showClock && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
+            <weather-details
+              .weather=${weather}
+              .sunData=${sunData}
+              .config=${this.getDetailsConfig()}
+              .entityAttributes=${getWeatherAttributes(hass, this.config.entity)}
+            ></weather-details>
+            <weather-clock
+              .format=${this.config.showClock && this.config.clockPosition === 'details' ? this.config.clockFormat : null}
+            ></weather-clock>
+          </div>
+          <hourly-forecast
+            .forecast=${hourlyForecast}
+            .clockFormat=${this.config.clockFormat ?? '24h'}
+          ></hourly-forecast>
+          <daily-forecast
+            .forecast=${dailyForecast}
+            .lang=${i18n.lang}
+          ></daily-forecast>
+        </div>
+      </div>
+    `;
+  }
+
+  private renderMinimal(
+    weather: ReturnType<typeof getWeatherData>,
+    sunData: SunData,
+    hass: HomeAssistant,
+    cardClasses: string,
+    cardStyle: string
+  ): TemplateResult {
+    const tempStr = weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data');
+    const templowStr = weather.templow != null ? `↓ ${Math.round(weather.templow)}°` : null;
+
+    return html`
+      <div class="${cardClasses} layout--minimal" style="${cardStyle}">
+        ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
+        <div class="content">
+          <div class="mini-primary">
+            <div class="mini-temp">${tempStr}</div>
+            ${this.config.showMinTemp && templowStr ? html`<div class="mini-temp-low">${templowStr}</div>` : ''}
+          </div>
+          <div class="mini-details">
+            <div class="mini-condition">${i18n.t(weather.condition)}</div>
+            <weather-details
+              .weather=${weather}
+              .sunData=${sunData}
+              .config=${this.getDetailsConfig()}
+              .entityAttributes=${getWeatherAttributes(hass, this.config.entity)}
+              .compact=${true}
+            ></weather-details>
+          </div>
+          ${this.config.showClock ? html`
+            <weather-clock .format=${this.config.clockFormat} .compact=${true}></weather-clock>
+          ` : ''}
+        </div>
+      </div>
     `;
   }
 }

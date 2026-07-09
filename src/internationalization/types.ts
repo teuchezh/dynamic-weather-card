@@ -85,6 +85,9 @@ export interface EditorTranslations {
   [key: `language_${string}`]: string;
   entity: string;
   name: string;
+  layout: string;
+  layout_default: string;
+  layout_minimal: string;
   height: string;
   show_feels_like: string;
   show_wind: string;

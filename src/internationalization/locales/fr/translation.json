@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Entité météo",
     "name": "Titre de la carte",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_minimal": "Minimal",
     "height": "Hauteur de la carte",
     "show_feels_like": "Afficher le ressenti",
     "show_wind": "Afficher la vitesse du vent",

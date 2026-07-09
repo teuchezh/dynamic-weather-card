@@ -5,6 +5,7 @@ import { i18n } from '../internationalization';
 
 export class WeatherClock extends LitElement {
   @property({ type: String }) format: '12h' | '24h' | null = null;
+  @property({ type: Boolean, reflect: true }) compact = false;
   @state() private currentTime: string = '';
 
   private clockInterval: number | null = null;
@@ -37,6 +38,10 @@ export class WeatherClock extends LitElement {
         margin-top: 0;
         margin-bottom: 0;
       }
+    }
+
+    :host([compact]) .clock {
+      font-size: 26px;
     }
   `;
 

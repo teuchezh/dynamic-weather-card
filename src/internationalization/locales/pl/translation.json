@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Encja pogody",
     "name": "Tytuł karty",
+    "layout": "Układ",
+    "layout_default": "Domyślny",
+    "layout_minimal": "Minimalny",
     "height": "Wysokość karty",
     "show_feels_like": "Pokaż temperaturę odczuwalną",
     "show_wind": "Pokaż prędkość wiatru",

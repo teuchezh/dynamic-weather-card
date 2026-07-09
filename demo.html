@@ -604,8 +604,16 @@
                 </div>
 
                 <div class="control-group">
+                    <label class="control-label">Layout</label>
+                    <select id="layout-select">
+                        <option value="default">Default</option>
+                        <option value="minimal">Minimal (compact horizontal)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
                     <label class="control-label" data-i18n="height">Height (px)</label>
-                    <input type="number" id="height-input" value="200" min="150" max="400" step="10">
+                    <input type="number" id="height-input" value="200" min="50" max="800" step="10">
                 </div>
 
                 <div class="control-group">
@@ -1105,7 +1113,8 @@ function applyTranslations() {
                 clockPosition: document.getElementById('clock-position-select').value,
                 clockFormat: document.getElementById('clock-format-select').value,
                 language: document.getElementById('language-select').value,
-                textShadow: parseFloat(document.getElementById('text-shadow-strength').value)
+                textShadow: parseFloat(document.getElementById('text-shadow-strength').value),
+                layout: document.getElementById('layout-select').value
             };
 
             card = document.createElement('dynamic-weather-card');
@@ -1150,6 +1159,7 @@ function applyTranslations() {
                 clock_position: config.clockPosition,
                 clock_format: config.clockFormat,
                 language: config.language,
+                layout: config.layout,
             };
 
             if (config.name) {
@@ -1249,6 +1259,17 @@ function applyTranslations() {
                     stopTimeAnimation();
                     setTimeout(() => startTimeAnimation(), 100);
                 }
+            });
+
+            const layoutSelect = document.getElementById('layout-select');
+            const heightInput = document.getElementById('height-input');
+            layoutSelect?.addEventListener('change', () => {
+                if (layoutSelect.value === 'minimal') {
+                    heightInput.value = '80';
+                } else {
+                    heightInput.value = '200';
+                }
+                updateCard();
             });
 
             timeDisplay.textContent = formatTime(currentManualTime);

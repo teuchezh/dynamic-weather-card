@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Entidad de clima",
     "name": "Título de la tarjeta",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_minimal": "Minimal",
     "height": "Altura de la tarjeta",
     "show_feels_like": "Mostrar sensación térmica",
     "show_wind": "Mostrar velocidad del viento",

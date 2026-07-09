@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Погодная сущность",
     "name": "Название карточки",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_minimal": "Minimal",
     "height": "Высота карточки",
     "show_feels_like": "Показывать ощущаемую температуру",
     "show_wind": "Показывать скорость ветра",

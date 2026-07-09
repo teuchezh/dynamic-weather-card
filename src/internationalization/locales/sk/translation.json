@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Entita počasia",
     "name": "Názov karty",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_minimal": "Minimal",
     "height": "Výška karty",
     "show_feels_like": "Zobraziť pocitovú teplotu",
     "show_wind": "Zobraziť rýchlosť vetra",

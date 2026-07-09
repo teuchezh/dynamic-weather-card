@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Vejrentitet",
     "name": "Korttitel",
+    "layout": "Layout",
+    "layout_default": "Standard",
+    "layout_minimal": "Minimal",
     "height": "Korthøjde",
     "show_feels_like": "Vis \"Føles som\"",
     "show_wind": "Vis vindhastighed",

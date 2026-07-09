@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Entità meteo",
     "name": "Titolo della scheda",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_minimal": "Minimal",
     "height": "Altezza della scheda",
     "show_feels_like": "Mostra temperatura percepita",
     "show_wind": "Mostra velocità del vento",

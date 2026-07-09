@@ -34,6 +34,9 @@
   "editor": {
     "entity": "Időjárás entitás",
     "name": "Kártya címe",
+    "layout": "Layout",
+    "layout_default": "Default",
+    "layout_minimal": "Minimal",
     "height": "Kártya magasság",
     "show_feels_like": "Hőérzet mutatása",
     "show_wind": "Szélsebesség mutatása",
