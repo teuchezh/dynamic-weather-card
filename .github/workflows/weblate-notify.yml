@@ -9,10 +9,39 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+    env:
+      WEBLATE_AUTH: "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}"
+      COMPONENT_URL: "https://hosted.weblate.org/api/components/dynamic-weather-card/main"
     steps:
-      - name: Notify Weblate of source update
+      - name: Lock component
         run: |
-          curl -s --fail -X POST \
-            -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
-            "https://hosted.weblate.org/api/components/dynamic-weather-card/main/repository/" \
-            -d "operation=pull"
+          curl -s --fail -X POST -H "$WEBLATE_AUTH" \
+            "$COMPONENT_URL/lock/" -d "lock=true"
+
+      - name: Pull upstream changes into Weblate
+        run: |
+          curl -s --fail -X POST -H "$WEBLATE_AUTH" \
+            "$COMPONENT_URL/repository/" -d "operation=pull"
+
+      - name: Verify merge succeeded
+        run: |
+          for i in $(seq 1 10); do
+            sleep 5
+            STATUS=$(curl -s --fail -H "$WEBLATE_AUTH" "$COMPONENT_URL/repository/")
+            FAILURE=$(echo "$STATUS" | jq -r '.merge_failure')
+            NEEDS_MERGE=$(echo "$STATUS" | jq -r '.needs_merge')
+            if [ "$FAILURE" != "null" ]; then
+              echo "::error::Weblate merge failed, component left locked for manual fix: $FAILURE"
+              exit 1
+            fi
+            if [ "$NEEDS_MERGE" = "false" ]; then
+              exit 0
+            fi
+          done
+          echo "::error::Weblate still shows needs_merge after waiting, component left locked for manual check"
+          exit 1
+
+      - name: Unlock component
+        run: |
+          curl -s --fail -X POST -H "$WEBLATE_AUTH" \
+            "$COMPONENT_URL/lock/" -d "lock=false"
