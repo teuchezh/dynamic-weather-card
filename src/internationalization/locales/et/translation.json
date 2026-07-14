@@ -1,1 +1,13 @@
-{}
+{
+  "sunny": "Päikeseline",
+  "clear": "Pilvitu",
+  "overcast": "Lauspilves",
+  "cloudy": "Pilves",
+  "partlycloudy": "Vahelduv pilvisus",
+  "rainy": "Vihmane",
+  "rain": "Vihm",
+  "snowy": "Lumine",
+  "snow": "Lumi",
+  "foggy": "Udune",
+  "fog": "Udu"
+}
