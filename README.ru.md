@@ -135,7 +135,7 @@ type: custom:dynamic-weather-card
 entity: weather.home
 name: Моя метеостанция
 height: 300
-language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl
+language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl, nb
 overlay_opacity: 0.15             # 0-1 (тёмное наложение для лучшей читаемости)
 wind_speed_unit: ms               # ms или kmh (для устаревших интеграций)
 
@@ -175,7 +175,7 @@ clock_format: 24h                         # 12h или 24h
 | **Отображение** |
 | `name` | string | - | Пользовательское название карточки (оставьте пустым, чтобы скрыть) |
 | `height` | number | `200` | Высота карточки в пикселях |
-| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl` |
+| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb` |
 | `overlay_opacity` | number | `0.1` | Прозрачность тёмного наложения (0-1) для читаемости текста |
 | `show_animations` | boolean | `true` | Рисовать анимации погоды на канвасе (`false` — статичный градиент) |
 | **Температура** |
@@ -257,6 +257,7 @@ show_humidity: true
 | Dansk | `da` | ✅ Полный |
 | Srpski | `sr` | ✅ Полный |
 | Polski | `pl` | ✅ Полный |
+| Norsk (bokmål) | `nb` | ✅ Полный |
 
 Хотите добавить или улучшить перевод? Отредактируйте (или создайте) файл `src/internationalization/locales/<code>/translation.json` прямо в веб-интерфейсе GitHub и откройте pull request в ветку `dev` — это единственный файл, который нужно менять, новые языки подхватываются автоматически. Сверяйте ключи с `locales/en/translation.json`; недостающие ключи автоматически откатываются на английский. (Hosted Weblate настраивается заново — см. `docs/weblate-setup.md`.)
 

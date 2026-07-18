@@ -137,7 +137,7 @@ type: custom:dynamic-weather-card
 entity: weather.home
 name: My Weather Station
 height: 300
-language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl
+language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl, nb
 overlay_opacity: 0.15             # 0-1 (dark overlay for better readability)
 wind_speed_unit: ms               # ms or kmh (for legacy integrations)
 
@@ -177,7 +177,7 @@ clock_format: 24h                         # 12h or 24h
 | **Display** |
 | `name` | string | - | Custom card title (leave empty to hide) |
 | `height` | number | `200` | Card height in pixels |
-| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl` |
+| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb` |
 | `overlay_opacity` | number | `0.1` | Dark overlay opacity (0-1) for text readability |
 | `show_animations` | boolean | `true` | Render canvas weather animations (set `false` for a static gradient) |
 | **Temperature** |
@@ -259,6 +259,7 @@ The card automatically detects your Home Assistant language or you can set it ma
 | Dansk | `da` | ✅ Complete |
 | Srpski | `sr` | ✅ Complete |
 | Polski | `pl` | ✅ Complete |
+| Norsk (bokmål) | `nb` | ✅ Complete |
 
 Contribute via [Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/) — no coding required! Alternatively, edit (or create) `src/internationalization/locales/<code>/translation.json` right in the GitHub web UI and open a pull request against the `dev` branch — that's the only file you need to touch, new languages are picked up automatically. Use `locales/en/translation.json` as the reference for keys; missing keys simply fall back to English. Note: for a brand-new language CI will also ask for the regenerated locale index — a maintainer can run `bun run locales:generate` and push it to your PR branch.
 
