@@ -79,7 +79,8 @@
     "wind_speed_unit": "Rüzgar hız birimi",
     "wind_speed_unit_ms": "m/s",
     "wind_speed_unit_kmh": "km/s",
-    "show_animations": "Animasyonları göster"
+    "show_animations": "Animasyonları göster",
+    "language_zh": "Çince"
   },
   "demo": {
     "pageTitle": "Dinamik Hava Durumu Kartı",
@@ -165,7 +166,8 @@
       "polish": "Lehçe",
       "portuguese": "Portekizce",
       "serbian": "Sırpça",
-      "turkish": "Türkçe"
+      "turkish": "Türkçe",
+      "chinese": "Çince"
     }
   }
 }
