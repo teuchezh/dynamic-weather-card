@@ -69,6 +69,7 @@ const translation: Translation = {
     'language_it': 'Italiaans',
     'language_sk': 'Slowaaks',
     'language_hu': 'Hongaars',
+    'language_pt': 'Portugees',
     'wind_speed_unit': 'Windsnelheidseenheid',
     'wind_speed_unit_ms': 'm/s',
     'wind_speed_unit_kmh': 'km/u'
@@ -152,7 +153,8 @@ const translation: Translation = {
       'spanish': 'Español',
       'italian': 'Italiano',
       'slovak': 'Slovenčina',
-      'hungarian': 'Magyar'
+      'hungarian': 'Magyar',
+      'portuguese': 'Português'
     }
   }
 };

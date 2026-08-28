@@ -111,7 +111,8 @@ export class DynamicWeatherCardEditor extends LitElement {
               { label: i18n.t('editor.language_es'), value: 'es' },
               { label: i18n.t('editor.language_it'), value: 'it' },
               { label: i18n.t('editor.language_sk'), value: 'sk' },
-              { label: i18n.t('editor.language_hu'), value: 'hu' }
+              { label: i18n.t('editor.language_hu'), value: 'hu' },
+              { label: i18n.t('editor.language_pt'), value: 'pt' }
             ]
           }
         }

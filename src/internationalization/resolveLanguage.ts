@@ -20,6 +20,7 @@ export const resolveLanguage = ({ configLang, hassLang }: ResolveLanguageOptions
     if (lang.startsWith('es')) return 'es';
     if (lang.startsWith('sk')) return 'sk';
     if (lang.startsWith('hu')) return 'hu';
+    if (lang.startsWith('pt')) return 'pt';
   }
 
   return 'en';
