@@ -881,11 +881,15 @@ function applyTranslations() {
                 else if (hour >= 18 && hour < 22) temp += Math.floor(Math.random() * 3);
                 else temp -= 2 + Math.floor(Math.random() * 3);
 
+                const condition = WEATHER_CONDITIONS[Math.floor(Math.random() * WEATHER_CONDITIONS.length)];
+                const wet = /rain|pouring|snow|hail|lightning/.test(condition);
                 forecast.push({
                     datetime: forecastTime.toISOString(),
-                    condition: WEATHER_CONDITIONS[Math.floor(Math.random() * WEATHER_CONDITIONS.length)],
+                    condition,
                     temperature: temp,
-                    temp: temp
+                    temp: temp,
+                    // The card shows the day's max chance in the daily forecast
+                    precipitation_probability: wet ? Math.floor(Math.random() * (20 + (forecastTime.getDate() % 4) * 25)) : 0
                 });
             }
 

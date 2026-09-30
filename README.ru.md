@@ -195,7 +195,7 @@ clock_format: 24h                         # 12h или 24h
 | **Прогнозы** |
 | `show_hourly_forecast` | boolean | `false` | Показать почасовой прогноз |
 | `hourly_forecast_hours` | number | `5` | Количество часов для отображения (1-24) |
-| `show_daily_forecast` | boolean | `false` | Показать ежедневный прогноз |
+| `show_daily_forecast` | boolean | `false` | Показать ежедневный прогноз (макс. / мин. температура и вероятность осадков, если их отдаёт провайдер) |
 | `daily_forecast_days` | number | `5` | Количество дней для отображения (1-14) |
 | `hourly_forecast_title` | string | перевод | Свой заголовок почасового прогноза; `""` скрывает его |
 | `daily_forecast_title` | string | перевод | Свой заголовок прогноза по дням; `""` скрывает его |

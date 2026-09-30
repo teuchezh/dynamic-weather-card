@@ -147,7 +147,13 @@ export class ForecastService {
       return `${year}-${month}-${day}`;
     };
 
-    const dayBuckets = new Map<string, { item: WeatherForecast; itemDate: Date; hourScore: number }>();
+    const dayBuckets = new Map<string, {
+      item: WeatherForecast;
+      itemDate: Date;
+      hourScore: number;
+      temperatures: number[];
+      precipitationProbabilities: number[];
+    }>();
 
     fallbackWeatherData.forecast.forEach(item => {
       if (!item.datetime) return;
@@ -157,16 +163,34 @@ export class ForecastService {
 
       const key = toDayKey(itemDate);
       const hourScore = Math.abs((itemDate.getHours() + itemDate.getMinutes() / 60) - 12);
-      const existing = dayBuckets.get(key);
+      const temperature = item.temperature ?? item.temp ?? item.native_temperature;
+      const existing = dayBuckets.get(key) ?? { item, itemDate, hourScore, temperatures: [], precipitationProbabilities: [] };
 
-      if (!existing || hourScore < existing.hourScore) {
-        dayBuckets.set(key, { item, itemDate, hourScore });
+      if (hourScore < existing.hourScore) {
+        existing.item = item;
+        existing.itemDate = itemDate;
+        existing.hourScore = hourScore;
       }
+      if (temperature != null) existing.temperatures.push(temperature);
+      if (item.precipitation_probability != null) existing.precipitationProbabilities.push(item.precipitation_probability);
+      dayBuckets.set(key, existing);
     });
 
     return Array.from(dayBuckets.values())
       .sort((a, b) => a.itemDate.getTime() - b.itemDate.getTime())
-      .map(entry => entry.item)
+      .map(({ item, temperatures, precipitationProbabilities }) => {
+        // Several (hourly) entries for a day: summarize them as the day's high/low and max precipitation chance
+        if (temperatures.length < 2) return item;
+        const daily: WeatherForecast = {
+          ...item,
+          temperature: Math.max(...temperatures),
+          templow: item.templow ?? item.native_templow ?? Math.min(...temperatures)
+        };
+        if (precipitationProbabilities.length > 0) {
+          daily.precipitation_probability = Math.max(...precipitationProbabilities);
+        }
+        return daily;
+      })
       .slice(0, maxDays);
   }
 }

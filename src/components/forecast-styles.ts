@@ -90,6 +90,20 @@ export const forecastStyles = css`
     text-shadow: var(--card-text-shadow);
   }
 
+  .forecast-temp-low {
+    margin-left: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.6;
+  }
+
+  .forecast-precipitation {
+    font-size: 11px;
+    opacity: 0.75;
+    color: #8ecbff;
+    text-shadow: var(--card-text-shadow);
+  }
+
   .forecast-unavailable {
     opacity: 0.6;
     font-size: 14px;
