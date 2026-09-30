@@ -31,6 +31,21 @@
   "show_clock": "Pokaż aktualny czas",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Ciśnienie",
+  "uv_index": "Indeks UV",
+  "dew_point": "Punkt rosy",
+  "aqi": "Indeks jakości powietrza",
+  "precipitation_outlook": {
+    "start": "{kind}: początek około {time}",
+    "soon": "{kind}: początek wkrótce",
+    "stop": "{kind}: koniec około {time}",
+    "continues": "{kind}: jeszcze co najmniej {hours} h",
+    "rain": "Deszcz",
+    "snow": "Śnieg",
+    "sleet": "Deszcz ze śniegiem",
+    "hail": "Grad",
+    "storm": "Burza"
+  },
   "editor": {
     "entity": "Encja pogody",
     "name": "Tytuł karty",

@@ -31,6 +31,21 @@
   "show_clock": "Vis gjeldende klokkeslett",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Lufttrykk",
+  "uv_index": "UV-indeks",
+  "dew_point": "Duggpunkt",
+  "aqi": "Luftkvalitetsindeks",
+  "precipitation_outlook": {
+    "start": "{kind} ventes rundt {time}",
+    "soon": "{kind} ventes snart",
+    "stop": "{kind} slutter rundt {time}",
+    "continues": "{kind} i minst {hours} timer til",
+    "rain": "Regn",
+    "snow": "Snø",
+    "sleet": "Sludd",
+    "hail": "Hagl",
+    "storm": "Tordenvær"
+  },
   "editor": {
     "entity": "Værentitet",
     "name": "Korttittel",

@@ -31,6 +31,21 @@
   "show_clock": "Zobraziť aktuálny čas",
   "am": "dop.",
   "pm": "pop.",
+  "pressure": "Tlak",
+  "uv_index": "UV index",
+  "dew_point": "Rosný bod",
+  "aqi": "Index kvality ovzdušia",
+  "precipitation_outlook": {
+    "start": "{kind} sa očakáva okolo {time}",
+    "soon": "{kind} sa očakáva čoskoro",
+    "stop": "{kind} skončí okolo {time}",
+    "continues": "{kind} ešte aspoň {hours} h",
+    "rain": "Dážď",
+    "snow": "Sneh",
+    "sleet": "Dážď so snehom",
+    "hail": "Krupobitie",
+    "storm": "Búrka"
+  },
   "editor": {
     "entity": "Entita počasia",
     "name": "Názov karty",

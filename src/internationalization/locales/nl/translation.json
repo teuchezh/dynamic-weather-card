@@ -31,6 +31,21 @@
   "show_clock": "Huidige tijd weergeven",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Luchtdruk",
+  "uv_index": "UV-index",
+  "dew_point": "Dauwpunt",
+  "aqi": "Luchtkwaliteitsindex",
+  "precipitation_outlook": {
+    "start": "{kind} verwacht rond {time}",
+    "soon": "{kind} binnenkort verwacht",
+    "stop": "{kind} stopt rond {time}",
+    "continues": "{kind} nog minstens {hours} uur",
+    "rain": "Regen",
+    "snow": "Sneeuw",
+    "sleet": "Natte sneeuw",
+    "hail": "Hagel",
+    "storm": "Onweer"
+  },
   "editor": {
     "entity": "Weer-entiteit",
     "name": "Kaarttitel",

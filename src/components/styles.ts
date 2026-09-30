@@ -164,6 +164,15 @@ export const cardStyles = css`
     margin-top: 8px;
   }
 
+  .precipitation-outlook {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0 12px;
+    font-size: 14px;
+    opacity: 0.95;
+  }
+
   .temp-range {
     font-size: 18px;
     opacity: 0.9;

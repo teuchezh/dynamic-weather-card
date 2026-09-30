@@ -6,11 +6,44 @@ import { i18n } from '../internationalization/index.js';
 import { forecastStyles } from './forecast-styles.js';
 import type { WeatherForecast } from '../types.js';
 
+// Apple Weather-like temperature colors, by °C
+const TEMPERATURE_COLORS: Array<[number, [number, number, number]]> = [
+  [-20, [94, 92, 230]],
+  [-5, [10, 132, 255]],
+  [5, [100, 210, 255]],
+  [15, [48, 209, 88]],
+  [22, [255, 214, 10]],
+  [28, [255, 159, 10]],
+  [35, [255, 69, 58]]
+];
+
+export function temperatureColor(value: number, unit: string = '°C'): string {
+  const celsius = /F/i.test(unit) ? (value - 32) * 5 / 9 : value;
+  const last = TEMPERATURE_COLORS.length - 1;
+  if (celsius <= TEMPERATURE_COLORS[0][0]) return `rgb(${TEMPERATURE_COLORS[0][1].join(', ')})`;
+  if (celsius >= TEMPERATURE_COLORS[last][0]) return `rgb(${TEMPERATURE_COLORS[last][1].join(', ')})`;
+  const index = TEMPERATURE_COLORS.findIndex(([stop]) => stop > celsius);
+  const [fromStop, from] = TEMPERATURE_COLORS[index - 1];
+  const [toStop, to] = TEMPERATURE_COLORS[index];
+  const t = (celsius - fromStop) / (toStop - fromStop);
+  return `rgb(${from.map((c, i) => Math.round(c + (to[i] - c) * t)).join(', ')})`;
+}
+
+function isToday(datetime: string): boolean {
+  const date = new Date(datetime);
+  return date.toDateString() === new Date().toDateString();
+}
+
 export class DailyForecast extends LitElement {
   @property({ type: Array }) forecast: WeatherForecast[] = [];
   // Custom section title: null = default (translated), '' = hidden
   @property({ type: String }) forecastTitle: string | null = null;
   @property({ type: String }) lang: string = 'en';
+  // Temperature range bars: each day's low..high on a scale shared by all shown days
+  @property({ type: Boolean }) showBars = false;
+  // Current temperature, marked on today's bar
+  @property({ type: Number }) currentTemperature: number | null = null;
+  @property({ type: String }) temperatureUnit: string = '°C';
 
   static styles = forecastStyles;
 
@@ -43,6 +76,37 @@ export class DailyForecast extends LitElement {
     return probability != null && probability > 0 ? Math.round(probability) : null;
   }
 
+  private renderBarItem(item: WeatherForecast, scale: { min: number; max: number }): TemplateResult {
+    const high = this.getTemperature(item);
+    const low = this.getLowTemperature(item) ?? high;
+    const precipitation = this.getPrecipitationProbability(item);
+    const range = Math.max(1, scale.max - scale.min);
+    // Distance from the top/bottom of the track, in %
+    const top = ((scale.max - high) / range) * 100;
+    const bottom = ((low - scale.min) / range) * 100;
+    const fill = `top: ${top}%; bottom: ${bottom}%; background: linear-gradient(to top, ${temperatureColor(low, this.temperatureUnit)}, ${temperatureColor(high, this.temperatureUnit)});`;
+
+    let marker: TemplateResult | string = '';
+    if (this.currentTemperature != null && isToday(item.datetime)) {
+      const current = Math.max(scale.min, Math.min(scale.max, this.currentTemperature));
+      marker = html`<div class="temp-bar-now" style="bottom: ${((current - scale.min) / range) * 100}%"></div>`;
+    }
+
+    return html`
+      <div class="forecast-item">
+        <div class="forecast-time">${formatForecastDay(item.datetime, this.lang)}</div>
+        <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
+        <div class="forecast-temp">${high}°</div>
+        <div class="temp-bar">
+          <div class="temp-bar-fill" style="${fill}"></div>
+          ${marker}
+        </div>
+        <div class="forecast-temp forecast-temp-low-bar">${low}°</div>
+        ${precipitation !== null ? html`<div class="forecast-precipitation">${precipitation}%</div>` : ''}
+      </div>
+    `;
+  }
+
   private renderItem(item: WeatherForecast): TemplateResult {
     const low = this.getLowTemperature(item);
     const precipitation = this.getPrecipitationProbability(item);
@@ -59,6 +123,20 @@ export class DailyForecast extends LitElement {
     `;
   }
 
+  private renderItems(): TemplateResult[] {
+    if (!this.showBars) return this.forecast.map(item => this.renderItem(item));
+
+    const temperatures = this.forecast.flatMap(item => {
+      const low = this.getLowTemperature(item);
+      return low !== null ? [this.getTemperature(item), low] : [this.getTemperature(item)];
+    });
+    if (this.currentTemperature != null && this.forecast.some(item => isToday(item.datetime))) {
+      temperatures.push(Math.round(this.currentTemperature));
+    }
+    const scale = { min: Math.min(...temperatures), max: Math.max(...temperatures) };
+    return this.forecast.map(item => this.renderBarItem(item, scale));
+  }
+
   render(): TemplateResult {
     if (this.forecast.length === 0) return html``;
 
@@ -66,7 +144,7 @@ export class DailyForecast extends LitElement {
       <div class="forecast-container">
         ${this.forecastTitle !== '' ? html`<div class="forecast-title">${this.forecastTitle ?? i18n.t('daily_forecast_title')}</div>` : ''}
         <div class="forecast-scroll">
-          ${this.forecast.map(item => this.renderItem(item))}
+          ${this.renderItems()}
         </div>
       </div>
     `;

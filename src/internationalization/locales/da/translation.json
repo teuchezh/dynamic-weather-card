@@ -31,6 +31,21 @@
   "show_clock": "Vis aktuel tid",
   "am": "FM",
   "pm": "EM",
+  "pressure": "Lufttryk",
+  "uv_index": "UV-indeks",
+  "dew_point": "Dugpunkt",
+  "aqi": "Luftkvalitetsindeks",
+  "precipitation_outlook": {
+    "start": "{kind} ventes omkring {time}",
+    "soon": "{kind} ventes snart",
+    "stop": "{kind} stopper omkring {time}",
+    "continues": "{kind} i mindst {hours} timer mere",
+    "rain": "Regn",
+    "snow": "Sne",
+    "sleet": "Slud",
+    "hail": "Hagl",
+    "storm": "Tordenvejr"
+  },
   "editor": {
     "entity": "Vejrentitet",
     "name": "Korttitel",

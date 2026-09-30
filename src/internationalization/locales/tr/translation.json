@@ -31,6 +31,21 @@
   "show_clock": "Saati göster",
   "am": "ÖÖ",
   "pm": "ÖS",
+  "pressure": "Basınç",
+  "uv_index": "UV indeksi",
+  "dew_point": "Çiy noktası",
+  "aqi": "Hava kalitesi indeksi",
+  "precipitation_outlook": {
+    "start": "{kind} {time} civarında bekleniyor",
+    "soon": "{kind} yakında bekleniyor",
+    "stop": "{kind} {time} civarında sona eriyor",
+    "continues": "{kind} en az {hours} saat daha sürecek",
+    "rain": "Yağmur",
+    "snow": "Kar",
+    "sleet": "Karla karışık yağmur",
+    "hail": "Dolu",
+    "storm": "Gök gürültülü fırtına"
+  },
   "editor": {
     "entity": "Hava durumu varlığı",
     "name": "Kart başlığı",

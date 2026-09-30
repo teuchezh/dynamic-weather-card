@@ -14,6 +14,9 @@ import { AnimationManager, type DrawParams } from './animation-manager.js';
 import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes } from './weather-data.js';
+import { getPrecipitationOutlook } from '../precipitation-outlook.js';
+import { getSVGIcon } from '../icons/svg-icons.js';
+import { formatTime } from '../utils.js';
 import './clock.js';
 import './details.js';
 import './hourly-forecast.js';
@@ -41,6 +44,8 @@ export class AnimatedWeatherCard extends LitElement {
   _testTimeOfDay?: TimeOfDay;
   // Demo/testing override of the moon phase (0..1); null = real phase
   _testMoonPhase?: number | null;
+  // Demo/testing override of the current time for the precipitation outlook
+  _testNow?: Date | null;
 
   static get styles() {
     return cardStyles;
@@ -158,9 +163,36 @@ export class AnimatedWeatherCard extends LitElement {
     };
   }
 
+  private renderPrecipitationOutlook(weather: ReturnType<typeof getWeatherData>): TemplateResult {
+    if (!this.config.showPrecipitationOutlook) return html``;
+
+    const hourly = this.forecastService.getHourlyData();
+    const outlook = getPrecipitationOutlook(weather.condition, hourly.length > 0 ? hourly : weather.forecast, this._testNow ?? new Date());
+    if (!outlook) return html``;
+
+    const time = outlook.time
+      ? formatTime(outlook.time, this.config.clockFormat ?? '24h', i18n.t('am'), i18n.t('pm'))
+      : '';
+    const template = i18n.t(`precipitation_outlook.${outlook.type === 'start' && !outlook.time ? 'soon' : outlook.type}`);
+    const text = template
+      .replace('{kind}', i18n.t(`precipitation_outlook.${outlook.kind}`))
+      .replace('{time}', time)
+      .replace('{hours}', String(outlook.hours));
+
+    return html`
+      <div class="precipitation-outlook">
+        <span class="info-icon">${getSVGIcon('precipitation')}</span>
+        <span>${text}</span>
+      </div>
+    `;
+  }
+
   private getDetailsConfig(): DetailsConfig {
     return {
       showHumidity: this.config.showHumidity ?? true,
+      showPressure: this.config.showPressure ?? false,
+      showUvIndex: this.config.showUvIndex ?? false,
+      showDewPoint: this.config.showDewPoint ?? false,
       showWind: this.config.showWind ?? true,
       showWindGust: this.config.showWindGust ?? true,
       showWindDirection: this.config.showWindDirection ?? true,
@@ -186,7 +218,12 @@ export class AnimatedWeatherCard extends LitElement {
       showWindGust: config.show_wind_gust !== false,
       showWindDirection: config.show_wind_direction !== false,
       showHumidity: config.show_humidity !== false,
+      showPressure: config.show_pressure === true,
+      showUvIndex: config.show_uv_index === true,
+      showDewPoint: config.show_dew_point === true,
       showMinTemp: config.show_min_temp !== false,
+      showPrecipitationOutlook: config.show_precipitation_outlook === true,
+      showTemperatureBars: config.show_temperature_bars === true,
       showForecast: config.show_forecast === true,
       showHourlyForecast: showHourlyForecast === true,
       showDailyForecast: config.show_daily_forecast === true,
@@ -221,7 +258,11 @@ export class AnimatedWeatherCard extends LitElement {
         windSpeed: config.wind_speed_entity || null,
         windGust: config.wind_gust_entity || null,
         windBearing: config.wind_bearing_entity || null,
-        precipitation: config.precipitation_entity || null
+        precipitation: config.precipitation_entity || null,
+        pressure: config.pressure_entity || null,
+        uvIndex: config.uv_index_entity || null,
+        dewPoint: config.dew_point_entity || null,
+        aqi: config.aqi_entity || null
       },
       tapAction: config.tap_action || { action: 'more-info' },
       holdAction: config.hold_action || { action: 'none' },
@@ -372,6 +413,7 @@ export class AnimatedWeatherCard extends LitElement {
               ${this.config.showFeelsLike ? html`
                 <div class="feels-like">${i18n.t('feels_like')} ${weather.apparentTemperature != null ? `${Math.round(weather.apparentTemperature)}°` : i18n.t('no_data')}</div>
               ` : ''}
+              ${this.renderPrecipitationOutlook(weather)}
             </div>
             <weather-clock
               .format=${this.config.showClock && this.config.clockPosition === 'top' ? this.config.clockFormat : null}
@@ -401,6 +443,9 @@ export class AnimatedWeatherCard extends LitElement {
             .forecast=${dailyForecast}
             .lang=${i18n.lang}
             .forecastTitle=${this.config.dailyForecastTitle ?? null}
+            .showBars=${this.config.showTemperatureBars === true}
+            .currentTemperature=${weather.temperature}
+            .temperatureUnit=${getWeatherAttributes(hass, this.config.entity).temperature_unit ?? hass.config?.unit_system?.temperature ?? '°C'}
           ></daily-forecast>
         </div>
       </div>

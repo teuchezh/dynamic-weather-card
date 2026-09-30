@@ -705,6 +705,12 @@
             showWindDirection: true,
             showWindGust: false,
             showSunriseSunset: true,
+            showPressure: false,
+            showUvIndex: false,
+            showDewPoint: false,
+            showAqi: false,
+            showPrecipitationOutlook: true,
+            showTemperatureBars: true,
             showClock: false,
             showDate: false,
             showHourlyForecast: false,
@@ -859,7 +865,11 @@
                     ['showWind', 'windSpeed', 'Wind Speed'],
                     ['showWindDirection', 'windDirection', 'Wind Direction'],
                     ['showWindGust', 'windGust', 'Wind Gust'],
-                    ['showSunriseSunset', 'sunriseSunset', 'Sunrise/Sunset']
+                    ['showSunriseSunset', 'sunriseSunset', 'Sunrise/Sunset'],
+                    ['showPressure', 'pressure', 'Pressure'],
+                    ['showUvIndex', 'uvIndex', 'UV Index'],
+                    ['showDewPoint', 'dewPoint', 'Dew Point'],
+                    ['showAqi', 'aqi', 'Air Quality (sensor)']
                 ] },
                 { type: 'segmented', key: 'windSpeedUnit', label: ['windSpeedUnit', 'Wind Speed Unit'], options: [['ms', 'm/s'], ['kmh', 'km/h']] },
                 { type: 'toggles', label: ['clockAndDate', 'Clock'], items: [
@@ -870,7 +880,9 @@
                 { type: 'segmented', key: 'clockFormat', label: ['clockFormat', 'Clock Format'], options: [['24h', '24h'], ['12h', '12h']] },
                 { type: 'toggles', label: ['forecasts', 'Forecasts'], items: [
                     ['showHourlyForecast', 'hourlyForecast', 'Hourly Forecast'],
-                    ['showDailyForecast', 'dailyForecast', 'Daily Forecast']
+                    ['showDailyForecast', 'dailyForecast', 'Daily Forecast'],
+                    ['showPrecipitationOutlook', 'precipitationOutlook', 'Rain start/stop time'],
+                    ['showTemperatureBars', 'temperatureBars', 'Temperature bars']
                 ] },
                 { type: 'range', key: 'hourlyForecastHours', label: ['hourlyForecastHours', 'Hourly Forecast Hours'], min: 1, max: 24 },
                 { type: 'range', key: 'dailyForecastDays', label: ['dailyForecastDays', 'Daily Forecast Days'], min: 1, max: 14 },
@@ -1145,23 +1157,32 @@
         let cardLayout = null;
         let forecastCache = { key: '', forecast: [] };
 
-        function generateForecast(baseTemp, days) {
-            const key = `${baseTemp}:${days}`;
+        function generateForecast(baseTemp, days, currentCondition) {
+            const key = `${baseTemp}:${days}:${currentCondition}`;
             if (forecastCache.key === key) return forecastCache.forecast;
 
+            // Hourly entries start on the hour, like Home Assistant's hourly forecasts
             const now = new Date();
+            now.setMinutes(0, 0, 0);
             const forecast = [];
             const hours = Math.max(8, Math.floor(days) * 24);
             for (let i = 1; i <= hours; i++) {
                 const time = new Date(now.getTime() + i * 3600 * 1000);
                 const hour = time.getHours();
-                let temp = baseTemp;
+                // Warmer and cooler days, so the daily temperature bars differ
+                const dayIndex = Math.floor((time - now) / 86400000);
+                let temp = baseTemp + [0, 3, -2, 5, -4, 1, 6, -1][dayIndex % 8];
                 if (hour >= 6 && hour < 12) temp += Math.floor(Math.random() * 3);
                 else if (hour >= 12 && hour < 18) temp += 2 + Math.floor(Math.random() * 4);
                 else if (hour >= 18 && hour < 22) temp += Math.floor(Math.random() * 3);
                 else temp -= 2 + Math.floor(Math.random() * 3);
 
-                const condition = FORECAST_CONDITIONS[Math.floor(Math.random() * FORECAST_CONDITIONS.length)];
+                // The next hours follow the current weather, so the rain start/stop line has something to show:
+                // precipitation stops after 2 hours, or starts in 3 hours when it's dry now
+                const nowWet = /rain|pouring|snow|hail|lightning/.test(currentCondition);
+                let condition = FORECAST_CONDITIONS[Math.floor(Math.random() * FORECAST_CONDITIONS.length)];
+                if (i <= 2) condition = currentCondition === 'clear-night' ? 'sunny' : currentCondition;
+                else if (i <= 5) condition = nowWet ? 'partlycloudy' : baseTemp <= 0 ? 'snowy' : 'rainy';
                 const wet = /rain|pouring|snow|hail|lightning/.test(condition);
                 forecast.push({
                     datetime: time.toISOString(),
@@ -1199,8 +1220,12 @@
                             apparent_temperature: state.temperature - 3,
                             templow: state.temperature - 5,
                             pressure: 1013,
+                            pressure_unit: 'hPa',
+                            uv_index: /sunny|partlycloudy/.test(state.condition) ? 6 : 2,
+                            // Rough dew point from temperature and humidity
+                            dew_point: Math.round(state.temperature - (100 - state.humidity) / 5),
                             friendly_name: 'Demo Weather',
-                            forecast: generateForecast(state.temperature, Math.max(state.dailyForecastDays, 2)),
+                            forecast: generateForecast(state.temperature, Math.max(state.dailyForecastDays, 2), state.condition),
                             sunrise: sunrise.toISOString(),
                             sunset: sunset.toISOString()
                         }
@@ -1213,7 +1238,8 @@
                     'sensor.station_wind_speed': { state: '14.4', attributes: { unit_of_measurement: 'km/h' } },
                     'sensor.station_wind_gust': { state: '6', attributes: { unit_of_measurement: 'm/s' } },
                     'sensor.station_wind_bearing': { state: '200', attributes: { unit_of_measurement: '°' } },
-                    'sensor.station_precipitation': { state: '1.25', attributes: { unit_of_measurement: 'mm' } }
+                    'sensor.station_precipitation': { state: '1.25', attributes: { unit_of_measurement: 'mm' } },
+                    'sensor.demo_aqi': { state: '42', attributes: { unit_of_measurement: 'AQI' } }
                 }
             };
         }
@@ -1233,6 +1259,11 @@
                 show_wind_direction: state.showWindDirection,
                 show_wind_gust: state.showWindGust,
                 show_sunrise_sunset: state.showSunriseSunset,
+                show_pressure: state.showPressure,
+                show_uv_index: state.showUvIndex,
+                show_dew_point: state.showDewPoint,
+                show_precipitation_outlook: state.showPrecipitationOutlook,
+                show_temperature_bars: state.showTemperatureBars,
                 show_clock: state.showClock,
                 show_date: state.showDate,
                 clock_position: state.clockPosition,
@@ -1250,6 +1281,7 @@
             if (state.name.trim()) config.name = state.name.trim();
             if (state.hourlyForecastTitle) config.hourly_forecast_title = state.hourlyForecastTitle;
             if (state.dailyForecastTitle) config.daily_forecast_title = state.dailyForecastTitle;
+            if (state.showAqi) config.aqi_entity = 'sensor.demo_aqi';
             if (state.textColor) config.text_color = state.textColor;
             if (state.borderRadius !== null) config.border_radius = state.borderRadius;
             if (state.sunX !== null) config.sun_position_x = state.sunX;

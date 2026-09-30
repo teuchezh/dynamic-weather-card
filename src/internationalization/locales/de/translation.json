@@ -31,6 +31,21 @@
   "show_clock": "Aktuelle Uhrzeit anzeigen",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Luftdruck",
+  "uv_index": "UV-Index",
+  "dew_point": "Taupunkt",
+  "aqi": "Luftqualitätsindex",
+  "precipitation_outlook": {
+    "start": "{kind} gegen {time} erwartet",
+    "soon": "{kind} in Kürze erwartet",
+    "stop": "{kind} endet gegen {time}",
+    "continues": "{kind} noch mindestens {hours} Std.",
+    "rain": "Regen",
+    "snow": "Schnee",
+    "sleet": "Schneeregen",
+    "hail": "Hagel",
+    "storm": "Gewitter"
+  },
   "editor": {
     "entity": "Wetter-Entität",
     "name": "Kartentitel",

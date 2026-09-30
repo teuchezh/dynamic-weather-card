@@ -1,4 +1,10 @@
 export interface DemoTranslations {
+  pressure?: string;
+  uvIndex?: string;
+  dewPoint?: string;
+  aqi?: string;
+  precipitationOutlook?: string;
+  temperatureBars?: string;
   pageTitle: string;
   pageSubtitle: string;
   livePreview: string;
@@ -150,6 +156,22 @@ export interface Translation {
   show_clock: string;
   am: string;
   pm: string;
+  pressure: string;
+  uv_index: string;
+  dew_point: string;
+  aqi: string;
+  precipitation_outlook: {
+    // Templates with {kind}, {time} and {hours}
+    start: string;
+    soon: string;
+    stop: string;
+    continues: string;
+    rain: string;
+    snow: string;
+    sleet: string;
+    hail: string;
+    storm: string;
+  };
   editor: EditorTranslations;
   demo: DemoTranslations;
 }

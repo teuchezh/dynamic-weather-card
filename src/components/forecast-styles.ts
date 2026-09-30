@@ -97,6 +97,39 @@ export const forecastStyles = css`
     opacity: 0.6;
   }
 
+  .temp-bar {
+    position: relative;
+    width: 6px;
+    height: 48px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .temp-bar-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    min-height: 6px;
+    border-radius: 3px;
+  }
+
+  .temp-bar-now {
+    position: absolute;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    margin: 0 0 -4px -4px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.35);
+  }
+
+  .forecast-temp-low-bar {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.6;
+  }
+
   .forecast-precipitation {
     font-size: 11px;
     opacity: 0.75;

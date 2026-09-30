@@ -31,6 +31,21 @@
   "show_clock": "Aktuális idő mutatása",
   "am": "DE",
   "pm": "DU",
+  "pressure": "Légnyomás",
+  "uv_index": "UV-index",
+  "dew_point": "Harmatpont",
+  "aqi": "Levegőminőségi index",
+  "precipitation_outlook": {
+    "start": "{kind} várható {time} körül",
+    "soon": "{kind} hamarosan várható",
+    "stop": "{kind} {time} körül eláll",
+    "continues": "{kind} még legalább {hours} órán át",
+    "rain": "Eső",
+    "snow": "Hó",
+    "sleet": "Havas eső",
+    "hail": "Jégeső",
+    "storm": "Zivatar"
+  },
   "editor": {
     "entity": "Időjárás entitás",
     "name": "Kártya címe",

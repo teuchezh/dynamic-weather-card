@@ -78,6 +78,10 @@ export class WeatherDetails extends LitElement {
     return (
       (this.config.showHumidity && this.weather.humidity != null) ||
       (this.config.showWind && this.weather.windSpeed != null) ||
+      (this.config.showPressure && this.weather.pressure != null) ||
+      (this.config.showUvIndex && this.weather.uvIndex != null) ||
+      (this.config.showDewPoint && this.weather.dewPoint != null) ||
+      this.weather.aqi != null ||
       this.weather.precipitation != null ||
       (this.config.showSunriseSunset && this.sunData?.hasSunData === true)
     );
@@ -92,6 +96,40 @@ export class WeatherDetails extends LitElement {
         <span>${this.weather.humidity} %</span>
       </div>
     `;
+  }
+
+  private renderItem(icon: string, text: string, title: string): TemplateResult {
+    return html`
+      <div class="info-item" title="${title}">
+        <span class="info-icon">${getSVGIcon(icon)}</span>
+        <span>${text}</span>
+      </div>
+    `;
+  }
+
+  private renderPressure(): TemplateResult {
+    if (!this.config?.showPressure || this.weather?.pressure == null) return html``;
+
+    const unit = this.weather.pressureUnit;
+    // inHg needs two decimals and kPa one to be useful; hPa/mbar/mmHg read fine as whole numbers
+    const decimals = unit === 'inHg' ? 2 : unit === 'kPa' ? 1 : 0;
+    return this.renderItem('pressure', `${this.weather.pressure.toFixed(decimals)}${unit ? ` ${unit}` : ''}`, i18n.t('pressure'));
+  }
+
+  private renderUvIndex(): TemplateResult {
+    if (!this.config?.showUvIndex || this.weather?.uvIndex == null) return html``;
+    return this.renderItem('uv', `UV ${Math.round(this.weather.uvIndex)}`, i18n.t('uv_index'));
+  }
+
+  private renderDewPoint(): TemplateResult {
+    if (!this.config?.showDewPoint || this.weather?.dewPoint == null) return html``;
+    return this.renderItem('dewPoint', `${Math.round(this.weather.dewPoint)}°`, i18n.t('dew_point'));
+  }
+
+  // Shown whenever an air quality sensor is configured
+  private renderAqi(): TemplateResult {
+    if (this.weather?.aqi == null) return html``;
+    return this.renderItem('aqi', `AQI ${Math.round(this.weather.aqi)}`, i18n.t('aqi'));
   }
 
   private renderSunrise(): TemplateResult {
@@ -178,6 +216,10 @@ export class WeatherDetails extends LitElement {
         ${this.renderWind()}
         ${this.compact ? sunItems : html`${this.renderSunrise()}${this.renderSunset()}`}
         ${this.renderPrecipitation()}
+        ${this.renderPressure()}
+        ${this.renderUvIndex()}
+        ${this.renderDewPoint()}
+        ${this.renderAqi()}
       </div>
     `;
   }

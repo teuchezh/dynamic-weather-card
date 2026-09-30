@@ -77,6 +77,10 @@ export function getWeatherData(
   const windGustSensor = readSensor(hass, sensors.windGust);
   const windBearingSensor = readSensor(hass, sensors.windBearing);
   const precipitationSensor = readSensor(hass, sensors.precipitation);
+  const pressureSensor = readSensor(hass, sensors.pressure);
+  const uvIndexSensor = readSensor(hass, sensors.uvIndex);
+  const dewPointSensor = readSensor(hass, sensors.dewPoint);
+  const aqiSensor = readSensor(hass, sensors.aqi);
 
   // Weather entity wind unit; legacy providers without wind_speed_unit report m/s
   const entityWindUnit = typeof attrs.wind_speed_unit === 'string' ? attrs.wind_speed_unit : 'm/s';
@@ -106,7 +110,11 @@ export function getWeatherData(
     windGust,
     windBearing: windBearingSensor?.value ?? (attrs.wind_bearing != null ? attrs.wind_bearing : null),
     windDirection: attrs.wind_direction || null,
-    pressure: attrs.pressure || null,
+    pressure: pressureSensor?.value ?? (attrs.pressure != null ? attrs.pressure : null),
+    pressureUnit: pressureSensor ? pressureSensor.unit : (typeof attrs.pressure_unit === 'string' ? attrs.pressure_unit : null),
+    uvIndex: uvIndexSensor?.value ?? (attrs.uv_index != null ? attrs.uv_index : null),
+    dewPoint: dewPointSensor?.value ?? (attrs.dew_point != null ? attrs.dew_point : null),
+    aqi: aqiSensor?.value ?? null,
     forecast: attrs.forecast || attrs.forecast_hourly || hourlyForecast || [],
     friendlyName: attrs.friendly_name || i18n.t('weather'),
     templow: templow,

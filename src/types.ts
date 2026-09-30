@@ -24,6 +24,9 @@ export interface WeatherEntityAttributes {
   temperature_unit?: string;
   humidity?: number;
   pressure?: number;
+  pressure_unit?: string;
+  uv_index?: number;
+  dew_point?: number;
   wind_speed?: number;
   wind_speed_unit?: string;
   wind_bearing?: number;
@@ -122,7 +125,12 @@ export interface WeatherCardConfig {
   showWindGust?: boolean;
   showWindDirection?: boolean;
   showHumidity?: boolean;
+  showPressure?: boolean;
+  showUvIndex?: boolean;
+  showDewPoint?: boolean;
   showMinTemp?: boolean;
+  showPrecipitationOutlook?: boolean;
+  showTemperatureBars?: boolean;
   showForecast?: boolean;
   showHourlyForecast?: boolean;
   showDailyForecast?: boolean;
@@ -205,6 +213,10 @@ export interface WeatherData {
   windBearing: number | null;
   windDirection: string | null;
   pressure: number | null;
+  pressureUnit: string | null;
+  uvIndex: number | null;
+  dewPoint: number | null;
+  aqi: number | null;
   forecast: WeatherForecast[];
   friendlyName: string;
   templow: number | null;
@@ -236,7 +248,12 @@ export interface ConfigInput {
   show_wind_gust?: boolean;
   show_wind_direction?: boolean;
   show_humidity?: boolean;
+  show_pressure?: boolean;
+  show_uv_index?: boolean;
+  show_dew_point?: boolean;
   show_min_temp?: boolean;
+  show_precipitation_outlook?: boolean;
+  show_temperature_bars?: boolean;
   show_forecast?: boolean;
   show_hourly_forecast?: boolean;
   show_daily_forecast?: boolean;
@@ -271,6 +288,10 @@ export interface ConfigInput {
   wind_gust_entity?: string;
   wind_bearing_entity?: string;
   precipitation_entity?: string;
+  pressure_entity?: string;
+  uv_index_entity?: string;
+  dew_point_entity?: string;
+  aqi_entity?: string;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
@@ -285,6 +306,10 @@ export interface SensorEntities {
   windGust?: string | null;
   windBearing?: string | null;
   precipitation?: string | null;
+  pressure?: string | null;
+  uvIndex?: string | null;
+  dewPoint?: string | null;
+  aqi?: string | null;
 }
 
 // Internal Card Configuration (normalized)
@@ -303,6 +328,9 @@ export interface WeatherCardConfigInternal extends WeatherCardConfig {
 // Details Component Configuration
 export interface DetailsConfig {
   showHumidity: boolean;
+  showPressure: boolean;
+  showUvIndex: boolean;
+  showDewPoint: boolean;
   showWind: boolean;
   showWindGust: boolean;
   showWindDirection: boolean;

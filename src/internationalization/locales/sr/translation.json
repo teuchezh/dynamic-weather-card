@@ -31,6 +31,21 @@
   "show_clock": "Prikaži sat",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Pritisak",
+  "uv_index": "UV indeks",
+  "dew_point": "Tačka rose",
+  "aqi": "Indeks kvaliteta vazduha",
+  "precipitation_outlook": {
+    "start": "{kind} se očekuje oko {time}",
+    "soon": "{kind} se očekuje uskoro",
+    "stop": "{kind} prestaje oko {time}",
+    "continues": "{kind} još najmanje {hours} h",
+    "rain": "Kiša",
+    "snow": "Sneg",
+    "sleet": "Susnežica",
+    "hail": "Grad",
+    "storm": "Grmljavina"
+  },
   "editor": {
     "entity": "Entitet",
     "name": "Naziv (opciono)",

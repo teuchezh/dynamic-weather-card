@@ -44,12 +44,21 @@ export class AnimationManager {
   // Shared with all animations and updated in place when the quality changes
   private quality = createQualitySettings('high');
   private lastFrameTime = -Infinity;
+  // System "reduce motion" setting: draw a still frame instead of animating
+  private reducedMotion: MediaQueryList | null = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : null;
+  // What the still frame shows; it is redrawn only when this changes
+  private stillKey = '';
   private width: number = 0;
   private height: number = 0;
   private container: Element | null = null;
   private getDrawParams: () => DrawParams | null;
   private handleVisibilityChange = (): void => {
     this.updateRunning();
+  };
+  private handleMotionChange = (): void => {
+    this.stillKey = '';
   };
 
   constructor(getDrawParams: () => DrawParams | null) {
@@ -65,11 +74,13 @@ export class AnimationManager {
       this.setupResizeObserver();
       this.setupIntersectionObserver();
       document.addEventListener('visibilitychange', this.handleVisibilityChange);
+      this.reducedMotion?.addEventListener?.('change', this.handleMotionChange);
     }
   }
 
   destroy(): void {
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    this.reducedMotion?.removeEventListener?.('change', this.handleMotionChange);
     this.stopAnimation();
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
@@ -120,6 +131,7 @@ export class AnimationManager {
 
     this.width = rect.width;
     this.height = rect.height;
+    this.stillKey = '';
 
     this.initializeAnimations();
   }
@@ -183,10 +195,12 @@ export class AnimationManager {
   private startAnimation(): void {
     if (this.animationFrame) return;
     const animate = (now: number = 0) => {
-      // Frame rate cap; the small tolerance keeps 60 fps from dropping frames on 60 Hz screens
-      if (now - this.lastFrameTime >= 1000 / this.quality.fps - 2) {
+      const still = this.reducedMotion?.matches === true;
+      // Frame rate cap; the small tolerance keeps 60 fps from dropping frames on 60 Hz screens.
+      // With reduced motion only check twice a second whether the still frame needs redrawing
+      if (now - this.lastFrameTime >= (still ? 500 : 1000 / this.quality.fps - 2)) {
         this.lastFrameTime = now;
-        this.draw();
+        this.draw(still);
       }
       this.animationFrame = requestAnimationFrame(animate);
     };
@@ -200,7 +214,7 @@ export class AnimationManager {
     }
   }
 
-  private draw(): void {
+  private draw(still = false): void {
     if (!this.ctx || !this.canvas) return;
     if (!this.width || !this.height) {
       this.resizeCanvas();
@@ -215,6 +229,15 @@ export class AnimationManager {
     const width = this.width;
     const height = this.height;
 
+    if (still) {
+      // Sun/moon position follows the time of day in steps, so the frame isn't redrawn every minute
+      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, width, height]);
+      if (key === this.stillKey) return;
+      this.stillKey = key;
+    } else {
+      this.stillKey = '';
+    }
+
     this.ctx.clearRect(0, 0, width, height);
 
     const conditionLower = condition.toLowerCase();
@@ -226,6 +249,8 @@ export class AnimationManager {
     }
 
     this.cloudField.setWeather(conditionLower, timeOfDay);
+    // No fade-in for a still frame: show the final cloud cover right away
+    if (still) this.cloudField.settle();
 
     switch (conditionLower) {
       case 'sunny':

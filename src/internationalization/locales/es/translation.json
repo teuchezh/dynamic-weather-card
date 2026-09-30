@@ -31,6 +31,21 @@
   "show_clock": "Mostrar hora actual",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Presión",
+  "uv_index": "Índice UV",
+  "dew_point": "Punto de rocío",
+  "aqi": "Índice de calidad del aire",
+  "precipitation_outlook": {
+    "start": "{kind}: empieza hacia {time}",
+    "soon": "{kind}: empieza pronto",
+    "stop": "{kind}: termina hacia {time}",
+    "continues": "{kind}: al menos {hours} h más",
+    "rain": "Lluvia",
+    "snow": "Nieve",
+    "sleet": "Aguanieve",
+    "hail": "Granizo",
+    "storm": "Tormentas"
+  },
   "editor": {
     "entity": "Entidad de clima",
     "name": "Título de la tarjeta",

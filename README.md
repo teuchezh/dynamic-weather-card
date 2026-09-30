@@ -186,15 +186,19 @@ clock_format: 24h                         # 12h or 24h
 | `sun_position_y` | number | auto | Pin the sun/moon vertically, in % of card height (`0` = top, `100` = bottom). Unset = moves across the sky |
 | `show_animations` | boolean | `true` | Render canvas weather animations (set `false` for a static gradient) |
 | `visual_style` | string | `modern` | Graphics style: `modern` (weather-aware sky, layered clouds, rain/snow depth, sun rays, stars and real moon phase) or `classic` (the original simpler graphics) |
-| `animation_quality` | string | `high` | `high` (60 FPS, full detail), `medium` (30 FPS, fewer particles and cloud layers) or `low` (20 FPS, minimal particles, no extras, 1× canvas resolution) for slow devices such as wall tablets. Animations also pause while the card is off-screen |
+| `animation_quality` | string | `high` | `high` (60 FPS, full detail), `medium` (30 FPS, fewer particles and cloud layers) or `low` (20 FPS, minimal particles, no extras, 1× canvas resolution) for slow devices such as wall tablets. Animations also pause while the card is off-screen, and show a still frame when the system "reduce motion" setting is on |
 | **Temperature** |
 | `show_feels_like` | boolean | `true` | Display "feels like" temperature |
 | `show_min_temp` | boolean | `true` | Display minimum temperature |
+| `show_precipitation_outlook` | boolean | `false` | Show when precipitation starts or stops in the next 12 hours, e.g. "Rain expected around 15:00" or "Snow ending around 18:00". Uses the hourly forecast; hidden when nothing changes (default layout only) |
 | **Weather Details** |
 | `show_humidity` | boolean | `false` | Display humidity percentage |
 | `show_wind` | boolean | `false` | Display wind speed |
 | `show_wind_direction` | boolean | `false` | Display wind direction |
 | `show_wind_gust` | boolean | `false` | Display wind gust speed |
+| `show_pressure` | boolean | `false` | Display atmospheric pressure in the weather entity's unit |
+| `show_uv_index` | boolean | `false` | Display the UV index |
+| `show_dew_point` | boolean | `false` | Display the dew point |
 | `wind_speed_unit` | string | `ms` | `ms` or `kmh` (for legacy integrations) |
 | **Forecasts** |
 | `show_hourly_forecast` | boolean | `false` | Show hourly forecast |
@@ -203,6 +207,7 @@ clock_format: 24h                         # 12h or 24h
 | `daily_forecast_days` | number | `5` | Number of days to display (1-14) |
 | `hourly_forecast_title` | string | translated | Custom hourly forecast title; `""` hides it |
 | `daily_forecast_title` | string | translated | Custom daily forecast title; `""` hides it |
+| `show_temperature_bars` | boolean | `false` | Daily forecast: show each day's low–high range as a colored bar on a scale shared by all days, with a dot for the current temperature on today's bar |
 | **Sun & Clock** |
 | `show_sunrise_sunset` | boolean | `false` | Display sunrise/sunset times |
 | `sunrise_entity` | string | - | Custom sunrise sensor (optional) |
@@ -215,6 +220,10 @@ clock_format: 24h                         # 12h or 24h
 | `wind_gust_entity` | string | - | Wind gust speed |
 | `wind_bearing_entity` | string | - | Wind direction in degrees |
 | `precipitation_entity` | string | - | Precipitation, shown in the details row with the sensor's unit |
+| `pressure_entity` | string | - | Pressure (shown with `show_pressure`) |
+| `uv_index_entity` | string | - | UV index (shown with `show_uv_index`) |
+| `dew_point_entity` | string | - | Dew point (shown with `show_dew_point`) |
+| `aqi_entity` | string | - | Air quality index; shown in the details row whenever it is set |
 | `show_clock` | boolean | `false` | Display current time |
 | `show_date` | boolean | `false` | Display current date under the clock (e.g. "Wed, September 30"), in the card language. Follows `clock_position`; shown on its own if the clock is off |
 | `clock_position` | string | `top` | `top` (top-right) or `details` (info row) |

@@ -31,6 +31,21 @@
   "show_clock": "显示当前时间",
   "am": "上午",
   "pm": "下午",
+  "pressure": "气压",
+  "uv_index": "紫外线指数",
+  "dew_point": "露点",
+  "aqi": "空气质量指数",
+  "precipitation_outlook": {
+    "start": "{kind}：约{time}开始",
+    "soon": "{kind}：即将开始",
+    "stop": "{kind}：约{time}结束",
+    "continues": "{kind}：至少再持续{hours}小时",
+    "rain": "雨",
+    "snow": "雪",
+    "sleet": "雨夹雪",
+    "hail": "冰雹",
+    "storm": "雷暴"
+  },
   "editor": {
     "entity": "天气实体",
     "name": "卡片标题",

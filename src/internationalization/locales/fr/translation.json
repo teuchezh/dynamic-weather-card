@@ -31,6 +31,21 @@
   "show_clock": "Afficher l'heure actuelle",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Pression",
+  "uv_index": "Indice UV",
+  "dew_point": "Point de rosée",
+  "aqi": "Indice de qualité de l'air",
+  "precipitation_outlook": {
+    "start": "{kind} : début vers {time}",
+    "soon": "{kind} : début imminent",
+    "stop": "{kind} : fin vers {time}",
+    "continues": "{kind} : encore au moins {hours} h",
+    "rain": "Pluie",
+    "snow": "Neige",
+    "sleet": "Neige fondue",
+    "hail": "Grêle",
+    "storm": "Orages"
+  },
   "editor": {
     "entity": "Entité météo",
     "name": "Titre de la carte",

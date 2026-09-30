@@ -31,6 +31,21 @@
   "show_clock": "Mostra ora corrente",
   "am": "AM",
   "pm": "PM",
+  "pressure": "Pressione",
+  "uv_index": "Indice UV",
+  "dew_point": "Punto di rugiada",
+  "aqi": "Indice di qualità dell'aria",
+  "precipitation_outlook": {
+    "start": "{kind}: inizio verso {time}",
+    "soon": "{kind}: inizio a breve",
+    "stop": "{kind}: fine verso {time}",
+    "continues": "{kind}: ancora almeno {hours} h",
+    "rain": "Pioggia",
+    "snow": "Neve",
+    "sleet": "Nevischio",
+    "hail": "Grandine",
+    "storm": "Temporali"
+  },
   "editor": {
     "entity": "Entità meteo",
     "name": "Titolo della scheda",

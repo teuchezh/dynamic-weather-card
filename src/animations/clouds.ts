@@ -74,6 +74,13 @@ export class CloudField {
     if (this.coverage < 0) this.coverage = sky.coverage;
   }
 
+  /**
+   * Jump to the target coverage without easing (used for still frames)
+   */
+  settle(): void {
+    this.coverage = this.targetCoverage;
+  }
+
   draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, layers: number = LAYERS.length): void {
     const dpr = ctx.getTransform().a || 1;
     this.ensureSprites(dpr);
