@@ -1,4 +1,5 @@
 import { BaseAnimation } from './base';
+import { NightSky, getMoonPhase } from './night-sky';
 import { getSunPosition } from '../utils';
 import { TimeOfDay, Position, PositionOverride } from '../types';
 
@@ -6,6 +7,8 @@ import { TimeOfDay, Position, PositionOverride } from '../types';
  * Sunny weather animation
  */
 export class SunnyAnimation extends BaseAnimation {
+  private nightSky = new NightSky();
+
   /**
    * Draw sunny weather
    * @param time - Animation time (unused, for interface compatibility)
@@ -13,8 +16,9 @@ export class SunnyAnimation extends BaseAnimation {
    * @param height - Canvas height
    * @param timeOfDay - Time of day info
    * @param positionOverride - Optional fixed sun/moon position (percent of width/height)
+   * @param moonPhase - Moon phase 0..1 (0 = new, 0.5 = full); defaults to the current real phase
    */
-  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, positionOverride?: PositionOverride): void {
+  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, positionOverride?: PositionOverride, moonPhase?: number): void {
     const currentTime = Date.now() * 0.001;
     const sunPos: Position = getSunPosition(timeOfDay, width, height, positionOverride);
     const sunX = sunPos.x;
@@ -28,7 +32,7 @@ export class SunnyAnimation extends BaseAnimation {
         this.drawHorizonReflection(sunX, sunY, height, currentTime);
       }
     } else if (timeOfDay.type === 'night') {
-      this.drawNightSky(width, height, currentTime, sunPos);
+      this.nightSky.draw(this.ctx, currentTime, width, height, sunPos, moonPhase ?? getMoonPhase());
     }
 
     this.drawClouds(currentTime, width, height, 0.3);
@@ -126,43 +130,5 @@ export class SunnyAnimation extends BaseAnimation {
       this.ctx.ellipse(sunX, horizonY, sunRadius * 1.5, sunRadius * 0.5, 0, 0, Math.PI * 2);
       this.ctx.fill();
     }
-  }
-
-  /**
-   * Draw night sky with stars and moon
-   * @param width - Canvas width
-   * @param height - Canvas height
-   * @param time - Animation time
-   * @param moonPos - Moon position
-   */
-  private drawNightSky(width: number, height: number, time: number, moonPos: Position): void {
-    // Stars
-    this.ctx.fillStyle = '#FFFFFF';
-    for (let i = 0; i < 20; i++) {
-      const x = (width * 0.2 + i * 47) % width;
-      const y = (height * 0.2 + i * 23) % (height * 0.6);
-      const twinkle = Math.sin(time * 0.8 + i) * 0.5 + 0.5;
-      this.ctx.globalAlpha = twinkle * 0.8;
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, 1.5, 0, Math.PI * 2);
-      this.ctx.fill();
-    }
-
-    // Moon
-    const moonX = moonPos.x;
-    const moonY = moonPos.y;
-    this.ctx.globalAlpha = 0.9;
-    this.ctx.fillStyle = '#F0F0F0';
-    this.ctx.beginPath();
-    this.ctx.arc(moonX, moonY, 25, 0, Math.PI * 2);
-    this.ctx.fill();
-
-    // Moon crescent shadow
-    this.ctx.fillStyle = '#1a1a2e';
-    this.ctx.beginPath();
-    this.ctx.arc(moonX - 8, moonY - 5, 22, 0, Math.PI * 2);
-    this.ctx.fill();
-
-    this.ctx.globalAlpha = 1;
   }
 }
