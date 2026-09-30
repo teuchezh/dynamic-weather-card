@@ -65,6 +65,8 @@ For a big release, add a mini-presentation above the generated changelog: put sc
 
 The Release workflow includes this file only when something in `docs/release-highlights/` changed since the previous release, so it appears once and is skipped by the following releases automatically. Image links are rewritten to the files in the new release tag, so old release notes keep their images when the folder is replaced for a later release. The same text shows in HACS when users update the card.
 
+A big release can also get a codename: add a `codename: ...` line to the comment at the top of that file (e.g. `codename: Autumn Flare-Up`). The release is then titled `v2026.10.0 “Autumn Flare-Up”` instead of `Release v2026.10.0`.
+
 ## Versioning
 
 This project uses [Calendar Versioning](https://calver.org/) in the same style as Home Assistant: `YYYY.M.PATCH`, tagged as `vYYYY.M.PATCH`.

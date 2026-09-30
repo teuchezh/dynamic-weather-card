@@ -4,20 +4,26 @@
   docs/release-highlights/ changed since the previous release, and rewrites the
   relative image links to files pinned to the release tag.
   For the next big release, replace the text and images here.
+  The codename below becomes part of the release title.
+
+  codename: Autumn Flare-Up
 -->
 
 ![A whole new sky](./hero.jpg)
 
-## 🌤️ A whole new sky
+## 🍂 Autumn Flare-Up: a whole new sky
 
-This is the biggest visual update to Dynamic Weather Card so far. The sky now follows the weather and the time of day. Clouds drift in layers and rain and snow have depth. At night you get stars and the moon in its real phase.
+This is the biggest visual update to Dynamic Weather Card so far, so we gave it a codename. The sky now follows the weather and the time of day. Clouds drift in layers and rain and snow have depth. At night you get stars, the moon in its real phase and, if you like, the northern lights.
 
 ![Weather animations](./animations.gif)
 
 - **Weather-aware sky.** Each condition has its own palette, with warm sunrise and sunset horizons that fade under heavy clouds. The sky transitions smoothly when the weather changes.
 - **Layered clouds.** Soft clouds drift at three depths. Their color and coverage follow the weather.
 - **Rain, snow, hail and fog with depth.** Rain splashes, snowflakes sway, hail bounces and fog banks drift.
+- **Raindrops on the glass.** In the rain, drops land on the card and dry up, and bigger ones slide down leaving a trail.
+- **Wind.** Windy weather gets gusts and tumbling autumn leaves, and clouds drift faster as the wind picks up.
 - **Night sky.** Twinkling stars, occasional shooting stars and the moon in today's real phase.
+- **Northern lights.** Waving aurora curtains on clear nights, enabled with `show_aurora: true`.
 - **Sun rays** and a subtle lens flare on clear days.
 
 ### Before and after
@@ -38,6 +44,7 @@ All of these are off by default. Turn them on in the visual editor or in YAML:
 | `show_temperature_bars` | Each day's low–high range as a colored bar on one scale, with today's temperature marked |
 | `show_pressure`, `show_uv_index`, `show_dew_point` | Pressure, UV index and dew point, from the weather entity or your own sensors |
 | `aqi_entity` | An air quality index sensor |
+| `show_aurora` | Northern lights on clear nights |
 
 ## ⚡ Runs smoothly everywhere
 
@@ -56,13 +63,16 @@ Try every condition, time of day, moon phase and option in the browser: **[teuch
 > - After updating, refresh the browser cache (Ctrl+Shift+R) or clear the frontend cache in the companion app.
 
 <details>
-<summary>🇷🇺 Кратко по-русски</summary>
+<summary>🇷🇺 «Осеннее обострение»: кратко по-русски</summary>
 
 - **Новая графика по умолчанию:**
   - небо подстраивается под погоду и время суток;
   - многослойные облака;
   - дождь, снег, град и туман с глубиной;
+  - капли на стекле в дождь;
+  - порывы ветра и осенние листья;
   - звёзды и луна в реальной фазе;
+  - северное сияние (`show_aurora: true`);
   - лучи солнца.
 
   Прежний вид включается опцией `visual_style: classic`.

@@ -166,6 +166,14 @@ jobs:
             RAW="https://raw.githubusercontent.com/${{ github.repository }}/${CURRENT_TAG}/${HIGHLIGHTS}/"
             # Drop the leading maintainer comment and rewrite ](./file) links
             CHANGELOG+="$(perl -0pe 's/\A\s*<!--.*?-->\s*//s' "$HIGHLIGHTS/README.md" | sed "s#](\./#](${RAW}#g")"$'\n'$'\n'
+            # Optional "codename: ..." line in the leading comment names the release
+            CODENAME=$(sed -n 's/^[[:space:]]*codename:[[:space:]]*//p' "$HIGHLIGHTS/README.md" | head -n 1)
+          fi
+
+          if [ -n "$CODENAME" ]; then
+            echo "name=${CURRENT_TAG} “${CODENAME}”" >> $GITHUB_OUTPUT
+          else
+            echo "name=Release ${CURRENT_TAG}" >> $GITHUB_OUTPUT
           fi
 
           CHANGELOG+="## What's Changed"$'\n'$'\n'
@@ -213,7 +221,7 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           target_commitish: ${{ github.sha }}
-          name: Release ${{ steps.version.outputs.tag }}
+          name: ${{ steps.changelog.outputs.name }}
           body: ${{ steps.changelog.outputs.changelog }}
           files: dynamic-weather-card.js
           draft: false
