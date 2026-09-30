@@ -5,6 +5,7 @@ import da from './locales/da/translation.json';
 import de from './locales/de/translation.json';
 import en from './locales/en/translation.json';
 import es from './locales/es/translation.json';
+import et from './locales/et/translation.json';
 import fr from './locales/fr/translation.json';
 import hu from './locales/hu/translation.json';
 import it from './locales/it/translation.json';
@@ -18,13 +19,14 @@ import sr from './locales/sr/translation.json';
 import tr from './locales/tr/translation.json';
 import zh from './locales/zh/translation.json';
 
-export type SupportedLanguage = 'da' | 'de' | 'en' | 'es' | 'fr' | 'hu' | 'it' | 'nb' | 'nl' | 'pl' | 'pt' | 'ru' | 'sk' | 'sr' | 'tr' | 'zh';
+export type SupportedLanguage = 'da' | 'de' | 'en' | 'es' | 'et' | 'fr' | 'hu' | 'it' | 'nb' | 'nl' | 'pl' | 'pt' | 'ru' | 'sk' | 'sr' | 'tr' | 'zh';
 
 export const translations: Record<SupportedLanguage, Translation> = {
   da: da as Translation,
   de: de as Translation,
   en: en as Translation,
   es: es as Translation,
+  et: et as Translation,
   fr: fr as Translation,
   hu: hu as Translation,
   it: it as Translation,
