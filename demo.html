@@ -679,7 +679,7 @@
             condition: 'sunny',
             temperature: 20,
             humidity: 65,
-            windSpeed: 15,
+            windSpeed: 4,
             windBearing: 200,
             useSensors: false,
             timeMode: 'auto',
@@ -711,6 +711,7 @@
             showAqi: false,
             showPrecipitationOutlook: true,
             showTemperatureBars: true,
+            showAurora: false,
             showClock: false,
             showDate: false,
             showHourlyForecast: false,
@@ -737,7 +738,9 @@
             ['snowy', '❄️', 'weatherConditions.snowy'],
             ['snowy-rainy', '🌨️', 'weatherConditions.sleet'],
             ['hail', '🧊', 'weatherConditions.hail'],
-            ['foggy', '🌫️', 'weatherConditions.foggy']
+            ['foggy', '🌫️', 'weatherConditions.foggy'],
+            ['windy', '💨', 'weatherConditions.windy'],
+            ['windy-variant', '🌬️', 'weatherConditions.windyVariant']
         ];
 
         const FORECAST_CONDITIONS = ['sunny', 'partlycloudy', 'cloudy', 'rainy', 'pouring', 'snowy', 'snowy-rainy', 'foggy'];
@@ -749,21 +752,24 @@
         ];
 
         const PRESETS = [
-            ['sunnyDay', '☀️', { condition: 'sunny', temperature: 25, timeMode: 'day', humidity: 45, windSpeed: 10, windBearing: 180 }],
-            ['rainy', '🌧️', { condition: 'rainy', temperature: 15, timeMode: 'day', humidity: 80, windSpeed: 25, windBearing: 270 }],
-            ['snowy', '❄️', { condition: 'snowy', temperature: -5, timeMode: 'day', humidity: 70, windSpeed: 15, windBearing: 0 }],
-            ['clearNight', '🌙', { condition: 'clear-night', temperature: 12, timeMode: 'night', humidity: 60, windSpeed: 8, windBearing: 135 }]
+            ['sunnyDay', '☀️', { condition: 'sunny', temperature: 25, timeMode: 'day', humidity: 45, windSpeed: 3, windBearing: 180 }],
+            ['rainy', '🌧️', { condition: 'rainy', temperature: 15, timeMode: 'day', humidity: 80, windSpeed: 7, windBearing: 270 }],
+            ['snowy', '❄️', { condition: 'snowy', temperature: -5, timeMode: 'day', humidity: 70, windSpeed: 5, windBearing: 0 }],
+            ['clearNight', '🌙', { condition: 'clear-night', temperature: 12, timeMode: 'night', humidity: 60, windSpeed: 2, windBearing: 135, showAurora: false }],
+            ['windyDay', '💨', { condition: 'windy', temperature: 16, timeMode: 'day', humidity: 50, windSpeed: 14, windBearing: 250 }],
+            ['auroraNight', '🌌', { condition: 'clear-night', temperature: -8, timeMode: 'night', humidity: 70, windSpeed: 2, windBearing: 0, showAurora: true }]
         ];
 
         const TOUR = [
-            { condition: 'sunny', temperature: 25, timeMode: 'day', humidity: 45, windSpeed: 10, windBearing: 180 },
-            { condition: 'partlycloudy', temperature: 22, timeMode: 'day', humidity: 55, windSpeed: 15, windBearing: 225 },
-            { condition: 'rainy', temperature: 15, timeMode: 'day', humidity: 80, windSpeed: 25, windBearing: 270 },
-            { condition: 'lightning-rainy', temperature: 14, timeMode: 'sunset', humidity: 85, windSpeed: 30, windBearing: 315 },
-            { condition: 'snowy', temperature: -5, timeMode: 'day', humidity: 70, windSpeed: 15, windBearing: 45 },
-            { condition: 'foggy', temperature: 8, timeMode: 'sunrise', humidity: 90, windSpeed: 5, windBearing: 90 },
-            { condition: 'partlycloudy', temperature: 18, timeMode: 'sunset', humidity: 60, windSpeed: 8, windBearing: 200 },
-            { condition: 'clear-night', temperature: 12, timeMode: 'night', humidity: 60, windSpeed: 8, windBearing: 135 }
+            { condition: 'sunny', temperature: 25, timeMode: 'day', humidity: 45, windSpeed: 3, windBearing: 180 },
+            { condition: 'partlycloudy', temperature: 22, timeMode: 'day', humidity: 55, windSpeed: 5, windBearing: 225 },
+            { condition: 'windy', temperature: 16, timeMode: 'day', humidity: 50, windSpeed: 14, windBearing: 250 },
+            { condition: 'rainy', temperature: 15, timeMode: 'day', humidity: 80, windSpeed: 7, windBearing: 270 },
+            { condition: 'lightning-rainy', temperature: 14, timeMode: 'sunset', humidity: 85, windSpeed: 12, windBearing: 315 },
+            { condition: 'snowy', temperature: -5, timeMode: 'day', humidity: 70, windSpeed: 5, windBearing: 45 },
+            { condition: 'foggy', temperature: 8, timeMode: 'sunrise', humidity: 90, windSpeed: 1, windBearing: 90 },
+            { condition: 'partlycloudy', temperature: 18, timeMode: 'sunset', humidity: 60, windSpeed: 4, windBearing: 200 },
+            { condition: 'clear-night', temperature: -8, timeMode: 'night', humidity: 60, windSpeed: 2, windBearing: 135, showAurora: true }
         ];
 
         const ICONS = {
@@ -822,7 +828,7 @@
                   options: CONDITIONS.map(([value, emoji, key]) => ({ value, emoji, label: t(key, value) })) },
                 { type: 'range', key: 'temperature', label: ['temperature', 'Temperature'], min: -30, max: 45, format: v => `${v}°` },
                 { type: 'range', key: 'humidity', label: ['humidity', 'Humidity (%)'], min: 0, max: 100, format: v => `${v}%` },
-                { type: 'range', key: 'windSpeed', label: ['windSpeed', 'Wind Speed'], min: 0, max: 40, format: v => `${v}${windUnit()}` },
+                { type: 'range', key: 'windSpeed', label: ['windSpeed', 'Wind Speed'], min: 0, max: 30, format: v => `${v}${windUnit()}` },
                 { type: 'range', key: 'windBearing', label: ['windBearing', 'Wind Direction (°)'], min: 0, max: 359, format: v => `${v}° ${['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(v / 45) % 8]}` },
                 { type: 'toggles', items: [['useSensors', 'stationSensors', 'Station sensors']] },
                 { type: 'note', text: ['stationSensorsHint', 'Station sensors override temperature, humidity, wind and precipitation with mock personal weather station values.'] }
@@ -846,7 +852,7 @@
             look: () => [
                 { type: 'segmented', key: 'visualStyle', label: ['visualStyle', 'Graphics Style'], options: [['modern', t('visualStyleModern', '✨ Modern')], ['classic', t('visualStyleClassic', '🎨 Classic')]] },
                 { type: 'segmented', key: 'animationQuality', label: ['animationQuality', 'Animation Quality'], options: [['high', t('qualityHighShort', 'High')], ['medium', t('qualityMediumShort', 'Medium')], ['low', t('qualityLowShort', 'Low')]] },
-                { type: 'toggles', items: [['showAnimations', 'animations', 'Animations']] },
+                { type: 'toggles', items: [['showAnimations', 'animations', 'Animations'], ['showAurora', 'aurora', 'Northern lights (clear nights)']] },
                 { type: 'segmented', key: 'layout', label: ['layout', 'Layout'], options: [['default', t('layoutDefault', 'Default')], ['minimal', t('layoutMinimal', 'Minimal')]] },
                 { type: 'range', key: 'height', label: ['height', 'Height (px)'], min: 50, max: 600, step: 10, format: v => `${v}px` },
                 { type: 'range', key: 'borderRadius', label: ['borderRadius', 'Corner Radius (px)'], min: 0, max: 40, nullable: true, format: v => `${v}px` },
@@ -1264,6 +1270,7 @@
                 show_dew_point: state.showDewPoint,
                 show_precipitation_outlook: state.showPrecipitationOutlook,
                 show_temperature_bars: state.showTemperatureBars,
+                show_aurora: state.showAurora,
                 show_clock: state.showClock,
                 show_date: state.showDate,
                 clock_position: state.clockPosition,

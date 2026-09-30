@@ -17,8 +17,9 @@ export class SunnyAnimation extends BaseAnimation {
    * @param timeOfDay - Time of day info
    * @param positionOverride - Optional fixed sun/moon position (percent of width/height)
    * @param moonPhase - Moon phase 0..1 (0 = new, 0.5 = full); defaults to the current real phase
+   * @param aurora - Northern lights in the night sky
    */
-  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, positionOverride?: PositionOverride, moonPhase?: number): void {
+  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, positionOverride?: PositionOverride, moonPhase?: number, aurora = false): void {
     const currentTime = Date.now() * 0.001;
     const sunPos: Position = getSunPosition(timeOfDay, width, height, positionOverride);
     const sunX = sunPos.x;
@@ -35,7 +36,7 @@ export class SunnyAnimation extends BaseAnimation {
         this.drawHorizonReflection(sunX, sunY, height, currentTime);
       }
     } else if (timeOfDay.type === 'night') {
-      this.nightSky.draw(this.ctx, currentTime, width, height, sunPos, moonPhase ?? getMoonPhase(), this.quality);
+      this.nightSky.draw(this.ctx, currentTime, width, height, sunPos, moonPhase ?? getMoonPhase(), this.quality, aurora);
     }
 
     this.drawClouds(currentTime, width, height, 0.3);

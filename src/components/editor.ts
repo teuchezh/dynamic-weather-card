@@ -50,6 +50,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_min_temp: DEFAULT_CONFIG.showMinTemp,
       show_precipitation_outlook: DEFAULT_CONFIG.showPrecipitationOutlook,
       show_temperature_bars: DEFAULT_CONFIG.showTemperatureBars,
+      show_aurora: DEFAULT_CONFIG.showAurora,
       show_hourly_forecast: DEFAULT_CONFIG.showHourlyForecast,
       hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
       show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
@@ -163,6 +164,7 @@ export class DynamicWeatherCardEditor extends LitElement {
         }
       },
       { name: 'show_animations', selector: { boolean: {} } },
+      { name: 'show_aurora', selector: { boolean: {} } },
       {
         name: 'visual_style',
         selector: {

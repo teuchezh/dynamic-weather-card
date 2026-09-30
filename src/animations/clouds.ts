@@ -62,6 +62,11 @@ export class CloudField {
   private light: RGBColor = { r: 255, g: 255, b: 255 };
   private shade: RGBColor = { r: 200, g: 210, b: 220 };
   private lastTime = 0;
+  // Drift speed multiplier from the wind, eased so clouds speed up smoothly
+  private wind = 1;
+  private targetWind = 1;
+  // Horizontal distance each layer has drifted, so speed changes don't make clouds jump
+  private drift = LAYERS.map(() => 0);
 
   /**
    * Update colors and target coverage for the current weather
@@ -72,6 +77,13 @@ export class CloudField {
     this.shade = sky.cloudShade;
     this.targetCoverage = sky.coverage;
     if (this.coverage < 0) this.coverage = sky.coverage;
+  }
+
+  /**
+   * Faster drift in wind: 1 = calm
+   */
+  setWind(multiplier: number): void {
+    this.targetWind = Math.max(1, multiplier);
   }
 
   /**
@@ -92,6 +104,10 @@ export class CloudField {
     const dt = this.lastTime ? Math.min(0.1, Math.max(0, time - this.lastTime)) : 0;
     this.lastTime = time;
     this.coverage += (this.targetCoverage - this.coverage) * Math.min(1, dt * 1.5);
+    this.wind += (this.targetWind - this.wind) * Math.min(1, dt * 0.8);
+    LAYERS.forEach((layer, index) => {
+      this.drift[index] += layer.speed * this.wind * dt;
+    });
 
     // Lower quality drops the far layers first
     const firstLayer = LAYERS.length - Math.max(1, Math.min(LAYERS.length, layers));
@@ -105,7 +121,7 @@ export class CloudField {
       const w = SPRITE_WIDTH * layer.scale * sizeScale;
       const h = SPRITE_HEIGHT * layer.scale * sizeScale;
       const loop = width + w * 2;
-      const x = ((cloud.offset * loop + time * layer.speed) % loop) - w;
+      const x = ((cloud.offset * loop + this.drift[cloud.layer]) % loop) - w;
       const y = cloud.y * height + Math.sin(time * 0.15 + cloud.bobPhase) * 3 - h / 2;
 
       ctx.save();

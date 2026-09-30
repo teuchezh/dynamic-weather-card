@@ -6,6 +6,9 @@ import { FoggyAnimation } from '../animations/foggy.js';
 import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { CloudField } from '../animations/clouds.js';
+import { GlassDrops } from '../animations/glass-drops.js';
+import { WindEffect } from '../animations/wind.js';
+import { getSkyColors } from '../sky.js';
 import { ClassicAnimations } from '../animations/classic/index.js';
 import { QUALITY_PRESETS, createQualitySettings, type AnimationQuality } from '../animations/quality.js';
 import type { TimeOfDay, PositionOverride, VisualStyle } from '../types.js';
@@ -27,7 +30,24 @@ export interface DrawParams {
   moonPhase?: number;
   visualStyle?: VisualStyle;
   quality?: AnimationQuality;
+  // Wind speed in m/s (null = unknown)
+  windSpeed?: number | null;
+  // Northern lights on clear nights
+  aurora?: boolean;
 }
+
+// Conditions with rain hitting the "glass", and how much of it
+const GLASS_RAIN: Record<string, number> = {
+  rainy: 0.6,
+  rain: 0.6,
+  pouring: 1,
+  'lightning-rainy': 0.85,
+  'snowy-rainy': 0.4
+};
+// Dry conditions where wind gusts are drawn
+const WIND_CONDITIONS = new Set(['sunny', 'clear', 'clear-night', 'partlycloudy', 'cloudy', 'windy', 'windy-variant']);
+// Gusts start above this wind speed (m/s) and are at full strength 10 m/s later
+const GUST_WIND = 8;
 
 export class AnimationManager {
   private canvas: HTMLCanvasElement | null = null;
@@ -35,6 +55,8 @@ export class AnimationManager {
   private animationFrame: number | null = null;
   private animations: Partial<Animations> = {};
   private cloudField = new CloudField();
+  private glassDrops = new GlassDrops();
+  private wind = new WindEffect();
   // Created on first use, only when the classic style is selected
   private classic: ClassicAnimations | null = null;
   private resizeObserver: ResizeObserver | null = null;
@@ -231,7 +253,7 @@ export class AnimationManager {
 
     if (still) {
       // Sun/moon position follows the time of day in steps, so the frame isn't redrawn every minute
-      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, width, height]);
+      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, params.aurora, Math.round(params.windSpeed ?? 0), width, height]);
       if (key === this.stillKey) return;
       this.stillKey = key;
     } else {
@@ -248,7 +270,11 @@ export class AnimationManager {
       return;
     }
 
+    const isWindy = conditionLower === 'windy' || conditionLower === 'windy-variant';
+    const windSpeed = Math.max(0, params.windSpeed ?? 0);
     this.cloudField.setWeather(conditionLower, timeOfDay);
+    // Clouds drift faster in wind; the windy conditions always get a stiff breeze
+    this.cloudField.setWind(Math.min(4, Math.max(isWindy ? 2.5 : 1, 1 + windSpeed / 5)));
     // No fade-in for a still frame: show the final cloud cover right away
     if (still) this.cloudField.settle();
 
@@ -256,10 +282,11 @@ export class AnimationManager {
       case 'sunny':
       case 'clear':
       case 'partlycloudy':
-        this.animations.sunny?.draw(Date.now(), width, height, timeOfDay, sunPosition, moonPhase);
+      case 'windy':
+        this.animations.sunny?.draw(Date.now(), width, height, timeOfDay, sunPosition, moonPhase, params.aurora);
         break;
       case 'clear-night':
-        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 }, sunPosition, moonPhase);
+        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 }, sunPosition, moonPhase, params.aurora);
         break;
       case 'rainy':
       case 'rain':
@@ -293,6 +320,18 @@ export class AnimationManager {
       default:
         this.animations.cloudy?.draw(Date.now(), width, height, timeOfDay);
         break;
+    }
+
+    const now = Date.now() * 0.001;
+    const gusts = isWindy ? Math.max(0.6, (windSpeed - GUST_WIND) / 10) : (windSpeed - GUST_WIND) / 10;
+    if (WIND_CONDITIONS.has(conditionLower) && gusts > 0) {
+      const daylight = getSkyColors(conditionLower, timeOfDay).daylight;
+      this.wind.draw(this.ctx, now, width, height, Math.min(1, gusts), isWindy, daylight, this.quality);
+    }
+
+    const glassRain = GLASS_RAIN[conditionLower];
+    if (glassRain && this.quality.details) {
+      this.glassDrops.draw(this.ctx, now, width, height, glassRain, this.quality);
     }
   }
 }

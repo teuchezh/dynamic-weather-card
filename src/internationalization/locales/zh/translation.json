@@ -16,6 +16,8 @@
   "snowy-rainy": "雨夹雪",
   "hail": "冰雹",
   "clear-night": "晴夜",
+  "windy": "有风",
+  "windy-variant": "有风，多云",
   "feels_like": "体感温度",
   "forecast_title": "今日预报",
   "daily_forecast_title": "每日预报",

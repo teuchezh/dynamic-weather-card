@@ -16,6 +16,8 @@
   "snowy-rainy": "Schneeregen",
   "hail": "Hagel",
   "clear-night": "Klare Nacht",
+  "windy": "Windig",
+  "windy-variant": "Windig, bewölkt",
   "feels_like": "Gefühlt",
   "forecast_title": "Heutige Vorhersage",
   "daily_forecast_title": "Tagesvorhersage",

@@ -16,6 +16,8 @@
   "snowy-rainy": "Sludd",
   "hail": "Hagl",
   "clear-night": "Klar natt",
+  "windy": "Vindfullt",
+  "windy-variant": "Vindfullt, skyet",
   "feels_like": "Føles som",
   "forecast_title": "Dagens værvarsel",
   "daily_forecast_title": "Daglig værvarsel",

@@ -16,7 +16,7 @@ import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes } from './weather-data.js';
 import { getPrecipitationOutlook } from '../precipitation-outlook.js';
 import { getSVGIcon } from '../icons/svg-icons.js';
-import { formatTime } from '../utils.js';
+import { formatTime, convertSpeedUnit } from '../utils.js';
 import './clock.js';
 import './details.js';
 import './hourly-forecast.js';
@@ -159,8 +159,20 @@ export class AnimatedWeatherCard extends LitElement {
       sunPosition: { x: this.config.sunPositionX, y: this.config.sunPositionY },
       moonPhase: this._testMoonPhase ?? undefined,
       visualStyle: this.config.visualStyle,
-      quality: this.config.animationQuality
+      quality: this.config.animationQuality,
+      windSpeed: this.getWindSpeedMs(weather),
+      aurora: this.config.showAurora === true
     };
+  }
+
+  /**
+   * Wind speed in m/s for the wind animation; legacy providers without a unit report m/s
+   */
+  private getWindSpeedMs(weather: ReturnType<typeof getWeatherData>): number | null {
+    if (weather.windSpeed == null || !this.hass) return null;
+    const attrs = getWeatherAttributes(this.hass, this.config.entity);
+    const unit = weather.windSpeedUnit ?? (typeof attrs.wind_speed_unit === 'string' ? attrs.wind_speed_unit : 'm/s');
+    return convertSpeedUnit(weather.windSpeed, unit, 'm/s');
   }
 
   private renderPrecipitationOutlook(weather: ReturnType<typeof getWeatherData>): TemplateResult {
@@ -223,6 +235,7 @@ export class AnimatedWeatherCard extends LitElement {
       showDewPoint: config.show_dew_point === true,
       showMinTemp: config.show_min_temp !== false,
       showPrecipitationOutlook: config.show_precipitation_outlook === true,
+      showAurora: config.show_aurora === true,
       showTemperatureBars: config.show_temperature_bars === true,
       showForecast: config.show_forecast === true,
       showHourlyForecast: showHourlyForecast === true,

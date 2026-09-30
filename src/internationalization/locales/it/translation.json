@@ -16,6 +16,8 @@
   "snowy-rainy": "Nevischio",
   "hail": "Grandine",
   "clear-night": "Notte Serena",
+  "windy": "Ventoso",
+  "windy-variant": "Ventoso, nuvoloso",
   "feels_like": "Percepita",
   "forecast_title": "Previsioni di oggi",
   "daily_forecast_title": "Previsioni Giornaliere",

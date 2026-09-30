@@ -16,6 +16,8 @@
   "snowy-rainy": "Neige fondue",
   "hail": "Grêle",
   "clear-night": "Nuit claire",
+  "windy": "Venteux",
+  "windy-variant": "Venteux, nuageux",
   "feels_like": "Ressenti",
   "forecast_title": "Prévisions du jour",
   "daily_forecast_title": "Prévisions quotidiennes",

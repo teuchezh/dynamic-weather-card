@@ -16,6 +16,8 @@
   "snowy-rainy": "Susnežica",
   "hail": "Grad",
   "clear-night": "Vedra noć",
+  "windy": "Vetrovito",
+  "windy-variant": "Vetrovito, oblačno",
   "feels_like": "Subjektivni osećaj",
   "forecast_title": "Prognoza",
   "daily_forecast_title": "Dnevna prognoza",

@@ -16,6 +16,8 @@
   "snowy-rainy": "Мокрый снег",
   "hail": "Град",
   "clear-night": "Ясная ночь",
+  "windy": "Ветрено",
+  "windy-variant": "Ветрено, облачно",
   "feels_like": "Ощущается как",
   "forecast_title": "Прогноз на сегодня",
   "daily_forecast_title": "Ежедневный прогноз",
@@ -127,9 +129,13 @@
     "wind_speed_unit": "Единицы скорости ветра",
     "wind_speed_unit_ms": "м/с",
     "wind_speed_unit_kmh": "км/ч",
-    "show_animations": "Показывать анимации"
+    "show_animations": "Показывать анимации",
+    "show_aurora": "Северное сияние ясной ночью"
   },
   "demo": {
+    "aurora": "Северное сияние",
+    "windyDay": "Ветрено",
+    "auroraNight": "Сияние",
     "pressure": "Давление",
     "uvIndex": "УФ-индекс",
     "dewPoint": "Точка росы",
@@ -234,6 +240,8 @@
     "errorServer": "Убедитесь, что файл открыт через локальный сервер (не file://)",
     "placeholderEmpty": "Оставьте пустым, чтобы скрыть",
     "weatherConditions": {
+      "windy": "Ветрено",
+      "windyVariant": "Ветрено, облачно",
       "sunny": "Солнечно",
       "clear": "Ясно",
       "clearNight": "Ясная ночь",

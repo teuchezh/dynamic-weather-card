@@ -185,7 +185,8 @@ clock_format: 24h                         # 12h or 24h
 | `sun_position_x` | number | auto | Pin the sun/moon horizontally, in % of card width (`0` = left, `100` = right). Unset = moves across the sky |
 | `sun_position_y` | number | auto | Pin the sun/moon vertically, in % of card height (`0` = top, `100` = bottom). Unset = moves across the sky |
 | `show_animations` | boolean | `true` | Render canvas weather animations (set `false` for a static gradient) |
-| `visual_style` | string | `modern` | Graphics style: `modern` (weather-aware sky, layered clouds, rain/snow depth, sun rays, stars and real moon phase) or `classic` (the original simpler graphics) |
+| `visual_style` | string | `modern` | Graphics style: `modern` (weather-aware sky, layered clouds, rain/snow depth, raindrops on the glass, wind gusts and leaves, sun rays, stars and real moon phase) or `classic` (the original simpler graphics) |
+| `show_aurora` | boolean | `false` | Northern lights on clear nights (`modern` style) |
 | `animation_quality` | string | `high` | `high` (60 FPS, full detail), `medium` (30 FPS, fewer particles and cloud layers) or `low` (20 FPS, minimal particles, no extras, 1× canvas resolution) for slow devices such as wall tablets. Animations also pause while the card is off-screen, and show a still frame when the system "reduce motion" setting is on |
 | **Temperature** |
 | `show_feels_like` | boolean | `true` | Display "feels like" temperature |

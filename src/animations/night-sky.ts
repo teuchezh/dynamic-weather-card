@@ -1,5 +1,6 @@
 import type { Position } from '../types';
 import type { QualitySettings } from './quality';
+import { Aurora } from './aurora';
 
 interface Star {
   x: number;
@@ -52,9 +53,11 @@ export class NightSky {
   private moonKey = '';
   private shootingStar: ShootingStar | null = null;
   private nextShootingStar = 0;
+  private aurora = new Aurora();
 
-  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, moonPos: Position, moonPhase: number, quality: QualitySettings): void {
+  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, moonPos: Position, moonPhase: number, quality: QualitySettings, aurora = false): void {
     this.drawStars(ctx, time, width, height, quality);
+    if (aurora) this.aurora.draw(ctx, time, width, height, quality);
     if (quality.details) this.drawShootingStar(ctx, time, width, height);
     this.drawMoon(ctx, moonPos, moonPhase, height);
   }

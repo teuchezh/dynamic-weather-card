@@ -34,6 +34,7 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   showMinTemp: true,
   showPrecipitationOutlook: false,
   showTemperatureBars: false,
+  showAurora: false,
   showForecast: false,
   showHourlyForecast: false,
   showDailyForecast: false,

@@ -16,6 +16,8 @@
   "snowy-rainy": "Chuva com neve",
   "hail": "Granizo",
   "clear-night": "Noite limpa",
+  "windy": "Ventoso",
+  "windy-variant": "Ventoso, nublado",
   "feels_like": "Sensação",
   "forecast_title": "Previsão de hoje",
   "daily_forecast_title": "Previsão diária",

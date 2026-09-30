@@ -16,6 +16,8 @@
   "snowy-rainy": "Dážď so snehom",
   "hail": "Krúpy",
   "clear-night": "Jasná noc",
+  "windy": "Veterno",
+  "windy-variant": "Veterno, oblačno",
   "feels_like": "Pocitová teplota",
   "forecast_title": "Predpoveď na dnes",
   "daily_forecast_title": "Denná predpoveď",

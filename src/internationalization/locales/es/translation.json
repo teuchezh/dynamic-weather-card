@@ -16,6 +16,8 @@
   "snowy-rainy": "Aguanieve",
   "hail": "Granizo",
   "clear-night": "Noche Despejada",
+  "windy": "Ventoso",
+  "windy-variant": "Ventoso, nublado",
   "feels_like": "Sensación térmica",
   "forecast_title": "Previsión para hoy",
   "daily_forecast_title": "Previsión Diaria",

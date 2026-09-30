@@ -16,6 +16,8 @@
   "snowy-rainy": "Slud",
   "hail": "Hagl",
   "clear-night": "Klar nat",
+  "windy": "Blæsende",
+  "windy-variant": "Blæsende, overskyet",
   "feels_like": "Føles som",
   "forecast_title": "Dagens vejrudsigt",
   "daily_forecast_title": "Daglig vejrudsigt",

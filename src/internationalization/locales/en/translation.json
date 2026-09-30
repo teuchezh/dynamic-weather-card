@@ -16,6 +16,8 @@
   "snowy-rainy": "Sleet",
   "hail": "Hail",
   "clear-night": "Clear Night",
+  "windy": "Windy",
+  "windy-variant": "Windy, cloudy",
   "feels_like": "Feels like",
   "forecast_title": "Today's Forecast",
   "daily_forecast_title": "Daily Forecast",
@@ -127,9 +129,13 @@
     "wind_speed_unit": "Wind Speed Unit",
     "wind_speed_unit_ms": "m/s",
     "wind_speed_unit_kmh": "km/h",
-    "show_animations": "Show Animations"
+    "show_animations": "Show Animations",
+    "show_aurora": "Northern Lights on Clear Nights"
   },
   "demo": {
+    "aurora": "Northern lights",
+    "windyDay": "Windy",
+    "auroraNight": "Aurora",
     "pressure": "Pressure",
     "uvIndex": "UV Index",
     "dewPoint": "Dew Point",
@@ -234,6 +240,8 @@
     "errorServer": "Make sure the file is served via a local server (not file://)",
     "placeholderEmpty": "Leave empty to hide",
     "weatherConditions": {
+      "windy": "Windy",
+      "windyVariant": "Windy, cloudy",
       "sunny": "Sunny",
       "clear": "Clear",
       "clearNight": "Clear Night",

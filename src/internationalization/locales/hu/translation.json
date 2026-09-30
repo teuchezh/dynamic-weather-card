@@ -16,6 +16,8 @@
   "snowy-rainy": "Havas eső",
   "hail": "Jégeső",
   "clear-night": "Derült éj",
+  "windy": "Szeles",
+  "windy-variant": "Szeles, felhős",
   "feels_like": "Hőérzet",
   "forecast_title": "Mai előrejelzés",
   "daily_forecast_title": "Napi előrejelzés",

@@ -1,4 +1,7 @@
 export interface DemoTranslations {
+  aurora?: string;
+  windyDay?: string;
+  auroraNight?: string;
   pressure?: string;
   uvIndex?: string;
   dewPoint?: string;
@@ -141,6 +144,8 @@ export interface Translation {
   'snowy-rainy': string;
   hail: string;
   'clear-night': string;
+  windy?: string;
+  'windy-variant'?: string;
   feels_like: string;
   forecast_title: string;
   daily_forecast_title: string;

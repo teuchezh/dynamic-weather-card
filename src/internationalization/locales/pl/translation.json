@@ -16,6 +16,8 @@
   "snowy-rainy": "Deszcz ze śniegiem",
   "hail": "Grad",
   "clear-night": "Bezchmurna noc",
+  "windy": "Wietrznie",
+  "windy-variant": "Wietrznie, pochmurno",
   "feels_like": "Odczuwalnie",
   "forecast_title": "Prognoza na dziś",
   "daily_forecast_title": "Prognoza dzienna",
