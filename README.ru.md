@@ -9,7 +9,6 @@
 [![GitHub Release](https://img.shields.io/github/v/release/teuchezh/dynamic-weather-card?style=for-the-badge&logo=github&color=blue)](https://github.com/teuchezh/dynamic-weather-card/releases)
 [![Загрузки](https://img.shields.io/github/downloads/teuchezh/dynamic-weather-card/dynamic-weather-card.js?style=for-the-badge&logo=github&color=green&label=downloads&displayAssetName=false)](https://github.com/teuchezh/dynamic-weather-card/releases)
 
-[![Статус перевода](https://hosted.weblate.org/widget/dynamic-weather-card/-/svg-badge.svg)](https://hosted.weblate.org/engage/dynamic-weather-card/)
 [![Звёзды](https://img.shields.io/github/stars/teuchezh/dynamic-weather-card?style=social)](https://github.com/teuchezh/dynamic-weather-card/stargazers)
 
 [English](README.md) | **Русский**
@@ -18,11 +17,9 @@
 
 </div>
 
-![Dynamic Weather Card в разную погоду](/docs/preview.jpg)
-
 <div align="center">
 
-![Анимации погоды](/docs/demo.gif)
+![Dynamic Weather Card в разную погоду](/docs/demo.webp)
 
 </div>
 
@@ -356,9 +353,7 @@ tap_action:
 
 English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文 и Eesti (только названия погоды). Карточка следует языку Home Assistant, если не задан `language`.
 
-Помогите с переводом на **[Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/)**. Программировать не нужно.
-
-Можно и прямо на GitHub: отредактируйте `src/internationalization/locales/<code>/translation.json` и откройте pull request в `main`. Новые языки подхватываются автоматически, а недостающие ключи берутся из английского.
+Чтобы добавить или улучшить перевод, отредактируйте `src/internationalization/locales/<code>/translation.json` прямо на GitHub и откройте pull request в `main`. Программировать не нужно. Новые языки подхватываются автоматически, а недостающие ключи берутся из английского.
 
 ## 🛠️ Разработка
 

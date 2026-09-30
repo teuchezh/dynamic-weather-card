@@ -9,7 +9,6 @@
 [![GitHub Release](https://img.shields.io/github/v/release/teuchezh/dynamic-weather-card?style=for-the-badge&logo=github&color=blue)](https://github.com/teuchezh/dynamic-weather-card/releases)
 [![Downloads](https://img.shields.io/github/downloads/teuchezh/dynamic-weather-card/dynamic-weather-card.js?style=for-the-badge&logo=github&color=green&label=downloads&displayAssetName=false)](https://github.com/teuchezh/dynamic-weather-card/releases)
 
-[![Translation status](https://hosted.weblate.org/widget/dynamic-weather-card/-/svg-badge.svg)](https://hosted.weblate.org/engage/dynamic-weather-card/)
 [![Stars](https://img.shields.io/github/stars/teuchezh/dynamic-weather-card?style=social)](https://github.com/teuchezh/dynamic-weather-card/stargazers)
 
 **[English](#)** | [Русский](README.ru.md)
@@ -18,11 +17,9 @@
 
 </div>
 
-![Dynamic Weather Card in different weather](/docs/preview.jpg)
-
 <div align="center">
 
-![Animated weather](/docs/demo.gif)
+![Dynamic Weather Card in different weather](/docs/demo.webp)
 
 </div>
 
@@ -356,9 +353,7 @@ Without any sun data it falls back to fixed hours: sunrise 6:00–8:00, day unti
 
 English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文 and Eesti (weather conditions only). The card follows the Home Assistant language unless you set `language`.
 
-Help translate on **[Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/)**. No coding needed.
-
-You can also edit `src/internationalization/locales/<code>/translation.json` right on GitHub and open a pull request against `main`. New languages are picked up automatically, and missing keys fall back to English.
+To add or improve a translation, edit `src/internationalization/locales/<code>/translation.json` right on GitHub and open a pull request against `main`. No coding needed. New languages are picked up automatically, and missing keys fall back to English.
 
 ## 🛠️ Development
 

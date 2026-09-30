@@ -15,7 +15,7 @@
 
 This is the biggest visual update to Dynamic Weather Card so far, so we gave it a codename. The sky now follows the weather and the time of day. Clouds drift in layers and rain and snow have depth. At night you get stars, the moon in its real phase and, if you like, the northern lights.
 
-![Weather animations](./animations.gif)
+![Weather animations](./animations.webp)
 
 - **Weather-aware sky.** Each condition has its own palette, with warm sunrise and sunset horizons that fade under heavy clouds. The sky transitions smoothly when the weather changes.
 - **Layered clouds.** Soft clouds drift at three depths. Their color and coverage follow the weather.
