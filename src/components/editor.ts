@@ -66,6 +66,8 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_precipitation_outlook: DEFAULT_CONFIG.showPrecipitationOutlook,
       show_temperature_bars: DEFAULT_CONFIG.showTemperatureBars,
       show_aurora: DEFAULT_CONFIG.showAurora,
+      show_raindrops: DEFAULT_CONFIG.showRaindrops,
+      show_wind_effects: DEFAULT_CONFIG.showWindEffects,
       show_hourly_forecast: DEFAULT_CONFIG.showHourlyForecast,
       hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
       show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
@@ -122,6 +124,7 @@ export class DynamicWeatherCardEditor extends LitElement {
           select('animation_quality', ['high', 'medium', 'low'])
         ),
         grid(toggle('show_animations'), toggle('show_aurora')),
+        grid(toggle('show_raindrops'), toggle('show_wind_effects')),
         grid(
           { name: 'overlay_opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
           { name: 'text_shadow', selector: { number: { min: 0, max: 3, step: 1, mode: 'box' } } }

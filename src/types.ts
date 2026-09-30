@@ -132,6 +132,8 @@ export interface WeatherCardConfig {
   showPrecipitationOutlook?: boolean;
   showTemperatureBars?: boolean;
   showAurora?: boolean;
+  showRaindrops?: boolean;
+  showWindEffects?: boolean;
   showForecast?: boolean;
   showHourlyForecast?: boolean;
   showDailyForecast?: boolean;
@@ -256,6 +258,8 @@ export interface ConfigInput {
   show_precipitation_outlook?: boolean;
   show_temperature_bars?: boolean;
   show_aurora?: boolean;
+  show_raindrops?: boolean;
+  show_wind_effects?: boolean;
   show_forecast?: boolean;
   show_hourly_forecast?: boolean;
   show_daily_forecast?: boolean;

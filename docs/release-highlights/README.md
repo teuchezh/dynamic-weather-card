@@ -45,6 +45,7 @@ All of these are off by default. Turn them on in the visual editor or in YAML:
 | `show_pressure`, `show_uv_index`, `show_dew_point` | Pressure, UV index and dew point, from the weather entity or your own sensors |
 | `aqi_entity` | An air quality index sensor |
 | `show_aurora` | Northern lights on clear nights |
+| `show_raindrops`, `show_wind_effects` | Raindrops on the glass, and wind gusts with leaves. Both are on by default; set to `false` to hide them |
 
 ## ⚡ Runs smoothly everywhere
 

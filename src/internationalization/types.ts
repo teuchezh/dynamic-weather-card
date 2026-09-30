@@ -1,5 +1,7 @@
 export interface DemoTranslations {
   aurora?: string;
+  raindrops?: string;
+  windEffects?: string;
   windyDay?: string;
   auroraNight?: string;
   pressure?: string;

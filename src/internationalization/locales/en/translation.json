@@ -144,7 +144,11 @@
     "sun_position_y_helper": "Leave empty to follow the time of day",
     "show_precipitation_outlook_helper": "From the hourly forecast for the next 12 hours",
     "hourly_forecast_title_helper": "Empty = default title",
-    "daily_forecast_title_helper": "Empty = default title"
+    "daily_forecast_title_helper": "Empty = default title",
+    "show_raindrops": "Raindrops on the glass",
+    "show_wind_effects": "Wind gusts and leaves",
+    "show_raindrops_helper": "In rain, Modern graphics",
+    "show_wind_effects_helper": "In windy weather or above 8 m/s"
   },
   "demo": {
     "aurora": "Northern lights",
@@ -288,6 +292,8 @@
       "chinese": "Chinese",
       "turkish": "Turkish",
       "norwegian": "Norwegian (Bokmål)"
-    }
+    },
+    "raindrops": "Raindrops on the glass",
+    "windEffects": "Wind gusts and leaves"
   }
 }

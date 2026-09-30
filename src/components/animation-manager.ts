@@ -34,6 +34,10 @@ export interface DrawParams {
   windSpeed?: number | null;
   // Northern lights on clear nights
   aurora?: boolean;
+  // Raindrops on the glass in rain (default on)
+  raindrops?: boolean;
+  // Wind gusts and leaves (default on); clouds still drift faster in wind
+  windEffects?: boolean;
 }
 
 // Conditions with rain hitting the "glass", and how much of it
@@ -253,7 +257,7 @@ export class AnimationManager {
 
     if (still) {
       // Sun/moon position follows the time of day in steps, so the frame isn't redrawn every minute
-      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, params.aurora, Math.round(params.windSpeed ?? 0), width, height]);
+      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, params.aurora, params.raindrops, params.windEffects, Math.round(params.windSpeed ?? 0), width, height]);
       if (key === this.stillKey) return;
       this.stillKey = key;
     } else {
@@ -324,13 +328,13 @@ export class AnimationManager {
 
     const now = Date.now() * 0.001;
     const gusts = isWindy ? Math.max(0.6, (windSpeed - GUST_WIND) / 10) : (windSpeed - GUST_WIND) / 10;
-    if (WIND_CONDITIONS.has(conditionLower) && gusts > 0) {
+    if (params.windEffects !== false && WIND_CONDITIONS.has(conditionLower) && gusts > 0) {
       const daylight = getSkyColors(conditionLower, timeOfDay).daylight;
       this.wind.draw(this.ctx, now, width, height, Math.min(1, gusts), isWindy, daylight, this.quality);
     }
 
     const glassRain = GLASS_RAIN[conditionLower];
-    if (glassRain && this.quality.details) {
+    if (glassRain && params.raindrops !== false && this.quality.details) {
       this.glassDrops.draw(this.ctx, now, width, height, glassRain, this.quality);
     }
   }

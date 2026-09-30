@@ -161,7 +161,9 @@ export class AnimatedWeatherCard extends LitElement {
       visualStyle: this.config.visualStyle,
       quality: this.config.animationQuality,
       windSpeed: this.getWindSpeedMs(weather),
-      aurora: this.config.showAurora === true
+      aurora: this.config.showAurora === true,
+      raindrops: this.config.showRaindrops !== false,
+      windEffects: this.config.showWindEffects !== false
     };
   }
 
@@ -236,6 +238,8 @@ export class AnimatedWeatherCard extends LitElement {
       showMinTemp: config.show_min_temp !== false,
       showPrecipitationOutlook: config.show_precipitation_outlook === true,
       showAurora: config.show_aurora === true,
+      showRaindrops: config.show_raindrops !== false,
+      showWindEffects: config.show_wind_effects !== false,
       showTemperatureBars: config.show_temperature_bars === true,
       showForecast: config.show_forecast === true,
       showHourlyForecast: showHourlyForecast === true,

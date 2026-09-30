@@ -187,6 +187,8 @@ clock_format: 24h                         # 12h or 24h
 | `show_animations` | boolean | `true` | Render canvas weather animations (set `false` for a static gradient) |
 | `visual_style` | string | `modern` | Graphics style: `modern` (weather-aware sky, layered clouds, rain/snow depth, raindrops on the glass, wind gusts and leaves, sun rays, stars and real moon phase) or `classic` (the original simpler graphics) |
 | `show_aurora` | boolean | `false` | Northern lights on clear nights (`modern` style) |
+| `show_raindrops` | boolean | `true` | Raindrops on the glass in rain, heavy rain, thunderstorm and sleet (`modern` style, not on `low` quality) |
+| `show_wind_effects` | boolean | `true` | Wind gusts and flying leaves in windy weather or above 8 m/s (`modern` style) |
 | `animation_quality` | string | `high` | `high` (60 FPS, full detail), `medium` (30 FPS, fewer particles and cloud layers) or `low` (20 FPS, minimal particles, no extras, 1× canvas resolution) for slow devices such as wall tablets. Animations also pause while the card is off-screen, and show a still frame when the system "reduce motion" setting is on |
 | **Temperature** |
 | `show_feels_like` | boolean | `true` | Display "feels like" temperature |

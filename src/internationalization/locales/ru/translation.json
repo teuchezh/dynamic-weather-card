@@ -144,7 +144,11 @@
     "sun_position_y_helper": "Пусто — по времени суток",
     "show_precipitation_outlook_helper": "По почасовому прогнозу на 12 часов вперёд",
     "hourly_forecast_title_helper": "Пусто — стандартный заголовок",
-    "daily_forecast_title_helper": "Пусто — стандартный заголовок"
+    "daily_forecast_title_helper": "Пусто — стандартный заголовок",
+    "show_raindrops": "Капли на стекле",
+    "show_wind_effects": "Порывы ветра и листья",
+    "show_raindrops_helper": "В дождь, в современной графике",
+    "show_wind_effects_helper": "В ветреную погоду или при ветре от 8 м/с"
   },
   "demo": {
     "aurora": "Северное сияние",
@@ -288,6 +292,8 @@
       "chinese": "Китайский",
       "turkish": "Турецкий",
       "norwegian": "Норвежский (букмол)"
-    }
+    },
+    "raindrops": "Капли на стекле",
+    "windEffects": "Порывы ветра и листья"
   }
 }
