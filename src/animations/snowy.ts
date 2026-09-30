@@ -2,17 +2,31 @@ import { BaseAnimation } from './base';
 import { TimeOfDay } from '../types';
 
 interface Snowflake {
+  layer: number;
   x: number;
   y: number;
-  speedY: number;
-  speedX: number;
+  speed: number;
   size: number;
-  alpha: number;
-  rotation: number;
-  rotationSpeed: number;
   swayPhase: number;
   swaySpeed: number;
+  swayAmount: number;
 }
+
+interface SnowLayer {
+  // Flakes per 10,000 px²
+  density: number;
+  speed: [number, number];
+  size: [number, number];
+  alpha: number;
+}
+
+// Back to front: far flakes are tiny, faint and slow; near ones are big and soft
+const SNOW_LAYERS: SnowLayer[] = [
+  { density: 5, speed: [12, 20], size: [1.2, 2], alpha: 0.6 },
+  { density: 2.5, speed: [22, 34], size: [2.4, 3.6], alpha: 0.85 },
+  { density: 0.9, speed: [38, 55], size: [4, 6.5], alpha: 0.95 }
+];
+const SPRITE_SIZE = 32;
 
 /**
  * Snowy weather animation
@@ -20,6 +34,8 @@ interface Snowflake {
 export class SnowyAnimation extends BaseAnimation {
   private snowflakes: Snowflake[] = [];
   private lastTime: number = 0;
+  private flakesKey = '';
+  private sprite: HTMLCanvasElement | null = null;
 
   /**
    * Draw snowy weather
@@ -35,116 +51,82 @@ export class SnowyAnimation extends BaseAnimation {
   }
 
   /**
-   * Draw snowflakes
+   * Draw soft snowflakes drifting in three depth layers
    * @param width - Canvas width
    * @param height - Canvas height
    */
   drawSnowflakes(width: number, height: number): void {
-    // Calculate snowflake count based on area
-    const snowflakeCount = Math.floor((width * height) / 5000);
-    const targetCount = Math.max(30, Math.min(snowflakeCount, 80));
-
-    // Initialize or adjust snowflakes
-    if (this.snowflakes.length !== targetCount) {
-      this.snowflakes = [];
-      for (let i = 0; i < targetCount; i++) {
-        this.snowflakes.push({
-          x: Math.random() * width,
-          y: Math.random() * height - Math.random() * 100,
-          speedY: 15 + Math.random() * 10,
-          speedX: (Math.random() - 0.5) * 8,
-          size: 1.5 + Math.random() * 1.5,
-          alpha: 0.6 + Math.random() * 0.3,
-          rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.3,
-          swayPhase: Math.random() * Math.PI * 2,
-          swaySpeed: 0.5 + Math.random() * 0.5
-        });
-      }
+    const key = `${Math.round(width)}x${Math.round(height)}`;
+    if (key !== this.flakesKey) {
+      this.createFlakes(width, height);
+      this.flakesKey = key;
     }
+    const sprite = this.getSprite();
 
-    // Calculate real delta time for smooth animation
     const currentTime = Date.now() * 0.001;
     const deltaTime = this.lastTime > 0 ? Math.min(currentTime - this.lastTime, 0.1) : 1 / 60;
     this.lastTime = currentTime;
 
-    const currentAnimTime = currentTime;
+    this.ctx.save();
+    for (const flake of this.snowflakes) {
+      flake.y += flake.speed * deltaTime;
+      const sway = Math.sin(currentTime * flake.swaySpeed + flake.swayPhase) * flake.swayAmount;
+      // Gentle wind plus sway
+      flake.x += (flake.speed * 0.15 + sway) * deltaTime;
 
-    this.ctx.lineCap = 'round';
-
-    for (let i = 0; i < this.snowflakes.length; i++) {
-      const flake = this.snowflakes[i];
-
-      // Update position with gentle swaying
-      const sway = Math.sin(currentAnimTime * flake.swaySpeed + flake.swayPhase) * 2;
-      flake.y += flake.speedY * deltaTime;
-      flake.x += (flake.speedX + sway) * deltaTime;
-      flake.rotation += flake.rotationSpeed * deltaTime;
-
-      // Reset when off screen (smooth loop)
-      if (flake.y > height + 20) {
-        flake.y = -20 - Math.random() * 50;
+      if (flake.y - flake.size > height) {
+        flake.y = -flake.size - Math.random() * 20;
         flake.x = Math.random() * width;
       }
+      if (flake.x > width + 10) flake.x -= width + 20;
+      if (flake.x < -10) flake.x += width + 20;
 
-      // Wrap horizontally
-      if (flake.x < -10) {
-        flake.x = width + 10;
-      } else if (flake.x > width + 10) {
-        flake.x = -10;
-      }
-
-      this.drawSnowflake(flake.x, flake.y, flake.size, flake.alpha, flake.rotation);
+      const size = flake.size * 2;
+      this.ctx.globalAlpha = SNOW_LAYERS[flake.layer].alpha;
+      this.ctx.drawImage(sprite, flake.x - size / 2, flake.y - size / 2, size, size);
     }
+    this.ctx.restore();
+  }
+
+  private createFlakes(width: number, height: number): void {
+    this.snowflakes = [];
+    const area = (width * height) / 10000;
+    SNOW_LAYERS.forEach((layer, index) => {
+      const count = Math.min(250, Math.round(area * layer.density));
+      for (let i = 0; i < count; i++) {
+        this.snowflakes.push({
+          layer: index,
+          x: Math.random() * width,
+          y: Math.random() * height,
+          speed: layer.speed[0] + Math.random() * (layer.speed[1] - layer.speed[0]),
+          size: layer.size[0] + Math.random() * (layer.size[1] - layer.size[0]),
+          swayPhase: Math.random() * Math.PI * 2,
+          swaySpeed: 0.6 + Math.random() * 0.8,
+          swayAmount: 6 + index * 6
+        });
+      }
+    });
   }
 
   /**
-   * Draw a single snowflake
-   * @param x - X position
-   * @param y - Y position
-   * @param size - Snowflake size
-   * @param alpha - Opacity
-   * @param rotation - Rotation angle
+   * Soft glowing dot, rendered once and reused for every flake
    */
-  private drawSnowflake(x: number, y: number, size: number, alpha: number, rotation: number): void {
-    this.ctx.save();
-    this.ctx.translate(x, y);
-    this.ctx.rotate(rotation);
-    this.ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-    this.ctx.lineWidth = 1;
-
-    // Optimize: draw all branches in a single path
-    this.ctx.beginPath();
-
-    // Draw 6-pointed snowflake
-    for (let j = 0; j < 6; j++) {
-      const angle = (Math.PI / 3) * j;
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
-
-      // Main branch
-      this.ctx.moveTo(0, 0);
-      this.ctx.lineTo(sin * size * 2.5, cos * size * 2.5);
-
-      // Side branches (rotated coordinates)
-      const branch1X = sin * size * 1.5 + cos * size * 0.5;
-      const branch1Y = cos * size * 1.5 - sin * size * 0.5;
-      const branch1EndX = sin * size * 1.8 + cos * size * 1.2;
-      const branch1EndY = cos * size * 1.8 - sin * size * 1.2;
-
-      this.ctx.moveTo(branch1X, branch1Y);
-      this.ctx.lineTo(branch1EndX, branch1EndY);
-
-      const branch2X = sin * size * 1.5 - cos * size * 0.5;
-      const branch2Y = cos * size * 1.5 + sin * size * 0.5;
-      const branch2EndX = sin * size * 1.8 - cos * size * 1.2;
-      const branch2EndY = cos * size * 1.8 + sin * size * 1.2;
-
-      this.ctx.moveTo(branch2X, branch2Y);
-      this.ctx.lineTo(branch2EndX, branch2EndY);
+  private getSprite(): HTMLCanvasElement {
+    if (this.sprite) return this.sprite;
+    const canvas = document.createElement('canvas');
+    canvas.width = SPRITE_SIZE;
+    canvas.height = SPRITE_SIZE;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const c = SPRITE_SIZE / 2;
+      const gradient = ctx.createRadialGradient(c, c, 0, c, c, c);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      gradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.85)');
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, SPRITE_SIZE, SPRITE_SIZE);
     }
-
-    this.ctx.stroke();
-    this.ctx.restore();
+    this.sprite = canvas;
+    return canvas;
   }
 }

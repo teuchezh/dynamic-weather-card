@@ -2,22 +2,47 @@ import { BaseAnimation } from './base';
 import { TimeOfDay } from '../types';
 
 interface RainDrop {
+  layer: number;
   x: number;
   y: number;
   speed: number;
-  windOffset: number;
-  width: number;
   length: number;
-  alpha: number;
-  phase: number;
 }
+
+interface Splash {
+  x: number;
+  y: number;
+  age: number;
+  size: number;
+}
+
+interface RainLayer {
+  // Drops per 10,000 px² (light rain; heavy rain doubles it)
+  density: number;
+  speed: [number, number];
+  length: [number, number];
+  width: number;
+  alpha: number;
+}
+
+// Back to front: far drops are short, thin, faint and slower
+const RAIN_LAYERS: RainLayer[] = [
+  { density: 6, speed: [380, 460], length: [8, 12], width: 0.6, alpha: 0.28 },
+  { density: 3.5, speed: [560, 680], length: [14, 20], width: 0.9, alpha: 0.42 },
+  { density: 1.4, speed: [820, 980], length: [22, 30], width: 1.3, alpha: 0.58 }
+];
+// Horizontal drift per vertical px (wind)
+const SLANT = 0.12;
+const SPLASH_DURATION = 0.3;
 
 /**
  * Rainy weather animation
  */
 export class RainyAnimation extends BaseAnimation {
   private rainDrops: RainDrop[] = [];
+  private splashes: Splash[] = [];
   private lastTime: number = 0;
+  private dropsKey = '';
 
   /**
    * Draw rainy weather
@@ -34,109 +59,100 @@ export class RainyAnimation extends BaseAnimation {
   }
 
   /**
-   * Draw rain drops
+   * Draw rain as slanted streaks in three depth layers, with splashes where near drops land
    * @param width - Canvas width
    * @param height - Canvas height
    * @param heavy - Heavy rain flag
    */
   drawRain(width: number, height: number, heavy: boolean): void {
-    const dropCount = heavy ? 130 : 90;
-
-    // Initialize rain drops
-    if (this.rainDrops.length !== dropCount) {
-      this.rainDrops = [];
-      for (let i = 0; i < dropCount; i++) {
-        this.rainDrops.push({
-          x: Math.random() * width,
-          y: Math.random() * height - Math.random() * 200,
-          speed: heavy ? (80 + Math.random() * 100) : (60 + Math.random() * 80),
-          windOffset: (Math.random() - 0.5) * 30,
-          width: heavy ? (1.2 + Math.random() * 1.0) : (0.8 + Math.random() * 0.7),
-          length: heavy ? (8 + Math.random() * 10) : (6 + Math.random() * 8),
-          alpha: heavy ? (0.75 + Math.random() * 0.15) : (0.65 + Math.random() * 0.2),
-          phase: Math.random() * Math.PI * 2
-        });
-      }
+    const key = `${Math.round(width)}x${Math.round(height)}:${heavy}`;
+    if (key !== this.dropsKey) {
+      this.createDrops(width, height, heavy);
+      this.dropsKey = key;
     }
 
-    // Calculate real delta time for smooth animation
     const currentTime = Date.now() * 0.001;
     const deltaTime = this.lastTime > 0 ? Math.min(currentTime - this.lastTime, 0.1) : 1 / 60;
     this.lastTime = currentTime;
 
-    const currentAnimTime = currentTime;
+    this.ctx.save();
+    this.ctx.lineCap = 'round';
 
-    for (let i = 0; i < this.rainDrops.length; i++) {
-      const drop = this.rainDrops[i];
+    // One path per layer keeps this cheap even with hundreds of drops
+    RAIN_LAYERS.forEach((layer, index) => {
+      this.ctx.beginPath();
+      for (const drop of this.rainDrops) {
+        if (drop.layer !== index) continue;
 
-      // Update drop position
-      drop.y += drop.speed * deltaTime;
+        drop.y += drop.speed * deltaTime;
+        drop.x += drop.speed * SLANT * deltaTime;
 
-      // Reset drop when it goes off screen (smooth loop)
-      if (drop.y > height + 50) {
-        drop.y = -50 - Math.random() * 100;
-        drop.x = Math.random() * width;
+        if (drop.y - drop.length > height) {
+          if (index === RAIN_LAYERS.length - 1 && Math.random() < (heavy ? 0.7 : 0.4)) {
+            this.splashes.push({ x: drop.x - (drop.y - height) * SLANT, y: height - 2 - Math.random() * 6, age: 0, size: 3 + Math.random() * 3 });
+          }
+          this.resetDrop(drop, width);
+        }
+        if (drop.x > width + 20) drop.x -= width + 40;
+
+        this.ctx.moveTo(drop.x - drop.length * SLANT, drop.y - drop.length);
+        this.ctx.lineTo(drop.x, drop.y);
       }
+      this.ctx.strokeStyle = `rgba(215, 228, 242, ${layer.alpha * (heavy ? 1.15 : 1)})`;
+      this.ctx.lineWidth = layer.width;
+      this.ctx.stroke();
+    });
 
-      // Wind effect
-      const wind = drop.windOffset * (1 + Math.sin(currentAnimTime * 0.5 + drop.phase) * 0.2);
-      const dropX = drop.x + wind;
+    this.drawSplashes(deltaTime);
+    this.ctx.restore();
+  }
 
-      // Wrap around horizontally
-      if (dropX < -10) {
-        drop.x = width + 10;
-      } else if (dropX > width + 10) {
-        drop.x = -10;
+  private createDrops(width: number, height: number, heavy: boolean): void {
+    this.rainDrops = [];
+    this.splashes = [];
+    const area = (width * height) / 10000;
+    RAIN_LAYERS.forEach((layer, index) => {
+      const count = Math.min(400, Math.round(area * layer.density * (heavy ? 2 : 1)));
+      for (let i = 0; i < count; i++) {
+        const drop: RainDrop = { layer: index, x: 0, y: 0, speed: 0, length: 0 };
+        this.resetDrop(drop, width);
+        // Spread initial drops over the whole card
+        drop.y = Math.random() * (height + drop.length);
+        this.rainDrops.push(drop);
       }
+    });
+  }
 
-      this.drawRainDrop(dropX, drop.y, drop);
-    }
+  private resetDrop(drop: RainDrop, width: number): void {
+    const layer = RAIN_LAYERS[drop.layer];
+    drop.speed = layer.speed[0] + Math.random() * (layer.speed[1] - layer.speed[0]);
+    drop.length = layer.length[0] + Math.random() * (layer.length[1] - layer.length[0]);
+    drop.y = -Math.random() * 40;
+    // Start further left so the slant does not leave the left edge empty
+    drop.x = Math.random() * (width + 40) - 40;
   }
 
   /**
-   * Draw a single rain drop
-   * @param dropX - Drop X position
-   * @param dropY - Drop Y position
-   * @param drop - Drop parameters
+   * Small expanding arcs with a couple of droplets where near drops hit the bottom
    */
-  private drawRainDrop(dropX: number, dropY: number, drop: RainDrop): void {
-    this.ctx.save();
-    this.ctx.globalAlpha = drop.alpha;
+  private drawSplashes(deltaTime: number): void {
+    this.splashes = this.splashes.filter(splash => (splash.age += deltaTime) < SPLASH_DURATION);
+    if (this.splashes.length > 60) this.splashes.splice(0, this.splashes.length - 60);
 
-    const topY = dropY - drop.length * 0.5;
-    const bottomY = dropY + drop.length * 0.5;
+    this.ctx.lineWidth = 0.8;
+    for (const splash of this.splashes) {
+      const t = splash.age / SPLASH_DURATION;
+      const radius = splash.size * (0.4 + t);
+      this.ctx.strokeStyle = `rgba(220, 232, 245, ${0.45 * (1 - t)})`;
+      this.ctx.beginPath();
+      this.ctx.ellipse(splash.x, splash.y, radius, radius * 0.35, 0, Math.PI, 0);
+      this.ctx.stroke();
 
-    const fillAlpha = drop.alpha;
-    const strokeAlpha = drop.alpha * 0.5;
-
-    this.ctx.fillStyle = 'rgba(220, 240, 255, ' + fillAlpha + ')';
-    this.ctx.strokeStyle = 'rgba(240, 250, 255, ' + strokeAlpha + ')';
-    this.ctx.lineWidth = 0.4;
-
-    this.ctx.beginPath();
-
-    // Start at pointed top
-    this.ctx.moveTo(dropX, topY);
-
-    // Left side - expand from narrow top to wider bottom
-    this.ctx.quadraticCurveTo(
-      dropX - drop.width * 0.3, dropY,
-      dropX - drop.width, bottomY - drop.width * 0.3
-    );
-
-    // Bottom rounded part (left to right)
-    this.ctx.arc(dropX, bottomY, drop.width, Math.PI, 0, false);
-
-    // Right side - from wider bottom back to narrow top
-    this.ctx.quadraticCurveTo(
-      dropX + drop.width * 0.3, dropY,
-      dropX, topY
-    );
-
-    this.ctx.closePath();
-    this.ctx.fill();
-    this.ctx.stroke();
-
-    this.ctx.restore();
+      // Droplets thrown up and falling back
+      const rise = Math.sin(t * Math.PI) * splash.size * 1.2;
+      this.ctx.fillStyle = `rgba(220, 232, 245, ${0.5 * (1 - t)})`;
+      this.ctx.fillRect(splash.x - radius * 0.8, splash.y - rise, 1, 1);
+      this.ctx.fillRect(splash.x + radius * 0.7, splash.y - rise * 0.8, 1, 1);
+    }
   }
 }
