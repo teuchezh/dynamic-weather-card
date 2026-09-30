@@ -1,5 +1,5 @@
 import { TIME_THRESHOLDS } from './constants';
-import type { TimeOfDay, Position, BackgroundGradient, SunMoonData, HassEntity, HomeAssistant } from './types';
+import type { TimeOfDay, Position, PositionOverride, BackgroundGradient, SunMoonData, HassEntity, HomeAssistant } from './types';
 
 /**
  * Determine time of day and its progress (internal fallback)
@@ -35,7 +35,7 @@ function getTimeOfDay(): TimeOfDay {
 /**
  * Get sun/moon position based on time of day
  */
-export function getSunPosition(timeOfDay: TimeOfDay, width: number, height: number): Position {
+function getAutoSunPosition(timeOfDay: TimeOfDay, width: number, height: number): Position {
   if (timeOfDay.type === 'sunrise') {
     const progress = timeOfDay.progress;
     return {
@@ -62,6 +62,27 @@ export function getSunPosition(timeOfDay: TimeOfDay, width: number, height: numb
       y: height * 0.3
     };
   }
+}
+
+/**
+ * Get sun/moon position, optionally pinned by a user override (percent of width/height)
+ */
+export function getSunPosition(
+  timeOfDay: TimeOfDay,
+  width: number,
+  height: number,
+  override?: PositionOverride
+): Position {
+  const position = getAutoSunPosition(timeOfDay, width, height);
+  const toFraction = (percent: number): number => Math.min(100, Math.max(0, percent)) / 100;
+
+  if (typeof override?.x === 'number') {
+    position.x = width * toFraction(override.x);
+  }
+  if (typeof override?.y === 'number') {
+    position.y = height * toFraction(override.y);
+  }
+  return position;
 }
 
 /**

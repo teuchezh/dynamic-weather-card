@@ -5,7 +5,7 @@ import { CloudyAnimation } from '../animations/cloudy.js';
 import { FoggyAnimation } from '../animations/foggy.js';
 import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
-import type { TimeOfDay } from '../types.js';
+import type { TimeOfDay, PositionOverride } from '../types.js';
 
 interface Animations {
   sunny: SunnyAnimation;
@@ -26,7 +26,7 @@ export class AnimationManager {
   private width: number = 0;
   private height: number = 0;
   private container: Element | null = null;
-  private getDrawParams: () => { condition: string; timeOfDay: TimeOfDay } | null;
+  private getDrawParams: () => { condition: string; timeOfDay: TimeOfDay; sunPosition?: PositionOverride } | null;
   private handleVisibilityChange = (): void => {
     if (document.hidden) {
       this.stopAnimation();
@@ -35,7 +35,7 @@ export class AnimationManager {
     }
   };
 
-  constructor(getDrawParams: () => { condition: string; timeOfDay: TimeOfDay } | null) {
+  constructor(getDrawParams: () => { condition: string; timeOfDay: TimeOfDay; sunPosition?: PositionOverride } | null) {
     this.getDrawParams = getDrawParams;
   }
 
@@ -153,7 +153,7 @@ export class AnimationManager {
     const params = this.getDrawParams();
     if (!params) return;
 
-    const { condition, timeOfDay } = params;
+    const { condition, timeOfDay, sunPosition } = params;
     const width = this.width;
     const height = this.height;
 
@@ -164,10 +164,10 @@ export class AnimationManager {
     switch (conditionLower) {
       case 'sunny':
       case 'clear':
-        this.animations.sunny?.draw(Date.now(), width, height, timeOfDay);
+        this.animations.sunny?.draw(Date.now(), width, height, timeOfDay, sunPosition);
         break;
       case 'clear-night':
-        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 });
+        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 }, sunPosition);
         break;
       case 'rainy':
       case 'rain':

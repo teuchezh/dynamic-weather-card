@@ -131,6 +131,8 @@ export interface WeatherCardConfig {
   language?: 'auto' | SupportedLanguage;
   height?: number | null;
   borderRadius?: number | null;
+  sunPositionX?: number | null;
+  sunPositionY?: number | null;
   windSpeedUnit?: 'ms' | 'kmh';
   showAnimations?: boolean;
   layout?: 'default' | 'minimal';
@@ -146,6 +148,12 @@ export interface TimeOfDay {
 export interface Position {
   x: number;
   y: number;
+}
+
+// Fixed sun/moon position in percent of card width/height; null keeps the automatic position
+export interface PositionOverride {
+  x?: number | null;
+  y?: number | null;
 }
 
 // RGB Color
@@ -225,6 +233,8 @@ export interface ConfigInput {
   overlay_opacity?: number;
   text_shadow?: number;
   border_radius?: number;
+  sun_position_x?: number;
+  sun_position_y?: number;
   language?: 'auto' | SupportedLanguage;
   wind_speed_unit?: 'ms' | 'kmh';
   show_animations?: boolean;

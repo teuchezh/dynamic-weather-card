@@ -1,6 +1,6 @@
 import { BaseAnimation } from './base';
 import { getSunPosition } from '../utils';
-import { TimeOfDay, Position } from '../types';
+import { TimeOfDay, Position, PositionOverride } from '../types';
 
 /**
  * Sunny weather animation
@@ -12,10 +12,11 @@ export class SunnyAnimation extends BaseAnimation {
    * @param width - Canvas width
    * @param height - Canvas height
    * @param timeOfDay - Time of day info
+   * @param positionOverride - Optional fixed sun/moon position (percent of width/height)
    */
-  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay): void {
+  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, positionOverride?: PositionOverride): void {
     const currentTime = Date.now() * 0.001;
-    const sunPos: Position = getSunPosition(timeOfDay, width, height);
+    const sunPos: Position = getSunPosition(timeOfDay, width, height, positionOverride);
     const sunX = sunPos.x;
     const sunY = sunPos.y;
 
@@ -27,7 +28,7 @@ export class SunnyAnimation extends BaseAnimation {
         this.drawHorizonReflection(sunX, sunY, height, currentTime);
       }
     } else if (timeOfDay.type === 'night') {
-      this.drawNightSky(width, height, currentTime);
+      this.drawNightSky(width, height, currentTime, sunPos);
     }
 
     this.drawClouds(currentTime, width, height, 0.3);
@@ -132,8 +133,9 @@ export class SunnyAnimation extends BaseAnimation {
    * @param width - Canvas width
    * @param height - Canvas height
    * @param time - Animation time
+   * @param moonPos - Moon position
    */
-  private drawNightSky(width: number, height: number, time: number): void {
+  private drawNightSky(width: number, height: number, time: number, moonPos: Position): void {
     // Stars
     this.ctx.fillStyle = '#FFFFFF';
     for (let i = 0; i < 20; i++) {
@@ -147,8 +149,8 @@ export class SunnyAnimation extends BaseAnimation {
     }
 
     // Moon
-    const moonX = width * 0.75;
-    const moonY = height * 0.3;
+    const moonX = moonPos.x;
+    const moonY = moonPos.y;
     this.ctx.globalAlpha = 0.9;
     this.ctx.fillStyle = '#F0F0F0';
     this.ctx.beginPath();

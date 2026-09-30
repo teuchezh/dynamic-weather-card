@@ -21,6 +21,7 @@ import type {
   HomeAssistant,
   HassEntity,
   TimeOfDay,
+  PositionOverride,
   BackgroundGradient,
   SunData,
   ConfigInput,
@@ -127,7 +128,7 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  private getDrawParams(): { condition: string; timeOfDay: TimeOfDay } | null {
+  private getDrawParams(): { condition: string; timeOfDay: TimeOfDay; sunPosition: PositionOverride } | null {
     if (!this.hass || !this.config.entity) return null;
 
     const weather = getWeatherData(
@@ -147,7 +148,8 @@ export class AnimatedWeatherCard extends LitElement {
 
     return {
       condition: weather.condition,
-      timeOfDay
+      timeOfDay,
+      sunPosition: { x: this.config.sunPositionX, y: this.config.sunPositionY }
     };
   }
 
@@ -192,6 +194,8 @@ export class AnimatedWeatherCard extends LitElement {
       overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
       textShadow: config.text_shadow !== undefined ? config.text_shadow : DEFAULT_CONFIG.textShadow,
       borderRadius: config.border_radius ?? DEFAULT_CONFIG.borderRadius,
+      sunPositionX: config.sun_position_x ?? DEFAULT_CONFIG.sunPositionX,
+      sunPositionY: config.sun_position_y ?? DEFAULT_CONFIG.sunPositionY,
       language: config.language || DEFAULT_CONFIG.language,
       windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,
       showAnimations: config.show_animations !== false,

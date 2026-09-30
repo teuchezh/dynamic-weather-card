@@ -61,6 +61,8 @@
     "overlay_opacity": "Overlay Opacity",
     "text_shadow": "Text Shadow Strength",
     "border_radius": "Corner Radius",
+    "sun_position_x": "Sun/Moon Horizontal Position",
+    "sun_position_y": "Sun/Moon Vertical Position",
     "language": "Language",
     "language_auto": "Auto",
     "language_en": "English",
