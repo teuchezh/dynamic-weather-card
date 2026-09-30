@@ -292,8 +292,10 @@ export class AnimatedWeatherCard extends LitElement {
 
     const cardStyle = `min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} ${shadowStyle} cursor: pointer;`;
     const borderRadius = this.config.borderRadius;
-    // Only characters valid in CSS color values, so the option can't inject other declarations
-    const textColor = this.config.textColor?.replace(/[^#%(),.\-\w\s]/g, '');
+    // Accept only values the browser parses as a color, so the option can't inject other declarations
+    const textColor = this.config.textColor && CSS.supports('color', this.config.textColor)
+      ? this.config.textColor
+      : null;
     const haCardStyle = [
       typeof borderRadius === 'number' && borderRadius >= 0 ? `--dwc-border-radius: ${borderRadius}px;` : '',
       textColor ? `--dwc-text-color: ${textColor};` : ''
