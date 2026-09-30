@@ -197,6 +197,8 @@ clock_format: 24h                         # 12h или 24h
 | `hourly_forecast_hours` | number | `5` | Количество часов для отображения (1-24) |
 | `show_daily_forecast` | boolean | `false` | Показать ежедневный прогноз |
 | `daily_forecast_days` | number | `5` | Количество дней для отображения (1-14) |
+| `hourly_forecast_title` | string | перевод | Свой заголовок почасового прогноза; `""` скрывает его |
+| `daily_forecast_title` | string | перевод | Свой заголовок прогноза по дням; `""` скрывает его |
 | **Солнце и часы** |
 | `show_sunrise_sunset` | boolean | `false` | Отображать время восхода/заката |
 | `sunrise_entity` | string | - | Пользовательский сенсор восхода (опционально) |

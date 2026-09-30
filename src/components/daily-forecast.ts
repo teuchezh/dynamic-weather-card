@@ -8,6 +8,8 @@ import type { WeatherForecast } from '../types.js';
 
 export class DailyForecast extends LitElement {
   @property({ type: Array }) forecast: WeatherForecast[] = [];
+  // Custom section title: null = default (translated), '' = hidden
+  @property({ type: String }) forecastTitle: string | null = null;
   @property({ type: String }) lang: string = 'en';
 
   static styles = forecastStyles;
@@ -36,7 +38,7 @@ export class DailyForecast extends LitElement {
 
     return html`
       <div class="forecast-container">
-        <div class="forecast-title">${i18n.t('daily_forecast_title')}</div>
+        ${this.forecastTitle !== '' ? html`<div class="forecast-title">${this.forecastTitle ?? i18n.t('daily_forecast_title')}</div>` : ''}
         <div class="forecast-scroll">
           ${this.forecast.map(item => html`
             <div class="forecast-item">

@@ -187,6 +187,8 @@ export class AnimatedWeatherCard extends LitElement {
       showDailyForecast: config.show_daily_forecast === true,
       hourlyForecastHours: config.hourly_forecast_hours ?? DEFAULT_CONFIG.hourlyForecastHours,
       dailyForecastDays: config.daily_forecast_days ?? DEFAULT_CONFIG.dailyForecastDays,
+      hourlyForecastTitle: config.hourly_forecast_title ?? DEFAULT_CONFIG.hourlyForecastTitle,
+      dailyForecastTitle: config.daily_forecast_title ?? DEFAULT_CONFIG.dailyForecastTitle,
       showSunriseSunset: config.show_sunrise_sunset !== false,
       showClock: config.show_clock === true,
       showDate: config.show_date === true,
@@ -378,10 +380,12 @@ export class AnimatedWeatherCard extends LitElement {
           <hourly-forecast
             .forecast=${hourlyForecast}
             .clockFormat=${this.config.clockFormat ?? '24h'}
+            .forecastTitle=${this.config.hourlyForecastTitle ?? null}
           ></hourly-forecast>
           <daily-forecast
             .forecast=${dailyForecast}
             .lang=${i18n.lang}
+            .forecastTitle=${this.config.dailyForecastTitle ?? null}
           ></daily-forecast>
         </div>
       </div>

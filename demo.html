@@ -637,6 +637,14 @@
                     <label class="control-label" data-i18n="hourlyForecastHours">Hourly Forecast Hours</label>
                     <input type="number" id="hourly-forecast-hours" value="5" min="1" max="24" step="1">
                 </div>
+                <div class="control-group">
+                    <label class="control-label" data-i18n="hourlyForecastTitle">Hourly Forecast Title</label>
+                    <input type="text" id="hourly-forecast-title" placeholder="Today's Forecast">
+                </div>
+                <div class="control-group">
+                    <label class="control-label" data-i18n="dailyForecastTitle">Daily Forecast Title</label>
+                    <input type="text" id="daily-forecast-title" placeholder="Daily Forecast">
+                </div>
 
                 <div class="checkbox-group">
                     <label class="checkbox-item">
@@ -1124,6 +1132,8 @@ function applyTranslations() {
                 showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
                 showClock: document.getElementById('show-clock').checked,
                 showDate: document.getElementById('show-date').checked,
+                hourlyForecastTitle: document.getElementById('hourly-forecast-title').value,
+                dailyForecastTitle: document.getElementById('daily-forecast-title').value,
                 useSensors: document.getElementById('use-sensors').checked,
                 textColor: document.getElementById('text-color-input').value.trim(),
                 borderRadius: document.getElementById('border-radius-input').value,
@@ -1196,6 +1206,9 @@ function applyTranslations() {
                     precipitation_entity: 'sensor.station_precipitation',
                 });
             }
+            // Forecast titles: empty field = default title
+            if (config.hourlyForecastTitle) cardConfig.hourly_forecast_title = config.hourlyForecastTitle;
+            if (config.dailyForecastTitle) cardConfig.daily_forecast_title = config.dailyForecastTitle;
             // Optional appearance settings: empty field = card default
             if (config.textColor) cardConfig.text_color = config.textColor;
             if (config.borderRadius !== '') cardConfig.border_radius = parseInt(config.borderRadius, 10);
@@ -1278,7 +1291,7 @@ function applyTranslations() {
                 if (card) updateCard();
             });
 
-            ['text-color-input', 'border-radius-input', 'sun-position-x-input', 'sun-position-y-input'].forEach(id => {
+            ['hourly-forecast-title', 'daily-forecast-title', 'text-color-input', 'border-radius-input', 'sun-position-x-input', 'sun-position-y-input'].forEach(id => {
                 document.getElementById(id)?.addEventListener('change', () => {
                     if (card) updateCard();
                 });

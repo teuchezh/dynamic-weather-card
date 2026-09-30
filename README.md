@@ -199,6 +199,8 @@ clock_format: 24h                         # 12h or 24h
 | `hourly_forecast_hours` | number | `5` | Number of hours to display (1-24) |
 | `show_daily_forecast` | boolean | `false` | Show daily forecast |
 | `daily_forecast_days` | number | `5` | Number of days to display (1-14) |
+| `hourly_forecast_title` | string | translated | Custom hourly forecast title; `""` hides it |
+| `daily_forecast_title` | string | translated | Custom daily forecast title; `""` hides it |
 | **Sun & Clock** |
 | `show_sunrise_sunset` | boolean | `false` | Display sunrise/sunset times |
 | `sunrise_entity` | string | - | Custom sunrise sensor (optional) |

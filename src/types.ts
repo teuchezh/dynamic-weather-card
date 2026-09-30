@@ -122,6 +122,8 @@ export interface WeatherCardConfig {
   showDailyForecast?: boolean;
   hourlyForecastHours?: number;
   dailyForecastDays?: number;
+  hourlyForecastTitle?: string | null;
+  dailyForecastTitle?: string | null;
   showSunriseSunset?: boolean;
   showClock?: boolean;
   showDate?: boolean;
@@ -232,6 +234,8 @@ export interface ConfigInput {
   show_daily_forecast?: boolean;
   hourly_forecast_hours?: number;
   daily_forecast_days?: number;
+  hourly_forecast_title?: string;
+  daily_forecast_title?: string;
   show_sunrise_sunset?: boolean;
   show_clock?: boolean;
   show_date?: boolean;
