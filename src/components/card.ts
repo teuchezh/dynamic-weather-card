@@ -4,11 +4,11 @@ import { DEFAULT_CONFIG } from '../constants.js';
 import { i18n } from '../internationalization/index.js';
 import { resolveLanguage } from '../internationalization/resolveLanguage.js';
 import {
-  getBackgroundGradient,
   getSunriseSunsetData,
   getTimeOfDayWithSunData
 } from '../utils.js';
 import { cardStyles } from './styles.js';
+import { getSkyColors, rgb } from '../sky.js';
 import { AnimationManager } from './animation-manager.js';
 import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
@@ -22,7 +22,6 @@ import type {
   HassEntity,
   TimeOfDay,
   PositionOverride,
-  BackgroundGradient,
   SunData,
   ConfigInput,
   WeatherCardConfigInternal,
@@ -265,10 +264,8 @@ export class AnimatedWeatherCard extends LitElement {
     const defaultHeight = isMinimal ? '56px' : '200px';
     const minHeight = this.config.height ? `${this.config.height}px` : defaultHeight;
 
-    const bgGradient: BackgroundGradient | null = getBackgroundGradient(timeOfDay);
-    const bgStyle = bgGradient
-      ? `background: linear-gradient(135deg, rgb(${bgGradient.start.r}, ${bgGradient.start.g}, ${bgGradient.start.b}), rgb(${bgGradient.end.r}, ${bgGradient.end.g}, ${bgGradient.end.b}));`
-      : '';
+    const sky = getSkyColors(weather.condition, timeOfDay);
+    const skyStyle = `--dwc-sky-top: ${rgb(sky.top)}; --dwc-sky-bottom: ${rgb(sky.bottom)};`;
 
     const overlayOpacity = this.config.overlayOpacity !== undefined
       ? this.config.overlayOpacity
@@ -302,7 +299,7 @@ export class AnimatedWeatherCard extends LitElement {
       )
       : [];
 
-    const cardStyle = `min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} ${shadowStyle} cursor: pointer;`;
+    const cardStyle = `min-height: ${minHeight}; ${skyStyle} ${overlayStyle} ${shadowStyle} cursor: pointer;`;
     const borderRadius = this.config.borderRadius;
     // Accept only values the browser parses as a color, so the option can't inject other declarations
     const textColor = this.config.textColor && CSS.supports('color', this.config.textColor)

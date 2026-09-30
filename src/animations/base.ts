@@ -1,8 +1,12 @@
+import type { CloudField } from './clouds';
+
 /**
  * Base class for weather animations
  */
 export class BaseAnimation {
   protected ctx: CanvasRenderingContext2D;
+  // Shared layered clouds; when set, drawClouds() uses it instead of the simple clouds
+  cloudField: CloudField | null = null;
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
@@ -52,6 +56,11 @@ export class BaseAnimation {
    * Draw multiple clouds
    */
   drawClouds(time: number, width: number, height: number, density: number = 0.5): void {
+    if (this.cloudField) {
+      this.cloudField.draw(this.ctx, time, width, height);
+      return;
+    }
+
     const cloudCount = Math.max(2, Math.floor(width / 150 * density));
 
     for (let i = 0; i < cloudCount; i++) {

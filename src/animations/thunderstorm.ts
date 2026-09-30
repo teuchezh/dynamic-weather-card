@@ -52,7 +52,7 @@ export class ThunderstormAnimation extends BaseAnimation {
 
     // Rain if specified
     if (withRain) {
-      this.rainyAnimation.draw(time, width, height, timeOfDay, false);
+      this.rainyAnimation.drawRain(width, height, false);
     }
 
     // Lightning flash effect

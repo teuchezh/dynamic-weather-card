@@ -1,6 +1,7 @@
 import { AnimatedWeatherCard } from './components/card';
 import { DynamicWeatherCardEditor } from './components/editor';
 import { VERSION } from './constants';
+import { registerSkyProperties } from './sky';
 import type { CustomCardRegistration } from './types';
 
 export { i18n } from './internationalization/index';
@@ -9,6 +10,7 @@ export { resolveLanguage } from './internationalization/resolveLanguage';
 
 // Register custom elements
 try {
+  registerSkyProperties();
   customElements.define('dynamic-weather-card', AnimatedWeatherCard);
   customElements.define('dynamic-weather-card-editor', DynamicWeatherCardEditor);
 

@@ -167,12 +167,6 @@ export interface RGBColor {
   b: number;
 }
 
-// Background Gradient
-export interface BackgroundGradient {
-  start: RGBColor;
-  end: RGBColor;
-}
-
 // Sun/Moon Data
 export interface SunMoonData {
   sunrise: Date | null;

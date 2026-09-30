@@ -5,6 +5,7 @@ import { CloudyAnimation } from '../animations/cloudy.js';
 import { FoggyAnimation } from '../animations/foggy.js';
 import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
+import { CloudField } from '../animations/clouds.js';
 import type { TimeOfDay, PositionOverride } from '../types.js';
 
 interface Animations {
@@ -22,6 +23,7 @@ export class AnimationManager {
   private ctx: CanvasRenderingContext2D | null = null;
   private animationFrame: number | null = null;
   private animations: Partial<Animations> = {};
+  private cloudField = new CloudField();
   private resizeObserver: ResizeObserver | null = null;
   private width: number = 0;
   private height: number = 0;
@@ -125,6 +127,9 @@ export class AnimationManager {
       hail: new HailAnimation(this.ctx),
       thunderstorm: new ThunderstormAnimation(this.ctx)
     };
+    Object.values(this.animations).forEach(animation => {
+      animation.cloudField = this.cloudField;
+    });
   }
 
   private startAnimation(): void {
@@ -160,10 +165,12 @@ export class AnimationManager {
     this.ctx.clearRect(0, 0, width, height);
 
     const conditionLower = condition.toLowerCase();
+    this.cloudField.setWeather(conditionLower, timeOfDay);
 
     switch (conditionLower) {
       case 'sunny':
       case 'clear':
+      case 'partlycloudy':
         this.animations.sunny?.draw(Date.now(), width, height, timeOfDay, sunPosition);
         break;
       case 'clear-night':
@@ -182,7 +189,7 @@ export class AnimationManager {
         break;
       case 'snowy-rainy':
         this.animations.rainy?.draw(Date.now(), width, height, timeOfDay, false);
-        this.animations.snowy?.draw(Date.now(), width, height, timeOfDay);
+        this.animations.snowy?.drawSnowflakes(width, height);
         break;
       case 'hail':
         this.animations.hail?.draw(Date.now(), width, height, timeOfDay);
@@ -198,7 +205,6 @@ export class AnimationManager {
         this.animations.thunderstorm?.draw(Date.now(), width, height, timeOfDay, true);
         break;
       case 'cloudy':
-      case 'partlycloudy':
       default:
         this.animations.cloudy?.draw(Date.now(), width, height, timeOfDay);
         break;

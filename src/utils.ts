@@ -1,5 +1,5 @@
 import { TIME_THRESHOLDS } from './constants';
-import type { TimeOfDay, Position, PositionOverride, BackgroundGradient, SunMoonData, HassEntity, HomeAssistant } from './types';
+import type { TimeOfDay, Position, PositionOverride, SunMoonData, HassEntity, HomeAssistant } from './types';
 
 /**
  * Determine time of day and its progress (internal fallback)
@@ -83,50 +83,6 @@ export function getSunPosition(
     position.y = height * toFraction(override.y);
   }
   return position;
-}
-
-/**
- * Get background gradient colors for sunrise/sunset
- */
-export function getBackgroundGradient(timeOfDay: TimeOfDay): BackgroundGradient | null {
-  if (timeOfDay.type === 'sunrise') {
-    const progress = timeOfDay.progress;
-    const nightStart = { r: 26, g: 26, b: 46 };
-    const dayStart = { r: 255, g: 160, b: 122 };
-    const dayEnd = { r: 255, g: 215, b: 0 };
-
-    return {
-      start: {
-        r: Math.round(nightStart.r + (dayStart.r - nightStart.r) * progress),
-        g: Math.round(nightStart.g + (dayStart.g - nightStart.g) * progress),
-        b: Math.round(nightStart.b + (dayStart.b - nightStart.b) * progress)
-      },
-      end: {
-        r: Math.round(nightStart.r + (dayEnd.r - nightStart.r) * progress),
-        g: Math.round(nightStart.g + (dayEnd.g - nightStart.g) * progress),
-        b: Math.round(nightStart.b + (dayEnd.b - nightStart.b) * progress)
-      }
-    };
-  } else if (timeOfDay.type === 'sunset') {
-    const progress = timeOfDay.progress;
-    const dayStart = { r: 255, g: 107, b: 107 };
-    const dayEnd = { r: 255, g: 160, b: 122 };
-    const nightStart = { r: 26, g: 26, b: 46 };
-
-    return {
-      start: {
-        r: Math.round(dayStart.r + (nightStart.r - dayStart.r) * progress),
-        g: Math.round(dayStart.g + (nightStart.g - dayStart.g) * progress),
-        b: Math.round(dayStart.b + (nightStart.b - dayStart.b) * progress)
-      },
-      end: {
-        r: Math.round(dayEnd.r + (nightStart.r - dayEnd.r) * progress),
-        g: Math.round(dayEnd.g + (nightStart.g - dayEnd.g) * progress),
-        b: Math.round(dayEnd.b + (nightStart.b - dayEnd.b) * progress)
-      }
-    };
-  }
-  return null;
 }
 
 /**

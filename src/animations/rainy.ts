@@ -39,7 +39,7 @@ export class RainyAnimation extends BaseAnimation {
    * @param height - Canvas height
    * @param heavy - Heavy rain flag
    */
-  private drawRain(width: number, height: number, heavy: boolean): void {
+  drawRain(width: number, height: number, heavy: boolean): void {
     const dropCount = heavy ? 130 : 90;
 
     // Initialize rain drops

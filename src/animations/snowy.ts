@@ -39,7 +39,7 @@ export class SnowyAnimation extends BaseAnimation {
    * @param width - Canvas width
    * @param height - Canvas height
    */
-  private drawSnowflakes(width: number, height: number): void {
+  drawSnowflakes(width: number, height: number): void {
     // Calculate snowflake count based on area
     const snowflakeCount = Math.floor((width * height) / 5000);
     const targetCount = Math.max(30, Math.min(snowflakeCount, 80));
