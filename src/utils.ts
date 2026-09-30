@@ -235,52 +235,60 @@ export function getSunriseSunsetData(
   };
 }
 
+const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
+// Sunrise/sunset visual phase lasts from 1 hour before to 1 hour after the event
+const TWILIGHT_WINDOW_MS = HOUR_MS;
+
+/**
+ * Shift a sun event by whole days to its latest occurrence at or before `now`.
+ * Sources report today's, yesterday's or the *next* event (e.g. sun.sun next_rising),
+ * so only the time of day is reliable.
+ */
+function latestOccurrence(event: number, now: number): number {
+  return event + Math.floor((now - event) / DAY_MS) * DAY_MS;
+}
+
 /**
  * Determine time of day based on sunrise/sunset or fallback to static times
  */
-export function getTimeOfDayWithSunData(sunData: SunMoonData & { hasSunData: boolean }): TimeOfDay {
-  const now = new Date();
-
+export function getTimeOfDayWithSunData(
+  sunData: SunMoonData & { hasSunData: boolean },
+  now: Date = new Date()
+): TimeOfDay {
   // If we have real sun data, use it
   if (sunData.hasSunData && sunData.sunrise && sunData.sunset) {
     const currentTime = now.getTime();
-    let sunriseTime = sunData.sunrise.getTime();
-    let sunsetTime = sunData.sunset.getTime();
+    const lastSunrise = latestOccurrence(sunData.sunrise.getTime(), currentTime);
+    const lastSunset = latestOccurrence(sunData.sunset.getTime(), currentTime);
+    const sunIsUp = lastSunrise > lastSunset;
 
-    // Check if sunrise/sunset are for tomorrow (common with Yandex Weather and similar integrations)
-    // If sunrise is more than 12 hours in the future, subtract 24 hours to get today's time
-    if (sunriseTime - currentTime > 12 * 60 * 60 * 1000) {
-      sunriseTime -= 24 * 60 * 60 * 1000;
-    }
-    if (sunsetTime - currentTime > 12 * 60 * 60 * 1000) {
-      sunsetTime -= 24 * 60 * 60 * 1000;
-    }
+    if (sunIsUp) {
+      const nextSunset = lastSunset + DAY_MS;
 
-    // Calculate sunrise/sunset window (±1 hour)
-    const sunriseStart = sunriseTime - 60 * 60 * 1000; // 1 hour before
-    const sunriseEnd = sunriseTime + 60 * 60 * 1000; // 1 hour after
-    const sunsetStart = sunsetTime - 60 * 60 * 1000; // 1 hour before
-    const sunsetEnd = sunsetTime + 60 * 60 * 1000; // 1 hour after
-
-    // Sunrise period
-    if (currentTime >= sunriseStart && currentTime < sunriseEnd) {
-      const progress = (currentTime - sunriseStart) / (sunriseEnd - sunriseStart);
-      return { type: 'sunrise', progress };
+      // Second half of the sunrise window
+      if (currentTime < lastSunrise + TWILIGHT_WINDOW_MS) {
+        return { type: 'sunrise', progress: (currentTime - (lastSunrise - TWILIGHT_WINDOW_MS)) / (2 * TWILIGHT_WINDOW_MS) };
+      }
+      // First half of the sunset window
+      if (currentTime >= nextSunset - TWILIGHT_WINDOW_MS) {
+        return { type: 'sunset', progress: (currentTime - (nextSunset - TWILIGHT_WINDOW_MS)) / (2 * TWILIGHT_WINDOW_MS) };
+      }
+      const dayStart = lastSunrise + TWILIGHT_WINDOW_MS;
+      const dayEnd = nextSunset - TWILIGHT_WINDOW_MS;
+      return { type: 'day', progress: (currentTime - dayStart) / (dayEnd - dayStart) };
     }
 
-    // Day period (after sunrise, before sunset)
-    if (currentTime >= sunriseEnd && currentTime < sunsetStart) {
-      const progress = (currentTime - sunriseEnd) / (sunsetStart - sunriseEnd);
-      return { type: 'day', progress };
-    }
+    const nextSunrise = lastSunrise + DAY_MS;
 
-    // Sunset period
-    if (currentTime >= sunsetStart && currentTime < sunsetEnd) {
-      const progress = (currentTime - sunsetStart) / (sunsetEnd - sunsetStart);
-      return { type: 'sunset', progress };
+    // Second half of the sunset window
+    if (currentTime < lastSunset + TWILIGHT_WINDOW_MS) {
+      return { type: 'sunset', progress: (currentTime - (lastSunset - TWILIGHT_WINDOW_MS)) / (2 * TWILIGHT_WINDOW_MS) };
     }
-
-    // Night period
+    // First half of the sunrise window
+    if (currentTime >= nextSunrise - TWILIGHT_WINDOW_MS) {
+      return { type: 'sunrise', progress: (currentTime - (nextSunrise - TWILIGHT_WINDOW_MS)) / (2 * TWILIGHT_WINDOW_MS) };
+    }
     return { type: 'night', progress: 0 };
   }
 
