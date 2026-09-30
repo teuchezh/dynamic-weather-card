@@ -29,6 +29,7 @@ export class ThunderstormAnimation extends BaseAnimation {
   constructor(ctx: CanvasRenderingContext2D) {
     super(ctx);
     this.rainyAnimation = new RainyAnimation(ctx);
+    this.children.push(this.rainyAnimation);
   }
 
   /**

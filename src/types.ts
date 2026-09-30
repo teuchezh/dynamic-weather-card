@@ -110,6 +110,9 @@ export interface HomeAssistant {
 // Graphics style: modern (sky/clouds/particles) or classic (the original simple graphics)
 export type VisualStyle = 'modern' | 'classic';
 
+// Animation detail/performance level
+export type AnimationQuality = 'high' | 'medium' | 'low';
+
 // Weather Card Configuration
 export interface WeatherCardConfig {
   type: string;
@@ -144,6 +147,7 @@ export interface WeatherCardConfig {
   showAnimations?: boolean;
   layout?: 'default' | 'minimal';
   visualStyle?: VisualStyle;
+  animationQuality?: AnimationQuality;
 }
 
 // Time of Day
@@ -256,6 +260,7 @@ export interface ConfigInput {
   show_animations?: boolean;
   layout?: 'default' | 'minimal';
   visual_style?: VisualStyle;
+  animation_quality?: AnimationQuality;
   sunrise_entity?: string;
   sunset_entity?: string;
   templow_attribute?: string;

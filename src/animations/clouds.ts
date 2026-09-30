@@ -74,7 +74,7 @@ export class CloudField {
     if (this.coverage < 0) this.coverage = sky.coverage;
   }
 
-  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number): void {
+  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, layers: number = LAYERS.length): void {
     const dpr = ctx.getTransform().a || 1;
     this.ensureSprites(dpr);
     if (this.cloudsSize !== `${width}x${height}`) this.createClouds(width, height);
@@ -86,7 +86,11 @@ export class CloudField {
     this.lastTime = time;
     this.coverage += (this.targetCoverage - this.coverage) * Math.min(1, dt * 1.5);
 
+    // Lower quality drops the far layers first
+    const firstLayer = LAYERS.length - Math.max(1, Math.min(LAYERS.length, layers));
+
     for (const cloud of this.clouds) {
+      if (cloud.layer < firstLayer) continue;
       const visibility = Math.max(0, Math.min(1, (this.coverage - cloud.threshold) * 6));
       if (visibility <= 0) continue;
 

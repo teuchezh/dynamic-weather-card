@@ -65,7 +65,7 @@ export class RainyAnimation extends BaseAnimation {
    * @param heavy - Heavy rain flag
    */
   drawRain(width: number, height: number, heavy: boolean): void {
-    const key = `${Math.round(width)}x${Math.round(height)}:${heavy}`;
+    const key = `${Math.round(width)}x${Math.round(height)}:${heavy}:${this.quality.particles}`;
     if (key !== this.dropsKey) {
       this.createDrops(width, height, heavy);
       this.dropsKey = key;
@@ -88,7 +88,7 @@ export class RainyAnimation extends BaseAnimation {
         drop.x += drop.speed * SLANT * deltaTime;
 
         if (drop.y - drop.length > height) {
-          if (index === RAIN_LAYERS.length - 1 && Math.random() < (heavy ? 0.7 : 0.4)) {
+          if (this.quality.details && index === RAIN_LAYERS.length - 1 && Math.random() < (heavy ? 0.7 : 0.4)) {
             this.splashes.push({ x: drop.x - (drop.y - height) * SLANT, y: height - 2 - Math.random() * 6, age: 0, size: 3 + Math.random() * 3 });
           }
           this.resetDrop(drop, width);
@@ -112,7 +112,7 @@ export class RainyAnimation extends BaseAnimation {
     this.splashes = [];
     const area = (width * height) / 10000;
     RAIN_LAYERS.forEach((layer, index) => {
-      const count = Math.min(400, Math.round(area * layer.density * (heavy ? 2 : 1)));
+      const count = Math.min(400, Math.round(area * layer.density * (heavy ? 2 : 1) * this.quality.particles));
       for (let i = 0; i < count; i++) {
         const drop: RainDrop = { layer: index, x: 0, y: 0, speed: 0, length: 0 };
         this.resetDrop(drop, width);

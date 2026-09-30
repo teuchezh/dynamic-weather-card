@@ -52,5 +52,6 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   windSpeedUnit: 'ms',
   showAnimations: true,
   layout: 'default' as 'default' | 'minimal',
-  visualStyle: 'modern' as 'modern' | 'classic'
+  visualStyle: 'modern' as 'modern' | 'classic',
+  animationQuality: 'high' as 'high' | 'medium' | 'low'
 };

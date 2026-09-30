@@ -609,6 +609,15 @@
                 </div>
 
                 <div class="control-group">
+                    <label class="control-label" data-i18n="animationQuality">Animation Quality</label>
+                    <select id="animation-quality-select">
+                        <option value="high" data-i18n="qualityHigh">High (60 FPS)</option>
+                        <option value="medium" data-i18n="qualityMedium">Medium (30 FPS)</option>
+                        <option value="low" data-i18n="qualityLow">Low (20 FPS)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
                     <label class="control-label" data-i18n="height">Height (px)</label>
                     <input type="number" id="height-input" value="200" min="50" max="800" step="10">
                 </div>
@@ -1169,7 +1178,8 @@ function applyTranslations() {
                 language: document.getElementById('language-select').value,
                 textShadow: parseFloat(document.getElementById('text-shadow-strength').value),
                 layout: document.getElementById('layout-select').value,
-                visualStyle: document.getElementById('visual-style-select').value
+                visualStyle: document.getElementById('visual-style-select').value,
+                animationQuality: document.getElementById('animation-quality-select').value
             };
 
             card = document.createElement('dynamic-weather-card');
@@ -1220,6 +1230,7 @@ function applyTranslations() {
                 language: config.language,
                 layout: config.layout,
                 visual_style: config.visualStyle,
+                animation_quality: config.animationQuality,
             };
 
             if (config.name) {
@@ -1330,6 +1341,7 @@ function applyTranslations() {
             const clockPositionSelect = document.getElementById('clock-position-select');
             document.getElementById('moon-phase-select')?.addEventListener('change', () => updateCard());
             document.getElementById('visual-style-select')?.addEventListener('change', () => updateCard());
+            document.getElementById('animation-quality-select')?.addEventListener('change', () => updateCard());
 
             clockPositionSelect?.addEventListener('change', () => {
                 if (card) updateCard();

@@ -7,6 +7,7 @@ import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { CloudField } from '../animations/clouds.js';
 import { ClassicAnimations } from '../animations/classic/index.js';
+import { QUALITY_PRESETS, createQualitySettings, type AnimationQuality } from '../animations/quality.js';
 import type { TimeOfDay, PositionOverride, VisualStyle } from '../types.js';
 
 interface Animations {
@@ -25,6 +26,7 @@ export interface DrawParams {
   sunPosition?: PositionOverride;
   moonPhase?: number;
   visualStyle?: VisualStyle;
+  quality?: AnimationQuality;
 }
 
 export class AnimationManager {
@@ -36,16 +38,18 @@ export class AnimationManager {
   // Created on first use, only when the classic style is selected
   private classic: ClassicAnimations | null = null;
   private resizeObserver: ResizeObserver | null = null;
+  private intersectionObserver: IntersectionObserver | null = null;
+  private onScreen = true;
+  private qualityName: AnimationQuality = 'high';
+  // Shared with all animations and updated in place when the quality changes
+  private quality = createQualitySettings('high');
+  private lastFrameTime = -Infinity;
   private width: number = 0;
   private height: number = 0;
   private container: Element | null = null;
   private getDrawParams: () => DrawParams | null;
   private handleVisibilityChange = (): void => {
-    if (document.hidden) {
-      this.stopAnimation();
-    } else {
-      this.startAnimation();
-    }
+    this.updateRunning();
   };
 
   constructor(getDrawParams: () => DrawParams | null) {
@@ -59,6 +63,7 @@ export class AnimationManager {
       this.initializeAnimations();
       this.startAnimation();
       this.setupResizeObserver();
+      this.setupIntersectionObserver();
       document.addEventListener('visibilitychange', this.handleVisibilityChange);
     }
   }
@@ -70,6 +75,8 @@ export class AnimationManager {
       this.resizeObserver.disconnect();
       this.resizeObserver = null;
     }
+    this.intersectionObserver?.disconnect();
+    this.intersectionObserver = null;
     this.canvas = null;
     this.ctx = null;
     this.container = null;
@@ -100,7 +107,7 @@ export class AnimationManager {
     const rect = this.container.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
 
-    const dpr = window.devicePixelRatio || 2;
+    const dpr = Math.min(window.devicePixelRatio || 2, this.quality.maxDpr);
     this.canvas.width = rect.width * dpr;
     this.canvas.height = rect.height * dpr;
     this.canvas.style.width = '100%';
@@ -126,6 +133,35 @@ export class AnimationManager {
     this.resizeObserver.observe(this.container);
   }
 
+  /**
+   * Pause while the card is scrolled out of view (or on a hidden dashboard view)
+   */
+  private setupIntersectionObserver(): void {
+    if (!this.container || typeof IntersectionObserver === 'undefined') return;
+
+    this.intersectionObserver = new IntersectionObserver(entries => {
+      this.onScreen = entries.some(entry => entry.isIntersecting);
+      this.updateRunning();
+    });
+    this.intersectionObserver.observe(this.container);
+  }
+
+  private updateRunning(): void {
+    if (document.hidden || !this.onScreen) {
+      this.stopAnimation();
+    } else {
+      this.startAnimation();
+    }
+  }
+
+  private applyQuality(name: AnimationQuality): void {
+    if (name === this.qualityName || !QUALITY_PRESETS[name]) return;
+    const previousDpr = this.quality.maxDpr;
+    this.qualityName = name;
+    Object.assign(this.quality, QUALITY_PRESETS[name]);
+    if (this.quality.maxDpr !== previousDpr) this.resizeCanvas();
+  }
+
   private initializeAnimations(): void {
     if (!this.ctx) return;
 
@@ -140,14 +176,18 @@ export class AnimationManager {
     };
     this.classic = null;
     Object.values(this.animations).forEach(animation => {
-      animation.cloudField = this.cloudField;
+      animation.attach(this.cloudField, this.quality);
     });
   }
 
   private startAnimation(): void {
     if (this.animationFrame) return;
-    const animate = () => {
-      this.draw();
+    const animate = (now: number = 0) => {
+      // Frame rate cap; the small tolerance keeps 60 fps from dropping frames on 60 Hz screens
+      if (now - this.lastFrameTime >= 1000 / this.quality.fps - 2) {
+        this.lastFrameTime = now;
+        this.draw();
+      }
       this.animationFrame = requestAnimationFrame(animate);
     };
     animate();
@@ -169,6 +209,7 @@ export class AnimationManager {
 
     const params = this.getDrawParams();
     if (!params) return;
+    this.applyQuality(params.quality ?? 'high');
 
     const { condition, timeOfDay, sunPosition, moonPhase, visualStyle } = params;
     const width = this.width;

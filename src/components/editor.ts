@@ -52,6 +52,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
       show_animations: DEFAULT_CONFIG.showAnimations,
       visual_style: DEFAULT_CONFIG.visualStyle,
+      animation_quality: DEFAULT_CONFIG.animationQuality,
       show_clock: DEFAULT_CONFIG.showClock,
       show_date: DEFAULT_CONFIG.showDate,
       clock_position: DEFAULT_CONFIG.clockPosition,
@@ -155,6 +156,18 @@ export class DynamicWeatherCardEditor extends LitElement {
             options: [
               { label: i18n.t('editor.visual_style_modern'), value: 'modern' },
               { label: i18n.t('editor.visual_style_classic'), value: 'classic' }
+            ]
+          }
+        }
+      },
+      {
+        name: 'animation_quality',
+        selector: {
+          select: {
+            options: [
+              { label: i18n.t('editor.animation_quality_high'), value: 'high' },
+              { label: i18n.t('editor.animation_quality_medium'), value: 'medium' },
+              { label: i18n.t('editor.animation_quality_low'), value: 'low' }
             ]
           }
         }

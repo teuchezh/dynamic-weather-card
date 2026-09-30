@@ -44,6 +44,7 @@ export class HailAnimation extends BaseAnimation {
   constructor(ctx: CanvasRenderingContext2D) {
     super(ctx);
     this.rainyAnimation = new RainyAnimation(ctx);
+    this.children.push(this.rainyAnimation);
   }
 
   /**
@@ -61,7 +62,7 @@ export class HailAnimation extends BaseAnimation {
   }
 
   private drawHailStones(width: number, height: number): void {
-    const key = `${Math.round(width)}x${Math.round(height)}`;
+    const key = `${Math.round(width)}x${Math.round(height)}:${this.quality.particles}`;
     if (key !== this.stonesKey) {
       this.createStones(width, height);
       this.stonesKey = key;
@@ -103,7 +104,7 @@ export class HailAnimation extends BaseAnimation {
     this.hailStones = [];
     const area = (width * height) / 10000;
     HAIL_LAYERS.forEach((layer, index) => {
-      const count = Math.min(200, Math.round(area * layer.density));
+      const count = Math.min(200, Math.round(area * layer.density * this.quality.particles));
       for (let i = 0; i < count; i++) {
         const stone: HailStone = { layer: index, x: 0, y: 0, vx: 0, vy: 0, size: 0, ground: 0, bounces: 0 };
         this.resetStone(stone, width, height);

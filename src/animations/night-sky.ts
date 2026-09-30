@@ -1,4 +1,5 @@
 import type { Position } from '../types';
+import type { QualitySettings } from './quality';
 
 interface Star {
   x: number;
@@ -52,16 +53,16 @@ export class NightSky {
   private shootingStar: ShootingStar | null = null;
   private nextShootingStar = 0;
 
-  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, moonPos: Position, moonPhase: number): void {
-    this.drawStars(ctx, time, width, height);
-    this.drawShootingStar(ctx, time, width, height);
+  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, moonPos: Position, moonPhase: number, quality: QualitySettings): void {
+    this.drawStars(ctx, time, width, height, quality);
+    if (quality.details) this.drawShootingStar(ctx, time, width, height);
     this.drawMoon(ctx, moonPos, moonPhase, height);
   }
 
-  private drawStars(ctx: CanvasRenderingContext2D, time: number, width: number, height: number): void {
-    const key = `${Math.round(width)}x${Math.round(height)}`;
+  private drawStars(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, quality: QualitySettings): void {
+    const key = `${Math.round(width)}x${Math.round(height)}:${quality.particles}`;
     if (key !== this.starsKey) {
-      this.createStars(width, height);
+      this.createStars(width, height, quality.particles);
       this.starsKey = key;
     }
 
@@ -77,7 +78,7 @@ export class NightSky {
       ctx.fill();
 
       // Soft glow around the brightest stars
-      if (star.size > 1.1) {
+      if (quality.details && star.size > 1.1) {
         const glow = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 4);
         glow.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
         glow.addColorStop(1, 'rgba(255, 255, 255, 0)');
@@ -90,9 +91,9 @@ export class NightSky {
     ctx.restore();
   }
 
-  private createStars(width: number, height: number): void {
+  private createStars(width: number, height: number, density: number): void {
     const random = seeded(Math.round(width) * 31 + Math.round(height));
-    const count = Math.max(40, Math.min(260, Math.round((width * height) / 1600)));
+    const count = Math.max(20, Math.min(260, Math.round((width * height) / 1600 * density)));
     this.stars = [];
     for (let i = 0; i < count; i++) {
       const tint = random();
