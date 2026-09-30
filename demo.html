@@ -85,10 +85,8 @@
             font-weight: 600;
         }
 
+        /* No clipping/rounding here: the card draws its own corners (border_radius) and shadow */
         #card-container {
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             max-width: 450px;
             width: 100%;
         }
@@ -605,6 +603,26 @@
                 </div>
 
                 <div class="control-group">
+                    <label class="control-label" data-i18n="textColor">Text Color</label>
+                    <input type="text" id="text-color-input" placeholder="white">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="borderRadius">Corner Radius (px)</label>
+                    <input type="number" id="border-radius-input" placeholder="auto" min="0" max="50" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="sunPositionX">Sun/Moon X (%)</label>
+                    <input type="number" id="sun-position-x-input" placeholder="auto" min="0" max="100" step="1">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" data-i18n="sunPositionY">Sun/Moon Y (%)</label>
+                    <input type="number" id="sun-position-y-input" placeholder="auto" min="0" max="100" step="1">
+                </div>
+
+                <div class="control-group">
                     <label class="control-label" data-i18n="windSpeedUnit">Wind Speed Unit</label>
                     <select id="wind-speed-unit-select">
                         <option value="ms">m/s</option>
@@ -660,6 +678,10 @@
                     <label class="checkbox-item">
                         <input type="checkbox" id="show-clock">
                         <span class="checkbox-text" data-i18n="showClock">Clock</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="show-date">
+                        <span class="checkbox-text" data-i18n="showDate">Date</span>
                     </label>
                 </div>
                 <div class="control-group">
@@ -1088,6 +1110,11 @@ function applyTranslations() {
                 ),
                 showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
                 showClock: document.getElementById('show-clock').checked,
+                showDate: document.getElementById('show-date').checked,
+                textColor: document.getElementById('text-color-input').value.trim(),
+                borderRadius: document.getElementById('border-radius-input').value,
+                sunPositionX: document.getElementById('sun-position-x-input').value,
+                sunPositionY: document.getElementById('sun-position-y-input').value,
                 clockPosition: document.getElementById('clock-position-select').value,
                 clockFormat: document.getElementById('clock-format-select').value,
                 language: document.getElementById('language-select').value,
@@ -1134,6 +1161,7 @@ function applyTranslations() {
                 daily_forecast_days: config.dailyForecastDays,
                 show_sunrise_sunset: config.showSunriseSunset,
                 show_clock: config.showClock,
+                show_date: config.showDate,
                 clock_position: config.clockPosition,
                 clock_format: config.clockFormat,
                 language: config.language,
@@ -1143,6 +1171,11 @@ function applyTranslations() {
             if (config.name) {
                 cardConfig.name = config.name;
             }
+            // Optional appearance settings: empty field = card default
+            if (config.textColor) cardConfig.text_color = config.textColor;
+            if (config.borderRadius !== '') cardConfig.border_radius = parseInt(config.borderRadius, 10);
+            if (config.sunPositionX !== '') cardConfig.sun_position_x = parseInt(config.sunPositionX, 10);
+            if (config.sunPositionY !== '') cardConfig.sun_position_y = parseInt(config.sunPositionY, 10);
 
             card.setConfig(cardConfig);
             card.hass = mockHass;
@@ -1200,7 +1233,7 @@ function applyTranslations() {
             const checkboxIds = [
                 'show-feels-like', 'show-min-temp', 'show-humidity',
                 'show-wind', 'show-wind-direction', 'show-wind-gust',
-                'show-hourly-forecast', 'show-sunrise-sunset', 'show-clock', 'show-daily-forecast'
+                'show-hourly-forecast', 'show-sunrise-sunset', 'show-clock', 'show-date', 'show-daily-forecast'
             ];
 
             checkboxIds.forEach(id => {
@@ -1218,6 +1251,12 @@ function applyTranslations() {
             const hourlyForecastInput = document.getElementById('hourly-forecast-hours');
             hourlyForecastInput?.addEventListener('change', () => {
                 if (card) updateCard();
+            });
+
+            ['text-color-input', 'border-radius-input', 'sun-position-x-input', 'sun-position-y-input'].forEach(id => {
+                document.getElementById(id)?.addEventListener('change', () => {
+                    if (card) updateCard();
+                });
             });
 
             const clockPositionSelect = document.getElementById('clock-position-select');
