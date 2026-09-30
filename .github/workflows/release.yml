@@ -14,7 +14,6 @@ concurrency:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   release:
@@ -59,6 +58,7 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
 
+      # The version only goes into the built bundle and the tag; nothing is committed to main
       - name: Set package.json version
         run: |
           jq --arg v "${{ steps.version.outputs.version }}" '.version = $v' package.json > package.json.tmp
@@ -81,8 +81,8 @@ jobs:
       - name: Generate Changelog
         id: changelog
         run: |
-          # Get the previous tag
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          # Previous release = highest version tag reachable from HEAD
+          PREV_TAG=$(git tag --merged HEAD --list 'v*' --sort=-v:refname | head -n 1)
           CURRENT_TAG="${{ steps.version.outputs.tag }}"
 
           echo "Generating changelog from ${PREV_TAG} to ${CURRENT_TAG}"
@@ -145,49 +145,11 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Update CHANGELOG.md
-        run: |
-          CURRENT_TAG="${{ steps.version.outputs.tag }}"
-          RELEASE_DATE=$(date +%Y-%m-%d)
-
-          # Create or update CHANGELOG.md
-          if [ ! -f CHANGELOG.md ]; then
-            echo "# Changelog" > CHANGELOG.md
-            echo "" >> CHANGELOG.md
-            echo "All notable changes to this project will be documented in this file." >> CHANGELOG.md
-            echo "" >> CHANGELOG.md
-          fi
-
-          # Add new release section at the top (after the header)
-          {
-            head -n 3 CHANGELOG.md
-            echo ""
-            echo "## [${CURRENT_TAG}] - ${RELEASE_DATE}"
-            echo ""
-            cat /tmp/changelog.md
-            echo ""
-            tail -n +4 CHANGELOG.md
-          } > CHANGELOG.tmp && mv CHANGELOG.tmp CHANGELOG.md
-
-      - name: Commit release
-        id: commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CHANGELOG.md package.json dynamic-weather-card.js
-          git commit -m "chore(release): ${{ steps.version.outputs.tag }}" || echo "No changes to commit"
-          if git push origin HEAD:main; then
-            echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-          else
-            echo "::warning::Could not push release commit to main, tagging ${GITHUB_SHA} instead"
-            echo "sha=${GITHUB_SHA}" >> $GITHUB_OUTPUT
-          fi
-
       - name: Create or Update Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          target_commitish: ${{ steps.commit.outputs.sha }}
+          target_commitish: ${{ github.sha }}
           name: Release ${{ steps.version.outputs.tag }}
           body: ${{ steps.changelog.outputs.changelog }}
           files: dynamic-weather-card.js

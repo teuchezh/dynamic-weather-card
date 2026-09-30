@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+> Starting with `v2026.9.0`, release notes are published on [GitHub Releases](https://github.com/teuchezh/dynamic-weather-card/releases). This file is kept for older versions and is no longer updated.
+
 ## [v0.3.3] - 2026-01-13
 
 ## What's Changed

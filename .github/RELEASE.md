@@ -9,7 +9,9 @@ The project uses trunk-based development: `main` is always releasable, and relea
 3. Leave the version empty to auto-calculate it, or enter one explicitly (e.g., `2026.9.0`)
 4. Click "Run workflow"
 
-The workflow sets the version in `package.json`, builds the card, updates `CHANGELOG.md`, commits them to `main` as `chore(release): vX` and publishes a GitHub Release tagged `vX`.
+The workflow builds the card with that version, tags the current `main` commit as `vX` and publishes a GitHub Release with the built `dynamic-weather-card.js` and generated release notes.
+
+Nothing is committed back to `main`: it stays protected (PR-only), and the version lives in the tag and the built bundle. `package.json` in the repository keeps a placeholder version (`0.0.0-dev`).
 
 ## Commit Message Convention
 
@@ -32,21 +34,14 @@ git commit -m "chore: update dependencies"
 
 ## What Gets Released
 
-The release workflow automatically includes:
-- `dynamic-weather-card.js` - Built JavaScript file
-- `hacs.json` - HACS configuration
-- `README.md` - English documentation
-- `README.ru.md` - Russian documentation
-- `LICENSE` - License file
-- `CHANGELOG.md` - Full changelog history
+- `dynamic-weather-card.js` — built bundle attached to the GitHub Release (this is what HACS installs)
+- Release notes generated from commits since the previous release
 
-## Changelog
+## Release Notes
 
-The changelog is automatically:
-- Generated from git commits between releases
-- Categorized by commit type (features, fixes, docs, etc.)
-- Saved to CHANGELOG.md in the repository
-- Included in the GitHub Release notes
+Release notes are generated from commit subjects between the previous release tag and `main`, grouped by type (features, fixes, docs, chores). With squash merging, each PR becomes one line, so a clear, conventional PR title is what ends up in the notes.
+
+The history lives in [GitHub Releases](https://github.com/teuchezh/dynamic-weather-card/releases). `CHANGELOG.md` covers releases up to `v0.5.2` and is no longer updated.
 
 ## Versioning
 
