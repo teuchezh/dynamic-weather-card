@@ -1,476 +1,387 @@
+<a id="top"></a>
 <div align="center">
 
 # ⛅ Dynamic Weather Card
 
-### Dynamic weather card for Home Assistant with realistic animations
+### A Home Assistant weather card with a living sky
 
 [![HACS](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/v/release/teuchezh/dynamic-weather-card?style=for-the-badge&logo=github&color=blue)](https://github.com/teuchezh/dynamic-weather-card/releases)
 [![Downloads](https://img.shields.io/github/downloads/teuchezh/dynamic-weather-card/dynamic-weather-card.js?style=for-the-badge&logo=github&color=green&label=downloads&displayAssetName=false)](https://github.com/teuchezh/dynamic-weather-card/releases)
 
 [![Translation status](https://hosted.weblate.org/widget/dynamic-weather-card/-/svg-badge.svg)](https://hosted.weblate.org/engage/dynamic-weather-card/)
-
 [![Stars](https://img.shields.io/github/stars/teuchezh/dynamic-weather-card?style=social)](https://github.com/teuchezh/dynamic-weather-card/stargazers)
-[![Issues](https://img.shields.io/github/issues/teuchezh/dynamic-weather-card?style=social&logo=github)](https://github.com/teuchezh/dynamic-weather-card/issues)
 
 **[English](#)** | [Русский](README.ru.md)
 
-**[🎮 Try Live Demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)** • **[📖 Documentation](#configuration)** • **[🐛 Report Issue](https://github.com/teuchezh/dynamic-weather-card/issues)**
+**[🎮 Live demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)** • **[📦 Install](#installation)** • **[⚙️ Options](#configuration)** • **[🐛 Report an issue](https://github.com/teuchezh/dynamic-weather-card/issues)**
 
 </div>
-
----
-
-## 🌟 Preview
 
 ![Dynamic Weather Card in different weather](/docs/preview.jpg)
 
-![Animated weather](/docs/demo.gif)
-
 <div align="center">
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=teuchezh&repository=dynamic-weather-card&category=plugin)
+![Animated weather](/docs/demo.gif)
 
 </div>
 
----
-
-## ✨ Features
+## ✨ Highlights
 
 <table>
 <tr>
-<td width="50%">
+<td width="33%" valign="top">
 
-### 🎨 Visual Experience
-- **A sky that follows the weather**
-  - Its own palette for each condition
-  - Warm sunrise and sunset from your real sun times
-  - Smooth transitions when the weather changes
-- **Layered clouds** that drift faster in the wind
-- **Rain, snow, hail and fog with depth**
-  - Rain splashes, snowflakes sway, hail bounces
-  - Raindrops on the glass slide down
-- **Wind**: gusts and tumbling autumn leaves
-- **Night sky**
-  - Twinkling stars and shooting stars
-  - The moon in its real phase
-  - Optional northern lights
-- **Sun rays**, lightning bolts and a subtle lens flare
-- **Classic look** still available (`visual_style: classic`)
+### 🌤️ A living sky
+The sky changes with the weather and the time of day. Sunrise and sunset follow your real sun times, and layered clouds drift faster when the wind picks up.
 
 </td>
-<td width="50%">
+<td width="33%" valign="top">
 
-### ⚙️ Functionality
-- **Smart Data Display**
-  - Hourly & daily forecasts with temperature range bars
-  - When rain starts or stops ("Rain expected around 16:00")
-  - Feels-like temperature, humidity, pressure, UV index, dew point, air quality
-  - Wind speed, gusts & direction
-  - Sunrise & sunset times, clock and date (12h/24h)
-  - Your own sensors, e.g. a personal weather station
+### 🌧️ Every kind of weather
+Rain in depth, with drops running down the glass. Snowflakes that sway, bouncing hail, drifting fog, lightning bolts, and gusts with autumn leaves.
 
-- **User-Friendly**
-  - Visual editor with sections in the Home Assistant UI
-  - Auto-detection of language & units
-  - Runs smoothly on wall tablets (`animation_quality`), pauses off-screen, respects "reduce motion"
-  - Works with all weather integrations
+</td>
+<td width="33%" valign="top">
+
+### 🌙 Night sky
+Twinkling stars and the odd shooting star. The moon is shown in today's real phase, and you can turn on the northern lights for clear nights.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 📊 Useful at a glance
+Hourly and daily forecasts with temperature range bars, and when rain starts or stops. Also feels-like temperature, humidity, wind, pressure, UV index, dew point, air quality, sunrise and sunset, and a clock.
+
+</td>
+<td valign="top">
+
+### 🏡 Your own sensors
+Show readings from a personal weather station or any other sensor. They override the weather entity, and the card falls back to it when a sensor is unavailable.
+
+</td>
+<td valign="top">
+
+### ⚡ Light on devices
+`animation_quality` for wall tablets. Animations pause while the card is off-screen and show a still frame with "reduce motion". The classic look is one option away.
 
 </td>
 </tr>
 </table>
 
----
+<a id="installation"></a>
 
 ## 📦 Installation
 
-### Option 1: HACS (Recommended)
+### HACS (recommended)
 
-1. Click the button below to open HACS:
+[![Open your Home Assistant instance and open this repository in HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=teuchezh&repository=dynamic-weather-card&category=plugin)
 
-   [![Open HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=teuchezh&repository=dynamic-weather-card&category=plugin)
+Or in HACS, search for **Dynamic Weather Card** and click **Download**.
 
-2. Or manually:
-   - Open HACS in Home Assistant
-   - Go to **Frontend** section
-   - Click **"+"** button
-   - Search for **"Dynamic Weather Card"**
-   - Click **Install**
+<details>
+<summary><b>Manual installation</b></summary>
 
-### Option 2: Manual Installation
+1. Download `dynamic-weather-card.js` from the [latest release](https://github.com/teuchezh/dynamic-weather-card/releases/latest).
+2. Copy it to `config/www/dynamic-weather-card.js`.
+3. Go to **Settings → Dashboards → ⋮ → Resources → Add resource**:
+   - URL: `/local/dynamic-weather-card.js`
+   - Type: **JavaScript module**
+4. Refresh the browser (Ctrl+Shift+R).
 
-1. Download `dynamic-weather-card.js` from the [latest release](https://github.com/teuchezh/dynamic-weather-card/releases)
-2. Copy it to `config/www/community/dynamic-weather-card/` directory
-3. Add resource in Home Assistant:
+</details>
 
-   **Settings** → **Dashboards** → **Resources** → **Add Resource**
+## 🚀 Quick start
 
-   ```
-   URL: /local/community/dynamic-weather-card/dynamic-weather-card.js
-   Type: JavaScript Module
-   ```
+Add the card from the dashboard editor: search for **Dynamic Weather Card** and pick your weather entity. Everything else is set up in the visual editor, which is grouped into sections.
 
----
-
-## 🚀 Quick Start
-
-### Minimal Configuration
+The same in YAML:
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
 ```
 
-That's it! The card will automatically detect your language and display settings.
+The card picks up your language, units and sun times on its own. Try every option in the **[live demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)** before adding it to your dashboard.
 
-### Using Visual Editor
+## 🖼️ Layouts
 
-1. Add a card to your dashboard
-2. Search for **"Dynamic Weather Card"**
-3. Select your weather entity
-4. Customize options in the visual editor
+![Default and minimal layouts](/docs/layouts.jpg)
 
----
+<table>
+<tr>
+<td width="50%" valign="top">
 
-## ⚙️ Configuration
-
-<details>
-<summary><b>📋 Complete Configuration Example</b> (click to expand)</summary>
+**Default**: the full card with details and forecasts.
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
-name: My Weather Station
-height: 300
-language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl, nb, tr, zh
-overlay_opacity: 0.15             # 0-1 (dark overlay for better readability)
-wind_speed_unit: ms               # ms or kmh (for legacy integrations)
-
-# Graphics
-visual_style: modern              # modern or classic
-animation_quality: high           # high, medium or low (for slow devices)
-show_aurora: true                 # northern lights on clear nights
-show_raindrops: true              # raindrops on the glass in rain
-show_wind_effects: true           # wind gusts and leaves
-
-# Temperature & Details
-show_feels_like: true
-show_min_temp: true
-show_precipitation_outlook: true  # "Rain expected around 16:00"
-show_humidity: true
-show_pressure: true
-show_uv_index: true
-show_dew_point: true
-
-# Wind Information
-show_wind: true
-show_wind_direction: true
-show_wind_gust: true
-
-# Forecasts
+show_precipitation_outlook: true
 show_hourly_forecast: true
-hourly_forecast_hours: 8
 show_daily_forecast: true
-daily_forecast_days: 5
 show_temperature_bars: true
-
-# Sun & Clock
-show_sunrise_sunset: true
-sunrise_entity: sensor.sun_next_rising    # optional
-sunset_entity: sensor.sun_next_setting    # optional
 show_clock: true
 show_date: true
-clock_position: top                       # top or details
-clock_format: 24h                         # 12h or 24h
+```
+
+</td>
+<td width="50%" valign="top">
+
+**Minimal**: a compact strip for headers, sidebars and phones.
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+layout: minimal
+```
+
+</td>
+</tr>
+</table>
+
+## 🧩 Recipes
+
+<details>
+<summary><b>Wall tablet</b>: smooth animations on a slow device</summary>
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+animation_quality: low      # 20 FPS, fewer particles, 1× resolution
+show_clock: true
+show_date: true
+show_daily_forecast: true
 ```
 
 </details>
 
-### 📊 Configuration Parameters
+<details>
+<summary><b>Personal weather station</b>: your sensors on top of the forecast</summary>
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| **Required** |
-| `entity` | string | - | Weather entity ID (e.g., `weather.home`) |
-| **Display** |
-| `name` | string | - | Custom card title (leave empty to hide) |
-| `height` | number | `200` | Card height in pixels |
-| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `et` |
-| `overlay_opacity` | number | `0.1` | Dark overlay opacity (0-1) for text readability |
-| `text_color` | string | `white` | Text and icon color, any CSS color (e.g. `"#1a1a2e"`, `black`, `var(--primary-text-color)`). Combine with `overlay_opacity` / `text_shadow` for contrast |
-| `border_radius` | number | theme | Corner radius in pixels (`0` for square corners). Defaults to the Home Assistant theme's card radius |
-| `sun_position_x` | number | auto | Pin the sun/moon horizontally, in % of card width (`0` = left, `100` = right). Unset = moves across the sky |
-| `sun_position_y` | number | auto | Pin the sun/moon vertically, in % of card height (`0` = top, `100` = bottom). Unset = moves across the sky |
-| `show_animations` | boolean | `true` | Render canvas weather animations (set `false` for a static gradient) |
-| `visual_style` | string | `modern` | Graphics style: `modern` (weather-aware sky, layered clouds, rain/snow depth, raindrops on the glass, wind gusts and leaves, sun rays, stars and real moon phase) or `classic` (the original simpler graphics) |
-| `show_aurora` | boolean | `false` | Northern lights on clear nights (`modern` style) |
-| `show_raindrops` | boolean | `true` | Raindrops on the glass in rain, heavy rain, thunderstorm and sleet (`modern` style, not on `low` quality) |
-| `show_wind_effects` | boolean | `true` | Wind gusts and flying leaves in windy weather or above 8 m/s (`modern` style) |
-| `animation_quality` | string | `high` | `high` (60 FPS, full detail), `medium` (30 FPS, fewer particles and cloud layers) or `low` (20 FPS, minimal particles, no extras, 1× canvas resolution) for slow devices such as wall tablets. Animations also pause while the card is off-screen, and show a still frame when the system "reduce motion" setting is on |
-| **Temperature** |
-| `show_feels_like` | boolean | `true` | Display "feels like" temperature |
-| `show_min_temp` | boolean | `true` | Display minimum temperature |
-| `show_precipitation_outlook` | boolean | `false` | Show when precipitation starts or stops in the next 12 hours, e.g. "Rain expected around 15:00" or "Snow ending around 18:00". Uses the hourly forecast; hidden when nothing changes (default layout only) |
-| **Weather Details** |
-| `show_humidity` | boolean | `false` | Display humidity percentage |
-| `show_wind` | boolean | `false` | Display wind speed |
-| `show_wind_direction` | boolean | `false` | Display wind direction |
-| `show_wind_gust` | boolean | `false` | Display wind gust speed |
-| `show_pressure` | boolean | `false` | Display atmospheric pressure in the weather entity's unit |
-| `show_uv_index` | boolean | `false` | Display the UV index |
-| `show_dew_point` | boolean | `false` | Display the dew point |
-| `wind_speed_unit` | string | `ms` | `ms` or `kmh` (for legacy integrations) |
-| **Forecasts** |
-| `show_hourly_forecast` | boolean | `false` | Show hourly forecast |
-| `hourly_forecast_hours` | number | `5` | Number of hours to display (1-24) |
-| `show_daily_forecast` | boolean | `false` | Show daily forecast (high / low temperature and chance of precipitation when the provider reports them) |
-| `daily_forecast_days` | number | `5` | Number of days to display (1-14) |
-| `hourly_forecast_title` | string | translated | Custom hourly forecast title; `""` hides it |
-| `daily_forecast_title` | string | translated | Custom daily forecast title; `""` hides it |
-| `show_temperature_bars` | boolean | `false` | Daily forecast: show each day's low–high range as a colored bar on a scale shared by all days, with a dot for the current temperature on today's bar |
-| **Sun & Clock** |
-| `show_sunrise_sunset` | boolean | `false` | Display sunrise/sunset times |
-| `sunrise_entity` | string | - | Custom sunrise sensor (optional) |
-| `sunset_entity` | string | - | Custom sunset sensor (optional) |
-| **Sensors** (optional, e.g. a personal weather station — each one overrides the weather entity's value; unavailable sensors fall back to it) |
-| `temperature_entity` | string | - | Current temperature |
-| `feels_like_entity` | string | - | "Feels like" temperature |
-| `humidity_entity` | string | - | Humidity (%) |
-| `wind_speed_entity` | string | - | Wind speed; its unit (`km/h`, `m/s`, `mph`, `kn`…) is used for display and wind gust is converted to it |
-| `wind_gust_entity` | string | - | Wind gust speed |
-| `wind_bearing_entity` | string | - | Wind direction in degrees |
-| `precipitation_entity` | string | - | Precipitation, shown in the details row with the sensor's unit |
-| `pressure_entity` | string | - | Pressure (shown with `show_pressure`) |
-| `uv_index_entity` | string | - | UV index (shown with `show_uv_index`) |
-| `dew_point_entity` | string | - | Dew point (shown with `show_dew_point`) |
-| `aqi_entity` | string | - | Air quality index; shown in the details row whenever it is set |
-| `show_clock` | boolean | `false` | Display current time |
-| `show_date` | boolean | `false` | Display current date under the clock (e.g. "Wed, September 30"), in the card language. Follows `clock_position`; shown on its own if the clock is off |
-| `clock_position` | string | `top` | `top` (top-right) or `details` (info row) |
-| `clock_format` | string | `24h` | `12h` (AM/PM) or `24h` |
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home                     # still used for the condition and the forecast
+temperature_entity: sensor.outdoor_temperature
+humidity_entity: sensor.outdoor_humidity
+wind_speed_entity: sensor.wind_speed
+wind_gust_entity: sensor.wind_gust
+wind_bearing_entity: sensor.wind_bearing
+pressure_entity: sensor.pressure
+precipitation_entity: sensor.rain_rate
+aqi_entity: sensor.air_quality_index
+show_pressure: true
+```
 
----
+</details>
 
-## 🌡️ Integration-Specific Examples
-
-### OpenWeatherMap / Met.no
+<details>
+<summary><b>Up north</b>: northern lights on clear nights</summary>
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
-show_hourly_forecast: true
-show_daily_forecast: true
+show_aurora: true
 ```
 
-### Yandex Weather
+</details>
 
-Yandex Weather requires separate sensors for sunrise/sunset:
+<details>
+<summary><b>Quiet mode</b>: weather without the extras</summary>
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+show_raindrops: false
+show_wind_effects: false
+# or: visual_style: classic, or show_animations: false for a still sky
+```
+
+</details>
+
+<details>
+<summary><b>Yandex Weather</b>: sunrise and sunset from separate sensors</summary>
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.yandex_pogoda
-name: Moscow
-show_sunrise_sunset: true
 sunrise_entity: sensor.yandex_pogoda_next_sunrise
 sunset_entity: sensor.yandex_pogoda_next_sunset
 ```
 
-### AccuWeather
+</details>
+
+<a id="configuration"></a>
+
+## ⚙️ Configuration
+
+Only `entity` is required. The options below are grouped the same way as in the visual editor.
+
+### General
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `entity` | string | **required** | Weather entity, e.g. `weather.home` |
+| `name` | string | – | Title at the top of the card; empty hides it |
+| `layout` | string | `default` | `default` or `minimal` (a compact strip) |
+| `height` | number | `200` | Minimum card height in px (`56` for `minimal`) |
+
+### Appearance
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `visual_style` | string | `modern` | `modern`: weather-aware sky, layered clouds, rain and snow with depth, stars and the real moon phase, sun rays. `classic`: the original, simpler graphics |
+| `animation_quality` | string | `high` | `high` (60 FPS), `medium` (30 FPS, fewer particles and cloud layers) or `low` (20 FPS, minimal particles, no extras, 1× resolution) for wall tablets and slow devices |
+| `show_animations` | boolean | `true` | `false` shows a still sky gradient without animations |
+| `show_aurora` | boolean | `false` | Northern lights on clear nights |
+| `show_raindrops` | boolean | `true` | Raindrops on the glass in rain, heavy rain, thunderstorm and sleet (not on `low` quality) |
+| `show_wind_effects` | boolean | `true` | Gusts and flying leaves in windy weather, and in dry weather above 8 m/s |
+| `overlay_opacity` | number | `0.1` | Darkens the sky (0–1) so text stays readable |
+| `text_shadow` | number | `1` | Text shadow strength, `0`–`3` |
+| `text_color` | string | `white` | Text and icon color, any CSS color (`"#1a1a2e"`, `black`, `var(--primary-text-color)`) |
+| `border_radius` | number | theme | Corner radius in px; `0` for square corners |
+| `sun_position_x` | number | auto | Pin the sun or moon horizontally, in % of the card width. Unset = follows the time of day |
+| `sun_position_y` | number | auto | Pin the sun or moon vertically, in % of the card height |
+
+> The card also pauses its animation while it is off-screen, and draws a single still frame when the system "reduce motion" setting is on.
+
+### Details
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `show_feels_like` | boolean | `true` | "Feels like" temperature |
+| `show_min_temp` | boolean | `true` | Today's minimum temperature |
+| `show_precipitation_outlook` | boolean | `false` | When rain or snow starts or stops in the next 12 hours, e.g. *"Rain expected around 16:00"*. Uses the hourly forecast; hidden when nothing changes. Default layout only |
+| `show_humidity` | boolean | `true` | Humidity |
+| `show_wind` | boolean | `true` | Wind speed |
+| `show_wind_gust` | boolean | `true` | Wind gusts, after the speed |
+| `show_wind_direction` | boolean | `true` | Wind direction arrow |
+| `wind_speed_unit` | string | `ms` | `ms` or `kmh`, only for integrations that don't report a unit |
+| `show_pressure` | boolean | `false` | Pressure, in the weather entity's unit |
+| `show_uv_index` | boolean | `false` | UV index |
+| `show_dew_point` | boolean | `false` | Dew point |
+| `show_sunrise_sunset` | boolean | `true` | Sunrise and sunset times |
+
+### Forecast
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `show_hourly_forecast` | boolean | `false` | Hourly forecast |
+| `hourly_forecast_hours` | number | `5` | Hours to show, 1–24 |
+| `hourly_forecast_title` | string | translated | Custom title; `""` hides it |
+| `show_daily_forecast` | boolean | `false` | Daily forecast with high, low and chance of precipitation |
+| `daily_forecast_days` | number | `5` | Days to show, 1–14 |
+| `daily_forecast_title` | string | translated | Custom title; `""` hides it |
+| `show_temperature_bars` | boolean | `false` | Each day's low–high range as a colored bar on one shared scale, with today's temperature marked |
+
+### Language, clock and date
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `language` | string | `auto` | `auto` (Home Assistant's language) or `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `et` |
+| `show_clock` | boolean | `false` | Current time |
+| `show_date` | boolean | `false` | Current date, e.g. "Wed, September 30" |
+| `clock_position` | string | `top` | `top` (top right) or `details` (in the details row) |
+| `clock_format` | string | `24h` | `24h` or `12h` |
+
+### Sensors
+
+Optional. Each sensor replaces the weather entity's value. When the sensor is unavailable, the weather entity's value is used.
+
+| Option | Description |
+|---|---|
+| `temperature_entity` | Current temperature |
+| `feels_like_entity` | "Feels like" temperature |
+| `humidity_entity` | Humidity, % |
+| `wind_speed_entity` | Wind speed. Its unit (`km/h`, `m/s`, `mph`, `kn`…) is used for display, and gusts are converted to it |
+| `wind_gust_entity` | Wind gust speed |
+| `wind_bearing_entity` | Wind direction, degrees |
+| `precipitation_entity` | Precipitation, shown with the sensor's unit |
+| `pressure_entity` | Pressure (with `show_pressure`) |
+| `uv_index_entity` | UV index (with `show_uv_index`) |
+| `dew_point_entity` | Dew point (with `show_dew_point`) |
+| `aqi_entity` | Air quality index; shown whenever it is set |
+| `sunrise_entity`, `sunset_entity` | Sunrise and sunset times, for integrations that don't provide them |
+| `templow_attribute` | Weather entity attribute with today's minimum temperature, if your integration uses an unusual name |
+
+### Actions
+
+`tap_action` (default: `more-info`), `hold_action` and `double_tap_action` take the usual Home Assistant actions: `more-info`, `navigate`, `url`, `call-service`, `toggle` and `none`.
 
 ```yaml
-type: custom:dynamic-weather-card
-entity: weather.home
-show_feels_like: true
-show_wind: true
-show_humidity: true
+tap_action:
+  action: navigate
+  navigation_path: /dashboard-weather
 ```
 
----
+## 🌤️ Weather conditions
 
-## 🌍 Language Support
+| Condition | What you see |
+|---|---|
+| ☀️ `sunny` / `clear` | Sun with slowly turning rays and a few clouds |
+| 🌙 `clear-night` | Stars, shooting stars, the moon in its real phase and, optionally, the northern lights |
+| ⛅ `partlycloudy` | Sun or moon behind drifting clouds |
+| ☁️ `cloudy` | Layered overcast |
+| 🌦️ `rainy` | Rain in three depth layers, splashes and drops on the glass |
+| 🌧️ `pouring` | Heavy rain |
+| ⚡ `lightning` / ⛈️ `lightning-rainy` | Storm clouds, lightning bolts and flashes, with rain |
+| ❄️ `snowy` | Soft snowflakes in three layers |
+| 🌨️ `snowy-rainy` | Rain and snow together |
+| 🧊 `hail` | Hailstones bouncing off the ground |
+| 🌫️ `fog` | Fog banks drifting over a ground haze |
+| 💨 `windy` / 🌬️ `windy-variant` | Gusts and tumbling leaves, with sun or clouds |
 
-The card automatically detects your Home Assistant language or you can set it manually:
+<details>
+<summary><b>🧠 How it works</b></summary>
 
-| Language | Code | Status |
-|----------|------|--------|
-| English | `en` | ✅ Complete |
-| Русский | `ru` | ✅ Complete |
-| Deutsch | `de` | ✅ Complete |
-| Français | `fr` | ✅ Complete |
-| Nederlands | `nl` | ✅ Complete |
-| Español | `es` | ✅ Complete |
-| Italiano | `it` | ✅ Complete |
-| Magyar | `hu` | ✅ Complete |
-| Slovenčina | `sk` | ✅ Complete |
-| Português | `pt` | ✅ Complete |
-| Dansk | `da` | ✅ Complete |
-| Srpski | `sr` | ✅ Complete |
-| Polski | `pl` | ✅ Complete |
-| Norsk (bokmål) | `nb` | ✅ Complete |
-| Türkçe | `tr` | ✅ Complete |
-| 中文 | `zh` | ✅ Complete |
-| Eesti | `et` | 🟡 Weather conditions only |
+**Sky and time of day.** The sky color depends on the weather and the time of day. Sunrise and sunset each last from an hour before to an hour after the sun rises or sets. The card looks for sun times in this order:
 
-Contribute via [Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/) — no coding required! Alternatively, edit (or create) `src/internationalization/locales/<code>/translation.json` right in the GitHub web UI and open a pull request against the `main` branch — that's the only file you need to touch, new languages are picked up automatically. Use `locales/en/translation.json` as the reference for keys; missing keys simply fall back to English. Note: for a brand-new language CI will also ask for the regenerated locale index — a maintainer can run `bun run locales:generate` and push it to your PR branch.
+1. The `sunrise_entity` / `sunset_entity` sensors.
+2. The weather entity's attributes.
+3. Home Assistant's built-in `sun.sun`.
 
----
+Without any sun data it falls back to fixed hours: sunrise 6:00–8:00, day until 18:00, sunset until 20:00.
 
-## 🌤️ Supported Weather Conditions
+**Wind units.** Units are detected from the integration: m/s, km/h, mph, knots or ft/s. Only integrations that don't report a unit need `wind_speed_unit`. The wind animation converts everything to m/s.
 
-<table>
-<tr>
-<td>☀️ Sunny / Clear</td>
-<td>🌙 Clear Night</td>
-<td>⛅ Partly Cloudy</td>
-</tr>
-<tr>
-<td>☁️ Cloudy / Overcast</td>
-<td>🌧️ Rainy</td>
-<td>⛈️ Heavy Rain / Pouring</td>
-</tr>
-<tr>
-<td>❄️ Snowy</td>
-<td>🌨️ Sleet / Snowy-Rainy</td>
-<td>🌫️ Foggy</td>
-</tr>
-<tr>
-<td>⚡ Lightning</td>
-<td>⛈️ Thunderstorm</td>
-<td>🧊 Hail</td>
-</tr>
-<tr>
-<td>💨 Windy</td>
-<td>🌬️ Windy, cloudy</td>
-<td></td>
-</tr>
-</table>
+**Forecasts.** The card subscribes to Home Assistant's hourly and daily forecasts. Older integrations that only offer a `forecast` attribute also work: hourly entries are then grouped into days, with the day's high, low and chance of precipitation.
 
----
+**Precipitation outlook.** It looks 12 hours ahead in the hourly forecast. An hour counts as wet when its condition is rain, snow, sleet, hail or storm, or when the chance of precipitation is at least 50%.
 
-## 💡 Smart Features
+</details>
 
-### Automatic Wind Speed Units
+## 🌍 Languages
 
-The card automatically detects wind speed units from your weather integration:
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文 and Eesti (weather conditions only). The card follows the Home Assistant language unless you set `language`.
 
-- **Modern Integrations** (Met.no, OpenWeatherMap, Yandex): Units detected automatically
-- **Legacy Integrations**: Set `wind_speed_unit` parameter manually
+Help translate on **[Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/)**. No coding needed.
 
-Supported units: m/s, km/h, mph, knots, ft/s
+You can also edit `src/internationalization/locales/<code>/translation.json` right on GitHub and open a pull request against `main`. New languages are picked up automatically, and missing keys fall back to English.
 
-### Automatic Sunrise/Sunset Detection
-
-The card looks for sunrise/sunset data in this order:
-
-1. Custom sensors (`sunrise_entity`, `sunset_entity`)
-2. Weather entity attributes
-3. Home Assistant's `sun.sun` entity (built-in)
-
-In most cases, no configuration needed!
-
----
-
-## 🎨 Sky and Time of Day
-
-The sky color comes from both the weather and the time of day. Sunrise and sunset follow your real sun times (see above): each lasts from an hour before to an hour after the sun rises or sets.
-
-| Period | Visual Effect |
-|--------|---------------|
-| 🌅 Sunrise | Deep blue overhead, warm glow at the horizon; weaker under heavy clouds |
-| ☀️ Day | Blue on clear days, grey on overcast, darker in rain and storms |
-| 🌇 Sunset | Deeper blue with an orange horizon |
-| 🌙 Night | Dark sky with stars and the moon in its real phase |
-
-Without any sun data, the card falls back to fixed hours: sunrise 6:00–8:00, day until 18:00, sunset until 20:00, then night.
-
----
-
-## 🔧 Development
-
-### Prerequisites
-
-- [Bun](https://bun.sh/) or [Node.js](https://nodejs.org/) 18+
-- Modern browser with Canvas support
-
-### Setup
+## 🛠️ Development
 
 ```bash
-# Install dependencies
 bun install
-# or
-npm install
-
-# Development mode (auto-rebuild)
-bun run dev
-
-# Production build
-bun run build
-
-# Lint code
-bun run lint
-
-# Fix linting issues
-bun run lint:fix
+bun run dev        # rebuild on changes
+bun run build      # lint + production build → dynamic-weather-card.js
+bun run typecheck
 ```
 
-### Project Structure
+Open `demo.html` through a local web server to try your changes, for example with `python3 -m http.server`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and [AGENTS.md](AGENTS.md) for the architecture.
 
-```
-src/
-├── animations/          # Canvas animations
-│   ├── clouds.ts       # Layered clouds shared by all conditions
-│   ├── rainy.ts, snowy.ts, hail.ts, foggy.ts, thunderstorm.ts, ...
-│   ├── night-sky.ts    # Stars, shooting stars, moon phase
-│   ├── aurora.ts, glass-drops.ts, wind.ts
-│   ├── quality.ts      # animation_quality presets
-│   └── classic/        # The original graphics (visual_style: classic)
-├── components/          # Web components
-│   ├── card.ts         # Main card component
-│   ├── animation-manager.ts
-│   └── editor.ts       # Visual editor
-├── sky.ts               # Sky colors by condition and time of day
-├── internationalization/ # i18n translations
-│   └── locales/
-│       ├── en/
-│       ├── ru/
-│       └── ...
-├── constants.ts         # Configuration defaults
-├── types.ts            # TypeScript definitions
-└── utils.ts            # Helper functions
-```
+## 🙏 Credits
 
----
+- Weather icons: [Basmilius Weather Icons](https://github.com/basmilius/weather-icons) by [@basmilius](https://github.com/basmilius) (MIT)
+- Built for the [Home Assistant](https://www.home-assistant.io/) community
 
-## Contributing & Support
-
-Contributions are welcome! If you find this card useful, here's how you can help:
-
-- Add translations for new languages
-- Report bugs and issues
-- Suggest new features
-- Submit pull requests
-- Star the repository
-- Share your feedback
-
----
-
-## License
+## 📄 License
 
 MIT © [teuchezh](https://github.com/teuchezh)
 
----
-
-## Credits
-
-- **Weather Icons**: [Basmilius Weather Icons](https://github.com/basmilius/weather-icons) by [@basmilius](https://github.com/basmilius) (MIT License)
-- **Built for**: [Home Assistant](https://www.home-assistant.io/) community
-
----
-
 <div align="center">
 
-**Made with ❤️ for the Home Assistant community**
-
-[⬆ Back to Top](#-dynamic-weather-card)
+**Made with ❤️ for the Home Assistant community** • [⬆ Back to top](#top)
 
 </div>

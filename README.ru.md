@@ -1,474 +1,387 @@
+<a id="top"></a>
 <div align="center">
 
 # ⛅ Dynamic Weather Card
 
-### Динамическая карточка погоды для Home Assistant с реалистичными анимациями
+### Карточка погоды для Home Assistant с живым небом
 
 [![HACS](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/v/release/teuchezh/dynamic-weather-card?style=for-the-badge&logo=github&color=blue)](https://github.com/teuchezh/dynamic-weather-card/releases)
 [![Загрузки](https://img.shields.io/github/downloads/teuchezh/dynamic-weather-card/dynamic-weather-card.js?style=for-the-badge&logo=github&color=green&label=downloads&displayAssetName=false)](https://github.com/teuchezh/dynamic-weather-card/releases)
 
+[![Статус перевода](https://hosted.weblate.org/widget/dynamic-weather-card/-/svg-badge.svg)](https://hosted.weblate.org/engage/dynamic-weather-card/)
 [![Звёзды](https://img.shields.io/github/stars/teuchezh/dynamic-weather-card?style=social)](https://github.com/teuchezh/dynamic-weather-card/stargazers)
-[![Вопросы](https://img.shields.io/github/issues/teuchezh/dynamic-weather-card?style=social&logo=github)](https://github.com/teuchezh/dynamic-weather-card/issues)
 
 [English](README.md) | **Русский**
 
-**[🎮 Попробовать демо](https://teuchezh.github.io/dynamic-weather-card/demo.html)** • **[📖 Документация](#конфигурация)** • **[🐛 Сообщить о проблеме](https://github.com/teuchezh/dynamic-weather-card/issues)**
+**[🎮 Демо](https://teuchezh.github.io/dynamic-weather-card/demo.html)** • **[📦 Установка](#installation)** • **[⚙️ Настройки](#configuration)** • **[🐛 Сообщить о проблеме](https://github.com/teuchezh/dynamic-weather-card/issues)**
 
 </div>
-
----
-
-## 🌟 Предпросмотр
 
 ![Dynamic Weather Card в разную погоду](/docs/preview.jpg)
 
-![Анимации погоды](/docs/demo.gif)
-
 <div align="center">
 
-[![Открыть репозиторий в HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=teuchezh&repository=dynamic-weather-card&category=plugin)
+![Анимации погоды](/docs/demo.gif)
 
 </div>
 
----
-
-## ✨ Возможности
+## ✨ Главное
 
 <table>
 <tr>
-<td width="50%">
+<td width="33%" valign="top">
 
-### 🎨 Визуальный опыт
-- **Небо, которое следует за погодой**
-  - Своя палитра для каждой погоды
-  - Тёплые восход и закат по реальному времени солнца
-  - Плавные переходы при смене погоды
-- **Многослойные облака**, которые быстрее плывут на ветру
-- **Дождь, снег, град и туман с глубиной**
-  - Брызги дождя, покачивающиеся снежинки, отскакивающий град
-  - Капли на стекле стекают вниз
-- **Ветер**: порывы и кувыркающиеся осенние листья
-- **Ночное небо**
-  - Мерцающие звёзды и падающие звёзды
-  - Луна в реальной фазе
-  - Северное сияние по желанию
-- **Лучи солнца**, молнии и мягкий блик
-- **Классический вид** по-прежнему доступен (`visual_style: classic`)
+### 🌤️ Живое небо
+Небо меняется вместе с погодой и временем суток. Восход и закат идут по реальному времени солнца, а многослойные облака плывут быстрее, когда усиливается ветер.
 
 </td>
-<td width="50%">
+<td width="33%" valign="top">
 
-### ⚙️ Функциональность
-- **Умное отображение данных**
-  - Почасовой и ежедневный прогнозы с полосками температур
-  - Когда начнётся или закончится дождь («Дождь ожидается около 16:00»)
-  - Ощущаемая температура, влажность, давление, УФ-индекс, точка росы, качество воздуха
-  - Скорость ветра, порывы и направление
-  - Восход и закат, часы и дата (12ч/24ч)
-  - Свои датчики, например домашняя метеостанция
+### 🌧️ Любая погода
+Дождь с глубиной и каплями, стекающими по стеклу. Покачивающиеся снежинки, отскакивающий град, плывущий туман, молнии, а в ветер порывы и осенние листья.
 
-- **Удобство использования**
-  - Визуальный редактор с разделами в интерфейсе Home Assistant
-  - Автоопределение языка и единиц измерения
-  - Плавно работает на настенных планшетах (`animation_quality`), ставит анимацию на паузу вне экрана, учитывает «уменьшить движение»
-  - Работает со всеми интеграциями погоды
+</td>
+<td width="33%" valign="top">
+
+### 🌙 Ночное небо
+Мерцающие звёзды, иногда падающая звезда и луна в сегодняшней реальной фазе. Для ясных ночей можно включить северное сияние.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+### 📊 Всё под рукой
+Прогноз по часам и по дням с полосками температур и то, когда начнётся или закончится дождь. А ещё ощущаемая температура, влажность, ветер, давление, УФ-индекс, точка росы, качество воздуха, восход и закат, часы.
+
+</td>
+<td valign="top">
+
+### 🏡 Свои датчики
+Показывайте данные домашней метеостанции или любых других датчиков. Они заменяют значения погодной сущности, а если датчик недоступен, карточка берёт значение из неё.
+
+</td>
+<td valign="top">
+
+### ⚡ Бережёт устройства
+`animation_quality` для настенных планшетов. Вне экрана анимация на паузе, а с настройкой «уменьшить движение» показывается неподвижный кадр. Классический вид включается одной опцией.
 
 </td>
 </tr>
 </table>
 
----
+<a id="installation"></a>
 
 ## 📦 Установка
 
-### Вариант 1: HACS (Рекомендуется)
+### HACS (рекомендуется)
 
-1. Нажмите кнопку ниже, чтобы открыть HACS:
+[![Открыть репозиторий в HACS вашего Home Assistant.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=teuchezh&repository=dynamic-weather-card&category=plugin)
 
-   [![Открыть HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=teuchezh&repository=dynamic-weather-card&category=plugin)
+Или найдите в HACS **Dynamic Weather Card** и нажмите **Скачать**.
 
-2. Или вручную:
-   - Откройте HACS в Home Assistant
-   - Перейдите в раздел **Frontend**
-   - Нажмите кнопку **"+"**
-   - Найдите **"Dynamic Weather Card"**
-   - Нажмите **Установить**
+<details>
+<summary><b>Ручная установка</b></summary>
 
-### Вариант 2: Ручная установка
+1. Скачайте `dynamic-weather-card.js` из [последнего релиза](https://github.com/teuchezh/dynamic-weather-card/releases/latest).
+2. Положите его в `config/www/dynamic-weather-card.js`.
+3. Откройте **Настройки → Панели → ⋮ → Ресурсы → Добавить ресурс**:
+   - URL: `/local/dynamic-weather-card.js`
+   - Тип: **JavaScript module**
+4. Обновите страницу браузера (Ctrl+Shift+R).
 
-1. Скачайте `dynamic-weather-card.js` из [последнего релиза](https://github.com/teuchezh/dynamic-weather-card/releases)
-2. Скопируйте файл в директорию `config/www/community/dynamic-weather-card/`
-3. Добавьте ресурс в Home Assistant:
-
-   **Настройки** → **Панели управления** → **Ресурсы** → **Добавить ресурс**
-
-   ```
-   URL: /local/community/dynamic-weather-card/dynamic-weather-card.js
-   Тип: JavaScript Module
-   ```
-
----
+</details>
 
 ## 🚀 Быстрый старт
 
-### Минимальная конфигурация
+Добавьте карточку в редакторе панели: найдите **Dynamic Weather Card** и выберите погодную сущность. Всё остальное настраивается в визуальном редакторе, который разбит на разделы.
+
+То же самое в YAML:
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
 ```
 
-Вот и всё! Карточка автоматически определит ваш язык и настройки отображения.
+Язык, единицы измерения и время восхода и заката карточка определит сама. Все настройки можно попробовать в **[демо](https://teuchezh.github.io/dynamic-weather-card/demo.html)**, прежде чем добавлять карточку на панель.
 
-### Использование визуального редактора
+## 🖼️ Макеты
 
-1. Добавьте карточку на панель управления
-2. Найдите **"Dynamic Weather Card"**
-3. Выберите сущность погоды
-4. Настройте параметры в визуальном редакторе
+![Обычный и компактный макеты](/docs/layouts.jpg)
 
----
+<table>
+<tr>
+<td width="50%" valign="top">
 
-## ⚙️ Конфигурация
-
-<details>
-<summary><b>📋 Полный пример конфигурации</b> (нажмите, чтобы развернуть)</summary>
+**Обычный** (`default`): полная карточка с деталями и прогнозами.
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
-name: Моя метеостанция
-height: 300
-language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl, nb, tr, zh
-overlay_opacity: 0.15             # 0-1 (тёмное наложение для лучшей читаемости)
-wind_speed_unit: ms               # ms или kmh (для устаревших интеграций)
-
-# Графика
-visual_style: modern              # modern или classic
-animation_quality: high           # high, medium или low (для слабых устройств)
-show_aurora: true                 # северное сияние ясной ночью
-show_raindrops: true              # капли на стекле в дождь
-show_wind_effects: true           # порывы ветра и листья
-
-# Температура и детали
-show_feels_like: true
-show_min_temp: true
-show_precipitation_outlook: true  # «Дождь ожидается около 16:00»
-show_humidity: true
-show_pressure: true
-show_uv_index: true
-show_dew_point: true
-
-# Информация о ветре
-show_wind: true
-show_wind_direction: true
-show_wind_gust: true
-
-# Прогнозы
+show_precipitation_outlook: true
 show_hourly_forecast: true
-hourly_forecast_hours: 8
 show_daily_forecast: true
-daily_forecast_days: 5
 show_temperature_bars: true
-
-# Солнце и часы
-show_sunrise_sunset: true
-sunrise_entity: sensor.sun_next_rising    # опционально
-sunset_entity: sensor.sun_next_setting    # опционально
 show_clock: true
 show_date: true
-clock_position: top                       # top или details
-clock_format: 24h                         # 12h или 24h
+```
+
+</td>
+<td width="50%" valign="top">
+
+**Минимальный** (`minimal`): компактная полоса для шапок, боковых панелей и телефонов.
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+layout: minimal
+```
+
+</td>
+</tr>
+</table>
+
+## 🧩 Рецепты
+
+<details>
+<summary><b>Настенный планшет</b>: плавная анимация на слабом устройстве</summary>
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+animation_quality: low      # 20 FPS, меньше частиц, разрешение 1×
+show_clock: true
+show_date: true
+show_daily_forecast: true
 ```
 
 </details>
 
-### 📊 Параметры конфигурации
+<details>
+<summary><b>Домашняя метеостанция</b>: свои датчики поверх прогноза</summary>
 
-| Параметр | Тип | По умолчанию | Описание |
-|----------|-----|--------------|----------|
-| **Обязательные** |
-| `entity` | string | - | ID сущности погоды (например, `weather.home`) |
-| **Отображение** |
-| `name` | string | - | Пользовательское название карточки (оставьте пустым, чтобы скрыть) |
-| `height` | number | `200` | Высота карточки в пикселях |
-| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `et` |
-| `overlay_opacity` | number | `0.1` | Прозрачность тёмного наложения (0-1) для читаемости текста |
-| `text_color` | string | `white` | Цвет текста и значков, любой CSS-цвет (например, `"#1a1a2e"`, `black`, `var(--primary-text-color)`). Для контраста можно сочетать с `overlay_opacity` / `text_shadow` |
-| `border_radius` | number | тема | Радиус скругления углов в пикселях (`0` — прямые углы). По умолчанию берётся из темы Home Assistant |
-| `sun_position_x` | number | авто | Закрепить солнце/луну по горизонтали, в % ширины карточки (`0` — слева, `100` — справа). Не задано — движется по небу |
-| `sun_position_y` | number | авто | Закрепить солнце/луну по вертикали, в % высоты карточки (`0` — сверху, `100` — снизу). Не задано — движется по небу |
-| `show_animations` | boolean | `true` | Рисовать анимации погоды на канвасе (`false` — статичный градиент) |
-| `visual_style` | string | `modern` | Стиль графики: `modern` (небо по погоде, объёмные облака, осадки с глубиной, капли на стекле, порывы ветра и листья, лучи солнца, звёзды и реальная фаза луны) или `classic` (прежняя простая графика) |
-| `show_aurora` | boolean | `false` | Северное сияние ясной ночью (стиль `modern`) |
-| `show_raindrops` | boolean | `true` | Капли на стекле в дождь, ливень, грозу и мокрый снег (стиль `modern`, кроме качества `low`) |
-| `show_wind_effects` | boolean | `true` | Порывы ветра и летящие листья в ветреную погоду или при ветре от 8 м/с (стиль `modern`) |
-| `animation_quality` | string | `high` | `high` (60 FPS, все детали), `medium` (30 FPS, меньше частиц и слоёв облаков) или `low` (20 FPS, минимум частиц, без эффектов, канвас в 1×) для слабых устройств вроде настенных планшетов. Вне экрана анимация ставится на паузу, а при включённой в системе настройке «уменьшить движение» показывается неподвижный кадр |
-| **Температура** |
-| `show_feels_like` | boolean | `true` | Отображать ощущаемую температуру |
-| `show_min_temp` | boolean | `true` | Отображать минимальную температуру |
-| `show_precipitation_outlook` | boolean | `false` | Показывать, когда в ближайшие 12 часов начнутся или закончатся осадки, например «Дождь ожидается около 15:00» или «Снег закончится около 18:00». Строится по почасовому прогнозу; скрыта, если ничего не меняется (только в обычном лейауте) |
-| **Детали погоды** |
-| `show_humidity` | boolean | `false` | Отображать влажность в процентах |
-| `show_pressure` | boolean | `false` | Отображать атмосферное давление в единицах погодной сущности |
-| `show_uv_index` | boolean | `false` | Отображать УФ-индекс |
-| `show_dew_point` | boolean | `false` | Отображать точку росы |
-| `show_wind` | boolean | `false` | Отображать скорость ветра |
-| `show_wind_direction` | boolean | `false` | Отображать направление ветра |
-| `show_wind_gust` | boolean | `false` | Отображать скорость порывов ветра |
-| `wind_speed_unit` | string | `ms` | `ms` или `kmh` (для устаревших интеграций) |
-| **Прогнозы** |
-| `show_hourly_forecast` | boolean | `false` | Показать почасовой прогноз |
-| `hourly_forecast_hours` | number | `5` | Количество часов для отображения (1-24) |
-| `show_daily_forecast` | boolean | `false` | Показать ежедневный прогноз (макс. / мин. температура и вероятность осадков, если их отдаёт провайдер) |
-| `daily_forecast_days` | number | `5` | Количество дней для отображения (1-14) |
-| `hourly_forecast_title` | string | перевод | Свой заголовок почасового прогноза; `""` скрывает его |
-| `daily_forecast_title` | string | перевод | Свой заголовок прогноза по дням; `""` скрывает его |
-| `show_temperature_bars` | boolean | `false` | Прогноз по дням: диапазон мин.–макс. каждого дня цветной полоской на общей для всех дней шкале, на сегодняшней полоске точка текущей температуры |
-| **Солнце и часы** |
-| `show_sunrise_sunset` | boolean | `false` | Отображать время восхода/заката |
-| `sunrise_entity` | string | - | Пользовательский сенсор восхода (опционально) |
-| `sunset_entity` | string | - | Пользовательский сенсор заката (опционально) |
-| **Датчики** (опционально, например своя метеостанция — каждый заменяет значение из погодной сущности; недоступный датчик откатывается на неё) |
-| `temperature_entity` | string | - | Текущая температура |
-| `feels_like_entity` | string | - | Температура «ощущается как» |
-| `humidity_entity` | string | - | Влажность (%) |
-| `wind_speed_entity` | string | - | Скорость ветра; его единица (`km/h`, `m/s`, `mph`, `kn`…) используется для отображения, порывы пересчитываются в неё |
-| `wind_gust_entity` | string | - | Скорость порывов ветра |
-| `wind_bearing_entity` | string | - | Направление ветра в градусах |
-| `precipitation_entity` | string | - | Осадки, показываются в строке деталей с единицей датчика |
-| `pressure_entity` | string | - | Давление (показывается при `show_pressure`) |
-| `uv_index_entity` | string | - | УФ-индекс (показывается при `show_uv_index`) |
-| `dew_point_entity` | string | - | Точка росы (показывается при `show_dew_point`) |
-| `aqi_entity` | string | - | Индекс качества воздуха; показывается в строке деталей, если задан |
-| `show_clock` | boolean | `false` | Отображать текущее время |
-| `show_date` | boolean | `false` | Отображать текущую дату под часами (например, «ср, 30 сентября») на языке карточки. Следует `clock_position`; без часов показывается отдельно |
-| `clock_position` | string | `top` | `top` (сверху справа) или `details` (в строке информации) |
-| `clock_format` | string | `24h` | `12h` (AM/PM) или `24h` |
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home                     # по-прежнему нужна для погоды и прогноза
+temperature_entity: sensor.outdoor_temperature
+humidity_entity: sensor.outdoor_humidity
+wind_speed_entity: sensor.wind_speed
+wind_gust_entity: sensor.wind_gust
+wind_bearing_entity: sensor.wind_bearing
+pressure_entity: sensor.pressure
+precipitation_entity: sensor.rain_rate
+aqi_entity: sensor.air_quality_index
+show_pressure: true
+```
 
----
+</details>
 
-## 🌡️ Примеры для разных интеграций
-
-### OpenWeatherMap / Met.no
+<details>
+<summary><b>На севере</b>: северное сияние ясной ночью</summary>
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
-show_hourly_forecast: true
-show_daily_forecast: true
+show_aurora: true
 ```
 
-### Яндекс.Погода
+</details>
 
-Яндекс.Погода требует отдельные сенсоры для восхода/заката:
+<details>
+<summary><b>Спокойный режим</b>: погода без лишних эффектов</summary>
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+show_raindrops: false
+show_wind_effects: false
+# или: visual_style: classic, или show_animations: false для неподвижного неба
+```
+
+</details>
+
+<details>
+<summary><b>Яндекс Погода</b>: восход и закат из отдельных датчиков</summary>
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.yandex_pogoda
-name: Москва
-show_sunrise_sunset: true
 sunrise_entity: sensor.yandex_pogoda_next_sunrise
 sunset_entity: sensor.yandex_pogoda_next_sunset
 ```
 
-### AccuWeather
+</details>
+
+<a id="configuration"></a>
+
+## ⚙️ Настройки
+
+Обязательна только `entity`. Остальные параметры сгруппированы так же, как в визуальном редакторе.
+
+### Общие
+
+| Параметр | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `entity` | string | **обязательно** | Погодная сущность, например `weather.home` |
+| `name` | string | – | Заголовок карточки; пустой скрывает его |
+| `layout` | string | `default` | `default` или `minimal` (компактная полоса) |
+| `height` | number | `200` | Минимальная высота в px (`56` для `minimal`) |
+
+### Внешний вид
+
+| Параметр | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `visual_style` | string | `modern` | `modern`: небо по погоде, многослойные облака, дождь и снег с глубиной, звёзды и реальная фаза луны, лучи солнца. `classic`: прежняя, более простая графика |
+| `animation_quality` | string | `high` | `high` (60 FPS), `medium` (30 FPS, меньше частиц и слоёв облаков) или `low` (20 FPS, минимум частиц, без эффектов, разрешение 1×) для настенных планшетов и слабых устройств |
+| `show_animations` | boolean | `true` | `false` показывает неподвижный градиент неба без анимаций |
+| `show_aurora` | boolean | `false` | Северное сияние ясной ночью |
+| `show_raindrops` | boolean | `true` | Капли на стекле в дождь, ливень, грозу и мокрый снег (кроме качества `low`) |
+| `show_wind_effects` | boolean | `true` | Порывы ветра и летящие листья в ветреную погоду, а в сухую погоду при ветре от 8 м/с |
+| `overlay_opacity` | number | `0.1` | Затемнение неба (0–1), чтобы текст читался |
+| `text_shadow` | number | `1` | Сила тени текста, от `0` до `3` |
+| `text_color` | string | `white` | Цвет текста и значков, любой CSS-цвет (`"#1a1a2e"`, `black`, `var(--primary-text-color)`) |
+| `border_radius` | number | тема | Скругление углов в px; `0` для прямых углов |
+| `sun_position_x` | number | авто | Закрепить солнце или луну по горизонтали, в % ширины карточки. Не задано — движется по времени суток |
+| `sun_position_y` | number | авто | Закрепить солнце или луну по вертикали, в % высоты карточки |
+
+> Кроме того, вне экрана анимация ставится на паузу, а при включённой в системе настройке «уменьшить движение» карточка рисует один неподвижный кадр.
+
+### Детали
+
+| Параметр | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `show_feels_like` | boolean | `true` | Температура «ощущается как» |
+| `show_min_temp` | boolean | `true` | Минимальная температура за сегодня |
+| `show_precipitation_outlook` | boolean | `false` | Когда в ближайшие 12 часов начнутся или закончатся дождь или снег, например *«Дождь ожидается около 16:00»*. Строится по почасовому прогнозу; скрыта, если ничего не меняется. Только в обычном макете |
+| `show_humidity` | boolean | `true` | Влажность |
+| `show_wind` | boolean | `true` | Скорость ветра |
+| `show_wind_gust` | boolean | `true` | Порывы ветра, после скорости |
+| `show_wind_direction` | boolean | `true` | Стрелка направления ветра |
+| `wind_speed_unit` | string | `ms` | `ms` или `kmh`, только для интеграций, которые не сообщают единицу |
+| `show_pressure` | boolean | `false` | Давление в единицах погодной сущности |
+| `show_uv_index` | boolean | `false` | УФ-индекс |
+| `show_dew_point` | boolean | `false` | Точка росы |
+| `show_sunrise_sunset` | boolean | `true` | Время восхода и заката |
+
+### Прогноз
+
+| Параметр | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `show_hourly_forecast` | boolean | `false` | Прогноз по часам |
+| `hourly_forecast_hours` | number | `5` | Сколько часов показывать, 1–24 |
+| `hourly_forecast_title` | string | перевод | Свой заголовок; `""` скрывает его |
+| `show_daily_forecast` | boolean | `false` | Прогноз по дням: максимум, минимум и вероятность осадков |
+| `daily_forecast_days` | number | `5` | Сколько дней показывать, 1–14 |
+| `daily_forecast_title` | string | перевод | Свой заголовок; `""` скрывает его |
+| `show_temperature_bars` | boolean | `false` | Диапазон мин.–макс. каждого дня цветной полоской на общей шкале, с отметкой текущей температуры на сегодняшней |
+
+### Язык, часы и дата
+
+| Параметр | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `language` | string | `auto` | `auto` (язык Home Assistant) или `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `et` |
+| `show_clock` | boolean | `false` | Текущее время |
+| `show_date` | boolean | `false` | Текущая дата, например «ср, 30 сентября» |
+| `clock_position` | string | `top` | `top` (вверху справа) или `details` (в строке деталей) |
+| `clock_format` | string | `24h` | `24h` или `12h` |
+
+### Датчики
+
+Необязательные. Каждый датчик заменяет значение из погодной сущности. Если датчик недоступен, берётся значение погодной сущности.
+
+| Параметр | Описание |
+|---|---|
+| `temperature_entity` | Текущая температура |
+| `feels_like_entity` | Температура «ощущается как» |
+| `humidity_entity` | Влажность, % |
+| `wind_speed_entity` | Скорость ветра. Её единица (`km/h`, `m/s`, `mph`, `kn`…) используется для отображения, порывы пересчитываются в неё |
+| `wind_gust_entity` | Скорость порывов ветра |
+| `wind_bearing_entity` | Направление ветра, градусы |
+| `precipitation_entity` | Осадки, с единицей датчика |
+| `pressure_entity` | Давление (при `show_pressure`) |
+| `uv_index_entity` | УФ-индекс (при `show_uv_index`) |
+| `dew_point_entity` | Точка росы (при `show_dew_point`) |
+| `aqi_entity` | Индекс качества воздуха; показывается, если задан |
+| `sunrise_entity`, `sunset_entity` | Время восхода и заката, для интеграций, которые его не отдают |
+| `templow_attribute` | Атрибут погодной сущности с минимальной температурой за сегодня, если у интеграции он называется необычно |
+
+### Действия
+
+`tap_action` (по умолчанию `more-info`), `hold_action` и `double_tap_action` принимают обычные действия Home Assistant: `more-info`, `navigate`, `url`, `call-service`, `toggle` и `none`.
 
 ```yaml
-type: custom:dynamic-weather-card
-entity: weather.home
-show_feels_like: true
-show_wind: true
-show_humidity: true
+tap_action:
+  action: navigate
+  navigation_path: /dashboard-weather
 ```
 
----
+## 🌤️ Погодные условия
 
-## 🌍 Поддержка языков
+| Условие | Что на экране |
+|---|---|
+| ☀️ `sunny` / `clear` | Солнце с медленно вращающимися лучами и немного облаков |
+| 🌙 `clear-night` | Звёзды, падающие звёзды, луна в реальной фазе и, по желанию, северное сияние |
+| ⛅ `partlycloudy` | Солнце или луна за плывущими облаками |
+| ☁️ `cloudy` | Многослойная облачность |
+| 🌦️ `rainy` | Дождь в три слоя глубины, брызги и капли на стекле |
+| 🌧️ `pouring` | Ливень |
+| ⚡ `lightning` / ⛈️ `lightning-rainy` | Грозовые тучи, молнии и вспышки, с дождём |
+| ❄️ `snowy` | Мягкие снежинки в три слоя |
+| 🌨️ `snowy-rainy` | Дождь со снегом |
+| 🧊 `hail` | Град, отскакивающий от земли |
+| 🌫️ `fog` | Полосы тумана над дымкой у земли |
+| 💨 `windy` / 🌬️ `windy-variant` | Порывы и кувыркающиеся листья, с солнцем или облаками |
 
-Карточка автоматически определяет язык Home Assistant или вы можете установить его вручную:
+<details>
+<summary><b>🧠 Как это работает</b></summary>
 
-| Язык | Код | Статус |
-|------|-----|--------|
-| English | `en` | ✅ Полный |
-| Русский | `ru` | ✅ Полный |
-| Deutsch | `de` | ✅ Полный |
-| Français | `fr` | ✅ Полный |
-| Nederlands | `nl` | ✅ Полный |
-| Español | `es` | ✅ Полный |
-| Italiano | `it` | ✅ Полный |
-| Magyar | `hu` | ✅ Полный |
-| Slovenčina | `sk` | ✅ Полный |
-| Português | `pt` | ✅ Полный |
-| Dansk | `da` | ✅ Полный |
-| Srpski | `sr` | ✅ Полный |
-| Polski | `pl` | ✅ Полный |
-| Norsk (bokmål) | `nb` | ✅ Полный |
-| Türkçe | `tr` | ✅ Полный |
-| 中文 | `zh` | ✅ Полный |
-| Eesti | `et` | 🟡 Только погодные условия |
+**Небо и время суток.** Цвет неба зависит и от погоды, и от времени суток. Восход и закат длятся от часа до и до часа после восхода или заката. Время солнца карточка ищет в таком порядке:
 
-Хотите добавить или улучшить перевод? Отредактируйте (или создайте) файл `src/internationalization/locales/<code>/translation.json` прямо в веб-интерфейсе GitHub и откройте pull request в ветку `main` — это единственный файл, который нужно менять, новые языки подхватываются автоматически. Сверяйте ключи с `locales/en/translation.json`; недостающие ключи автоматически откатываются на английский. (Hosted Weblate настраивается заново — см. `docs/weblate-setup.md`.)
+1. Датчики `sunrise_entity` / `sunset_entity`.
+2. Атрибуты погодной сущности.
+3. Встроенная сущность Home Assistant `sun.sun`.
 
----
+Если данных о солнце нет совсем, берутся фиксированные часы: восход 6:00–8:00, день до 18:00, закат до 20:00.
 
-## 🌤️ Поддерживаемые погодные условия
+**Единицы ветра.** Единицы определяются по интеграции: м/с, км/ч, миль/ч, узлы или фут/с. `wind_speed_unit` нужен только интеграциям, которые единицу не сообщают. Анимация ветра пересчитывает всё в м/с.
 
-<table>
-<tr>
-<td>☀️ Солнечно / Ясно</td>
-<td>🌙 Ясная ночь</td>
-<td>⛅ Переменная облачность</td>
-</tr>
-<tr>
-<td>☁️ Облачно / Пасмурно</td>
-<td>🌧️ Дождь</td>
-<td>⛈️ Ливень</td>
-</tr>
-<tr>
-<td>❄️ Снег</td>
-<td>🌨️ Мокрый снег</td>
-<td>🌫️ Туман</td>
-</tr>
-<tr>
-<td>⚡ Молния</td>
-<td>⛈️ Гроза</td>
-<td>🧊 Град</td>
-</tr>
-<tr>
-<td>💨 Ветрено</td>
-<td>🌬️ Ветрено, облачно</td>
-<td></td>
-</tr>
-</table>
+**Прогнозы.** Карточка подписывается на почасовой и дневной прогнозы Home Assistant. Старые интеграции, у которых есть только атрибут `forecast`, тоже работают: почасовые записи тогда группируются по дням, с максимумом, минимумом и вероятностью осадков.
 
----
+**Когда начнётся дождь.** Карточка смотрит на 12 часов вперёд в почасовом прогнозе. Час считается дождливым, если в нём дождь, снег, мокрый снег, град или гроза, или если вероятность осадков не меньше 50%.
 
-## 💡 Умные функции
+</details>
 
-### Автоматическое определение единиц скорости ветра
+## 🌍 Языки
 
-Карточка автоматически определяет единицы скорости ветра из вашей интеграции погоды:
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文 и Eesti (только названия погоды). Карточка следует языку Home Assistant, если не задан `language`.
 
-- **Современные интеграции** (Met.no, OpenWeatherMap, Яндекс): Единицы определяются автоматически
-- **Устаревшие интеграции**: Установите параметр `wind_speed_unit` вручную
+Помогите с переводом на **[Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/)**. Программировать не нужно.
 
-Поддерживаемые единицы: м/с, км/ч, миль/ч, узлы, фут/с
+Можно и прямо на GitHub: отредактируйте `src/internationalization/locales/<code>/translation.json` и откройте pull request в `main`. Новые языки подхватываются автоматически, а недостающие ключи берутся из английского.
 
-### Автоматическое определение восхода/заката
-
-Карточка ищет данные о восходе/закате в следующем порядке:
-
-1. Пользовательские сенсоры (`sunrise_entity`, `sunset_entity`)
-2. Атрибуты сущности погоды
-3. Встроенная сущность `sun.sun` в Home Assistant
-
-В большинстве случаев настройка не требуется!
-
----
-
-## 🎨 Небо и время суток
-
-Цвет неба зависит и от погоды, и от времени суток. Восход и закат идут по реальному времени солнца (см. выше): каждый длится от часа до и до часа после восхода или заката.
-
-| Период | Визуальный эффект |
-|--------|-------------------|
-| 🌅 Восход | Глубокая синева сверху, тёплое свечение у горизонта; слабее под плотными облаками |
-| ☀️ День | Голубое в ясную погоду, серое в пасмурную, темнее в дождь и грозу |
-| 🌇 Закат | Более глубокая синева с оранжевым горизонтом |
-| 🌙 Ночь | Тёмное небо со звёздами и луной в реальной фазе |
-
-Если данных о солнце нет, карточка берёт фиксированные часы: восход 6:00–8:00, день до 18:00, закат до 20:00, дальше ночь.
-
----
-
-## 🔧 Разработка
-
-### Требования
-
-- [Bun](https://bun.sh/) или [Node.js](https://nodejs.org/) 18+
-- Современный браузер с поддержкой Canvas
-
-### Настройка
+## 🛠️ Разработка
 
 ```bash
-# Установка зависимостей
 bun install
-# или
-npm install
-
-# Режим разработки (авто-пересборка)
-bun run dev
-
-# Продакшн-сборка
-bun run build
-
-# Проверка кода
-bun run lint
-
-# Исправление проблем линтинга
-bun run lint:fix
+bun run dev        # пересборка при изменениях
+bun run build      # линт + продакшн-сборка → dynamic-weather-card.js
+bun run typecheck
 ```
 
-### Структура проекта
+Чтобы проверить изменения, откройте `demo.html` через локальный веб-сервер, например `python3 -m http.server`. Порядок работы описан в [CONTRIBUTING.md](CONTRIBUTING.md), архитектура — в [AGENTS.md](AGENTS.md).
 
-```
-src/
-├── animations/          # Canvas-анимации
-│   ├── clouds.ts       # Слои облаков, общие для всех погод
-│   ├── rainy.ts, snowy.ts, hail.ts, foggy.ts, thunderstorm.ts, ...
-│   ├── night-sky.ts    # Звёзды, падающие звёзды, фаза луны
-│   ├── aurora.ts, glass-drops.ts, wind.ts
-│   ├── quality.ts      # Пресеты animation_quality
-│   └── classic/        # Прежняя графика (visual_style: classic)
-├── components/          # Веб-компоненты
-│   ├── card.ts         # Главный компонент карточки
-│   ├── animation-manager.ts
-│   └── editor.ts       # Визуальный редактор
-├── sky.ts               # Цвета неба по погоде и времени суток
-├── internationalization/ # i18n переводы
-│   └── locales/
-│       ├── en/
-│       ├── ru/
-│       └── ...
-├── constants.ts         # Настройки по умолчанию
-├── types.ts            # TypeScript определения
-└── utils.ts            # Вспомогательные функции
-```
+## 🙏 Благодарности
 
----
+- Иконки погоды: [Basmilius Weather Icons](https://github.com/basmilius/weather-icons) от [@basmilius](https://github.com/basmilius) (MIT)
+- Сделано для сообщества [Home Assistant](https://www.home-assistant.io/)
 
-## Вклад в проект и поддержка
-
-Вклады приветствуются! Если эта карточка вам полезна, вот как вы можете помочь:
-
-- Добавить переводы для новых языков
-- Сообщить о багах и проблемах
-- Предложить новые функции
-- Отправить pull request
-- Поставить звезду репозиторию
-- Поделиться отзывами
-
----
-
-## Лицензия
+## 📄 Лицензия
 
 MIT © [teuchezh](https://github.com/teuchezh)
 
----
-
-## Благодарности
-
-- **Иконки погоды**: [Basmilius Weather Icons](https://github.com/basmilius/weather-icons) от [@basmilius](https://github.com/basmilius) (Лицензия MIT)
-- **Создано для**: сообщества [Home Assistant](https://www.home-assistant.io/)
-
----
-
 <div align="center">
 
-**Сделано с ❤️ для сообщества Home Assistant**
-
-[⬆ Наверх](#-dynamic-weather-card)
+**Сделано с ❤️ для сообщества Home Assistant** • [⬆ Наверх](#top)
 
 </div>
