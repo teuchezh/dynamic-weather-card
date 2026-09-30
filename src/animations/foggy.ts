@@ -14,9 +14,9 @@ interface FogBank {
 
 // Back to front
 const FOG_BANKS: FogBank[] = [
-  { y: 0.3, speed: 5, alpha: 0.6, scaleY: 0.9, seed: 1 },
-  { y: 0.58, speed: -8, alpha: 0.75, scaleY: 1.1, seed: 2 },
-  { y: 0.85, speed: 12, alpha: 0.9, scaleY: 1.3, seed: 3 }
+  { y: 0.3, speed: 5, alpha: 0.55, scaleY: 0.9, seed: 1 },
+  { y: 0.58, speed: -8, alpha: 0.6, scaleY: 1.1, seed: 2 },
+  { y: 0.85, speed: 12, alpha: 0.6, scaleY: 1.3, seed: 3 }
 ];
 const SPRITE_WIDTH = 600;
 const SPRITE_HEIGHT = 140;
@@ -51,7 +51,7 @@ export class FoggyAnimation extends BaseAnimation {
     // Haze thickening towards the ground
     const haze = this.ctx.createLinearGradient(0, height * 0.25, 0, height);
     haze.addColorStop(0, rgb(color, 0));
-    haze.addColorStop(1, rgb(color, 0.35));
+    haze.addColorStop(1, rgb(color, 0.2));
     this.ctx.fillStyle = haze;
     this.ctx.fillRect(0, 0, width, height);
 

@@ -78,9 +78,9 @@ const PALETTES: Record<SkyKind, SkyPalette> = {
     coverage: 0.8, twilight: 0.4
   },
   fog: {
-    day: [hex('#8B969E'), hex('#CACFD3')],
+    day: [hex('#66727C'), hex('#8C959D')],
     night: [hex('#23272D'), hex('#464B52')],
-    cloudLight: hex('#E6E9EC'), cloudShade: hex('#B2B9C0'),
+    cloudLight: hex('#C3C9CF'), cloudShade: hex('#949DA5'),
     coverage: 0.5, twilight: 0.35
   }
 };
