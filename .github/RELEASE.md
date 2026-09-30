@@ -4,10 +4,26 @@ The project uses trunk-based development: `main` is always releasable, and relea
 
 ## How to Release
 
+### Automatic weekly release
+
+The Release workflow runs every **Monday at 06:17 UTC** (09:17 MSK). It publishes a new release only if `main` has user-facing changes since the last release tag:
+
+- `feat:` / `fix:` / `perf:` (any scope, including breaking `!`)
+- `chore(deps):` — runtime dependency updates (they change the bundle)
+- `chore(l10n):` — translation updates from Weblate
+
+Docs, CI, dev-dependency (`chore(deps-dev)`) and other chore commits don't trigger a release on their own; they ship with the next one.
+
+### Manual release
+
+For an urgent fix, don't wait for Monday:
+
 1. Go to GitHub Actions → Release workflow
 2. Click "Run workflow" (on the `main` branch)
 3. Leave the version empty to auto-calculate it, or enter one explicitly (e.g., `2026.9.0`)
 4. Click "Run workflow"
+
+A manual run releases whenever there is at least one commit since the last tag, regardless of type.
 
 The workflow builds the card with that version, tags the current `main` commit as `vX` and publishes a GitHub Release with the built `dynamic-weather-card.js` and generated release notes.
 

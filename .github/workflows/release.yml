@@ -7,6 +7,9 @@ on:
         description: 'CalVer version (e.g., 2026.9.0). Leave empty to auto-calculate from the current month'
         required: false
         type: string
+  schedule:
+    # Weekly release, Mondays 06:17 UTC (09:17 MSK); skipped when nothing user-facing changed
+    - cron: '17 6 * * 1'
 
 concurrency:
   group: release
@@ -16,8 +19,55 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  check:
     if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.changes.outputs.release }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check for releasable changes
+        id: changes
+        run: |
+          PREV_TAG=$(git tag --merged HEAD --list 'v*' --sort=-v:refname | head -n 1)
+          RANGE="${PREV_TAG:+${PREV_TAG}..}HEAD"
+          SUBJECTS=$(git log "$RANGE" --no-merges --pretty=format:'%s')
+
+          if [ -z "$SUBJECTS" ]; then
+            echo "No commits since ${PREV_TAG:-the beginning}"
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "::error::Nothing to release: HEAD is already ${PREV_TAG}"
+              exit 1
+            fi
+            echo "release=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Manual runs always release; scheduled runs only for changes users get
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "release=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # feat / fix / perf (any scope, incl. breaking "!"), runtime dependency bumps, translations
+          USER_FACING=$(echo "$SUBJECTS" | grep -E '^((feat|feature|fix|bugfix|perf)(\([^)]*\))?|chore\((deps|l10n)\))!?:' || true)
+          if [ -n "$USER_FACING" ]; then
+            echo "User-facing changes since ${PREV_TAG}:"
+            echo "$USER_FACING"
+            echo "release=true" >> $GITHUB_OUTPUT
+          else
+            echo "No user-facing changes since ${PREV_TAG}, skipping scheduled release"
+            echo "release=false" >> $GITHUB_OUTPUT
+          fi
+
+  release:
+    needs: check
+    if: needs.check.outputs.release == 'true'
     runs-on: ubuntu-latest
 
     steps:
