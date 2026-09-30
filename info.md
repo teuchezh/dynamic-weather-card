@@ -1,60 +1,44 @@
-# Dynamic Weather Card
+# ⛅ Dynamic Weather Card
 
-Dynamic weather card for Home Assistant with realistic animations.
+A Home Assistant weather card with a living sky.
 
-![demo](/docs/demo.gif)
+![Dynamic Weather Card in different weather](https://raw.githubusercontent.com/teuchezh/dynamic-weather-card/main/docs/demo.webp)
 
-**[Try Live Demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)**
+**[🎮 Try the live demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)**
 
-## Features
+## ✨ Highlights
 
-- Realistic Canvas animations (rain, snow, fog, thunderstorms)
-- Dynamic backgrounds based on time of day
-- Hourly and daily forecasts
-- Automatic language detection
-- Visual editor in Home Assistant UI
-- Fully responsive design
-- Works with all weather integrations
+- **A living sky.** It follows the weather and the time of day, with sunrise and sunset from your real sun times, and layered clouds that drift faster in the wind.
+- **Every kind of weather.** Rain with drops on the glass, swaying snow, bouncing hail, fog, lightning, and gusts with autumn leaves.
+- **Night sky.** Stars, shooting stars, the moon in its real phase, and northern lights if you turn them on.
+- **Useful at a glance.**
+  - Hourly and daily forecasts with temperature bars.
+  - When rain starts or stops.
+  - Feels-like temperature, humidity, wind, pressure, UV index, dew point, air quality and a clock.
+- **Your own sensors.** Use a personal weather station or any other sensor on top of the weather entity.
+- **Light on devices.** `animation_quality` for wall tablets. Animations pause off-screen and respect "reduce motion". The classic look is still available.
+- **Visual editor** grouped into sections, in 17 languages.
 
-## Quick Start
-
-### Minimal Configuration
+## 🚀 Quick start
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
 ```
 
-### Extended Configuration
+Everything else can be set up in the visual editor. A fuller example:
 
 ```yaml
 type: custom:dynamic-weather-card
 entity: weather.home
-name: My Weather Station
-language: auto  # auto, en, ru, de, fr, nl, es, it
-show_feels_like: true
-show_wind: true
+show_precipitation_outlook: true
 show_hourly_forecast: true
-hourly_forecast_hours: 8
 show_daily_forecast: true
-daily_forecast_days: 5
-show_sunrise_sunset: true
+show_temperature_bars: true
 show_clock: true
-clock_format: 24h  # 12h or 24h
+show_aurora: true
 ```
 
-## Supported Languages
+## 📖 Documentation
 
-- English
-- Русский (Russian)
-- Deutsch (German)
-- Français (French)
-- Nederlands (Dutch)
-- Español (Spanish)
-- Italiano (Italian)
-
-## Documentation
-
-[Full English Documentation](https://github.com/teuchezh/animated-weather-card#readme)
-
-[Русская документация](https://github.com/teuchezh/animated-weather-card/blob/main/README.ru.md)
+All options, layouts and recipes: **[English](https://github.com/teuchezh/dynamic-weather-card#readme)** · **[Русский](https://github.com/teuchezh/dynamic-weather-card/blob/main/README.ru.md)**

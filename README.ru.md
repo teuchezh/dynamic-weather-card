@@ -5,11 +5,11 @@
 
 ### Карточка погоды для Home Assistant с живым небом
 
-[![HACS](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/v/release/teuchezh/dynamic-weather-card?style=for-the-badge&logo=github&color=blue)](https://github.com/teuchezh/dynamic-weather-card/releases)
-[![Загрузки](https://img.shields.io/github/downloads/teuchezh/dynamic-weather-card/dynamic-weather-card.js?style=for-the-badge&logo=github&color=green&label=downloads&displayAssetName=false)](https://github.com/teuchezh/dynamic-weather-card/releases)
-
-[![Звёзды](https://img.shields.io/github/stars/teuchezh/dynamic-weather-card?style=social)](https://github.com/teuchezh/dynamic-weather-card/stargazers)
+[![HACS](https://img.shields.io/badge/HACS-Default-41BDF5?style=for-the-badge&logo=homeassistantcommunitystore&logoColor=white&labelColor=2B2F36)](https://github.com/hacs/integration)
+[![Release](https://img.shields.io/github/v/release/teuchezh/dynamic-weather-card?style=for-the-badge&logo=github&label=release&color=0A84FF&labelColor=2B2F36)](https://github.com/teuchezh/dynamic-weather-card/releases)
+[![Downloads](https://img.shields.io/github/downloads/teuchezh/dynamic-weather-card/dynamic-weather-card.js?style=for-the-badge&logo=github&label=downloads&color=30D158&labelColor=2B2F36&displayAssetName=false)](https://github.com/teuchezh/dynamic-weather-card/releases)
+[![Stars](https://img.shields.io/github/stars/teuchezh/dynamic-weather-card?style=for-the-badge&logo=github&label=stars&color=FFD60A&labelColor=2B2F36)](https://github.com/teuchezh/dynamic-weather-card/stargazers)
+[![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.1%2B-18BCF2?style=for-the-badge&logo=homeassistant&logoColor=white&labelColor=2B2F36)](https://www.home-assistant.io/)
 
 [English](README.md) | **Русский**
 
