@@ -90,6 +90,9 @@
     "language_da": "Датский",
     "language_sr": "Сербский",
     "language_pl": "Польский",
+    "language_zh": "Китайский",
+    "language_tr": "Турецкий",
+    "language_nb": "Норвежский (букмол)",
     "wind_speed_unit": "Единицы скорости ветра",
     "wind_speed_unit_ms": "м/с",
     "wind_speed_unit_kmh": "км/ч",
@@ -186,7 +189,10 @@
       "danish": "Датский",
       "polish": "Польский",
       "portuguese": "Португальский",
-      "serbian": "Сербский"
+      "serbian": "Сербский",
+      "chinese": "Китайский",
+      "turkish": "Турецкий",
+      "norwegian": "Норвежский (букмол)"
     }
   }
 }
