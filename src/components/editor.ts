@@ -47,6 +47,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
       show_animations: DEFAULT_CONFIG.showAnimations,
       show_clock: DEFAULT_CONFIG.showClock,
+      show_date: DEFAULT_CONFIG.showDate,
       clock_position: DEFAULT_CONFIG.clockPosition,
       clock_format: DEFAULT_CONFIG.clockFormat,
       overlay_opacity: DEFAULT_CONFIG.overlayOpacity,
@@ -100,6 +101,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       { name: 'sunrise_entity', selector: { entity: { domain: ['sensor'] } } },
       { name: 'sunset_entity', selector: { entity: { domain: ['sensor'] } } },
       { name: 'show_clock', selector: { boolean: {} } },
+      { name: 'show_date', selector: { boolean: {} } },
       {
         name: 'clock_position',
         selector: {

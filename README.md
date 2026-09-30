@@ -162,6 +162,7 @@ show_sunrise_sunset: true
 sunrise_entity: sensor.sun_next_rising    # optional
 sunset_entity: sensor.sun_next_setting    # optional
 show_clock: true
+show_date: true
 clock_position: top                       # top or details
 clock_format: 24h                         # 12h or 24h
 ```
@@ -203,6 +204,7 @@ clock_format: 24h                         # 12h or 24h
 | `sunrise_entity` | string | - | Custom sunrise sensor (optional) |
 | `sunset_entity` | string | - | Custom sunset sensor (optional) |
 | `show_clock` | boolean | `false` | Display current time |
+| `show_date` | boolean | `false` | Display current date under the clock (e.g. "Wed, September 30"), in the card language. Follows `clock_position`; shown on its own if the clock is off |
 | `clock_position` | string | `top` | `top` (top-right) or `details` (info row) |
 | `clock_format` | string | `24h` | `12h` (AM/PM) or `24h` |
 

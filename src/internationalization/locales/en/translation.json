@@ -52,6 +52,7 @@
     "sunrise_entity": "Sunrise Entity",
     "sunset_entity": "Sunset Entity",
     "show_clock": "Show Clock",
+    "show_date": "Show Date",
     "clock_position": "Clock Position",
     "clock_position_top": "Top",
     "clock_position_details": "Details",

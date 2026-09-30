@@ -36,6 +36,7 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   dailyForecastDays: 5,
   showSunriseSunset: false,
   showClock: false,
+  showDate: false,
   clockPosition: 'top',
   clockFormat: '24h',
   overlayOpacity: 0.1,

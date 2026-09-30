@@ -348,6 +348,18 @@ export function getWindSpeedUnit(
 }
 
 /**
+ * Format the current date for display, localized to the card language (e.g. "Wed, September 30")
+ */
+export function formatDate(date: Date, lang: string): string {
+  const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'long' };
+  try {
+    return date.toLocaleDateString(lang, options);
+  } catch {
+    return date.toLocaleDateString(undefined, options);
+  }
+}
+
+/**
  * Format current time for clock display
  */
 export function formatClockTime(

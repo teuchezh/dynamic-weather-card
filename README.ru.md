@@ -160,6 +160,7 @@ show_sunrise_sunset: true
 sunrise_entity: sensor.sun_next_rising    # опционально
 sunset_entity: sensor.sun_next_setting    # опционально
 show_clock: true
+show_date: true
 clock_position: top                       # top или details
 clock_format: 24h                         # 12h или 24h
 ```
@@ -201,6 +202,7 @@ clock_format: 24h                         # 12h или 24h
 | `sunrise_entity` | string | - | Пользовательский сенсор восхода (опционально) |
 | `sunset_entity` | string | - | Пользовательский сенсор заката (опционально) |
 | `show_clock` | boolean | `false` | Отображать текущее время |
+| `show_date` | boolean | `false` | Отображать текущую дату под часами (например, «ср, 30 сентября») на языке карточки. Следует `clock_position`; без часов показывается отдельно |
 | `clock_position` | string | `top` | `top` (сверху справа) или `details` (в строке информации) |
 | `clock_format` | string | `24h` | `12h` (AM/PM) или `24h` |
 

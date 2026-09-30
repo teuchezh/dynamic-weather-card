@@ -52,6 +52,7 @@
     "sunrise_entity": "Сущность восхода",
     "sunset_entity": "Сущность заката",
     "show_clock": "Показывать часы",
+    "show_date": "Показывать дату",
     "clock_position": "Позиция часов",
     "clock_position_top": "Вверху",
     "clock_position_details": "Детали",

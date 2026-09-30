@@ -189,6 +189,7 @@ export class AnimatedWeatherCard extends LitElement {
       dailyForecastDays: config.daily_forecast_days ?? DEFAULT_CONFIG.dailyForecastDays,
       showSunriseSunset: config.show_sunrise_sunset !== false,
       showClock: config.show_clock === true,
+      showDate: config.show_date === true,
       clockPosition: config.clock_position || DEFAULT_CONFIG.clockPosition,
       clockFormat: config.clock_format || DEFAULT_CONFIG.clockFormat,
       overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
@@ -348,9 +349,11 @@ export class AnimatedWeatherCard extends LitElement {
             </div>
             <weather-clock
               .format=${this.config.showClock && this.config.clockPosition === 'top' ? this.config.clockFormat : null}
+              .showDate=${!!this.config.showDate && this.config.clockPosition === 'top'}
+              .lang=${i18n.lang}
             ></weather-clock>
           </div>
-          <div class="details ${this.config.showClock && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
+          <div class="details ${(this.config.showClock || this.config.showDate) && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
             <weather-details
               .weather=${weather}
               .sunData=${sunData}
@@ -359,6 +362,8 @@ export class AnimatedWeatherCard extends LitElement {
             ></weather-details>
             <weather-clock
               .format=${this.config.showClock && this.config.clockPosition === 'details' ? this.config.clockFormat : null}
+              .showDate=${!!this.config.showDate && this.config.clockPosition === 'details'}
+              .lang=${i18n.lang}
             ></weather-clock>
           </div>
           <hourly-forecast
@@ -402,8 +407,13 @@ export class AnimatedWeatherCard extends LitElement {
               .compact=${true}
             ></weather-details>
           </div>
-          ${this.config.showClock ? html`
-            <weather-clock .format=${this.config.clockFormat} .compact=${true}></weather-clock>
+          ${this.config.showClock || this.config.showDate ? html`
+            <weather-clock
+              .format=${this.config.showClock ? this.config.clockFormat : null}
+              .showDate=${!!this.config.showDate}
+              .lang=${i18n.lang}
+              .compact=${true}
+            ></weather-clock>
           ` : ''}
         </div>
       </div>
