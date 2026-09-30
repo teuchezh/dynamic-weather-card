@@ -107,6 +107,9 @@ export interface HomeAssistant {
   };
 }
 
+// Graphics style: modern (sky/clouds/particles) or classic (the original simple graphics)
+export type VisualStyle = 'modern' | 'classic';
+
 // Weather Card Configuration
 export interface WeatherCardConfig {
   type: string;
@@ -140,6 +143,7 @@ export interface WeatherCardConfig {
   windSpeedUnit?: 'ms' | 'kmh';
   showAnimations?: boolean;
   layout?: 'default' | 'minimal';
+  visualStyle?: VisualStyle;
 }
 
 // Time of Day
@@ -165,6 +169,12 @@ export interface RGBColor {
   r: number;
   g: number;
   b: number;
+}
+
+// Background Gradient
+export interface BackgroundGradient {
+  start: RGBColor;
+  end: RGBColor;
 }
 
 // Sun/Moon Data
@@ -245,6 +255,7 @@ export interface ConfigInput {
   wind_speed_unit?: 'ms' | 'kmh';
   show_animations?: boolean;
   layout?: 'default' | 'minimal';
+  visual_style?: VisualStyle;
   sunrise_entity?: string;
   sunset_entity?: string;
   templow_attribute?: string;

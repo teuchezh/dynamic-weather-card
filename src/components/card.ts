@@ -5,11 +5,12 @@ import { i18n } from '../internationalization/index.js';
 import { resolveLanguage } from '../internationalization/resolveLanguage.js';
 import {
   getSunriseSunsetData,
-  getTimeOfDayWithSunData
+  getTimeOfDayWithSunData,
+  getBackgroundGradient
 } from '../utils.js';
 import { cardStyles } from './styles.js';
 import { getSkyColors, rgb } from '../sky.js';
-import { AnimationManager } from './animation-manager.js';
+import { AnimationManager, type DrawParams } from './animation-manager.js';
 import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes } from './weather-data.js';
@@ -21,8 +22,8 @@ import type {
   HomeAssistant,
   HassEntity,
   TimeOfDay,
-  PositionOverride,
   SunData,
+  BackgroundGradient,
   ConfigInput,
   WeatherCardConfigInternal,
   DetailsConfig
@@ -38,6 +39,8 @@ export class AnimatedWeatherCard extends LitElement {
   private subscribedEntity: string | null = null;
   private subscribedShowDaily: boolean = false;
   _testTimeOfDay?: TimeOfDay;
+  // Demo/testing override of the moon phase (0..1); null = real phase
+  _testMoonPhase?: number | null;
 
   static get styles() {
     return cardStyles;
@@ -127,7 +130,7 @@ export class AnimatedWeatherCard extends LitElement {
     }
   }
 
-  private getDrawParams(): { condition: string; timeOfDay: TimeOfDay; sunPosition: PositionOverride } | null {
+  private getDrawParams(): DrawParams | null {
     if (!this.hass || !this.config.entity) return null;
 
     const weather = getWeatherData(
@@ -148,7 +151,9 @@ export class AnimatedWeatherCard extends LitElement {
     return {
       condition: weather.condition,
       timeOfDay,
-      sunPosition: { x: this.config.sunPositionX, y: this.config.sunPositionY }
+      sunPosition: { x: this.config.sunPositionX, y: this.config.sunPositionY },
+      moonPhase: this._testMoonPhase ?? undefined,
+      visualStyle: this.config.visualStyle
     };
   }
 
@@ -203,6 +208,7 @@ export class AnimatedWeatherCard extends LitElement {
       windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,
       showAnimations: config.show_animations !== false,
       layout: config.layout || DEFAULT_CONFIG.layout,
+      visualStyle: config.visual_style === 'classic' ? 'classic' : 'modern',
       sunriseEntity: config.sunrise_entity || null,
       sunsetEntity: config.sunset_entity || null,
       templowAttribute: config.templow_attribute || null,
@@ -258,14 +264,24 @@ export class AnimatedWeatherCard extends LitElement {
     ) as SunData;
 
     const timeOfDay = this._testTimeOfDay || getTimeOfDayWithSunData(sunData);
-    const cardClasses = `weather-card ${timeOfDay.type}`;
+    const cardClasses = `weather-card ${timeOfDay.type}${this.config.visualStyle === 'classic' ? ' classic' : ''}`;
 
     const isMinimal = this.config.layout === 'minimal';
     const defaultHeight = isMinimal ? '56px' : '200px';
     const minHeight = this.config.height ? `${this.config.height}px` : defaultHeight;
 
-    const sky = getSkyColors(weather.condition, timeOfDay);
-    const skyStyle = `--dwc-sky-top: ${rgb(sky.top)}; --dwc-sky-bottom: ${rgb(sky.bottom)};`;
+    const isClassic = this.config.visualStyle === 'classic';
+    let skyStyle: string;
+    if (isClassic) {
+      // Original look: time-of-day gradients from the stylesheet, computed ones during sunrise/sunset
+      const bgGradient: BackgroundGradient | null = getBackgroundGradient(timeOfDay);
+      skyStyle = bgGradient
+        ? `background: linear-gradient(135deg, rgb(${bgGradient.start.r}, ${bgGradient.start.g}, ${bgGradient.start.b}), rgb(${bgGradient.end.r}, ${bgGradient.end.g}, ${bgGradient.end.b}));`
+        : '';
+    } else {
+      const sky = getSkyColors(weather.condition, timeOfDay);
+      skyStyle = `--dwc-sky-top: ${rgb(sky.top)}; --dwc-sky-bottom: ${rgb(sky.bottom)};`;
+    }
 
     const overlayOpacity = this.config.overlayOpacity !== undefined
       ? this.config.overlayOpacity

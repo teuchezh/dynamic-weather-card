@@ -6,6 +6,15 @@ export const cardStyles = css`
     --card-width: 100%;
     --card-height: 200px;
     --primary-color: #007AFF;
+    /* Classic style backgrounds */
+    --day-gradient-start: #87CEEB;
+    --day-gradient-end: #E0F6FF;
+    --night-gradient-start: #1a1a2e;
+    --night-gradient-end: #16213e;
+    --sunset-gradient-start: #FF6B6B;
+    --sunset-gradient-end: #FFA07A;
+    --sunrise-gradient-start: #FFA07A;
+    --sunrise-gradient-end: #FFD700;
     --overlay-opacity: 0.1;
   }
 
@@ -29,6 +38,23 @@ export const cardStyles = css`
     /* Sky colors come from the condition and time of day (see sky.ts) */
     background: linear-gradient(to bottom, var(--dwc-sky-top, #2E6FC7), var(--dwc-sky-bottom, #8CC2EC));
     transition: --dwc-sky-top 2s ease-in-out, --dwc-sky-bottom 2s ease-in-out, min-height 0.3s ease;
+  }
+
+  .weather-card.classic {
+    background: linear-gradient(135deg, var(--day-gradient-start), var(--day-gradient-end));
+    transition: background 2s ease-in-out, min-height 0.3s ease;
+  }
+
+  .weather-card.classic.night {
+    background: linear-gradient(135deg, var(--night-gradient-start), var(--night-gradient-end));
+  }
+
+  .weather-card.classic.sunset {
+    background: linear-gradient(135deg, var(--sunset-gradient-start), var(--sunset-gradient-end));
+  }
+
+  .weather-card.classic.sunrise {
+    background: linear-gradient(135deg, var(--sunrise-gradient-start), var(--sunrise-gradient-end));
   }
 
   .canvas-container {

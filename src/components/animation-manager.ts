@@ -6,7 +6,8 @@ import { FoggyAnimation } from '../animations/foggy.js';
 import { HailAnimation } from '../animations/hail.js';
 import { ThunderstormAnimation } from '../animations/thunderstorm.js';
 import { CloudField } from '../animations/clouds.js';
-import type { TimeOfDay, PositionOverride } from '../types.js';
+import { ClassicAnimations } from '../animations/classic/index.js';
+import type { TimeOfDay, PositionOverride, VisualStyle } from '../types.js';
 
 interface Animations {
   sunny: SunnyAnimation;
@@ -18,17 +19,27 @@ interface Animations {
   thunderstorm: ThunderstormAnimation;
 }
 
+export interface DrawParams {
+  condition: string;
+  timeOfDay: TimeOfDay;
+  sunPosition?: PositionOverride;
+  moonPhase?: number;
+  visualStyle?: VisualStyle;
+}
+
 export class AnimationManager {
   private canvas: HTMLCanvasElement | null = null;
   private ctx: CanvasRenderingContext2D | null = null;
   private animationFrame: number | null = null;
   private animations: Partial<Animations> = {};
   private cloudField = new CloudField();
+  // Created on first use, only when the classic style is selected
+  private classic: ClassicAnimations | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private width: number = 0;
   private height: number = 0;
   private container: Element | null = null;
-  private getDrawParams: () => { condition: string; timeOfDay: TimeOfDay; sunPosition?: PositionOverride } | null;
+  private getDrawParams: () => DrawParams | null;
   private handleVisibilityChange = (): void => {
     if (document.hidden) {
       this.stopAnimation();
@@ -37,7 +48,7 @@ export class AnimationManager {
     }
   };
 
-  constructor(getDrawParams: () => { condition: string; timeOfDay: TimeOfDay; sunPosition?: PositionOverride } | null) {
+  constructor(getDrawParams: () => DrawParams | null) {
     this.getDrawParams = getDrawParams;
   }
 
@@ -127,6 +138,7 @@ export class AnimationManager {
       hail: new HailAnimation(this.ctx),
       thunderstorm: new ThunderstormAnimation(this.ctx)
     };
+    this.classic = null;
     Object.values(this.animations).forEach(animation => {
       animation.cloudField = this.cloudField;
     });
@@ -158,23 +170,30 @@ export class AnimationManager {
     const params = this.getDrawParams();
     if (!params) return;
 
-    const { condition, timeOfDay, sunPosition } = params;
+    const { condition, timeOfDay, sunPosition, moonPhase, visualStyle } = params;
     const width = this.width;
     const height = this.height;
 
     this.ctx.clearRect(0, 0, width, height);
 
     const conditionLower = condition.toLowerCase();
+
+    if (visualStyle === 'classic') {
+      this.classic ??= new ClassicAnimations(this.ctx);
+      this.classic.draw(conditionLower, width, height, timeOfDay, sunPosition);
+      return;
+    }
+
     this.cloudField.setWeather(conditionLower, timeOfDay);
 
     switch (conditionLower) {
       case 'sunny':
       case 'clear':
       case 'partlycloudy':
-        this.animations.sunny?.draw(Date.now(), width, height, timeOfDay, sunPosition);
+        this.animations.sunny?.draw(Date.now(), width, height, timeOfDay, sunPosition, moonPhase);
         break;
       case 'clear-night':
-        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 }, sunPosition);
+        this.animations.sunny?.draw(Date.now(), width, height, { type: 'night', progress: 0 }, sunPosition, moonPhase);
         break;
       case 'rainy':
       case 'rain':

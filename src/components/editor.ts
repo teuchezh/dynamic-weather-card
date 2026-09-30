@@ -51,6 +51,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays,
       show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
       show_animations: DEFAULT_CONFIG.showAnimations,
+      visual_style: DEFAULT_CONFIG.visualStyle,
       show_clock: DEFAULT_CONFIG.showClock,
       show_date: DEFAULT_CONFIG.showDate,
       clock_position: DEFAULT_CONFIG.clockPosition,
@@ -147,6 +148,17 @@ export class DynamicWeatherCardEditor extends LitElement {
         }
       },
       { name: 'show_animations', selector: { boolean: {} } },
+      {
+        name: 'visual_style',
+        selector: {
+          select: {
+            options: [
+              { label: i18n.t('editor.visual_style_modern'), value: 'modern' },
+              { label: i18n.t('editor.visual_style_classic'), value: 'classic' }
+            ]
+          }
+        }
+      },
       { name: 'overlay_opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
       { name: 'text_shadow', selector: { number: { min: 0, max: 3, step: 1, mode: 'box' } } },
       { name: 'text_color', selector: { text: {} } },
