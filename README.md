@@ -23,7 +23,9 @@
 
 ## 🌟 Preview
 
-![demo](/docs/demo.gif)
+![Dynamic Weather Card in different weather](/docs/preview.jpg)
+
+![Animated weather](/docs/demo.gif)
 
 <div align="center">
 
@@ -40,35 +42,38 @@
 <td width="50%">
 
 ### 🎨 Visual Experience
-- **Realistic Canvas Animations**
-  - Rain with different intensities
-  - Snowfall with various particle effects
-  - Fog and mist
-  - Hail and sleet
-  - Lightning and thunderstorms
-
-- **Dynamic Time-Based Backgrounds**
-  - Sunrise gradient (6:00 - 8:00)
-  - Bright day sky (8:00 - 18:00)
-  - Sunset gradient (18:00 - 20:00)
-  - Night sky (20:00 - 6:00)
+- **A sky that follows the weather**
+  - Its own palette for each condition
+  - Warm sunrise and sunset from your real sun times
+  - Smooth transitions when the weather changes
+- **Layered clouds** that drift faster in the wind
+- **Rain, snow, hail and fog with depth**
+  - Rain splashes, snowflakes sway, hail bounces
+  - Raindrops on the glass slide down
+- **Wind**: gusts and tumbling autumn leaves
+- **Night sky**
+  - Twinkling stars and shooting stars
+  - The moon in its real phase
+  - Optional northern lights
+- **Sun rays**, lightning bolts and a subtle lens flare
+- **Classic look** still available (`visual_style: classic`)
 
 </td>
 <td width="50%">
 
 ### ⚙️ Functionality
 - **Smart Data Display**
-  - Hourly & daily forecasts
-  - Feels-like temperature
+  - Hourly & daily forecasts with temperature range bars
+  - When rain starts or stops ("Rain expected around 16:00")
+  - Feels-like temperature, humidity, pressure, UV index, dew point, air quality
   - Wind speed, gusts & direction
-  - Humidity levels
-  - Sunrise & sunset times
-  - Real-time clock (12h/24h)
+  - Sunrise & sunset times, clock and date (12h/24h)
+  - Your own sensors, e.g. a personal weather station
 
 - **User-Friendly**
-  - Visual editor in Home Assistant UI
+  - Visual editor with sections in the Home Assistant UI
   - Auto-detection of language & units
-  - Fully responsive design
+  - Runs smoothly on wall tablets (`animation_quality`), pauses off-screen, respects "reduce motion"
   - Works with all weather integrations
 
 </td>
@@ -137,14 +142,25 @@ type: custom:dynamic-weather-card
 entity: weather.home
 name: My Weather Station
 height: 300
-language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl, nb
+language: auto                    # auto, en, ru, de, fr, nl, es, it, hu, sk, pt, da, sr, pl, nb, tr, zh
 overlay_opacity: 0.15             # 0-1 (dark overlay for better readability)
 wind_speed_unit: ms               # ms or kmh (for legacy integrations)
 
-# Temperature & Humidity
+# Graphics
+visual_style: modern              # modern or classic
+animation_quality: high           # high, medium or low (for slow devices)
+show_aurora: true                 # northern lights on clear nights
+show_raindrops: true              # raindrops on the glass in rain
+show_wind_effects: true           # wind gusts and leaves
+
+# Temperature & Details
 show_feels_like: true
 show_min_temp: true
+show_precipitation_outlook: true  # "Rain expected around 16:00"
 show_humidity: true
+show_pressure: true
+show_uv_index: true
+show_dew_point: true
 
 # Wind Information
 show_wind: true
@@ -156,6 +172,7 @@ show_hourly_forecast: true
 hourly_forecast_hours: 8
 show_daily_forecast: true
 daily_forecast_days: 5
+show_temperature_bars: true
 
 # Sun & Clock
 show_sunrise_sunset: true
@@ -178,7 +195,7 @@ clock_format: 24h                         # 12h or 24h
 | **Display** |
 | `name` | string | - | Custom card title (leave empty to hide) |
 | `height` | number | `200` | Card height in pixels |
-| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb` |
+| `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `et` |
 | `overlay_opacity` | number | `0.1` | Dark overlay opacity (0-1) for text readability |
 | `text_color` | string | `white` | Text and icon color, any CSS color (e.g. `"#1a1a2e"`, `black`, `var(--primary-text-color)`). Combine with `overlay_opacity` / `text_shadow` for contrast |
 | `border_radius` | number | theme | Corner radius in pixels (`0` for square corners). Defaults to the Home Assistant theme's card radius |
@@ -290,6 +307,9 @@ The card automatically detects your Home Assistant language or you can set it ma
 | Srpski | `sr` | ✅ Complete |
 | Polski | `pl` | ✅ Complete |
 | Norsk (bokmål) | `nb` | ✅ Complete |
+| Türkçe | `tr` | ✅ Complete |
+| 中文 | `zh` | ✅ Complete |
+| Eesti | `et` | 🟡 Weather conditions only |
 
 Contribute via [Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/) — no coding required! Alternatively, edit (or create) `src/internationalization/locales/<code>/translation.json` right in the GitHub web UI and open a pull request against the `main` branch — that's the only file you need to touch, new languages are picked up automatically. Use `locales/en/translation.json` as the reference for keys; missing keys simply fall back to English. Note: for a brand-new language CI will also ask for the regenerated locale index — a maintainer can run `bun run locales:generate` and push it to your PR branch.
 
@@ -318,6 +338,11 @@ Contribute via [Weblate](https://hosted.weblate.org/engage/dynamic-weather-card/
 <td>⛈️ Thunderstorm</td>
 <td>🧊 Hail</td>
 </tr>
+<tr>
+<td>💨 Windy</td>
+<td>🌬️ Windy, cloudy</td>
+<td></td>
+</tr>
 </table>
 
 ---
@@ -345,14 +370,18 @@ In most cases, no configuration needed!
 
 ---
 
-## 🎨 Time of Day Backgrounds
+## 🎨 Sky and Time of Day
 
-| Time | Period | Visual Effect |
-|------|--------|---------------|
-| 6:00 - 8:00 | 🌅 Sunrise | Warm orange-pink gradient |
-| 8:00 - 18:00 | ☀️ Day | Bright blue sky |
-| 18:00 - 20:00 | 🌇 Sunset | Orange-purple gradient |
-| 20:00 - 6:00 | 🌙 Night | Deep blue/purple night sky |
+The sky color comes from both the weather and the time of day. Sunrise and sunset follow your real sun times (see above): each lasts from an hour before to an hour after the sun rises or sets.
+
+| Period | Visual Effect |
+|--------|---------------|
+| 🌅 Sunrise | Deep blue overhead, warm glow at the horizon; weaker under heavy clouds |
+| ☀️ Day | Blue on clear days, grey on overcast, darker in rain and storms |
+| 🌇 Sunset | Deeper blue with an orange horizon |
+| 🌙 Night | Dark sky with stars and the moon in its real phase |
+
+Without any sun data, the card falls back to fixed hours: sunrise 6:00–8:00, day until 18:00, sunset until 20:00, then night.
 
 ---
 
@@ -388,14 +417,18 @@ bun run lint:fix
 
 ```
 src/
-├── animations/          # Canvas animation engines
-│   ├── rain.ts
-│   ├── snow.ts
-│   ├── fog.ts
-│   └── ...
+├── animations/          # Canvas animations
+│   ├── clouds.ts       # Layered clouds shared by all conditions
+│   ├── rainy.ts, snowy.ts, hail.ts, foggy.ts, thunderstorm.ts, ...
+│   ├── night-sky.ts    # Stars, shooting stars, moon phase
+│   ├── aurora.ts, glass-drops.ts, wind.ts
+│   ├── quality.ts      # animation_quality presets
+│   └── classic/        # The original graphics (visual_style: classic)
 ├── components/          # Web components
 │   ├── card.ts         # Main card component
+│   ├── animation-manager.ts
 │   └── editor.ts       # Visual editor
+├── sky.ts               # Sky colors by condition and time of day
 ├── internationalization/ # i18n translations
 │   └── locales/
 │       ├── en/
