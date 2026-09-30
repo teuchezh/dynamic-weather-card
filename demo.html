@@ -2,800 +2,649 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Weather Card - Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <title>Dynamic Weather Card</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         :root {
-            --primary: #007aff;
-            --text-primary: #1d1d1f;
-            --text-secondary: #6e6e73;
-            --border: #d2d2d7;
-            --surface: #ffffff;
-            --surface-muted: #f5f5f7;
-            --surface-hover: #ebebed;
-            --danger: #ff3b30;
+            --bg-top: #2E6FC7;
+            --bg-bottom: #8CC2EC;
+            --glass: rgba(250, 250, 252, 0.72);
+            --glass-strong: rgba(255, 255, 255, 0.86);
+            --glass-border: rgba(255, 255, 255, 0.55);
+            --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+            --text: #1c1c1e;
+            --text-secondary: rgba(60, 60, 67, 0.7);
+            --control: rgba(118, 118, 128, 0.14);
+            --control-active: #ffffff;
+            --accent: #0a84ff;
+            --separator: rgba(60, 60, 67, 0.16);
+            --radius-lg: 28px;
+            --radius-md: 14px;
+            --tabbar-h: 68px;
+            --sheet-w: 400px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--surface-muted);
-            min-height: 100vh;
-            color: var(--text-primary);
-            padding: 20px;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 20px;
-        }
-
-        .page-title {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .page-subtitle {
-            font-size: 18px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 450px;
-            gap: 24px;
-            align-items: start;
-        }
-
-        @media (max-width: 1200px) {
-            .main-container {
-                grid-template-columns: 1fr;
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --glass: rgba(28, 28, 30, 0.66);
+                --glass-strong: rgba(44, 44, 46, 0.88);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+                --text: #f2f2f7;
+                --text-secondary: rgba(235, 235, 245, 0.6);
+                --control: rgba(118, 118, 128, 0.28);
+                --control-active: rgba(99, 99, 102, 0.9);
+                --separator: rgba(84, 84, 88, 0.55);
             }
         }
 
-        .card-preview {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text);
+            background: #0b1020;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ---------- Backdrop: follows the card's sky ---------- */
+        #backdrop {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+            z-index: 0;
+        }
+
+        #backdrop::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(90% 70% at 50% 40%, rgba(255, 255, 255, 0.12), transparent 60%),
+                radial-gradient(140% 100% at 50% 45%, transparent 40%, rgba(0, 0, 0, 0.45));
+        }
+
+        .glass {
+            background: var(--glass);
+            border: 0.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+        }
+
+        /* ---------- Top bar ---------- */
+        .topbar {
+            position: fixed;
+            top: max(14px, env(safe-area-inset-top));
+            left: 16px;
+            right: 16px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 20px;
+            gap: 12px;
+            z-index: 20;
+            pointer-events: none;
         }
 
-        .preview-label {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
+        .topbar > * { pointer-events: auto; }
 
-        /* No clipping/rounding here: the card draws its own corners (border_radius) and shadow */
-        #card-container {
-            max-width: 450px;
-            width: 100%;
-        }
-
-        .controls-panel {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
-            position: sticky;
-            top: 20px;
-        }
-
-        .panel-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: var(--text-primary);
+        .brand {
             display: flex;
             align-items: center;
             gap: 10px;
+            padding: 8px 16px 8px 10px;
+            border-radius: 999px;
+            min-width: 0;
         }
 
-        .control-section {
-            margin-bottom: 28px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
+        .brand-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(160deg, #4fa8ff, #1d5fd6);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
         }
 
-        .control-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
+        .brand-text { min-width: 0; }
 
-        .section-header {
-            font-size: 14px;
+        .brand-title {
+            font-size: 15px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
             color: var(--text-secondary);
-            margin-bottom: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            padding: 5px;
+            border-radius: 999px;
+            flex-shrink: 0;
+        }
+
+        .icon-btn {
+            height: 36px;
+            min-width: 36px;
+            padding: 0 12px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover { background: var(--control); }
+        .icon-btn.active { background: var(--accent); color: #fff; }
+        .icon-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+        /* ---------- Stage with the card ---------- */
+        .stage {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            overflow-y: auto;
+            display: flex;
+            padding: 84px 16px calc(var(--tabbar-h) + 40px + var(--safe-bottom) + var(--sheet-offset, 0px));
+            transition: padding 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .stage-inner {
+            margin: auto;
+            width: min(480px, 100%);
+        }
+
+        #card-container {
+            width: 100%;
+            filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.35));
+        }
+
+        .loading-message, .error-message {
+            padding: 32px 20px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        /* ---------- Floating tab bar ---------- */
+        .tabbar {
+            position: fixed;
+            left: 50%;
+            bottom: calc(18px + var(--safe-bottom));
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2px;
+            padding: 6px;
+            border-radius: 999px;
+            z-index: 30;
+            max-width: calc(100vw - 24px);
+        }
+
+        .tab {
+            width: 76px;
+            height: 56px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-secondary);
+            font: inherit;
+            font-size: 10.5px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .tab svg { width: 24px; height: 24px; }
+        .tab:hover { color: var(--text); }
+        .tab[aria-selected="true"] { background: var(--control); color: var(--accent); }
+
+        .tab-label {
+            max-width: 72px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ---------- Settings sheet ---------- */
+        .sheet {
+            position: fixed;
+            left: 12px;
+            right: 12px;
+            bottom: calc(var(--tabbar-h) + 30px + var(--safe-bottom));
+            max-height: min(52vh, 560px);
+            border-radius: var(--radius-lg);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(24px) scale(0.98);
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .sheet.open {
+            opacity: 1;
+            transform: none;
+            pointer-events: auto;
+        }
+
+        .sheet-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            padding: 16px 16px 8px 20px;
+        }
+
+        .sheet-title {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        .sheet-body {
+            overflow-y: auto;
+            padding: 4px 16px 20px;
+            overscroll-behavior: contain;
+        }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        @media (min-width: 1024px) {
+            .sheet {
+                left: auto;
+                right: 20px;
+                top: 84px;
+                width: var(--sheet-w);
+                max-height: none;
+            }
+
+            .stage.sheet-open {
+                padding-right: calc(var(--sheet-w) + 36px);
+            }
+
+            .stage { padding-bottom: calc(var(--tabbar-h) + 40px); }
+        }
+
+        /* ---------- Controls ---------- */
+        .group { margin-top: 18px; }
+        .group:first-child { margin-top: 4px; }
+
+        .group-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin: 0 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
             gap: 8px;
         }
 
-        .control-group {
-            margin-bottom: 16px;
+        .group-title output {
+            font-variant-numeric: tabular-nums;
+            color: var(--text);
+            font-weight: 600;
         }
 
-        .control-label {
-            display: block;
+        .card-list {
+            background: var(--glass-strong);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-height: 46px;
+            padding: 8px 14px;
+            font-size: 15px;
+        }
+
+        .row + .row { border-top: 0.5px solid var(--separator); }
+
+        .chips {
+            display: grid;
+            grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .chip {
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--glass-strong);
+            color: var(--text);
+            font: inherit;
+            font-size: 11.5px;
+            font-weight: 500;
+            padding: 10px 4px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            min-width: 0;
+            transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .chip:active { transform: scale(0.96); }
+        .chip .emoji { font-size: 24px; line-height: 1; }
+
+        .chip .chip-label {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chip[aria-pressed="true"] {
+            box-shadow: inset 0 0 0 2px var(--accent);
+            color: var(--accent);
+        }
+
+        .segmented {
+            display: flex;
+            padding: 2px;
+            border-radius: 10px;
+            background: var(--control);
+        }
+
+        .segmented button {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
             font-size: 13px;
             font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        select, input[type="number"], input[type="text"] {
-            width: 100%;
-            padding: 12px 14px;
-            background: var(--surface-muted);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 14px;
-            color: var(--text-primary);
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        select:focus, input[type="number"]:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: var(--surface);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-        }
-
-        select option {
-            background: var(--surface);
-            color: var(--text-primary);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 7px 6px;
             cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .segmented button[aria-pressed="true"] {
+            background: var(--control-active);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+            font-weight: 600;
+        }
+
+        .range-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--glass-strong);
+            border-radius: var(--radius-md);
+        }
+
+        input[type="range"] {
+            flex: 1;
+            min-width: 0;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 28px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right, var(--accent) var(--fill, 50%), var(--control) var(--fill, 50%));
+        }
+
+        input[type="range"]::-moz-range-track {
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right, var(--accent) var(--fill, 50%), var(--control) var(--fill, 50%));
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 26px;
+            height: 26px;
+            margin-top: -11px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 26px;
+            height: 26px;
+            border: none;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        }
+
+        input[type="range"].is-auto::-webkit-slider-runnable-track { background: var(--control); }
+        input[type="range"].is-auto::-moz-range-track { background: var(--control); }
+
+        .auto-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 5px 10px;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--control);
+            color: var(--text);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .auto-btn[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+        .text-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: var(--glass-strong);
+            color: var(--text);
+            font: inherit;
+            font-size: 15px;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+        }
+
+        .text-input::placeholder { color: var(--text-secondary); }
+        .text-input:focus { box-shadow: inset 0 0 0 2px var(--accent); }
+
+        /* iOS-style switch */
+        .switch {
+            position: relative;
+            width: 51px;
+            height: 31px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .switch span {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: var(--control);
+            transition: background 0.25s;
+            pointer-events: none;
+        }
+
+        .switch span::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 3px 1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .switch input:checked + span { background: #34c759; }
+        .switch input:checked + span::after { transform: translateX(20px); }
+        .switch input:focus-visible + span { box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.5); }
+
+        .swatches {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 10px 14px;
+            background: var(--glass-strong);
+            border-radius: var(--radius-md);
+            align-items: center;
+        }
+
+        .swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--glass-strong), 0 0 0 4px var(--accent); }
+
+        .primary-btn {
+            width: 100%;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--accent);
+            color: #fff;
+            font: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 13px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
+        .primary-btn.secondary { background: var(--glass-strong); color: var(--accent); }
+
+        .links a {
+            color: var(--accent);
+            text-decoration: none;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.35);
-        }
-
-        .btn-demo {
-            background: var(--surface-muted);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-
-        .btn-demo:hover {
-            transform: translateY(-2px);
-            background: var(--surface-hover);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .btn-demo.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-
-        .btn-preset {
-            background: var(--surface-muted);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-
-        .btn-preset:hover {
-            background: var(--surface-hover);
-            border-color: var(--primary);
-        }
-
-        .time-controls {
-            background: var(--surface-muted);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 12px;
-        }
-
-        .time-display {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .time-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            font-family: 'Courier New', monospace;
-        }
-
-        .time-slider {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--border);
-            outline: none;
-            -webkit-appearance: none;
-            margin-bottom: 16px;
-        }
-
-        .time-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .time-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        .time-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .preset-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .checkbox-group {
-            display: grid;
-            gap: 10px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            background: var(--surface-muted);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-
-        .checkbox-item:hover {
-            background: var(--surface-hover);
-            border-color: var(--border);
-        }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-
-        .checkbox-text {
-            font-size: 14px;
-            color: var(--text-primary);
-            user-select: none;
-            flex: 1;
-        }
-
-        .message {
-            padding: 16px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-
-        .error-message {
-            background: #fff2f1;
-            border: 1px solid var(--danger);
-            color: #c9262e;
-        }
-
-        .loading-message {
-            background: rgba(0, 122, 255, 0.08);
-            border: 1px solid var(--primary);
-            color: var(--text-secondary);
-            text-align: center;
-        }
-
-        .quick-presets {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .preset-card {
-            background: var(--surface-muted);
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .preset-card:hover {
-            background: var(--surface-hover);
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .preset-icon {
-            font-size: 28px;
-            margin-bottom: 6px;
-        }
-
-        .preset-name {
+        .footnote {
             font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 500;
+            margin: 8px 4px 0;
+            line-height: 1.4;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 48px;
-            padding: 24px;
-            color: var(--text-secondary);
-            font-size: 14px;
+        @media (max-width: 480px) {
+            .tab { width: 64px; }
+            .tab-label { max-width: 60px; }
+            .brand-subtitle { display: none; }
+            .demo-label { display: none; }
         }
 
-        .footer a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 32px;
-            }
-
-            .main-container {
-                padding: 0 10px;
-            }
-
-            .controls-panel {
-                position: static;
-            }
+        @media (prefers-reduced-motion: reduce) {
+            .sheet, .stage, .tab, .chip { transition: none; }
         }
     </style>
 </head>
 <body>
-    <div class="page-header">
-        <h1 class="page-title" data-i18n="pageTitle">🌤️ Dynamic Weather Card</h1>
-        <p class="page-subtitle" data-i18n="pageSubtitle">Interactive Demo & Configuration Tool</p>
-    </div>
+    <div id="backdrop"></div>
 
-    <div class="main-container">
-        <!-- Card Preview -->
-        <div class="card-preview">
-            <div class="preview-label" data-i18n="livePreview">Live Preview</div>
-            <div id="card-container"></div>
-        </div>
-
-        <!-- Controls Panel -->
-        <div class="controls-panel">
-            <h2 class="panel-title" data-i18n="configuration">Configuration</h2>
-
-            <!-- Quick Presets -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="quickPresets">Quick Presets</div>
-                <div class="quick-presets">
-                    <div class="preset-card" onclick="applyPreset('sunny')">
-                        <div class="preset-icon">☀️</div>
-                        <div class="preset-name" data-i18n="sunnyDay">Sunny Day</div>
-                    </div>
-                    <div class="preset-card" onclick="applyPreset('rainy')">
-                        <div class="preset-icon">🌧️</div>
-                        <div class="preset-name" data-i18n="rainy">Rainy</div>
-                    </div>
-                    <div class="preset-card" onclick="applyPreset('snowy')">
-                        <div class="preset-icon">❄️</div>
-                        <div class="preset-name" data-i18n="snowy">Snowy</div>
-                    </div>
-                    <div class="preset-card" onclick="applyPreset('night')">
-                        <div class="preset-icon">🌙</div>
-                        <div class="preset-name" data-i18n="clearNight">Clear Night</div>
-                    </div>
-                </div>
+    <header class="topbar">
+        <div class="brand glass">
+            <div class="brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2" fill="#FFD60A" stroke="#FFD60A"/><path d="M17.5 19H8a4 4 0 1 1 1.1-7.85A5 5 0 0 1 18.9 13a3 3 0 0 1-1.4 6z" fill="#fff"/></svg>
             </div>
-
-            <div class="control-section">
-                <div class="section-header" data-i18n="language.title">Language</div>
-                <div class="control-group">
-                    <select id="language-select">
-                        <option value="en" data-i18n="language.english">🇺🇸 English</option>
-                        <option value="ru" data-i18n="language.russian">🇷🇺 Русский</option>
-                        <option value="fr" data-i18n="language.french">🇫🇷 Français</option>
-                        <option value="de" data-i18n="language.german">🇩🇪 Deutsch</option>
-                        <option value="nl" data-i18n="language.dutch">🇳🇱 Nederlands</option>
-                        <option value="it" data-i18n="language.italian">🇮🇹 Italiano</option>
-                        <option value="es" data-i18n="language.spanish">🇪🇸 Español</option>
-                        <option value="sk" data-i18n="language.slovak">🇸🇰 Slovenčina</option>
-                        <option value="hu" data-i18n="language.hungarian">🇭🇺 Magyar</option>
-                        <option value="da" data-i18n="language.danish">🇩🇰 Dansk</option>
-                        <option value="pl" data-i18n="language.polish">🇵🇱 Polski</option>
-                        <option value="pt" data-i18n="language.portuguese">🇵🇹 Português</option>
-                        <option value="sr" data-i18n="language.serbian">🇷🇸 Srpski</option>
-                        <option value="zh" data-i18n="language.chinese">🇨🇳 简体中文</option>
-                        <option value="tr" data-i18n="language.turkish">🇹🇷 Türkçe</option>
-                        <option value="nb" data-i18n="language.norwegian">🇳🇴 Norsk (bokmål)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Weather Settings -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="weatherCondition">Weather Condition</div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="condition">Condition</label>
-                    <select id="condition-select">
-                        <option value="sunny" data-i18n="weatherConditions.sunny">☀️ Sunny</option>
-                        <option value="clear" data-i18n="weatherConditions.clear">☀️ Clear</option>
-                        <option value="clear-night" data-i18n="weatherConditions.clearNight">🌙 Clear Night</option>
-                        <option value="partlycloudy" data-i18n="weatherConditions.partlyCloudy">⛅ Partly Cloudy</option>
-                        <option value="cloudy" data-i18n="weatherConditions.cloudy">☁️ Cloudy</option>
-                        <option value="rainy" data-i18n="weatherConditions.rainy">🌧️ Rainy</option>
-                        <option value="pouring" data-i18n="weatherConditions.pouring">⛈️ Pouring</option>
-                        <option value="snowy" data-i18n="weatherConditions.snowy">❄️ Snowy</option>
-                        <option value="snowy-rainy" data-i18n="weatherConditions.sleet">🌨️ Sleet</option>
-                        <option value="hail" data-i18n="weatherConditions.hail">🧊 Hail</option>
-                        <option value="foggy" data-i18n="weatherConditions.foggy">🌫️ Foggy</option>
-                        <option value="lightning" data-i18n="weatherConditions.lightning">⚡ Lightning</option>
-                        <option value="lightning-rainy" data-i18n="weatherConditions.thunderstorm">⛈️ Thunderstorm</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="temperature">Temperature (°C)</label>
-                    <input type="number" id="temperature-input" value="20" min="-50" max="50">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="humidity">Humidity (%)</label>
-                    <input type="number" id="humidity-input" value="65" min="0" max="100">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="windSpeed">Wind Speed (km/h)</label>
-                    <input type="number" id="wind-input" value="15" min="0" max="150">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label">Wind Direction (°)</label>
-                    <input type="number" id="wind-bearing-input" value="200" min="0" max="359">
-                    <div style="margin-top: 8px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
-                        <button class="btn btn-preset" onclick="setWindBearing(0)" style="font-size: 11px; padding: 8px;">↑ N</button>
-                        <button class="btn btn-preset" onclick="setWindBearing(90)" style="font-size: 11px; padding: 8px;">→ E</button>
-                        <button class="btn btn-preset" onclick="setWindBearing(180)" style="font-size: 11px; padding: 8px;">↓ S</button>
-                        <button class="btn btn-preset" onclick="setWindBearing(270)" style="font-size: 11px; padding: 8px;">← W</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Time Settings -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="timeOfDay">Time of Day</div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="timeMode">Time Mode</label>
-                    <select id="time-select">
-                        <option value="auto" data-i18n="autoTime">🕐 Auto (Current Time)</option>
-                        <option value="manual" data-i18n="manualControl">⏱️ Manual Control</option>
-                        <option value="sunrise" data-i18n="sunrise">🌅 Sunrise</option>
-                        <option value="day" data-i18n="day">☀️ Day</option>
-                        <option value="sunset" data-i18n="sunset">🌇 Sunset</option>
-                        <option value="night" data-i18n="night">🌙 Night</option>
-                    </select>
-
-                    <label class="control-label" data-i18n="moonPhase" style="margin-top: 12px;">Moon Phase</label>
-                    <select id="moon-phase-select">
-                        <option value="auto" data-i18n="moonPhaseAuto">🗓️ Auto (Today)</option>
-                        <option value="0">🌑 0.00</option>
-                        <option value="0.125">🌒 0.125</option>
-                        <option value="0.25">🌓 0.25</option>
-                        <option value="0.375">🌔 0.375</option>
-                        <option value="0.5">🌕 0.50</option>
-                        <option value="0.625">🌖 0.625</option>
-                        <option value="0.75">🌗 0.75</option>
-                        <option value="0.875">🌘 0.875</option>
-                    </select>
-
-                    <div id="time-slider-container" class="time-controls" style="display: none;">
-                        <div class="time-display">
-                            <span class="control-label">Current Time</span>
-                            <span id="time-display" class="time-value">12:00</span>
-                        </div>
-                        <input type="range" id="time-slider" class="time-slider" min="0" max="1439" value="720">
-                        <div class="preset-grid">
-                            <button class="btn btn-preset" onclick="setTime(360)">🌅 6:00</button>
-                            <button class="btn btn-preset" onclick="setTime(720)">☀️ 12:00</button>
-                            <button class="btn btn-preset" onclick="setTime(1080)">🌇 18:00</button>
-                            <button class="btn btn-preset" onclick="setTime(0)">🌙 0:00</button>
-                        </div>
-                        <div style="margin-top: 12px;">
-                            <button class="btn btn-demo" id="time-animation-btn" onclick="toggleTimeAnimation()">
-                                🎬 Animate 24h Cycle
-                            </button>
-                        </div>
-                        <div class="control-group" style="margin-top: 12px;">
-                            <label class="control-label">Animation Speed</label>
-                            <select id="animation-speed-select">
-                                <option value="10">Very Fast (10s)</option>
-                                <option value="20">Fast (20s)</option>
-                                <option value="30" selected>Normal (30s)</option>
-                                <option value="60">Slow (60s)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Display Options -->
-            <div class="control-section">
-                <div class="section-header" data-i18n="displayOptions">Display Options</div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="cardName">Card Name</label>
-                    <input type="text" id="name-input" value="" placeholder="Leave empty to hide" data-i18n-placeholder="placeholderEmpty">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label">Layout</label>
-                    <select id="layout-select">
-                        <option value="default">Default</option>
-                        <option value="minimal">Minimal (compact horizontal)</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="visualStyle">Graphics Style</label>
-                    <select id="visual-style-select">
-                        <option value="modern" data-i18n="visualStyleModern">✨ Modern</option>
-                        <option value="classic" data-i18n="visualStyleClassic">🎨 Classic</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="animationQuality">Animation Quality</label>
-                    <select id="animation-quality-select">
-                        <option value="high" data-i18n="qualityHigh">High (60 FPS)</option>
-                        <option value="medium" data-i18n="qualityMedium">Medium (30 FPS)</option>
-                        <option value="low" data-i18n="qualityLow">Low (20 FPS)</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="height">Height (px)</label>
-                    <input type="number" id="height-input" value="200" min="50" max="800" step="10">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="overlayOpacity">Overlay Opacity (0-1)</label>
-                    <input type="number" id="overlay-opacity-input" value="0.1" min="0" max="1" step="0.05">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label">Text Shadow (0-3)</label>
-                    <input type="number" id="text-shadow-strength" value="1" min="0" max="3" step="0.1">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="textColor">Text Color</label>
-                    <input type="text" id="text-color-input" placeholder="white">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="borderRadius">Corner Radius (px)</label>
-                    <input type="number" id="border-radius-input" placeholder="auto" min="0" max="50" step="1">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="sunPositionX">Sun/Moon X (%)</label>
-                    <input type="number" id="sun-position-x-input" placeholder="auto" min="0" max="100" step="1">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="sunPositionY">Sun/Moon Y (%)</label>
-                    <input type="number" id="sun-position-y-input" placeholder="auto" min="0" max="100" step="1">
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" data-i18n="windSpeedUnit">Wind Speed Unit</label>
-                    <select id="wind-speed-unit-select">
-                        <option value="ms">m/s</option>
-                        <option value="kmh">km/h</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="dailyForecastDays">Daily Forecast Days</label>
-                    <input type="number" id="daily-forecast-days" value="5" min="1" max="14" step="1">
-                </div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="hourlyForecastHours">Hourly Forecast Hours</label>
-                    <input type="number" id="hourly-forecast-hours" value="5" min="1" max="24" step="1">
-                </div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="hourlyForecastTitle">Hourly Forecast Title</label>
-                    <input type="text" id="hourly-forecast-title" placeholder="Today's Forecast">
-                </div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="dailyForecastTitle">Daily Forecast Title</label>
-                    <input type="text" id="daily-forecast-title" placeholder="Daily Forecast">
-                </div>
-
-                <div class="checkbox-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-feels-like" checked>
-                        <span class="checkbox-text" data-i18n="feelsLike">Feels Like Temperature</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-min-temp" checked>
-                        <span class="checkbox-text" data-i18n="minTemp">Min Temperature</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-humidity">
-                        <span class="checkbox-text" data-i18n="humidity">Humidity</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-wind">
-                        <span class="checkbox-text" data-i18n="windSpeed">Wind Speed</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-wind-direction">
-                        <span class="checkbox-text" data-i18n="windDirection">Wind Direction</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-wind-gust">
-                        <span class="checkbox-text" data-i18n="windGust">Wind Gust</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-hourly-forecast">
-                        <span class="checkbox-text" data-i18n="hourlyForecast">Hourly Forecast</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-daily-forecast">
-                        <span class="checkbox-text" data-i18n="dailyForecast">Daily Forecast</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-sunrise-sunset">
-                        <span class="checkbox-text" data-i18n="sunriseSunset">Sunrise/Sunset</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-clock">
-                        <span class="checkbox-text" data-i18n="showClock">Clock</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="use-sensors">
-                        <span class="checkbox-text" data-i18n="stationSensors">Station sensors</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="show-date">
-                        <span class="checkbox-text" data-i18n="showDate">Date</span>
-                    </label>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="clockPosition">Clock Position</label>
-                    <select id="clock-position-select">
-                        <option value="top" data-i18n="clockPositionTop">Top right</option>
-                        <option value="details" data-i18n="clockPositionDetails">Details row</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" data-i18n="clockFormat">Clock Format</label>
-                    <select id="clock-format-select">
-                        <option value="24h" data-i18n="clockFormat24h">24-hour</option>
-                        <option value="12h" data-i18n="clockFormat12h">12-hour (AM/PM)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="control-section">
-                <button class="btn btn-primary" onclick="updateCard()" data-i18n="updateCard">
-                    🔄 Update Card
-                </button>
-                <div style="height: 12px;"></div>
-                <button class="btn btn-demo" id="demo-btn" onclick="toggleDemoMode()" data-i18n="startDemo">
-                    🎬 Start Demo Mode
-                </button>
+            <div class="brand-text">
+                <div class="brand-title" data-i18n="pageTitle">Dynamic Weather Card</div>
+                <div class="brand-subtitle" data-i18n="pageSubtitle">Interactive Demo &amp; Configuration Tool</div>
             </div>
         </div>
-    </div>
+        <div class="top-actions glass">
+            <button class="icon-btn" id="tour-btn" type="button" title="Demo">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+                <span class="demo-label" data-i18n="startDemo">Start Demo Mode</span>
+            </button>
+            <a class="icon-btn" href="https://github.com/teuchezh/dynamic-weather-card" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+            </a>
+        </div>
+    </header>
 
-    <div class="footer">
-        Made with ❤️ for Home Assistant |
-        <a href="https://github.com/teuchezh/dynamic-weather-card" target="_blank">GitHub</a>
-    </div>
+    <main class="stage" id="stage">
+        <div class="stage-inner">
+            <div id="card-container">
+                <div class="loading-message" data-i18n="loading">Loading card...</div>
+            </div>
+        </div>
+    </main>
 
-    <!-- Import map for Lit dependencies -->
-    <script type="importmap">
-    {
-        "imports": {
-            "lit": "https://esm.sh/lit@3.1.3",
-            "lit/": "https://esm.sh/lit@3.1.3/",
-            "@lit/reactive-element": "https://esm.sh/@lit/reactive-element@2.0.4",
-            "@lit/reactive-element/": "https://esm.sh/@lit/reactive-element@2.0.4/",
-            "lit-element": "https://esm.sh/lit-element@4.0.4",
-            "lit-element/": "https://esm.sh/lit-element@4.0.4/",
-            "lit-html": "https://esm.sh/lit-html@3.1.2",
-            "lit-html/": "https://esm.sh/lit-html@3.1.2/"
-        }
-    }
-    </script>
+    <section class="sheet glass" id="sheet" aria-live="polite">
+        <div class="sheet-header">
+            <div class="sheet-title" id="sheet-title"></div>
+            <button class="icon-btn" id="sheet-close" type="button" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </div>
+        <div class="sheet-body" id="sheet-body"></div>
+    </section>
 
-    <!-- Load card module -->
+    <nav class="tabbar glass" id="tabbar" role="tablist"></nav>
+
+    <!-- Load the card bundle (Lit is bundled in) -->
     <script type="module">
-        // Detect browser language early
-        let currentLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-        currentLang = currentLang.startsWith('ru') ? 'ru' : currentLang.startsWith('es') ? 'es' : 'en';
-
-        // Mini translations for error messages
-        const errorMessages = {
-            en: {
-                title: '⚠️ Failed to load card',
-                details: 'Check the browser console (F12) for details',
-                server: 'Make sure the file is served via a local server (not file://)'
-            },
-            ru: {
-                title: '⚠️ Не удалось загрузить карточку',
-                details: 'Проверьте консоль браузера (F12) для деталей',
-                server: 'Убедитесь, что файл открыт через локальный сервер (не file://)'
-            }
-        };
-
         // Mock ha-card element
         if (!customElements.get('ha-card')) {
             customElements.define('ha-card', class extends HTMLElement {
@@ -806,127 +655,528 @@
             });
         }
 
-        // Load main card
-        import('./dynamic-weather-card.js').then(() => {
+        try {
+            const { i18n, resolveLanguage } = await import('./dynamic-weather-card.js');
+            i18n.setLanguage(resolveLanguage());
+            window.i18n = i18n;
             window.cardLoaded = true;
-            if (window.initCard) window.initCard();
-        }).catch(err => {
+            window.dispatchEvent(new CustomEvent('card-ready'));
+        } catch (err) {
             console.error('Failed to load card:', err);
-            const container = document.getElementById('card-container');
-            const msgs = errorMessages[currentLang];
-            container.innerHTML = `
-                <div class="error-message">
-                    <strong>${msgs.title}</strong><br>
-                    ${msgs.details}<br>
-                    <small>${msgs.server}</small>
-                </div>
-            `;
-        });
-
-        import { i18n, resolveLanguage } from './dynamic-weather-card.js';
-
-        const lang = resolveLanguage();
-        i18n.setLanguage(lang);
-
-        window.i18n = i18n;
-        window.dispatchEvent(new CustomEvent('i18n-ready'));
+            const ru = (navigator.language || '').toLowerCase().startsWith('ru');
+            document.getElementById('card-container').innerHTML = ru
+                ? '<div class="error-message"><strong>⚠️ Не удалось загрузить карточку</strong><br>Проверьте консоль браузера (F12)<br><small>Откройте страницу через локальный сервер (не file://)</small></div>'
+                : '<div class="error-message"><strong>⚠️ Failed to load card</strong><br>Check the browser console (F12) for details<br><small>Make sure the file is served via a local server (not file://)</small></div>';
+        }
     </script>
 
-    <!-- Main application logic -->
+    <!-- Demo application -->
     <script>
         // ============================================================================
-        // UTILS
+        // STATE
         // ============================================================================
-        const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-
-        // ============================================================================
-        // TRANSLATIONS
-        // ============================================================================
-function applyTranslations() {
-          $$('[data-i18n]').forEach(el => {
-            el.textContent = window.i18n.t(`demo.${el.dataset.i18n}`);
-          });
-
-          $$('[data-i18n-placeholder]').forEach(el => {
-            el.placeholder = window.i18n.t(`demo.${el.dataset.i18nPlaceholder}`);
-          });
-
-          document.title = window.i18n.t('demo.pageTitle');
-        }
-
-        // ============================================================================
-        // STATE & CONFIGURATION
-        // ============================================================================
-
-        let card = null;
-        let mockHass = null;
-        let currentManualTime = 720; // 12:00
-        let demoModeActive = false;
-        let demoInterval = null;
-        let demoStep = 0;
-        let timeAnimationActive = false;
-        let timeAnimationInterval = null;
-        let timeAnimationStartTime = 0;
-
-        const WEATHER_CONDITIONS = [
-            'sunny', 'clear', 'partlycloudy', 'cloudy', 'rainy', 'pouring', 'snowy', 'snowy-rainy', 'foggy'
-        ];
-
-        const DEMO_SEQUENCE = [
-            { condition: 'sunny', temp: 25, time: 'day', humidity: 45, wind: 10, windBearing: 180 },
-            { condition: 'partlycloudy', temp: 22, time: 'day', humidity: 55, wind: 15, windBearing: 225 },
-            { condition: 'rainy', temp: 15, time: 'day', humidity: 80, wind: 25, windBearing: 270 },
-            { condition: 'lightning-rainy', temp: 14, time: 'sunset', humidity: 85, wind: 30, windBearing: 315 },
-            { condition: 'snowy-rainy', temp: 2, time: 'day', humidity: 75, wind: 20, windBearing: 0 },
-            { condition: 'snowy', temp: -5, time: 'day', humidity: 70, wind: 15, windBearing: 45 },
-            { condition: 'foggy', temp: 8, time: 'sunrise', humidity: 90, wind: 5, windBearing: 90 },
-            { condition: 'clear-night', temp: 12, time: 'night', humidity: 60, wind: 8, windBearing: 135 }
-        ];
-
-        const PRESETS = {
-            sunny: { condition: 'sunny', temp: 25, time: 'day', humidity: 45, wind: 10, windBearing: 180 },
-            rainy: { condition: 'rainy', temp: 15, time: 'day', humidity: 80, wind: 25, windBearing: 270 },
-            snowy: { condition: 'snowy', temp: -5, time: 'day', humidity: 70, wind: 15, windBearing: 0 },
-            night: { condition: 'clear-night', temp: 12, time: 'night', humidity: 60, wind: 8, windBearing: 135 }
+        const state = {
+            condition: 'sunny',
+            temperature: 20,
+            humidity: 65,
+            windSpeed: 15,
+            windBearing: 200,
+            useSensors: false,
+            timeMode: 'auto',
+            minutes: 720,
+            moonPhase: 'auto',
+            playSpeed: 30,
+            visualStyle: 'modern',
+            animationQuality: 'high',
+            layout: 'default',
+            showAnimations: true,
+            height: 200,
+            borderRadius: null,
+            overlayOpacity: 0.1,
+            textShadow: 1,
+            textColor: '',
+            sunX: null,
+            sunY: null,
+            name: '',
+            showFeelsLike: true,
+            showMinTemp: true,
+            showHumidity: true,
+            showWind: true,
+            showWindDirection: true,
+            showWindGust: false,
+            showSunriseSunset: true,
+            showClock: false,
+            showDate: false,
+            showHourlyForecast: false,
+            showDailyForecast: false,
+            hourlyForecastHours: 5,
+            dailyForecastDays: 5,
+            hourlyForecastTitle: '',
+            dailyForecastTitle: '',
+            clockPosition: 'top',
+            clockFormat: '24h',
+            windSpeedUnit: 'ms',
+            language: 'en'
         };
 
-        function formatTime(minutes) {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+        const CONDITIONS = [
+            ['sunny', '☀️', 'weatherConditions.sunny'],
+            ['clear-night', '🌙', 'weatherConditions.clearNight'],
+            ['partlycloudy', '⛅', 'weatherConditions.partlyCloudy'],
+            ['cloudy', '☁️', 'weatherConditions.cloudy'],
+            ['rainy', '🌦️', 'weatherConditions.rainy'],
+            ['pouring', '🌧️', 'weatherConditions.pouring'],
+            ['lightning', '⚡', 'weatherConditions.lightning'],
+            ['lightning-rainy', '⛈️', 'weatherConditions.thunderstorm'],
+            ['snowy', '❄️', 'weatherConditions.snowy'],
+            ['snowy-rainy', '🌨️', 'weatherConditions.sleet'],
+            ['hail', '🧊', 'weatherConditions.hail'],
+            ['foggy', '🌫️', 'weatherConditions.foggy']
+        ];
+
+        const FORECAST_CONDITIONS = ['sunny', 'partlycloudy', 'cloudy', 'rainy', 'pouring', 'snowy', 'snowy-rainy', 'foggy'];
+
+        const LANGUAGES = [
+            ['en', '🇺🇸'], ['ru', '🇷🇺'], ['de', '🇩🇪'], ['fr', '🇫🇷'], ['es', '🇪🇸'], ['it', '🇮🇹'],
+            ['pt', '🇵🇹'], ['nl', '🇳🇱'], ['pl', '🇵🇱'], ['sk', '🇸🇰'], ['hu', '🇭🇺'], ['da', '🇩🇰'],
+            ['nb', '🇳🇴'], ['et', '🇪🇪'], ['sr', '🇷🇸'], ['tr', '🇹🇷'], ['zh', '🇨🇳']
+        ];
+
+        const PRESETS = [
+            ['sunnyDay', '☀️', { condition: 'sunny', temperature: 25, timeMode: 'day', humidity: 45, windSpeed: 10, windBearing: 180 }],
+            ['rainy', '🌧️', { condition: 'rainy', temperature: 15, timeMode: 'day', humidity: 80, windSpeed: 25, windBearing: 270 }],
+            ['snowy', '❄️', { condition: 'snowy', temperature: -5, timeMode: 'day', humidity: 70, windSpeed: 15, windBearing: 0 }],
+            ['clearNight', '🌙', { condition: 'clear-night', temperature: 12, timeMode: 'night', humidity: 60, windSpeed: 8, windBearing: 135 }]
+        ];
+
+        const TOUR = [
+            { condition: 'sunny', temperature: 25, timeMode: 'day', humidity: 45, windSpeed: 10, windBearing: 180 },
+            { condition: 'partlycloudy', temperature: 22, timeMode: 'day', humidity: 55, windSpeed: 15, windBearing: 225 },
+            { condition: 'rainy', temperature: 15, timeMode: 'day', humidity: 80, windSpeed: 25, windBearing: 270 },
+            { condition: 'lightning-rainy', temperature: 14, timeMode: 'sunset', humidity: 85, windSpeed: 30, windBearing: 315 },
+            { condition: 'snowy', temperature: -5, timeMode: 'day', humidity: 70, windSpeed: 15, windBearing: 45 },
+            { condition: 'foggy', temperature: 8, timeMode: 'sunrise', humidity: 90, windSpeed: 5, windBearing: 90 },
+            { condition: 'partlycloudy', temperature: 18, timeMode: 'sunset', humidity: 60, windSpeed: 8, windBearing: 200 },
+            { condition: 'clear-night', temperature: 12, timeMode: 'night', humidity: 60, windSpeed: 8, windBearing: 135 }
+        ];
+
+        const ICONS = {
+            weather: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5v1.5M3.5 8H5M4.8 4.8l1 1M12.2 4.8l-1 1"/><path d="M11 9.3A3.5 3.5 0 1 0 6 11.5"/><path d="M17.5 20H9a4 4 0 1 1 .9-7.9A5 5 0 0 1 19.4 14a3 3 0 0 1-1.9 6z"/></svg>',
+            time: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+            look: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.9 1.4-2l-.4-1a1.8 1.8 0 0 1 1.7-2.5h2.2a3.6 3.6 0 0 0 3.6-3.6c0-4.4-3.8-7.9-8.5-7.9z"/><circle cx="7.8" cy="11" r="1" fill="currentColor"/><circle cx="10.5" cy="7.4" r="1" fill="currentColor"/><circle cx="15" cy="7.8" r="1" fill="currentColor"/></svg>',
+            content: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M7.5 9h9M7.5 12.5h9M7.5 16h5"/></svg>',
+            more: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.5 5.2 3.5 8.5s-1.1 6.2-3.5 8.5c-2.4-2.3-3.5-5.2-3.5-8.5S9.6 5.8 12 3.5z"/></svg>'
+        };
+
+        // ============================================================================
+        // I18N
+        // ============================================================================
+        const t = (key, fallback) => {
+            if (!window.i18n) return fallback ?? key;
+            const full = `demo.${key}`;
+            const value = window.i18n.t(full);
+            return value === full ? (fallback ?? key) : value;
+        };
+
+        function languageName(code) {
+            try {
+                const name = new Intl.DisplayNames([code], { type: 'language' }).of(code);
+                return name.charAt(0).toLocaleUpperCase(code) + name.slice(1);
+            } catch {
+                return code;
+            }
         }
 
-        function generateForecast(baseTemp, days = 5) {
+        function applyStaticTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.dataset.i18n, el.textContent);
+            });
+            document.title = t('pageTitle', 'Dynamic Weather Card');
+            document.documentElement.lang = state.language;
+        }
+
+        // ============================================================================
+        // PANELS (declarative controls)
+        // ============================================================================
+        const windUnit = () => (state.windSpeedUnit === 'kmh' ? ' km/h' : ' m/s');
+        const formatTime = minutes => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+
+        const TABS = [
+            ['weather', 'tabWeather', 'Weather'],
+            ['time', 'tabTime', 'Time'],
+            ['look', 'tabLook', 'Look'],
+            ['content', 'tabContent', 'Content'],
+            ['more', 'tabMore', 'More']
+        ];
+
+        const PANELS = {
+            weather: () => [
+                { type: 'presets', label: ['quickPresets', 'Quick Presets'] },
+                { type: 'chips', key: 'condition', label: ['condition', 'Condition'], cols: 4,
+                  options: CONDITIONS.map(([value, emoji, key]) => ({ value, emoji, label: t(key, value) })) },
+                { type: 'range', key: 'temperature', label: ['temperature', 'Temperature'], min: -30, max: 45, format: v => `${v}°` },
+                { type: 'range', key: 'humidity', label: ['humidity', 'Humidity (%)'], min: 0, max: 100, format: v => `${v}%` },
+                { type: 'range', key: 'windSpeed', label: ['windSpeed', 'Wind Speed'], min: 0, max: 40, format: v => `${v}${windUnit()}` },
+                { type: 'range', key: 'windBearing', label: ['windBearing', 'Wind Direction (°)'], min: 0, max: 359, format: v => `${v}° ${['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(v / 45) % 8]}` },
+                { type: 'toggles', items: [['useSensors', 'stationSensors', 'Station sensors']] },
+                { type: 'note', text: ['stationSensorsHint', 'Station sensors override temperature, humidity, wind and precipitation with mock personal weather station values.'] }
+            ],
+            time: () => [
+                { type: 'chips', key: 'timeMode', label: ['timeOfDay', 'Time of Day'], cols: 5, options: [
+                    { value: 'auto', emoji: '🕐', label: t('autoShort', 'Auto') },
+                    { value: 'sunrise', emoji: '🌅', label: t('sunrise', 'Sunrise') },
+                    { value: 'day', emoji: '☀️', label: t('day', 'Day') },
+                    { value: 'sunset', emoji: '🌇', label: t('sunset', 'Sunset') },
+                    { value: 'night', emoji: '🌙', label: t('night', 'Night') }
+                ] },
+                { type: 'range', key: 'minutes', label: ['manualControl', 'Manual Control'], min: 0, max: 1439, step: 5, format: formatTime, onInput: () => { state.timeMode = 'manual'; } },
+                { type: 'play' },
+                { type: 'segmented', key: 'playSpeed', label: ['playSpeed', 'Cycle length'], options: [[10, '10 s'], [30, '30 s'], [60, '60 s']] },
+                { type: 'chips', key: 'moonPhase', label: ['moonPhase', 'Moon Phase'], cols: 5, options: [
+                    { value: 'auto', emoji: '🗓️', label: t('autoShort', 'Auto') },
+                    ...['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'].map((emoji, i) => ({ value: String(i / 8), emoji, label: `${Math.round((1 - Math.cos(i / 8 * Math.PI * 2)) * 50)}%` }))
+                ] }
+            ],
+            look: () => [
+                { type: 'segmented', key: 'visualStyle', label: ['visualStyle', 'Graphics Style'], options: [['modern', t('visualStyleModern', '✨ Modern')], ['classic', t('visualStyleClassic', '🎨 Classic')]] },
+                { type: 'segmented', key: 'animationQuality', label: ['animationQuality', 'Animation Quality'], options: [['high', t('qualityHighShort', 'High')], ['medium', t('qualityMediumShort', 'Medium')], ['low', t('qualityLowShort', 'Low')]] },
+                { type: 'toggles', items: [['showAnimations', 'animations', 'Animations']] },
+                { type: 'segmented', key: 'layout', label: ['layout', 'Layout'], options: [['default', t('layoutDefault', 'Default')], ['minimal', t('layoutMinimal', 'Minimal')]] },
+                { type: 'range', key: 'height', label: ['height', 'Height (px)'], min: 50, max: 600, step: 10, format: v => `${v}px` },
+                { type: 'range', key: 'borderRadius', label: ['borderRadius', 'Corner Radius (px)'], min: 0, max: 40, nullable: true, format: v => `${v}px` },
+                { type: 'range', key: 'overlayOpacity', label: ['overlayOpacity', 'Overlay Opacity'], min: 0, max: 1, step: 0.05, format: v => Number(v).toFixed(2) },
+                { type: 'segmented', key: 'textShadow', label: ['textShadow', 'Text Shadow'], options: [[0, '0'], [1, '1'], [2, '2'], [3, '3']] },
+                { type: 'swatches', key: 'textColor', label: ['textColor', 'Text Color'], options: ['', '#ffffff', '#1c1c1e', '#ffd60a', '#64d2ff', '#ff9f0a'] },
+                { type: 'range', key: 'sunX', label: ['sunPositionX', 'Sun/Moon X (%)'], min: 0, max: 100, nullable: true, format: v => `${v}%` },
+                { type: 'range', key: 'sunY', label: ['sunPositionY', 'Sun/Moon Y (%)'], min: 0, max: 100, nullable: true, format: v => `${v}%` }
+            ],
+            content: () => [
+                { type: 'text', key: 'name', label: ['cardName', 'Card Name'], placeholder: ['placeholderEmpty', 'Leave empty to hide'] },
+                { type: 'toggles', label: ['details', 'Details'], items: [
+                    ['showFeelsLike', 'feelsLike', 'Feels Like Temperature'],
+                    ['showMinTemp', 'minTemp', 'Min Temperature'],
+                    ['showHumidity', 'humidityToggle', 'Humidity'],
+                    ['showWind', 'windSpeed', 'Wind Speed'],
+                    ['showWindDirection', 'windDirection', 'Wind Direction'],
+                    ['showWindGust', 'windGust', 'Wind Gust'],
+                    ['showSunriseSunset', 'sunriseSunset', 'Sunrise/Sunset']
+                ] },
+                { type: 'segmented', key: 'windSpeedUnit', label: ['windSpeedUnit', 'Wind Speed Unit'], options: [['ms', 'm/s'], ['kmh', 'km/h']] },
+                { type: 'toggles', label: ['clockAndDate', 'Clock'], items: [
+                    ['showClock', 'showClock', 'Clock'],
+                    ['showDate', 'showDate', 'Date']
+                ] },
+                { type: 'segmented', key: 'clockPosition', label: ['clockPosition', 'Clock Position'], options: [['top', t('clockPositionTop', 'Top right')], ['details', t('clockPositionDetails', 'Details row')]] },
+                { type: 'segmented', key: 'clockFormat', label: ['clockFormat', 'Clock Format'], options: [['24h', '24h'], ['12h', '12h']] },
+                { type: 'toggles', label: ['forecasts', 'Forecasts'], items: [
+                    ['showHourlyForecast', 'hourlyForecast', 'Hourly Forecast'],
+                    ['showDailyForecast', 'dailyForecast', 'Daily Forecast']
+                ] },
+                { type: 'range', key: 'hourlyForecastHours', label: ['hourlyForecastHours', 'Hourly Forecast Hours'], min: 1, max: 24 },
+                { type: 'range', key: 'dailyForecastDays', label: ['dailyForecastDays', 'Daily Forecast Days'], min: 1, max: 14 },
+                { type: 'text', key: 'hourlyForecastTitle', label: ['hourlyForecastTitle', 'Hourly Forecast Title'], placeholder: ['placeholderDefault', 'Default'] },
+                { type: 'text', key: 'dailyForecastTitle', label: ['dailyForecastTitle', 'Daily Forecast Title'], placeholder: ['placeholderDefault', 'Default'] }
+            ],
+            more: () => [
+                { type: 'chips', key: 'language', label: ['language.title', 'Language'], cols: 3,
+                  options: LANGUAGES.map(([code, flag]) => ({ value: code, emoji: flag, label: languageName(code) })) },
+                { type: 'links' }
+            ]
+        };
+
+        let activeTab = null;
+
+        function renderTabbar() {
+            const bar = document.getElementById('tabbar');
+            bar.innerHTML = '';
+            for (const [id, key, fallback] of TABS) {
+                const button = document.createElement('button');
+                button.className = 'tab';
+                button.type = 'button';
+                button.setAttribute('role', 'tab');
+                button.setAttribute('aria-selected', String(activeTab === id));
+                button.innerHTML = `${ICONS[id]}<span class="tab-label">${t(key, fallback)}</span>`;
+                button.addEventListener('click', () => openTab(activeTab === id ? null : id));
+                bar.appendChild(button);
+            }
+        }
+
+        function openTab(id) {
+            activeTab = id;
+            const sheet = document.getElementById('sheet');
+            sheet.classList.toggle('open', !!id);
+            document.getElementById('stage').classList.toggle('sheet-open', !!id);
+            if (id) {
+                const tab = TABS.find(([tabId]) => tabId === id);
+                document.getElementById('sheet-title').textContent = t(tab[1], tab[2]);
+                renderPanel(id);
+            }
+            renderTabbar();
+            updateSheetOffset();
+        }
+
+        // Keep the card centered in the space left above the bottom sheet
+        function updateSheetOffset() {
+            const sheet = document.getElementById('sheet');
+            const docked = window.matchMedia('(min-width: 1024px)').matches;
+            const offset = activeTab && !docked ? sheet.getBoundingClientRect().height + 12 : 0;
+            document.documentElement.style.setProperty('--sheet-offset', `${offset}px`);
+        }
+
+        function el(tag, className, html) {
+            const node = document.createElement(tag);
+            if (className) node.className = className;
+            if (html !== undefined) node.innerHTML = html;
+            return node;
+        }
+
+        function groupWithTitle(label, output) {
+            const group = el('div', 'group');
+            if (label) {
+                const title = el('div', 'group-title');
+                title.append(el('span', '', t(label[0], label[1])));
+                if (output) title.append(output);
+                group.append(title);
+            }
+            return group;
+        }
+
+        function renderPanel(id) {
+            const body = document.getElementById('sheet-body');
+            body.innerHTML = '';
+            for (const control of PANELS[id]()) {
+                body.append(renderControl(control));
+            }
+            syncControls();
+        }
+
+        function renderControl(c) {
+            switch (c.type) {
+                case 'chips': {
+                    const group = groupWithTitle(c.label);
+                    const grid = el('div', 'chips');
+                    grid.style.setProperty('--cols', c.cols || 4);
+                    for (const option of c.options) {
+                        const chip = el('button', 'chip', `<span class="emoji">${option.emoji}</span><span class="chip-label">${option.label}</span>`);
+                        chip.type = 'button';
+                        chip.dataset.key = c.key;
+                        chip.dataset.value = option.value;
+                        chip.title = option.label;
+                        chip.addEventListener('click', () => {
+                            stopTimePlay();
+                            stopTour();
+                            setState({ [c.key]: option.value });
+                        });
+                        grid.append(chip);
+                    }
+                    group.append(grid);
+                    return group;
+                }
+                case 'segmented': {
+                    const group = groupWithTitle(c.label);
+                    const seg = el('div', 'segmented');
+                    for (const [value, label] of c.options) {
+                        const button = el('button', '', label);
+                        button.type = 'button';
+                        button.dataset.key = c.key;
+                        button.dataset.value = String(value);
+                        button.addEventListener('click', () => {
+                            setState({ [c.key]: value });
+                            if (c.key === 'playSpeed' && timePlay) { stopTimePlay(); startTimePlay(); }
+                        });
+                        seg.append(button);
+                    }
+                    group.append(seg);
+                    return group;
+                }
+                case 'range': {
+                    const output = el('output');
+                    output.dataset.out = c.key;
+                    output._format = c.format || (v => String(v));
+                    const group = groupWithTitle(c.label, output);
+                    const wrap = el('div', 'range-wrap');
+                    const input = el('input');
+                    input.type = 'range';
+                    input.min = c.min;
+                    input.max = c.max;
+                    input.step = c.step || 1;
+                    input.dataset.range = c.key;
+                    input.addEventListener('input', () => {
+                        if (c.key === 'minutes') stopTimePlay();
+                        c.onInput?.();
+                        setState({ [c.key]: Number(input.value) }, { light: c.key === 'minutes' });
+                    });
+                    wrap.append(input);
+                    if (c.nullable) {
+                        const auto = el('button', 'auto-btn', t('autoShort', 'Auto'));
+                        auto.type = 'button';
+                        auto.dataset.autoFor = c.key;
+                        auto.addEventListener('click', () => setState({ [c.key]: state[c.key] === null ? Number(input.value) : null }));
+                        wrap.append(auto);
+                    }
+                    group.append(wrap);
+                    return group;
+                }
+                case 'toggles': {
+                    const group = groupWithTitle(c.label);
+                    const list = el('div', 'card-list');
+                    for (const [key, labelKey, fallback] of c.items) {
+                        const row = el('label', 'row');
+                        row.append(el('span', '', t(labelKey, fallback)));
+                        const sw = el('span', 'switch', `<input type="checkbox" data-toggle="${key}"><span></span>`);
+                        sw.querySelector('input').addEventListener('change', e => setState({ [key]: e.target.checked }));
+                        row.append(sw);
+                        list.append(row);
+                    }
+                    group.append(list);
+                    return group;
+                }
+                case 'text': {
+                    const group = groupWithTitle(c.label);
+                    const input = el('input', 'text-input');
+                    input.type = 'text';
+                    input.placeholder = t(c.placeholder[0], c.placeholder[1]);
+                    input.dataset.text = c.key;
+                    input.addEventListener('input', () => setState({ [c.key]: input.value }));
+                    group.append(input);
+                    return group;
+                }
+                case 'swatches': {
+                    const group = groupWithTitle(c.label);
+                    const wrap = el('div', 'swatches');
+                    for (const color of c.options) {
+                        const swatch = el('button', 'swatch', color ? '' : 'A');
+                        swatch.type = 'button';
+                        swatch.dataset.key = c.key;
+                        swatch.dataset.value = color;
+                        swatch.title = color || t('autoShort', 'Auto');
+                        swatch.style.background = color || 'conic-gradient(#ff453a, #ffd60a, #32d74b, #64d2ff, #bf5af2, #ff453a)';
+                        swatch.addEventListener('click', () => setState({ [c.key]: color }));
+                        wrap.append(swatch);
+                    }
+                    const input = el('input', 'text-input');
+                    input.style.flex = '1';
+                    input.style.minWidth = '120px';
+                    input.style.padding = '8px 12px';
+                    input.placeholder = 'rgb(…) / #hex / var(--…)';
+                    input.dataset.text = c.key;
+                    input.addEventListener('change', () => setState({ [c.key]: input.value.trim() }));
+                    wrap.append(input);
+                    group.append(wrap);
+                    return group;
+                }
+                case 'presets': {
+                    const group = groupWithTitle(c.label);
+                    const grid = el('div', 'chips');
+                    for (const [key, emoji, preset] of PRESETS) {
+                        const chip = el('button', 'chip', `<span class="emoji">${emoji}</span><span class="chip-label">${t(key, key)}</span>`);
+                        chip.type = 'button';
+                        chip.addEventListener('click', () => { stopTour(); stopTimePlay(); setState(preset); });
+                        grid.append(chip);
+                    }
+                    group.append(grid);
+                    return group;
+                }
+                case 'play': {
+                    const group = el('div', 'group');
+                    const button = el('button', 'primary-btn secondary');
+                    button.type = 'button';
+                    button.id = 'time-play-btn';
+                    button.addEventListener('click', () => (timePlay ? stopTimePlay() : startTimePlay()));
+                    group.append(button);
+                    return group;
+                }
+                case 'note': {
+                    return el('p', 'footnote', t(c.text[0], c.text[1]));
+                }
+                case 'links': {
+                    const group = groupWithTitle(['links', 'Links']);
+                    const list = el('div', 'card-list links');
+                    list.innerHTML = `
+                        <a class="row" href="https://github.com/teuchezh/dynamic-weather-card" target="_blank" rel="noopener"><span>GitHub</span><span>↗</span></a>
+                        <a class="row" href="https://github.com/teuchezh/dynamic-weather-card#configuration" target="_blank" rel="noopener"><span>${t('documentation', 'Documentation')}</span><span>↗</span></a>
+                        <a class="row" href="https://github.com/teuchezh/dynamic-weather-card/issues" target="_blank" rel="noopener"><span>${t('reportIssue', 'Report an issue')}</span><span>↗</span></a>`;
+                    group.append(list);
+                    group.append(el('p', 'footnote', t('madeWith', 'Made with love for Home Assistant')));
+                    return group;
+                }
+            }
+            return el('div');
+        }
+
+        // Reflect state in the rendered controls
+        function syncControls() {
+            const body = document.getElementById('sheet-body');
+            body.querySelectorAll('[data-key]').forEach(node => {
+                node.setAttribute('aria-pressed', String(String(state[node.dataset.key]) === node.dataset.value));
+            });
+            body.querySelectorAll('[data-range]').forEach(input => {
+                const key = input.dataset.range;
+                const value = state[key];
+                if (value !== null && document.activeElement !== input) input.value = value;
+                const fill = ((Number(input.value) - Number(input.min)) / (Number(input.max) - Number(input.min))) * 100;
+                input.style.setProperty('--fill', `${fill}%`);
+                input.classList.toggle('is-auto', value === null);
+            });
+            body.querySelectorAll('[data-auto-for]').forEach(button => {
+                button.setAttribute('aria-pressed', String(state[button.dataset.autoFor] === null));
+            });
+            body.querySelectorAll('output[data-out]').forEach(output => {
+                const value = state[output.dataset.out];
+                output.textContent = value === null ? t('autoShort', 'Auto') : output._format(value);
+            });
+            body.querySelectorAll('[data-toggle]').forEach(input => {
+                input.checked = !!state[input.dataset.toggle];
+            });
+            body.querySelectorAll('[data-text]').forEach(input => {
+                if (document.activeElement !== input) input.value = state[input.dataset.text] ?? '';
+            });
+            const playBtn = document.getElementById('time-play-btn');
+            if (playBtn) playBtn.textContent = timePlay ? `⏸ ${t('pause', 'Pause')}` : `▶ ${t('play24h', 'Play 24 hours')}`;
+            const tourBtn = document.getElementById('tour-btn');
+            tourBtn.classList.toggle('active', !!tourTimer);
+            tourBtn.querySelector('.demo-label').textContent = tourTimer ? t('stopDemo', 'Stop Demo') : t('startDemo', 'Start Demo Mode');
+        }
+
+        // ============================================================================
+        // CARD
+        // ============================================================================
+        let card = null;
+        let cardLayout = null;
+        let forecastCache = { key: '', forecast: [] };
+
+        function generateForecast(baseTemp, days) {
+            const key = `${baseTemp}:${days}`;
+            if (forecastCache.key === key) return forecastCache.forecast;
+
             const now = new Date();
             const forecast = [];
             const hours = Math.max(8, Math.floor(days) * 24);
-
             for (let i = 1; i <= hours; i++) {
-                const forecastTime = new Date(now.getTime() + i * 60 * 60 * 1000);
-                const hour = forecastTime.getHours();
-
+                const time = new Date(now.getTime() + i * 3600 * 1000);
+                const hour = time.getHours();
                 let temp = baseTemp;
                 if (hour >= 6 && hour < 12) temp += Math.floor(Math.random() * 3);
                 else if (hour >= 12 && hour < 18) temp += 2 + Math.floor(Math.random() * 4);
                 else if (hour >= 18 && hour < 22) temp += Math.floor(Math.random() * 3);
                 else temp -= 2 + Math.floor(Math.random() * 3);
 
-                const condition = WEATHER_CONDITIONS[Math.floor(Math.random() * WEATHER_CONDITIONS.length)];
+                const condition = FORECAST_CONDITIONS[Math.floor(Math.random() * FORECAST_CONDITIONS.length)];
                 const wet = /rain|pouring|snow|hail|lightning/.test(condition);
                 forecast.push({
-                    datetime: forecastTime.toISOString(),
+                    datetime: time.toISOString(),
                     condition,
                     temperature: temp,
-                    temp: temp,
+                    temp,
                     // The card shows the day's max chance in the daily forecast
-                    precipitation_probability: wet ? Math.floor(Math.random() * (20 + (forecastTime.getDate() % 4) * 25)) : 0
+                    precipitation_probability: wet ? Math.floor(Math.random() * (20 + (time.getDate() % 4) * 25)) : 0
                 });
             }
-
+            forecastCache = { key, forecast };
             return forecast;
         }
 
-        function createMockHass(condition, temperature, humidity, windSpeed, windBearing, days) {
+        function createMockHass() {
             const now = new Date();
             const sunrise = new Date(now);
             sunrise.setHours(6, 30, 0, 0);
@@ -934,26 +1184,28 @@ function applyTranslations() {
             sunset.setHours(18, 45, 0, 0);
 
             return {
+                language: state.language,
                 states: {
                     'weather.test': {
-                        state: condition,
+                        entity_id: 'weather.test',
+                        state: state.condition,
                         attributes: {
-                            condition: condition,
-                            temperature: temperature,
-                            humidity: humidity,
-                            wind_speed: windSpeed,
-                            wind_bearing: windBearing,
-                            wind_gust_speed: windSpeed * 1.5,
-                            apparent_temperature: temperature - 3,
-                            templow: temperature - 5,
+                            condition: state.condition,
+                            temperature: state.temperature,
+                            humidity: state.humidity,
+                            wind_speed: state.windSpeed,
+                            wind_bearing: state.windBearing,
+                            wind_gust_speed: Math.round(state.windSpeed * 1.5),
+                            apparent_temperature: state.temperature - 3,
+                            templow: state.temperature - 5,
                             pressure: 1013,
                             friendly_name: 'Demo Weather',
-                            forecast: generateForecast(temperature, days),
+                            forecast: generateForecast(state.temperature, Math.max(state.dailyForecastDays, 2)),
                             sunrise: sunrise.toISOString(),
-                            sunset: sunset.toISOString(),
+                            sunset: sunset.toISOString()
                         }
                     },
-                    // Mock personal weather station sensors (used when "Station sensors" is on).
+                    // Mock personal weather station (used when "Station sensors" is on).
                     // Wind speed in km/h and gust in m/s to show unit conversion.
                     'sensor.station_temperature': { state: '18.4', attributes: { unit_of_measurement: '°C' } },
                     'sensor.station_feels_like': { state: '16.9', attributes: { unit_of_measurement: '°C' } },
@@ -961,427 +1213,219 @@ function applyTranslations() {
                     'sensor.station_wind_speed': { state: '14.4', attributes: { unit_of_measurement: 'km/h' } },
                     'sensor.station_wind_gust': { state: '6', attributes: { unit_of_measurement: 'm/s' } },
                     'sensor.station_wind_bearing': { state: '200', attributes: { unit_of_measurement: '°' } },
-                    'sensor.station_precipitation': { state: '1.25', attributes: { unit_of_measurement: 'mm' } },
+                    'sensor.station_precipitation': { state: '1.25', attributes: { unit_of_measurement: 'mm' } }
                 }
             };
         }
 
-        function applyPreset(presetName) {
-            const preset = PRESETS[presetName];
-            if (!preset) return;
-
-            document.getElementById('condition-select').value = preset.condition;
-            document.getElementById('temperature-input').value = preset.temp;
-            document.getElementById('humidity-input').value = preset.humidity;
-            document.getElementById('wind-input').value = preset.wind;
-            document.getElementById('wind-bearing-input').value = preset.windBearing;
-            document.getElementById('time-select').value = preset.time;
-
-            updateCard();
-        }
-
-        function toggleDemoMode() {
-            const demoBtn = document.getElementById('demo-btn');
-
-            if (demoModeActive) {
-                stopDemoMode();
-            } else {
-                startDemoMode();
-            }
-        }
-
-        function startDemoMode() {
-            demoModeActive = true;
-            demoStep = 0;
-            const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = window.i18n.t('demo.stopDemo');
-            demoBtn.classList.add('active');
-
-            runDemoStep();
-            demoInterval = setInterval(runDemoStep, 3000);
-        }
-
-        function stopDemoMode() {
-            demoModeActive = false;
-            if (demoInterval) {
-                clearInterval(demoInterval);
-                demoInterval = null;
-            }
-            const demoBtn = document.getElementById('demo-btn');
-            demoBtn.textContent = window.i18n.t('demo.startDemo');
-            demoBtn.classList.remove('active');
-        }
-
-        function runDemoStep() {
-            const demo = DEMO_SEQUENCE[demoStep];
-
-            document.getElementById('condition-select').value = demo.condition;
-            document.getElementById('temperature-input').value = demo.temp;
-            document.getElementById('humidity-input').value = demo.humidity;
-            document.getElementById('wind-input').value = demo.wind;
-            document.getElementById('wind-bearing-input').value = demo.windBearing;
-            document.getElementById('time-select').value = demo.time;
-
-            updateCard();
-            demoStep = (demoStep + 1) % DEMO_SEQUENCE.length;
-        }
-
-        function toggleTimeAnimation() {
-            if (timeAnimationActive) {
-                stopTimeAnimation();
-            } else {
-                startTimeAnimation();
-            }
-        }
-
-        function startTimeAnimation() {
-            // Switch to manual time mode if not already
-            const timeSelect = document.getElementById('time-select');
-            if (timeSelect.value !== 'manual') {
-                timeSelect.value = 'manual';
-                document.getElementById('time-slider-container').style.display = 'block';
-            }
-
-            // Start from 00:00
-            currentManualTime = 0;
-            setTime(0); // Initial card creation
-
-            timeAnimationActive = true;
-            const btn = document.getElementById('time-animation-btn');
-            btn.textContent = '⏸️ Stop Animation';
-            btn.classList.add('active');
-
-            // Get animation duration in seconds
-            const durationSeconds = parseInt(document.getElementById('animation-speed-select').value);
-            const totalMinutes = 1440; // 24 hours = 1440 minutes
-
-            // Use requestAnimationFrame for smoother updates
-            timeAnimationStartTime = Date.now();
-
-            function animateTime() {
-                if (!timeAnimationActive) return;
-
-                const elapsed = Date.now() - timeAnimationStartTime;
-                const progress = elapsed / (durationSeconds * 1000);
-
-                if (progress >= 1) {
-                    // Animation complete
-                    stopTimeAnimation();
-                    return;
-                }
-
-                const newTime = Math.floor(progress * totalMinutes);
-                // Update time without recreating the card
-                setTime(newTime, true);
-
-                timeAnimationInterval = requestAnimationFrame(animateTime);
-            }
-
-            timeAnimationInterval = requestAnimationFrame(animateTime);
-        }
-
-        function stopTimeAnimation() {
-            timeAnimationActive = false;
-            if (timeAnimationInterval) {
-                cancelAnimationFrame(timeAnimationInterval);
-                timeAnimationInterval = null;
-            }
-            const btn = document.getElementById('time-animation-btn');
-            btn.textContent = '🎬 Animate 24h Cycle';
-            btn.classList.remove('active');
-        }
-
-        function setTime(minutes, skipCardUpdate = false) {
-            currentManualTime = minutes;
-            document.getElementById('time-slider').value = minutes;
-            document.getElementById('time-display').textContent = formatTime(minutes);
-            if (document.getElementById('time-select').value === 'manual') {
-                if (skipCardUpdate && card) {
-                    // Update only the time of day without recreating the card
-                    card._testTimeOfDay = getTimeOfDayFromMinutes(currentManualTime);
-                    // Request Lit to re-render for background gradient update
-                    card.requestUpdate();
-                } else {
-                    updateCard();
-                }
-            }
-        }
-
-        function setWindBearing(degrees) {
-            document.getElementById('wind-bearing-input').value = degrees;
-            updateCard();
-        }
-
-        function getTimeOfDayFromMinutes(totalMinutes) {
-            if (totalMinutes >= 360 && totalMinutes < 480) {
-                const progress = (totalMinutes - 360) / 120;
-                return { type: 'sunrise', progress };
-            }
-            if (totalMinutes >= 480 && totalMinutes < 1080) {
-                const progress = (totalMinutes - 480) / 600;
-                return { type: 'day', progress };
-            }
-            if (totalMinutes >= 1080 && totalMinutes < 1200) {
-                const progress = (totalMinutes - 1080) / 120;
-                return { type: 'sunset', progress };
-            }
-            return { type: 'night', progress: 0 };
-        }
-
-        function updateCard() {
-            const container = document.getElementById('card-container');
-            container.innerHTML = '';
-
-            if (!window.cardLoaded) {
-                container.innerHTML = `<div class="loading-message">${window.i18n.t('loading')}</div>`;
-                return;
-            }
-
+        function buildCardConfig() {
             const config = {
-                condition: document.getElementById('condition-select').value,
-                name: document.getElementById('name-input').value.trim(),
-                temperature: parseInt(document.getElementById('temperature-input').value),
-                humidity: parseInt(document.getElementById('humidity-input').value),
-                windSpeed: parseInt(document.getElementById('wind-input').value),
-                height: parseInt(document.getElementById('height-input').value),
-                overlayOpacity: parseFloat(document.getElementById('overlay-opacity-input').value),
-                windSpeedUnit: document.getElementById('wind-speed-unit-select').value,
-                timeSelect: document.getElementById('time-select').value,
-                showFeelsLike: document.getElementById('show-feels-like').checked,
-                showMinTemp: document.getElementById('show-min-temp').checked,
-                showHumidity: document.getElementById('show-humidity').checked,
-                showWind: document.getElementById('show-wind').checked,
-                showWindDirection: document.getElementById('show-wind-direction').checked,
-                showWindGust: document.getElementById('show-wind-gust').checked,
-                showHourlyForecast: document.getElementById('show-hourly-forecast').checked,
-                showDailyForecast: document.getElementById('show-daily-forecast').checked,
-                hourlyForecastHours: Math.max(
-                    1,
-                    parseInt(document.getElementById('hourly-forecast-hours').value, 10) || 5
-                ),
-                dailyForecastDays: Math.max(
-                    1,
-                    parseInt(document.getElementById('daily-forecast-days').value, 10) || 5
-                ),
-                showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
-                showClock: document.getElementById('show-clock').checked,
-                showDate: document.getElementById('show-date').checked,
-                hourlyForecastTitle: document.getElementById('hourly-forecast-title').value,
-                dailyForecastTitle: document.getElementById('daily-forecast-title').value,
-                useSensors: document.getElementById('use-sensors').checked,
-                textColor: document.getElementById('text-color-input').value.trim(),
-                borderRadius: document.getElementById('border-radius-input').value,
-                sunPositionX: document.getElementById('sun-position-x-input').value,
-                sunPositionY: document.getElementById('sun-position-y-input').value,
-                clockPosition: document.getElementById('clock-position-select').value,
-                clockFormat: document.getElementById('clock-format-select').value,
-                language: document.getElementById('language-select').value,
-                textShadow: parseFloat(document.getElementById('text-shadow-strength').value),
-                layout: document.getElementById('layout-select').value,
-                visualStyle: document.getElementById('visual-style-select').value,
-                animationQuality: document.getElementById('animation-quality-select').value
-            };
-
-            card = document.createElement('dynamic-weather-card');
-
-            if (config.timeSelect === 'manual') {
-                card._testTimeOfDay = getTimeOfDayFromMinutes(currentManualTime);
-            } else if (config.timeSelect !== 'auto') {
-                const progress = (config.timeSelect === 'sunrise' || config.timeSelect === 'sunset') ? 0.5 : 0;
-                card._testTimeOfDay = { type: config.timeSelect, progress };
-            } else {
-                card._testTimeOfDay = null;
-            }
-
-            const moonPhase = document.getElementById('moon-phase-select').value;
-            card._testMoonPhase = moonPhase === 'auto' ? null : parseFloat(moonPhase);
-
-            const windBearing = parseInt(document.getElementById('wind-bearing-input').value);
-            mockHass = createMockHass(
-                config.condition,
-                config.temperature,
-                config.humidity,
-                config.windSpeed,
-                windBearing,
-                config.dailyForecastDays
-            );
-
-            const cardConfig = {
+                type: 'custom:dynamic-weather-card',
                 entity: 'weather.test',
-                height: config.height,
-                overlay_opacity: config.overlayOpacity,
-                text_shadow: config.textShadow,
-                wind_speed_unit: config.windSpeedUnit,
-                show_feels_like: config.showFeelsLike,
-                show_wind: config.showWind,
-                show_wind_direction: config.showWindDirection,
-                show_wind_gust: config.showWindGust,
-                show_humidity: config.showHumidity,
-                show_min_temp: config.showMinTemp,
-                show_hourly_forecast: config.showHourlyForecast,
-                hourly_forecast_hours: config.hourlyForecastHours,
-                show_daily_forecast: config.showDailyForecast,
-                daily_forecast_days: config.dailyForecastDays,
-                show_sunrise_sunset: config.showSunriseSunset,
-                show_clock: config.showClock,
-                show_date: config.showDate,
-                clock_position: config.clockPosition,
-                clock_format: config.clockFormat,
-                language: config.language,
-                layout: config.layout,
-                visual_style: config.visualStyle,
-                animation_quality: config.animationQuality,
+                height: state.height,
+                overlay_opacity: state.overlayOpacity,
+                text_shadow: state.textShadow,
+                wind_speed_unit: state.windSpeedUnit,
+                show_feels_like: state.showFeelsLike,
+                show_min_temp: state.showMinTemp,
+                show_humidity: state.showHumidity,
+                show_wind: state.showWind,
+                show_wind_direction: state.showWindDirection,
+                show_wind_gust: state.showWindGust,
+                show_sunrise_sunset: state.showSunriseSunset,
+                show_clock: state.showClock,
+                show_date: state.showDate,
+                clock_position: state.clockPosition,
+                clock_format: state.clockFormat,
+                show_hourly_forecast: state.showHourlyForecast,
+                hourly_forecast_hours: state.hourlyForecastHours,
+                show_daily_forecast: state.showDailyForecast,
+                daily_forecast_days: state.dailyForecastDays,
+                language: state.language,
+                layout: state.layout,
+                visual_style: state.visualStyle,
+                animation_quality: state.animationQuality,
+                show_animations: state.showAnimations
             };
-
-            if (config.name) {
-                cardConfig.name = config.name;
-            }
-            if (config.useSensors) {
-                Object.assign(cardConfig, {
+            if (state.name.trim()) config.name = state.name.trim();
+            if (state.hourlyForecastTitle) config.hourly_forecast_title = state.hourlyForecastTitle;
+            if (state.dailyForecastTitle) config.daily_forecast_title = state.dailyForecastTitle;
+            if (state.textColor) config.text_color = state.textColor;
+            if (state.borderRadius !== null) config.border_radius = state.borderRadius;
+            if (state.sunX !== null) config.sun_position_x = state.sunX;
+            if (state.sunY !== null) config.sun_position_y = state.sunY;
+            if (state.useSensors) {
+                Object.assign(config, {
                     temperature_entity: 'sensor.station_temperature',
                     feels_like_entity: 'sensor.station_feels_like',
                     humidity_entity: 'sensor.station_humidity',
                     wind_speed_entity: 'sensor.station_wind_speed',
                     wind_gust_entity: 'sensor.station_wind_gust',
                     wind_bearing_entity: 'sensor.station_wind_bearing',
-                    precipitation_entity: 'sensor.station_precipitation',
+                    precipitation_entity: 'sensor.station_precipitation'
                 });
             }
-            // Forecast titles: empty field = default title
-            if (config.hourlyForecastTitle) cardConfig.hourly_forecast_title = config.hourlyForecastTitle;
-            if (config.dailyForecastTitle) cardConfig.daily_forecast_title = config.dailyForecastTitle;
-            // Optional appearance settings: empty field = card default
-            if (config.textColor) cardConfig.text_color = config.textColor;
-            if (config.borderRadius !== '') cardConfig.border_radius = parseInt(config.borderRadius, 10);
-            if (config.sunPositionX !== '') cardConfig.sun_position_x = parseInt(config.sunPositionX, 10);
-            if (config.sunPositionY !== '') cardConfig.sun_position_y = parseInt(config.sunPositionY, 10);
-
-            card.setConfig(cardConfig);
-            card.hass = mockHass;
-            container.appendChild(card);
+            return config;
         }
 
-        function setupLanguageSelect() {
-          const languageSelect = document.getElementById('language-select');
+        function timeOfDayFromMinutes(minutes) {
+            if (minutes >= 360 && minutes < 480) return { type: 'sunrise', progress: (minutes - 360) / 120 };
+            if (minutes >= 480 && minutes < 1080) return { type: 'day', progress: (minutes - 480) / 600 };
+            if (minutes >= 1080 && minutes < 1200) return { type: 'sunset', progress: (minutes - 1080) / 120 };
+            return { type: 'night', progress: 0 };
+        }
 
-          languageSelect.value = window.i18n.lang;
+        function testTimeOfDay() {
+            if (state.timeMode === 'auto') return null;
+            if (state.timeMode === 'manual') return timeOfDayFromMinutes(state.minutes);
+            return { type: state.timeMode, progress: state.timeMode === 'sunrise' || state.timeMode === 'sunset' ? 0.5 : 0.35 };
+        }
 
-          languageSelect.addEventListener('change', (e) => {
-            window.i18n.setLanguage(e.target.value);
-            applyTranslations();
+        // Update the card in place (so the sky and clouds transition smoothly);
+        // the card is only recreated when the layout changes
+        function updateCard() {
+            if (!window.cardLoaded) return;
+            const container = document.getElementById('card-container');
+
+            if (!card || cardLayout !== state.layout) {
+                container.innerHTML = '';
+                card = document.createElement('dynamic-weather-card');
+                cardLayout = state.layout;
+                card.setConfig(buildConfigSafe());
+                applyTestOverrides();
+                card.hass = createMockHass();
+                container.appendChild(card);
+                return;
+            }
+
+            card.setConfig(buildConfigSafe());
+            applyTestOverrides();
+            card.hass = createMockHass();
+        }
+
+        function buildConfigSafe() {
+            const config = buildCardConfig();
+            if (config.language) window.i18n?.setLanguage(config.language);
+            return config;
+        }
+
+        function applyTestOverrides() {
+            card._testTimeOfDay = testTimeOfDay();
+            card._testMoonPhase = state.moonPhase === 'auto' ? null : Number(state.moonPhase);
+            card.requestUpdate();
+        }
+
+        // Light update for continuous changes (time scrubbing / 24h playback)
+        function updateTimeOnly() {
+            if (!card) return;
+            applyTestOverrides();
+        }
+
+        function setState(patch, { light = false } = {}) {
+            const languageChanged = 'language' in patch && patch.language !== state.language;
+            Object.assign(state, patch);
+            if (patch.layout === 'minimal' && !('height' in patch)) state.height = 80;
+            if (patch.layout === 'default' && !('height' in patch)) state.height = 200;
+
+            if (light) {
+                updateTimeOnly();
+            } else {
+                updateCard();
+            }
+            if (languageChanged) {
+                window.i18n?.setLanguage(state.language);
+                applyStaticTranslations();
+                renderTabbar();
+                if (activeTab) openTab(activeTab);
+            }
+            syncControls();
+            requestAnimationFrame(updateSheetOffset);
+        }
+
+        // ============================================================================
+        // DEMO TOUR & 24H PLAYBACK
+        // ============================================================================
+        let tourTimer = null;
+        let tourStep = 0;
+        let timePlay = null;
+
+        function startTour() {
+            stopTimePlay();
+            tourStep = 0;
+            const step = () => {
+                setState(TOUR[tourStep]);
+                tourStep = (tourStep + 1) % TOUR.length;
+            };
+            tourTimer = setInterval(step, 4000);
+            step();
+        }
+
+        function stopTour() {
+            if (!tourTimer) return;
+            clearInterval(tourTimer);
+            tourTimer = null;
+            syncControls();
+        }
+
+        function startTimePlay() {
+            stopTour();
+            const duration = state.playSpeed * 1000;
+            const startMinutes = state.timeMode === 'manual' ? state.minutes : 0;
+            const startedAt = performance.now() - (startMinutes / 1440) * duration;
+            state.timeMode = 'manual';
+            const frame = now => {
+                const progress = ((now - startedAt) % duration) / duration;
+                state.minutes = Math.floor(progress * 1440);
+                updateTimeOnly();
+                syncControls();
+                timePlay = requestAnimationFrame(frame);
+            };
+            timePlay = requestAnimationFrame(frame);
+            syncControls();
+        }
+
+        function stopTimePlay() {
+            if (!timePlay) return;
+            cancelAnimationFrame(timePlay);
+            timePlay = null;
+            syncControls();
+        }
+
+        // ============================================================================
+        // BACKDROP: mirror the card's current sky colors behind everything
+        // ============================================================================
+        function syncBackdrop() {
+            const sky = card?.shadowRoot?.querySelector('.weather-card');
+            if (!sky) return;
+            const colors = getComputedStyle(sky).backgroundImage.match(/rgba?\([^)]+\)/g);
+            if (!colors || colors.length < 2) return;
+            const root = document.documentElement.style;
+            root.setProperty('--bg-top', colors[0]);
+            root.setProperty('--bg-bottom', colors[colors.length - 1]);
+        }
+
+        // ============================================================================
+        // INIT
+        // ============================================================================
+        function init() {
+            state.language = window.i18n.lang;
+            applyStaticTranslations();
+            renderTabbar();
             updateCard();
-          });
+            syncControls();
+            setInterval(syncBackdrop, 150);
+            // Keep "Auto" time current
+            setInterval(() => { if (card && state.timeMode === 'auto') card.requestUpdate(); }, 60_000);
         }
 
-        function initI18nDependentFeatures() {
-          setupLanguageSelect();
-          applyTranslations();
-          updateCard();
-        }
+        document.getElementById('sheet-close').addEventListener('click', () => openTab(null));
+        document.getElementById('tour-btn').addEventListener('click', () => (tourTimer ? stopTour() : startTour()));
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') openTab(null); });
+        window.addEventListener('resize', updateSheetOffset);
+        new ResizeObserver(updateSheetOffset).observe(document.getElementById('sheet'));
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const timeSlider = document.getElementById('time-slider');
-            const timeDisplay = document.getElementById('time-display');
-            const timeSelect = document.getElementById('time-select');
-            const sliderContainer = document.getElementById('time-slider-container');
-
-            timeSlider.addEventListener('input', () => {
-                currentManualTime = parseInt(timeSlider.value);
-                timeDisplay.textContent = formatTime(currentManualTime);
-                if (timeSelect.value === 'manual') {
-                    updateCard();
-                }
-            });
-
-            timeSelect.addEventListener('change', () => {
-                sliderContainer.style.display = timeSelect.value === 'manual' ? 'block' : 'none';
-                updateCard();
-            });
-
-          // Wait for i18n to be ready before using it
-          if (window.i18n) {
-            initI18nDependentFeatures();
-          } else {
-            window.addEventListener('i18n-ready', initI18nDependentFeatures, { once: true });
-          }
-
-          window.addEventListener('language-changed', () => {
-            applyTranslations();
-          });
-
-            const checkboxIds = [
-                'show-feels-like', 'show-min-temp', 'show-humidity',
-                'show-wind', 'show-wind-direction', 'show-wind-gust',
-                'show-hourly-forecast', 'show-sunrise-sunset', 'show-clock', 'show-date', 'use-sensors', 'show-daily-forecast'
-            ];
-
-            checkboxIds.forEach(id => {
-                const checkbox = document.getElementById(id);
-                checkbox?.addEventListener('change', () => {
-                    if (card) updateCard();
-                });
-            });
-
-            const dailyForecastInput = document.getElementById('daily-forecast-days');
-            dailyForecastInput?.addEventListener('change', () => {
-                if (card) updateCard();
-            });
-
-            const hourlyForecastInput = document.getElementById('hourly-forecast-hours');
-            hourlyForecastInput?.addEventListener('change', () => {
-                if (card) updateCard();
-            });
-
-            ['hourly-forecast-title', 'daily-forecast-title', 'text-color-input', 'border-radius-input', 'sun-position-x-input', 'sun-position-y-input'].forEach(id => {
-                document.getElementById(id)?.addEventListener('change', () => {
-                    if (card) updateCard();
-                });
-            });
-
-            const clockPositionSelect = document.getElementById('clock-position-select');
-            document.getElementById('moon-phase-select')?.addEventListener('change', () => updateCard());
-            document.getElementById('visual-style-select')?.addEventListener('change', () => updateCard());
-            document.getElementById('animation-quality-select')?.addEventListener('change', () => updateCard());
-
-            clockPositionSelect?.addEventListener('change', () => {
-                if (card) updateCard();
-            });
-
-            const clockFormatSelect = document.getElementById('clock-format-select');
-            clockFormatSelect?.addEventListener('change', () => {
-                if (card) updateCard();
-            });
-
-            const animationSpeedSelect = document.getElementById('animation-speed-select');
-            animationSpeedSelect?.addEventListener('change', () => {
-                // If animation is running, restart with new speed
-                if (timeAnimationActive) {
-                    stopTimeAnimation();
-                    setTimeout(() => startTimeAnimation(), 100);
-                }
-            });
-
-            const layoutSelect = document.getElementById('layout-select');
-            const heightInput = document.getElementById('height-input');
-            layoutSelect?.addEventListener('change', () => {
-                if (layoutSelect.value === 'minimal') {
-                    heightInput.value = '80';
-                } else {
-                    heightInput.value = '200';
-                }
-                updateCard();
-            });
-
-            timeDisplay.textContent = formatTime(currentManualTime);
-        });
-
-        window.initCard = () => updateCard();
-
-        setInterval(() => {
-            if (card && document.getElementById('time-select').value === 'auto') {
-                updateCard();
-            }
-        }, 60_000);
+        if (window.cardLoaded) init();
+        else window.addEventListener('card-ready', init, { once: true });
     </script>
 </body>
 </html>
