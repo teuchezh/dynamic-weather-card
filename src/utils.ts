@@ -288,6 +288,31 @@ export function getTimeOfDayWithSunData(sunData: SunMoonData & { hasSunData: boo
   return getTimeOfDay();
 }
 
+// Speed units in m/s, keyed by the unit with non-letters stripped ("km/h" -> "kmh")
+const SPEED_UNITS_IN_MS: Record<string, number> = {
+  ms: 1,
+  mps: 1,
+  kmh: 1 / 3.6,
+  kmph: 1 / 3.6,
+  mph: 0.44704,
+  kn: 0.514444,
+  kt: 0.514444,
+  kts: 0.514444,
+  knots: 0.514444,
+  fts: 0.3048
+};
+
+/**
+ * Convert a speed between units (m/s, km/h, mph, kn, ft/s). Unknown units return the value unchanged.
+ */
+export function convertSpeedUnit(value: number, fromUnit: string, toUnit: string): number {
+  const normalize = (unit: string): string => unit.toLowerCase().replace(/[^a-z]/g, '');
+  const from = SPEED_UNITS_IN_MS[normalize(fromUnit)];
+  const to = SPEED_UNITS_IN_MS[normalize(toUnit)];
+  if (!from || !to || from === to) return value;
+  return (value * from) / to;
+}
+
 /**
  * Convert wind speed for legacy providers that don't specify wind_speed_unit
  * If provider has wind_speed_unit attribute, returns value as-is (no conversion)

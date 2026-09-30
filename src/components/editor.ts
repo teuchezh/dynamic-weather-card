@@ -10,6 +10,11 @@ type HaFormSchema = Array<{
   name: string;
   required?: boolean;
   selector?: Record<string, unknown>;
+  // Collapsible group; `flatten` keeps its fields at the top level of the config
+  type?: 'expandable';
+  title?: string;
+  flatten?: boolean;
+  schema?: HaFormSchema;
 }>;
 
 type WeatherCardEditorConfig = Record<string, unknown>;
@@ -100,6 +105,21 @@ export class DynamicWeatherCardEditor extends LitElement {
       { name: 'show_sunrise_sunset', selector: { boolean: {} } },
       { name: 'sunrise_entity', selector: { entity: { domain: ['sensor'] } } },
       { name: 'sunset_entity', selector: { entity: { domain: ['sensor'] } } },
+      {
+        name: 'sensors',
+        type: 'expandable',
+        flatten: true,
+        title: i18n.t('editor.sensors'),
+        schema: [
+          'temperature_entity',
+          'feels_like_entity',
+          'humidity_entity',
+          'wind_speed_entity',
+          'wind_gust_entity',
+          'wind_bearing_entity',
+          'precipitation_entity'
+        ].map((name) => ({ name, selector: { entity: { domain: ['sensor'] } } }))
+      },
       { name: 'show_clock', selector: { boolean: {} } },
       { name: 'show_date', selector: { boolean: {} } },
       {

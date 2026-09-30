@@ -203,6 +203,14 @@ clock_format: 24h                         # 12h or 24h
 | `show_sunrise_sunset` | boolean | `false` | Display sunrise/sunset times |
 | `sunrise_entity` | string | - | Custom sunrise sensor (optional) |
 | `sunset_entity` | string | - | Custom sunset sensor (optional) |
+| **Sensors** (optional, e.g. a personal weather station — each one overrides the weather entity's value; unavailable sensors fall back to it) |
+| `temperature_entity` | string | - | Current temperature |
+| `feels_like_entity` | string | - | "Feels like" temperature |
+| `humidity_entity` | string | - | Humidity (%) |
+| `wind_speed_entity` | string | - | Wind speed; its unit (`km/h`, `m/s`, `mph`, `kn`…) is used for display and wind gust is converted to it |
+| `wind_gust_entity` | string | - | Wind gust speed |
+| `wind_bearing_entity` | string | - | Wind direction in degrees |
+| `precipitation_entity` | string | - | Precipitation, shown in the details row with the sensor's unit |
 | `show_clock` | boolean | `false` | Display current time |
 | `show_date` | boolean | `false` | Display current date under the clock (e.g. "Wed, September 30"), in the card language. Follows `clock_position`; shown on its own if the clock is off |
 | `clock_position` | string | `top` | `top` (top-right) or `details` (info row) |

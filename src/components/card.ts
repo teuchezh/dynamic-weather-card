@@ -205,6 +205,15 @@ export class AnimatedWeatherCard extends LitElement {
       sunriseEntity: config.sunrise_entity || null,
       sunsetEntity: config.sunset_entity || null,
       templowAttribute: config.templow_attribute || null,
+      sensorEntities: {
+        temperature: config.temperature_entity || null,
+        feelsLike: config.feels_like_entity || null,
+        humidity: config.humidity_entity || null,
+        windSpeed: config.wind_speed_entity || null,
+        windGust: config.wind_gust_entity || null,
+        windBearing: config.wind_bearing_entity || null,
+        precipitation: config.precipitation_entity || null
+      },
       tapAction: config.tap_action || { action: 'more-info' },
       holdAction: config.hold_action || { action: 'none' },
       doubleTapAction: config.double_tap_action || { action: 'none' }

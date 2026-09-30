@@ -198,6 +198,10 @@ export interface WeatherData {
   forecast: WeatherForecast[];
   friendlyName: string;
   templow: number | null;
+  // Unit of windSpeed/windGust when they come from a sensor (null = weather entity's unit)
+  windSpeedUnit: string | null;
+  precipitation: number | null;
+  precipitationUnit: string | null;
 }
 
 // Action Configuration
@@ -246,9 +250,27 @@ export interface ConfigInput {
   sunrise_entity?: string;
   sunset_entity?: string;
   templow_attribute?: string;
+  temperature_entity?: string;
+  feels_like_entity?: string;
+  humidity_entity?: string;
+  wind_speed_entity?: string;
+  wind_gust_entity?: string;
+  wind_bearing_entity?: string;
+  precipitation_entity?: string;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
+}
+
+// Optional sensors that override values from the weather entity (e.g. a personal weather station)
+export interface SensorEntities {
+  temperature?: string | null;
+  feelsLike?: string | null;
+  humidity?: string | null;
+  windSpeed?: string | null;
+  windGust?: string | null;
+  windBearing?: string | null;
+  precipitation?: string | null;
 }
 
 // Internal Card Configuration (normalized)
@@ -258,6 +280,7 @@ export interface WeatherCardConfigInternal extends WeatherCardConfig {
   sunriseEntity?: string | null;
   sunsetEntity?: string | null;
   templowAttribute?: string | null;
+  sensorEntities?: SensorEntities;
   tapAction?: ActionConfig;
   holdAction?: ActionConfig;
   doubleTapAction?: ActionConfig;

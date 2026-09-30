@@ -680,6 +680,10 @@
                         <span class="checkbox-text" data-i18n="showClock">Clock</span>
                     </label>
                     <label class="checkbox-item">
+                        <input type="checkbox" id="use-sensors">
+                        <span class="checkbox-text" data-i18n="stationSensors">Station sensors</span>
+                    </label>
+                    <label class="checkbox-item">
                         <input type="checkbox" id="show-date">
                         <span class="checkbox-text" data-i18n="showDate">Date</span>
                     </label>
@@ -906,7 +910,16 @@ function applyTranslations() {
                             sunrise: sunrise.toISOString(),
                             sunset: sunset.toISOString(),
                         }
-                    }
+                    },
+                    // Mock personal weather station sensors (used when "Station sensors" is on).
+                    // Wind speed in km/h and gust in m/s to show unit conversion.
+                    'sensor.station_temperature': { state: '18.4', attributes: { unit_of_measurement: '°C' } },
+                    'sensor.station_feels_like': { state: '16.9', attributes: { unit_of_measurement: '°C' } },
+                    'sensor.station_humidity': { state: '72.4', attributes: { unit_of_measurement: '%' } },
+                    'sensor.station_wind_speed': { state: '14.4', attributes: { unit_of_measurement: 'km/h' } },
+                    'sensor.station_wind_gust': { state: '6', attributes: { unit_of_measurement: 'm/s' } },
+                    'sensor.station_wind_bearing': { state: '200', attributes: { unit_of_measurement: '°' } },
+                    'sensor.station_precipitation': { state: '1.25', attributes: { unit_of_measurement: 'mm' } },
                 }
             };
         }
@@ -1111,6 +1124,7 @@ function applyTranslations() {
                 showSunriseSunset: document.getElementById('show-sunrise-sunset').checked,
                 showClock: document.getElementById('show-clock').checked,
                 showDate: document.getElementById('show-date').checked,
+                useSensors: document.getElementById('use-sensors').checked,
                 textColor: document.getElementById('text-color-input').value.trim(),
                 borderRadius: document.getElementById('border-radius-input').value,
                 sunPositionX: document.getElementById('sun-position-x-input').value,
@@ -1170,6 +1184,17 @@ function applyTranslations() {
 
             if (config.name) {
                 cardConfig.name = config.name;
+            }
+            if (config.useSensors) {
+                Object.assign(cardConfig, {
+                    temperature_entity: 'sensor.station_temperature',
+                    feels_like_entity: 'sensor.station_feels_like',
+                    humidity_entity: 'sensor.station_humidity',
+                    wind_speed_entity: 'sensor.station_wind_speed',
+                    wind_gust_entity: 'sensor.station_wind_gust',
+                    wind_bearing_entity: 'sensor.station_wind_bearing',
+                    precipitation_entity: 'sensor.station_precipitation',
+                });
             }
             // Optional appearance settings: empty field = card default
             if (config.textColor) cardConfig.text_color = config.textColor;
@@ -1233,7 +1258,7 @@ function applyTranslations() {
             const checkboxIds = [
                 'show-feels-like', 'show-min-temp', 'show-humidity',
                 'show-wind', 'show-wind-direction', 'show-wind-gust',
-                'show-hourly-forecast', 'show-sunrise-sunset', 'show-clock', 'show-date', 'show-daily-forecast'
+                'show-hourly-forecast', 'show-sunrise-sunset', 'show-clock', 'show-date', 'use-sensors', 'show-daily-forecast'
             ];
 
             checkboxIds.forEach(id => {

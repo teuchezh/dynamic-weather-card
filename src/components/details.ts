@@ -78,6 +78,7 @@ export class WeatherDetails extends LitElement {
     return (
       (this.config.showHumidity && this.weather.humidity != null) ||
       (this.config.showWind && this.weather.windSpeed != null) ||
+      this.weather.precipitation != null ||
       (this.config.showSunriseSunset && this.sunData?.hasSunData === true)
     );
   }
@@ -109,7 +110,10 @@ export class WeatherDetails extends LitElement {
   private renderWind(): TemplateResult {
     if (!this.config?.showWind || this.weather?.windSpeed == null) return html``;
 
-    const attrs = this.entityAttributes || {};
+    // Sensor-provided wind values carry their own unit, which overrides the weather entity's
+    const attrs = this.weather.windSpeedUnit
+      ? { ...(this.entityAttributes || {}), wind_speed_unit: this.weather.windSpeedUnit }
+      : this.entityAttributes || {};
     const speed = convertWindSpeed(this.weather.windSpeed, attrs, this.config.windSpeedUnit);
     const unit = getWindSpeedUnit(attrs, this.config.windSpeedUnit, i18n.t.bind(i18n));
 
@@ -127,6 +131,19 @@ export class WeatherDetails extends LitElement {
       <div class="info-item">
         <span class="info-icon">${icon}</span>
         <span>${speed} ${unit}${gustText}</span>
+      </div>
+    `;
+  }
+
+  private renderPrecipitation(): TemplateResult {
+    if (this.weather?.precipitation == null) return html``;
+
+    const value = Math.round(this.weather.precipitation * 10) / 10;
+    const unit = this.weather.precipitationUnit ? ` ${this.weather.precipitationUnit}` : '';
+    return html`
+      <div class="info-item">
+        <span class="info-icon">${getSVGIcon('precipitation')}</span>
+        <span>${value}${unit}</span>
       </div>
     `;
   }
@@ -160,6 +177,7 @@ export class WeatherDetails extends LitElement {
         ${this.renderHumidity()}
         ${this.renderWind()}
         ${this.compact ? sunItems : html`${this.renderSunrise()}${this.renderSunset()}`}
+        ${this.renderPrecipitation()}
       </div>
     `;
   }

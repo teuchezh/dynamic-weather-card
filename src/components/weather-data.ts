@@ -1,11 +1,32 @@
 import { TEMPLOW_ATTRIBUTES } from '../constants.js';
 import { i18n } from '../internationalization/index.js';
+import { convertSpeedUnit } from '../utils.js';
 import type {
   HomeAssistant,
+  SensorEntities,
   WeatherEntityAttributes,
   WeatherData,
   WeatherForecast
 } from '../types.js';
+
+interface SensorReading {
+  value: number;
+  unit: string | null;
+}
+
+/**
+ * Read a numeric sensor state. Returns null when the entity is missing,
+ * unavailable/unknown or not numeric, so callers fall back to the weather entity.
+ */
+export function readSensor(hass: HomeAssistant | undefined, entityId?: string | null): SensorReading | null {
+  if (!hass || !entityId) return null;
+  const entity = hass.states[entityId];
+  if (!entity) return null;
+  const value = parseFloat(entity.state);
+  if (!Number.isFinite(value)) return null;
+  const unit = entity.attributes?.unit_of_measurement;
+  return { value, unit: typeof unit === 'string' ? unit : null };
+}
 
 export function getWeatherState(hass: HomeAssistant | undefined, entityId: string): string | null {
   if (!hass || !entityId) return null;
@@ -22,7 +43,7 @@ export function getWeatherAttributes(hass: HomeAssistant | undefined, entityId: 
 export function getWeatherData(
   hass: HomeAssistant | undefined,
   entityId: string,
-  config: { templowAttribute?: string | null },
+  config: { templowAttribute?: string | null; sensorEntities?: SensorEntities },
   hourlyForecast: WeatherForecast[]
 ): WeatherData {
   const state = getWeatherState(hass, entityId);
@@ -48,18 +69,49 @@ export function getWeatherData(
     }
   }
 
+  const sensors = config.sensorEntities || {};
+  const temperatureSensor = readSensor(hass, sensors.temperature);
+  const feelsLikeSensor = readSensor(hass, sensors.feelsLike);
+  const humiditySensor = readSensor(hass, sensors.humidity);
+  const windSpeedSensor = readSensor(hass, sensors.windSpeed);
+  const windGustSensor = readSensor(hass, sensors.windGust);
+  const windBearingSensor = readSensor(hass, sensors.windBearing);
+  const precipitationSensor = readSensor(hass, sensors.precipitation);
+
+  // Weather entity wind unit; legacy providers without wind_speed_unit report m/s
+  const entityWindUnit = typeof attrs.wind_speed_unit === 'string' ? attrs.wind_speed_unit : 'm/s';
+  const entityGust = attrs.wind_gust_speed || attrs.wind_gust || null;
+
+  // When wind speed comes from a sensor, its unit becomes the display unit;
+  // gust values from another source are converted into it
+  const windSpeedUnit = windSpeedSensor?.unit ?? (windSpeedSensor ? entityWindUnit : windGustSensor?.unit ?? null);
+  const displayWindUnit = windSpeedUnit ?? entityWindUnit;
+  const windSpeed = windSpeedSensor
+    ? windSpeedSensor.value
+    : windSpeedUnit && attrs.wind_speed != null
+      ? convertSpeedUnit(attrs.wind_speed, entityWindUnit, displayWindUnit)
+      : attrs.wind_speed ?? null;
+  const windGust = windGustSensor
+    ? convertSpeedUnit(windGustSensor.value, windGustSensor.unit ?? displayWindUnit, displayWindUnit)
+    : entityGust != null && windSpeedUnit
+      ? convertSpeedUnit(entityGust, entityWindUnit, displayWindUnit)
+      : entityGust;
+
   return {
     condition: condition,
-    temperature: attrs.temperature != null ? attrs.temperature : null,
-    apparentTemperature: attrs.apparent_temperature || null,
-    humidity: attrs.humidity != null ? attrs.humidity : null,
-    windSpeed: attrs.wind_speed != null ? attrs.wind_speed : null,
-    windGust: attrs.wind_gust_speed || attrs.wind_gust || null,
-    windBearing: attrs.wind_bearing != null ? attrs.wind_bearing : null,
+    temperature: temperatureSensor?.value ?? (attrs.temperature != null ? attrs.temperature : null),
+    apparentTemperature: feelsLikeSensor?.value ?? (attrs.apparent_temperature || null),
+    humidity: humiditySensor ? Math.round(humiditySensor.value) : (attrs.humidity != null ? attrs.humidity : null),
+    windSpeed,
+    windGust,
+    windBearing: windBearingSensor?.value ?? (attrs.wind_bearing != null ? attrs.wind_bearing : null),
     windDirection: attrs.wind_direction || null,
     pressure: attrs.pressure || null,
     forecast: attrs.forecast || attrs.forecast_hourly || hourlyForecast || [],
     friendlyName: attrs.friendly_name || i18n.t('weather'),
-    templow: templow
+    templow: templow,
+    windSpeedUnit,
+    precipitation: precipitationSensor?.value ?? null,
+    precipitationUnit: precipitationSensor?.unit ?? null
   };
 }
