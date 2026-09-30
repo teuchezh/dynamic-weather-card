@@ -161,10 +161,12 @@ export class MyAnimation extends BaseAnimation {
 
 ### Manual Testing
 
-1. Open `demo.html` in your browser
+1. Run `bun run build`, then serve the repository root (e.g. `python3 -m http.server`) and open `demo.html`
 2. Test various weather conditions
 3. Test different configurations
 4. Check browser console for errors
+
+The live demo on GitHub Pages is rebuilt and deployed from `main` on every push (`.github/workflows/pages.yml`).
 
 ### Testing in Home Assistant
 
