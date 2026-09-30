@@ -10,12 +10,26 @@ type HaFormSchema = Array<{
   name: string;
   required?: boolean;
   selector?: Record<string, unknown>;
-  // Collapsible group; `flatten` keeps its fields at the top level of the config
-  type?: 'expandable';
+  // expandable: collapsible section; grid: fields side by side.
+  // `flatten` (or an empty name) keeps their fields at the top level of the config
+  type?: 'expandable' | 'grid';
   title?: string;
+  icon?: string;
   flatten?: boolean;
   schema?: HaFormSchema;
 }>;
+
+const toggle = (name: string): HaFormSchema[number] => ({ name, selector: { boolean: {} } });
+const grid = (...schema: HaFormSchema): HaFormSchema[number] => ({ name: '', type: 'grid', schema });
+const select = (name: string, values: string[]): HaFormSchema[number] => ({
+  name,
+  selector: {
+    select: {
+      mode: 'dropdown',
+      options: values.map(value => ({ label: i18n.t(`editor.${name}_${value}`), value }))
+    }
+  }
+});
 
 type WeatherCardEditorConfig = Record<string, unknown>;
 
@@ -24,7 +38,8 @@ const languageLabel = (code: string): string => {
   const translated = i18n.t(key);
   if (translated !== key) return translated;
   try {
-    return new Intl.DisplayNames([i18n.lang], { type: 'language' }).of(code) ?? code;
+    const name = new Intl.DisplayNames([i18n.lang], { type: 'language' }).of(code) ?? code;
+    return name.charAt(0).toLocaleUpperCase(i18n.lang) + name.slice(1);
   } catch {
     return code;
   }
@@ -73,59 +88,109 @@ export class DynamicWeatherCardEditor extends LitElement {
     };
   }
 
-  updated(changedProperties: Map<string, unknown>): void {
-    super.updated(changedProperties);
+  // Before rendering, so section titles and labels use the HA language from the first render
+  willUpdate(changedProperties: Map<string, unknown>): void {
+    super.willUpdate(changedProperties);
     if (changedProperties.has('hass')) {
       const resolvedLang = resolveLanguage({ hassLang: this.hass?.language });
-      if (i18n.lang !== resolvedLang) {
-        i18n.setLanguage(resolvedLang);
-        this.requestUpdate();
-      }
+      if (i18n.lang !== resolvedLang) i18n.setLanguage(resolvedLang);
     }
   }
 
   private get _schema(): HaFormSchema {
+    const config = this._config;
+    const isOn = (name: string): boolean => config[name] === true;
+    const section = (name: string, icon: string, schema: HaFormSchema): HaFormSchema[number] => ({
+      name,
+      type: 'expandable',
+      flatten: true,
+      title: i18n.t(`editor.section_${name}`),
+      icon,
+      schema
+    });
+
     return [
       { name: 'entity', required: true, selector: { entity: { domain: ['weather'] } } },
       { name: 'name', selector: { text: {} } },
-      {
-        name: 'layout',
-        selector: {
-          select: {
-            options: [
-              { label: i18n.t('editor.layout_default'), value: 'default' },
-              { label: i18n.t('editor.layout_minimal'), value: 'minimal' }
-            ]
+      grid(
+        select('layout', ['default', 'minimal']),
+        { name: 'height', selector: { number: { min: 50, max: 800, step: 10, mode: 'box', unit_of_measurement: 'px' } } }
+      ),
+      section('appearance', 'mdi:palette-outline', [
+        grid(
+          select('visual_style', ['modern', 'classic']),
+          select('animation_quality', ['high', 'medium', 'low'])
+        ),
+        grid(toggle('show_animations'), toggle('show_aurora')),
+        grid(
+          { name: 'overlay_opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
+          { name: 'text_shadow', selector: { number: { min: 0, max: 3, step: 1, mode: 'box' } } }
+        ),
+        grid(
+          { name: 'text_color', selector: { text: {} } },
+          { name: 'border_radius', selector: { number: { min: 0, max: 50, step: 1, mode: 'box', unit_of_measurement: 'px' } } }
+        ),
+        { name: 'sun_position_x', selector: { number: { min: 0, max: 100, step: 1, mode: 'slider', unit_of_measurement: '%' } } },
+        { name: 'sun_position_y', selector: { number: { min: 0, max: 100, step: 1, mode: 'slider', unit_of_measurement: '%' } } }
+      ]),
+      section('details', 'mdi:thermometer', [
+        grid(
+          toggle('show_feels_like'),
+          toggle('show_min_temp'),
+          toggle('show_humidity'),
+          toggle('show_pressure'),
+          toggle('show_uv_index'),
+          toggle('show_dew_point'),
+          toggle('show_sunrise_sunset'),
+          toggle('show_precipitation_outlook')
+        ),
+        toggle('show_wind'),
+        ...(isOn('show_wind')
+          ? [
+            grid(toggle('show_wind_gust'), toggle('show_wind_direction')),
+            select('wind_speed_unit', ['ms', 'kmh'])
+          ]
+          : [])
+      ]),
+      section('forecast', 'mdi:calendar-clock', [
+        toggle('show_hourly_forecast'),
+        ...(isOn('show_hourly_forecast')
+          ? [grid(
+            { name: 'hourly_forecast_hours', selector: { number: { min: 1, max: 24, step: 1, mode: 'box' } } },
+            { name: 'hourly_forecast_title', selector: { text: {} } }
+          )]
+          : []),
+        toggle('show_daily_forecast'),
+        ...(isOn('show_daily_forecast')
+          ? [
+            grid(
+              { name: 'daily_forecast_days', selector: { number: { min: 1, max: 14, step: 1, mode: 'box' } } },
+              { name: 'daily_forecast_title', selector: { text: {} } }
+            ),
+            toggle('show_temperature_bars')
+          ]
+          : [])
+      ]),
+      section('clock', 'mdi:clock-outline', [
+        {
+          name: 'language',
+          selector: {
+            select: {
+              mode: 'dropdown',
+              options: [
+                { label: i18n.t('editor.language_auto'), value: 'auto' },
+                ...Object.keys(translations).map((code) => ({ label: languageLabel(code), value: code }))
+              ]
+            }
           }
-        }
-      },
-      { name: 'height', selector: { number: { min: 50, max: 800, step: 10, mode: 'box' } } },
-      { name: 'show_feels_like', selector: { boolean: {} } },
-      { name: 'show_wind', selector: { boolean: {} } },
-      { name: 'show_wind_gust', selector: { boolean: {} } },
-      { name: 'show_wind_direction', selector: { boolean: {} } },
-      { name: 'show_humidity', selector: { boolean: {} } },
-      { name: 'show_pressure', selector: { boolean: {} } },
-      { name: 'show_uv_index', selector: { boolean: {} } },
-      { name: 'show_dew_point', selector: { boolean: {} } },
-      { name: 'show_min_temp', selector: { boolean: {} } },
-      { name: 'show_precipitation_outlook', selector: { boolean: {} } },
-      { name: 'show_hourly_forecast', selector: { boolean: {} } },
-      { name: 'hourly_forecast_hours', selector: { number: { min: 1, max: 24, step: 1, mode: 'box' } } },
-      { name: 'hourly_forecast_title', selector: { text: {} } },
-      { name: 'show_daily_forecast', selector: { boolean: {} } },
-      { name: 'daily_forecast_days', selector: { number: { min: 1, max: 14, step: 1, mode: 'box' } } },
-      { name: 'daily_forecast_title', selector: { text: {} } },
-      { name: 'show_temperature_bars', selector: { boolean: {} } },
-      { name: 'show_sunrise_sunset', selector: { boolean: {} } },
-      { name: 'sunrise_entity', selector: { entity: { domain: ['sensor'] } } },
-      { name: 'sunset_entity', selector: { entity: { domain: ['sensor'] } } },
-      {
-        name: 'sensors',
-        type: 'expandable',
-        flatten: true,
-        title: i18n.t('editor.sensors'),
-        schema: [
+        },
+        grid(toggle('show_clock'), toggle('show_date')),
+        ...(isOn('show_clock') || isOn('show_date')
+          ? [grid(select('clock_position', ['top', 'details']), select('clock_format', ['24h', '12h']))]
+          : [])
+      ]),
+      section('sensors', 'mdi:access-point', [
+        ...[
           'temperature_entity',
           'feels_like_entity',
           'humidity_entity',
@@ -136,88 +201,20 @@ export class DynamicWeatherCardEditor extends LitElement {
           'pressure_entity',
           'uv_index_entity',
           'dew_point_entity',
-          'aqi_entity'
+          'aqi_entity',
+          'sunrise_entity',
+          'sunset_entity'
         ].map((name) => ({ name, selector: { entity: { domain: ['sensor'] } } }))
-      },
-      { name: 'show_clock', selector: { boolean: {} } },
-      { name: 'show_date', selector: { boolean: {} } },
-      {
-        name: 'clock_position',
-        selector: {
-          select: {
-            options: [
-              { label: i18n.t('editor.clock_position_top'), value: 'top' },
-              { label: i18n.t('editor.clock_position_details'), value: 'details' }
-            ]
-          }
-        }
-      },
-      {
-        name: 'clock_format',
-        selector: {
-          select: {
-            options: [
-              { label: i18n.t('editor.clock_format_24h'), value: '24h' },
-              { label: i18n.t('editor.clock_format_12h'), value: '12h' }
-            ]
-          }
-        }
-      },
-      { name: 'show_animations', selector: { boolean: {} } },
-      { name: 'show_aurora', selector: { boolean: {} } },
-      {
-        name: 'visual_style',
-        selector: {
-          select: {
-            options: [
-              { label: i18n.t('editor.visual_style_modern'), value: 'modern' },
-              { label: i18n.t('editor.visual_style_classic'), value: 'classic' }
-            ]
-          }
-        }
-      },
-      {
-        name: 'animation_quality',
-        selector: {
-          select: {
-            options: [
-              { label: i18n.t('editor.animation_quality_high'), value: 'high' },
-              { label: i18n.t('editor.animation_quality_medium'), value: 'medium' },
-              { label: i18n.t('editor.animation_quality_low'), value: 'low' }
-            ]
-          }
-        }
-      },
-      { name: 'overlay_opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
-      { name: 'text_shadow', selector: { number: { min: 0, max: 3, step: 1, mode: 'box' } } },
-      { name: 'text_color', selector: { text: {} } },
-      { name: 'border_radius', selector: { number: { min: 0, max: 50, step: 1, mode: 'box', unit_of_measurement: 'px' } } },
-      { name: 'sun_position_x', selector: { number: { min: 0, max: 100, step: 1, mode: 'slider', unit_of_measurement: '%' } } },
-      { name: 'sun_position_y', selector: { number: { min: 0, max: 100, step: 1, mode: 'slider', unit_of_measurement: '%' } } },
-      {
-        name: 'language',
-        selector: {
-          select: {
-            options: [
-              { label: i18n.t('editor.language_auto'), value: 'auto' },
-              ...Object.keys(translations).map((code) => ({ label: languageLabel(code), value: code }))
-            ]
-          }
-        }
-      },
-      {
-        name: 'wind_speed_unit',
-        selector: {
-          select: {
-            options: [
-              { label: i18n.t('editor.wind_speed_unit_ms'), value: 'ms' },
-              { label: i18n.t('editor.wind_speed_unit_kmh'), value: 'kmh' }
-            ]
-          }
-        }
-      }
+      ])
     ];
   }
+
+  // Optional hint under a field, from editor.<name>_helper
+  private _computeHelper = (schema: { name: string }): string | undefined => {
+    const key = `editor.${schema.name}_helper`;
+    const helper = i18n.t(key);
+    return helper === key ? undefined : helper;
+  };
 
   private _computeLabel = (schema: { name: string }): string => {
     const key = `editor.${schema.name}`;
@@ -248,6 +245,7 @@ export class DynamicWeatherCardEditor extends LitElement {
         .data=${this._config}
         .schema=${this._schema}
         .computeLabel=${this._computeLabel}
+        .computeHelper=${this._computeHelper}
         @value-changed=${this._valueChanged}
       ></ha-form>
     `;
