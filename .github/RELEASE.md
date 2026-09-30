@@ -59,6 +59,12 @@ Release notes are generated from commit subjects between the previous release ta
 
 The history lives in [GitHub Releases](https://github.com/teuchezh/dynamic-weather-card/releases). `CHANGELOG.md` covers releases up to `v0.5.2` and is no longer updated.
 
+## Release Highlights
+
+For a big release, add a mini-presentation above the generated changelog: put screenshots or GIFs and a short overview into `docs/release-highlights/README.md` (images in the same folder, linked relatively as `./hero.jpg`).
+
+The Release workflow includes this file only when something in `docs/release-highlights/` changed since the previous release, so it appears once and is skipped by the following releases automatically. Image links are rewritten to the files in the new release tag, so old release notes keep their images when the folder is replaced for a later release. The same text shows in HACS when users update the card.
+
 ## Versioning
 
 This project uses [Calendar Versioning](https://calver.org/) in the same style as Home Assistant: `YYYY.M.PATCH`, tagged as `vYYYY.M.PATCH`.
