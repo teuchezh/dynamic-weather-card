@@ -25,7 +25,7 @@ export class WeatherClock extends LitElement {
       font-size: 48px;
       font-weight: 200;
       line-height: 1;
-      color: white;
+      color: var(--dwc-text-color, white);
       text-align: right;
       text-shadow: var(--card-text-shadow);
       z-index: 2;

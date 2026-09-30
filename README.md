@@ -179,6 +179,7 @@ clock_format: 24h                         # 12h or 24h
 | `height` | number | `200` | Card height in pixels |
 | `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb` |
 | `overlay_opacity` | number | `0.1` | Dark overlay opacity (0-1) for text readability |
+| `text_color` | string | `white` | Text and icon color, any CSS color (e.g. `"#1a1a2e"`, `black`, `var(--primary-text-color)`). Combine with `overlay_opacity` / `text_shadow` for contrast |
 | `border_radius` | number | theme | Corner radius in pixels (`0` for square corners). Defaults to the Home Assistant theme's card radius |
 | `sun_position_x` | number | auto | Pin the sun/moon horizontally, in % of card width (`0` = left, `100` = right). Unset = moves across the sky |
 | `sun_position_y` | number | auto | Pin the sun/moon vertically, in % of card height (`0` = top, `100` = bottom). Unset = moves across the sky |

@@ -133,6 +133,7 @@ export interface WeatherCardConfig {
   borderRadius?: number | null;
   sunPositionX?: number | null;
   sunPositionY?: number | null;
+  textColor?: string | null;
   windSpeedUnit?: 'ms' | 'kmh';
   showAnimations?: boolean;
   layout?: 'default' | 'minimal';
@@ -235,6 +236,7 @@ export interface ConfigInput {
   border_radius?: number;
   sun_position_x?: number;
   sun_position_y?: number;
+  text_color?: string;
   language?: 'auto' | SupportedLanguage;
   wind_speed_unit?: 'ms' | 'kmh';
   show_animations?: boolean;

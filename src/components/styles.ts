@@ -91,7 +91,7 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: white;
+    color: var(--dwc-text-color, white);
     text-shadow: var(--card-text-shadow);
   }
 
@@ -196,7 +196,7 @@ export const cardStyles = css`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--dwc-text-color, white);
   }
 
   .info-icon svg {
@@ -288,7 +288,7 @@ export const cardStyles = css`
     font-size: 48px;
     font-weight: 200;
     line-height: 1;
-    color: white;
+    color: var(--dwc-text-color, white);
     text-align: right;
     text-shadow: var(--card-text-shadow);
     z-index: 2;

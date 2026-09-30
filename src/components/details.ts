@@ -55,7 +55,7 @@ export class WeatherDetails extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: var(--dwc-text-color, white);
       filter: var(--card-icon-filter);
     }
 

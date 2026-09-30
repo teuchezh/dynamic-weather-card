@@ -196,6 +196,7 @@ export class AnimatedWeatherCard extends LitElement {
       borderRadius: config.border_radius ?? DEFAULT_CONFIG.borderRadius,
       sunPositionX: config.sun_position_x ?? DEFAULT_CONFIG.sunPositionX,
       sunPositionY: config.sun_position_y ?? DEFAULT_CONFIG.sunPositionY,
+      textColor: config.text_color?.trim() || DEFAULT_CONFIG.textColor,
       language: config.language || DEFAULT_CONFIG.language,
       windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,
       showAnimations: config.show_animations !== false,
@@ -291,9 +292,12 @@ export class AnimatedWeatherCard extends LitElement {
 
     const cardStyle = `min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} ${shadowStyle} cursor: pointer;`;
     const borderRadius = this.config.borderRadius;
-    const haCardStyle = typeof borderRadius === 'number' && borderRadius >= 0
-      ? `--dwc-border-radius: ${borderRadius}px;`
-      : '';
+    // Only characters valid in CSS color values, so the option can't inject other declarations
+    const textColor = this.config.textColor?.replace(/[^#%(),.\-\w\s]/g, '');
+    const haCardStyle = [
+      typeof borderRadius === 'number' && borderRadius >= 0 ? `--dwc-border-radius: ${borderRadius}px;` : '',
+      textColor ? `--dwc-text-color: ${textColor};` : ''
+    ].join(' ');
     const hass = this.hass;
 
     return html`
