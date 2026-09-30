@@ -60,6 +60,7 @@
     "clock_format_24h": "24-часовой",
     "overlay_opacity": "Прозрачность подложки",
     "text_shadow": "Интенсивность тени текста",
+    "border_radius": "Скругление углов",
     "language": "Язык",
     "language_auto": "Авто",
     "language_en": "Английский",

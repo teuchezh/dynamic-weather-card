@@ -191,6 +191,7 @@ export class AnimatedWeatherCard extends LitElement {
       clockFormat: config.clock_format || DEFAULT_CONFIG.clockFormat,
       overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
       textShadow: config.text_shadow !== undefined ? config.text_shadow : DEFAULT_CONFIG.textShadow,
+      borderRadius: config.border_radius ?? DEFAULT_CONFIG.borderRadius,
       language: config.language || DEFAULT_CONFIG.language,
       windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,
       showAnimations: config.show_animations !== false,
@@ -285,10 +286,15 @@ export class AnimatedWeatherCard extends LitElement {
       : [];
 
     const cardStyle = `min-height: ${minHeight}; ${bgStyle}; ${overlayStyle} ${shadowStyle} cursor: pointer;`;
+    const borderRadius = this.config.borderRadius;
+    const haCardStyle = typeof borderRadius === 'number' && borderRadius >= 0
+      ? `--dwc-border-radius: ${borderRadius}px;`
+      : '';
     const hass = this.hass;
 
     return html`
       <ha-card
+        style="${haCardStyle}"
         @click=${(e: MouseEvent) => this.actionHandler.handleTap(e)}
         @pointerdown=${() => this.actionHandler.handlePointerDown()}
         @pointerup=${(e: PointerEvent) => this.actionHandler.handlePointerUp(e)}

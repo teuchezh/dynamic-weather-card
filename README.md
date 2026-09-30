@@ -179,6 +179,7 @@ clock_format: 24h                         # 12h or 24h
 | `height` | number | `200` | Card height in pixels |
 | `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb` |
 | `overlay_opacity` | number | `0.1` | Dark overlay opacity (0-1) for text readability |
+| `border_radius` | number | theme | Corner radius in pixels (`0` for square corners). Defaults to the Home Assistant theme's card radius |
 | `show_animations` | boolean | `true` | Render canvas weather animations (set `false` for a static gradient) |
 | **Temperature** |
 | `show_feels_like` | boolean | `true` | Display "feels like" temperature |

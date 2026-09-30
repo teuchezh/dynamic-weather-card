@@ -177,6 +177,7 @@ clock_format: 24h                         # 12h или 24h
 | `height` | number | `200` | Высота карточки в пикселях |
 | `language` | string | `auto` | `auto`, `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb` |
 | `overlay_opacity` | number | `0.1` | Прозрачность тёмного наложения (0-1) для читаемости текста |
+| `border_radius` | number | тема | Радиус скругления углов в пикселях (`0` — прямые углы). По умолчанию берётся из темы Home Assistant |
 | `show_animations` | boolean | `true` | Рисовать анимации погоды на канвасе (`false` — статичный градиент) |
 | **Температура** |
 | `show_feels_like` | boolean | `true` | Отображать ощущаемую температуру |

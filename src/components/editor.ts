@@ -125,6 +125,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       { name: 'show_animations', selector: { boolean: {} } },
       { name: 'overlay_opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
       { name: 'text_shadow', selector: { number: { min: 0, max: 3, step: 1, mode: 'box' } } },
+      { name: 'border_radius', selector: { number: { min: 0, max: 50, step: 1, mode: 'box', unit_of_measurement: 'px' } } },
       {
         name: 'language',
         selector: {

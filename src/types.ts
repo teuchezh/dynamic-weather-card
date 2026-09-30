@@ -130,6 +130,7 @@ export interface WeatherCardConfig {
   textShadow?: number;
   language?: 'auto' | SupportedLanguage;
   height?: number | null;
+  borderRadius?: number | null;
   windSpeedUnit?: 'ms' | 'kmh';
   showAnimations?: boolean;
   layout?: 'default' | 'minimal';
@@ -223,6 +224,7 @@ export interface ConfigInput {
   clock_format?: '12h' | '24h';
   overlay_opacity?: number;
   text_shadow?: number;
+  border_radius?: number;
   language?: 'auto' | SupportedLanguage;
   wind_speed_unit?: 'ms' | 'kmh';
   show_animations?: boolean;

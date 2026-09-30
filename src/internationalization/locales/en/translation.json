@@ -60,6 +60,7 @@
     "clock_format_24h": "24-hour",
     "overlay_opacity": "Overlay Opacity",
     "text_shadow": "Text Shadow Strength",
+    "border_radius": "Corner Radius",
     "language": "Language",
     "language_auto": "Auto",
     "language_en": "English",

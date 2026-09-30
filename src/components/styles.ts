@@ -18,6 +18,7 @@ export const cardStyles = css`
   }
 
   ha-card {
+    border-radius: var(--dwc-border-radius, var(--ha-card-border-radius, 12px));
     overflow: hidden;
     background: transparent;
     box-shadow: none;
@@ -30,7 +31,7 @@ export const cardStyles = css`
     position: relative;
     width: var(--card-width);
     min-height: var(--card-height, 200px);
-    border-radius: 16px;
+    border-radius: var(--dwc-border-radius, 16px);
     overflow: visible;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     background: linear-gradient(135deg, var(--day-gradient-start), var(--day-gradient-end));
@@ -80,7 +81,7 @@ export const cardStyles = css`
       rgba(0, 0, 0, calc(var(--overlay-opacity) * 1.2)) 100%
     );
     z-index: 1;
-    border-radius: 16px;
+    border-radius: var(--dwc-border-radius, 16px);
   }
 
   .content {
