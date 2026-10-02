@@ -66,11 +66,13 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_precipitation_outlook: DEFAULT_CONFIG.showPrecipitationOutlook,
       show_temperature_bars: DEFAULT_CONFIG.showTemperatureBars,
       show_forecast_wind: DEFAULT_CONFIG.showForecastWind,
+      show_forecast_description: DEFAULT_CONFIG.showForecastDescription,
       show_aurora: DEFAULT_CONFIG.showAurora,
       show_raindrops: DEFAULT_CONFIG.showRaindrops,
       show_wind_effects: DEFAULT_CONFIG.showWindEffects,
       show_hourly_forecast: DEFAULT_CONFIG.showHourlyForecast,
       hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
+      hourly_forecast_step: DEFAULT_CONFIG.hourlyForecastStep,
       show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
       daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays,
       show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
@@ -159,10 +161,13 @@ export class DynamicWeatherCardEditor extends LitElement {
       section('forecast', 'mdi:calendar-clock', [
         toggle('show_hourly_forecast'),
         ...(isOn('show_hourly_forecast')
-          ? [grid(
-            { name: 'hourly_forecast_hours', selector: { number: { min: 1, step: 1, mode: 'box' } } },
+          ? [
+            grid(
+              { name: 'hourly_forecast_hours', selector: { number: { min: 1, step: 1, mode: 'box' } } },
+              { name: 'hourly_forecast_step', selector: { number: { min: 1, max: 12, step: 1, mode: 'box', unit_of_measurement: 'h' } } }
+            ),
             { name: 'hourly_forecast_title', selector: { text: {} } }
-          )]
+          ]
           : []),
         toggle('show_daily_forecast'),
         ...(isOn('show_daily_forecast')
@@ -174,7 +179,8 @@ export class DynamicWeatherCardEditor extends LitElement {
             toggle('show_temperature_bars')
           ]
           : []),
-        ...(isOn('show_hourly_forecast') || isOn('show_daily_forecast') ? [toggle('show_forecast_wind')] : [])
+        ...(isOn('show_hourly_forecast') || isOn('show_daily_forecast') ? [toggle('show_forecast_wind')] : []),
+        toggle('show_forecast_description')
       ]),
       section('clock', 'mdi:clock-outline', [
         {

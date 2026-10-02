@@ -164,6 +164,19 @@ export const cardStyles = css`
     margin-top: 8px;
   }
 
+  /* The provider's text forecast; long ones are cut at three lines (full text on hover) */
+  .forecast-description {
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.9;
+    text-shadow: var(--card-text-shadow);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .precipitation-outlook {
     display: flex;
     align-items: center;

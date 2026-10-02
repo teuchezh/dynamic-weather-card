@@ -9,11 +9,66 @@ import type {
 
 const HOUR_MS = 3600000;
 
+export interface ForecastSubscriptions {
+  daily: boolean;
+  // Twice-daily periods (day/night); the US National Weather Service puts its text forecast there
+  twiceDaily: boolean;
+}
+
+/**
+ * The text forecast for the period in progress, or the next one that has it.
+ * Sources are tried in order; the first with any description wins.
+ */
+export function pickForecastDescription(sources: WeatherForecast[][], now: Date = new Date()): string | null {
+  for (const source of sources) {
+    const entries = source
+      .map(item => ({ text: item.detailed_description?.trim() ?? '', time: new Date(item.datetime).getTime() }))
+      .filter(({ time }) => !Number.isNaN(time))
+      .sort((a, b) => a.time - b.time);
+    if (!entries.some(({ text }) => text)) continue;
+
+    // The period in progress is the last one that has started
+    const started = entries.filter(({ time }) => time <= now.getTime());
+    const current = started[started.length - 1];
+    if (current?.text) return current.text;
+    const next = entries.find(({ time, text }) => time > now.getTime() && text);
+    if (next) return next.text;
+  }
+  return null;
+}
+
+/**
+ * Every `step` hours from a sorted list of upcoming hourly entries: on hours divisible by the step
+ * (00:00, 03:00, 06:00 … for 3) when the forecast has them, otherwise `step` hours apart.
+ * Each kept entry shows the highest chance of precipitation of the hours it stands for.
+ */
+export function thinHourlyForecast(entries: Array<{ item: WeatherForecast; time: number }>, step: number): WeatherForecast[] {
+  if (step <= 1 || entries.length === 0) return entries.map(({ item }) => item);
+
+  const firstAligned = entries.findIndex(({ time }) => new Date(time).getHours() % step === 0);
+  const start = firstAligned !== -1 && entries[firstAligned].time < entries[0].time + step * HOUR_MS ? firstAligned : 0;
+
+  const kept: number[] = [];
+  for (let i = start; i < entries.length; i++) {
+    // A minute of slack for providers whose times are not exactly on the hour
+    if (kept.length === 0 || entries[i].time >= entries[kept[kept.length - 1]].time + step * HOUR_MS - 60000) kept.push(i);
+  }
+
+  return kept.map((index, k) => {
+    const until = k + 1 < kept.length ? kept[k + 1] : Math.min(entries.length, index + step);
+    const chances = entries.slice(index, until)
+      .map(({ item }) => item.precipitation_probability)
+      .filter((value): value is number => value != null);
+    const item = entries[index].item;
+    return chances.length > 1 ? { ...item, precipitation_probability: Math.max(...chances) } : item;
+  });
+}
+
 export class ForecastService {
   private hourlyForecast: WeatherForecast[] = [];
   private dailyForecast: WeatherForecast[] = [];
-  private hourlySubscription: Promise<(() => void)> | null = null;
-  private dailySubscription: Promise<(() => void)> | null = null;
+  private twiceDailyForecast: WeatherForecast[] = [];
+  private subscriptions: Array<Promise<(() => void)>> = [];
   private onUpdate: () => void;
 
   constructor(onUpdate: () => void) {
@@ -28,77 +83,77 @@ export class ForecastService {
     return this.dailyForecast;
   }
 
-  async subscribe(hass: HomeAssistant | undefined, entityId: string, showDaily: boolean): Promise<void> {
+  async subscribe(hass: HomeAssistant | undefined, entityId: string, options: ForecastSubscriptions): Promise<void> {
     if (!hass || !entityId) {
       return;
     }
 
     await this.unsubscribe();
+    this.hourlyForecast = [];
+    this.dailyForecast = [];
+    this.twiceDailyForecast = [];
 
-    try {
-      this.hourlySubscription = hass.connection.subscribeMessage<ForecastEvent>(
-        (event: ForecastEvent) => {
-          if (event.forecast && event.forecast.length > 0) {
-            this.hourlyForecast = event.forecast;
-            this.onUpdate();
-          }
-        },
-        {
-          type: 'weather/subscribe_forecast',
-          forecast_type: 'hourly',
-          entity_id: entityId
-        }
-      );
+    const types: Array<ForecastEvent['type']> = ['hourly'];
+    if (options.daily) types.push('daily');
+    if (options.twiceDaily) types.push('twice_daily');
 
-      if (showDaily) {
-        this.dailySubscription = hass.connection.subscribeMessage<ForecastEvent>(
+    for (const type of types) {
+      try {
+        const subscription = hass.connection.subscribeMessage<ForecastEvent>(
           (event: ForecastEvent) => {
             if (event.forecast && event.forecast.length > 0) {
-              this.dailyForecast = event.forecast;
+              if (type === 'hourly') this.hourlyForecast = event.forecast;
+              else if (type === 'daily') this.dailyForecast = event.forecast;
+              else this.twiceDailyForecast = event.forecast;
               this.onUpdate();
             }
           },
           {
             type: 'weather/subscribe_forecast',
-            forecast_type: 'daily',
+            forecast_type: type,
             entity_id: entityId
           }
         );
+        // A forecast type the integration doesn't support rejects; the others keep working
+        subscription.catch(() => {});
+        this.subscriptions.push(subscription);
+      } catch {
+        // Silently fail - old integrations don't support this API
       }
-    } catch {
-      // Silently fail - old integrations don't support this API
     }
   }
 
   async unsubscribe(): Promise<void> {
-    if (this.hourlySubscription) {
+    const subscriptions = this.subscriptions;
+    this.subscriptions = [];
+    for (const subscription of subscriptions) {
       try {
-        const unsubscribe = await this.hourlySubscription;
+        const unsubscribe = await subscription;
         unsubscribe();
       } catch {
         // Ignore unsubscribe errors
       }
-      this.hourlySubscription = null;
-    }
-
-    if (this.dailySubscription) {
-      try {
-        const unsubscribe = await this.dailySubscription;
-        unsubscribe();
-      } catch {
-        // Ignore unsubscribe errors
-      }
-      this.dailySubscription = null;
     }
   }
 
   /**
-   * Upcoming hourly entries, up to `hours` of them. There is no upper limit:
-   * a large number shows everything the provider forecasts.
+   * The provider's text forecast for the current period, when it has one
+   */
+  getForecastDescription(fallbackWeatherData: WeatherData | null, now: Date = new Date()): string | null {
+    return pickForecastDescription(
+      [this.twiceDailyForecast, this.dailyForecast, this.hourlyForecast, fallbackWeatherData?.forecast ?? []],
+      now
+    );
+  }
+
+  /**
+   * Upcoming hourly entries, up to `hours` of them, optionally every `step` hours.
+   * There is no upper limit: a large number shows everything the provider forecasts.
    */
   getHourlyForecast(
     hours: number,
-    fallbackWeatherData: WeatherData | null
+    fallbackWeatherData: WeatherData | null,
+    step: number = 1
   ): WeatherForecast[] {
     const maxHours = Math.max(1, Math.floor(Number(hours ?? DEFAULT_CONFIG.hourlyForecastHours)) || DEFAULT_CONFIG.hourlyForecastHours);
     const subscribed = this.hourlyForecast && this.hourlyForecast.length > 0;
@@ -116,7 +171,8 @@ export class ForecastService {
     const hourly = entries.length < 2 || entries[1].time - entries[0].time <= 3 * HOUR_MS;
     const upcoming = subscribed || hourly ? entries : entries.filter(({ time }) => time < now + 24 * HOUR_MS);
 
-    return upcoming.slice(0, maxHours).map(({ item }) => item);
+    const everyHours = Math.max(1, Math.floor(Number(step)) || 1);
+    return thinHourlyForecast(upcoming, everyHours).slice(0, maxHours);
   }
 
   getDailyForecast(

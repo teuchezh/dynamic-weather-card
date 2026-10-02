@@ -65,6 +65,8 @@ export interface WeatherForecast {
   wind_speed?: number;
   wind_gust_speed?: number;
   wind_bearing?: number;
+  // Text forecast for the period (e.g. the US National Weather Service)
+  detailed_description?: string;
   // Alternative temperature property names from various providers
   temp?: number;
   native_temperature?: number;
@@ -140,6 +142,8 @@ export interface WeatherCardConfig {
   showHourlyForecast?: boolean;
   showDailyForecast?: boolean;
   hourlyForecastHours?: number;
+  hourlyForecastStep?: number;
+  showForecastDescription?: boolean;
   dailyForecastDays?: number;
   hourlyForecastTitle?: string | null;
   dailyForecastTitle?: string | null;
@@ -266,6 +270,8 @@ export interface ConfigInput {
   show_hourly_forecast?: boolean;
   show_daily_forecast?: boolean;
   hourly_forecast_hours?: number;
+  hourly_forecast_step?: number;
+  show_forecast_description?: boolean;
   daily_forecast_days?: number;
   hourly_forecast_title?: string;
   daily_forecast_title?: string;

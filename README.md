@@ -267,12 +267,14 @@ Only `entity` is required. The options below are grouped the same way as in the 
 |---|---|---|---|
 | `show_hourly_forecast` | boolean | `false` | Hourly forecast |
 | `hourly_forecast_hours` | number | `5` | Hours to show. No upper limit: a large number (e.g. `168`) shows everything the provider forecasts. A forecast spanning several days marks where each new day starts |
+| `hourly_forecast_step` | number | `1` | Show every N hours, e.g. `3` for 00:00, 03:00, 06:00 … Each entry shows the highest chance of precipitation of its hours. `hourly_forecast_hours` is the number of entries |
 | `hourly_forecast_title` | string | translated | Custom title; `""` hides it |
 | `show_daily_forecast` | boolean | `false` | Daily forecast with high, low and chance of precipitation |
 | `daily_forecast_days` | number | `5` | Days to show, 1–14 |
 | `daily_forecast_title` | string | translated | Custom title; `""` hides it |
 | `show_temperature_bars` | boolean | `false` | Each day's low–high range as a colored bar on one shared scale, with today's temperature marked |
 | `show_forecast_wind` | boolean | `false` | Wind direction, speed and gusts for each hour and day, when the provider reports them |
+| `show_forecast_description` | boolean | `false` | The provider's text forecast for the current period, e.g. *"Partly sunny, with a high near 75."* Only some integrations have one, mainly the US National Weather Service; hidden otherwise. Default layout only |
 
 ### Language, clock and date
 

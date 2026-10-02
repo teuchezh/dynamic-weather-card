@@ -40,8 +40,8 @@ export class AnimatedWeatherCard extends LitElement {
   private animationManager: AnimationManager;
   private forecastService: ForecastService;
   private actionHandler: ActionHandler;
-  private subscribedEntity: string | null = null;
-  private subscribedShowDaily: boolean = false;
+  // Entity and forecast types of the current forecast subscription
+  private subscriptionKey: string | null = null;
   _testTimeOfDay?: TimeOfDay;
   // Demo/testing override of the moon phase (0..1); null = real phase
   _testMoonPhase?: number | null;
@@ -96,6 +96,8 @@ export class AnimatedWeatherCard extends LitElement {
     super.disconnectedCallback();
     this.animationManager.destroy();
     this.forecastService.unsubscribe();
+    // Subscribe again when the card is attached again (e.g. switching dashboard views)
+    this.subscriptionKey = null;
   }
 
   updated(changedProperties: Map<string, unknown>): void {
@@ -117,12 +119,15 @@ export class AnimatedWeatherCard extends LitElement {
 
     if (changedProperties.has('hass') || changedProperties.has('config')) {
       const entity = this.config.entity;
-      const showDaily = this.config.showDailyForecast ?? false;
+      const options = {
+        daily: this.config.showDailyForecast ?? false,
+        twiceDaily: this.config.showForecastDescription ?? false
+      };
+      const key = `${entity}|${options.daily}|${options.twiceDaily}`;
 
-      if (this.hass && entity && (entity !== this.subscribedEntity || showDaily !== this.subscribedShowDaily)) {
-        this.subscribedEntity = entity;
-        this.subscribedShowDaily = showDaily;
-        this.forecastService.subscribe(this.hass, entity, showDaily);
+      if (this.hass && entity && key !== this.subscriptionKey) {
+        this.subscriptionKey = key;
+        this.forecastService.subscribe(this.hass, entity, options);
       }
     }
 
@@ -202,6 +207,13 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
+  private renderForecastDescription(weather: ReturnType<typeof getWeatherData>): TemplateResult {
+    if (!this.config.showForecastDescription) return html``;
+    const text = this.forecastService.getForecastDescription(weather, this._testNow ?? new Date());
+    if (!text) return html``;
+    return html`<div class="forecast-description" title="${text}">${text}</div>`;
+  }
+
   private getDetailsConfig(): DetailsConfig {
     return {
       showHumidity: this.config.showHumidity ?? true,
@@ -241,11 +253,13 @@ export class AnimatedWeatherCard extends LitElement {
       showRaindrops: config.show_raindrops !== false,
       showWindEffects: config.show_wind_effects !== false,
       showTemperatureBars: config.show_temperature_bars === true,
+      showForecastDescription: config.show_forecast_description === true,
       showForecastWind: config.show_forecast_wind === true,
       showForecast: config.show_forecast === true,
       showHourlyForecast: showHourlyForecast === true,
       showDailyForecast: config.show_daily_forecast === true,
       hourlyForecastHours: config.hourly_forecast_hours ?? DEFAULT_CONFIG.hourlyForecastHours,
+      hourlyForecastStep: config.hourly_forecast_step ?? DEFAULT_CONFIG.hourlyForecastStep,
       dailyForecastDays: config.daily_forecast_days ?? DEFAULT_CONFIG.dailyForecastDays,
       hourlyForecastTitle: config.hourly_forecast_title ?? DEFAULT_CONFIG.hourlyForecastTitle,
       dailyForecastTitle: config.daily_forecast_title ?? DEFAULT_CONFIG.dailyForecastTitle,
@@ -365,7 +379,8 @@ export class AnimatedWeatherCard extends LitElement {
     const hourlyForecast = this.config.showHourlyForecast
       ? this.forecastService.getHourlyForecast(
         this.config.hourlyForecastHours ?? DEFAULT_CONFIG.hourlyForecastHours,
-        weather
+        weather,
+        this.config.hourlyForecastStep ?? DEFAULT_CONFIG.hourlyForecastStep
       )
       : [];
 
@@ -453,6 +468,7 @@ export class AnimatedWeatherCard extends LitElement {
               .lang=${i18n.lang}
             ></weather-clock>
           </div>
+          ${this.renderForecastDescription(weather)}
           <hourly-forecast
             .forecast=${hourlyForecast}
             .wind=${windOptions}
