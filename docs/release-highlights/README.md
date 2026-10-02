@@ -4,88 +4,64 @@
   docs/release-highlights/ changed since the previous release, and rewrites the
   relative image links to files pinned to the release tag.
   For the next big release, replace the text and images here.
-  The codename below becomes part of the release title.
-
-  codename: Autumn Flare-Up
+  A "codename: ..." line in this comment becomes part of the release title.
 -->
 
-![A whole new sky](./hero.jpg)
+![Forecasts that tell more](./hero.jpg)
 
-## 🍂 Autumn Flare-Up: a whole new sky
+## 📈 Forecasts that tell more
 
-This is the biggest visual update to Dynamic Weather Card so far, so we gave it a codename. The sky now follows the weather and the time of day. Clouds drift in layers and rain and snow have depth. At night you get stars, the moon in its real phase and, if you like, the northern lights.
+The last release gave the card a new sky. This one is about the forecast: what the weather will do over the next hours and days, at a glance.
 
-![Weather animations](./animations.webp)
-
-- **Weather-aware sky.** Each condition has its own palette, with warm sunrise and sunset horizons that fade under heavy clouds. The sky transitions smoothly when the weather changes.
-- **Layered clouds.** Soft clouds drift at three depths. Their color and coverage follow the weather.
-- **Rain, snow, hail and fog with depth.** Rain splashes, snowflakes sway, hail bounces and fog banks drift.
-- **Raindrops on the glass.** In the rain, drops land on the card and dry up, and bigger ones slide down leaving a trail.
-- **Wind.** Windy weather gets gusts and tumbling autumn leaves, and clouds drift faster as the wind picks up.
-- **Night sky.** Twinkling stars, occasional shooting stars and the moon in today's real phase.
-- **Northern lights.** Waving aurora curtains on clear nights, enabled with `show_aurora: true`.
-- **Sun rays** and a subtle lens flare on clear days.
-
-### Before and after
-
-![Classic vs modern graphics](./before-after.jpg)
-
-The new graphics are the default. To keep the previous look, set `visual_style: classic`.
-
-## 📊 More than pretty
-
-![New data features](./features.jpg)
-
-All of these are off by default. Turn them on in the visual editor or in YAML:
-
-| Option | What it shows |
+| Option | What it does |
 |---|---|
-| `show_precipitation_outlook` | When rain or snow starts or stops in the next 12 hours, e.g. *"Rain expected around 16:00"* |
-| `show_temperature_bars` | Each day's low–high range as a colored bar on one scale, with today's temperature marked |
-| `show_pressure`, `show_uv_index`, `show_dew_point` | Pressure, UV index and dew point, from the weather entity or your own sensors |
-| `aqi_entity` | An air quality index sensor |
-| `show_aurora` | Northern lights on clear nights |
-| `show_raindrops`, `show_wind_effects` | Raindrops on the glass, and wind gusts with leaves. Both are on by default; set to `false` to hide them |
+| `hourly_forecast_chart` | The hourly temperatures as a smooth curve colored by temperature, with the chance of precipitation as bars under it |
+| `show_forecast_wind` | Wind direction, speed and gusts for every hour and day, when your integration reports them |
+| `hourly_forecast_hours` | No 24-hour limit anymore: `72` shows three days, `168` a week. Each new day is labeled in the strip |
+| `hourly_forecast_step` | Every few hours instead of every hour, e.g. `3` for 00:00, 03:00, 06:00 … Each entry shows the highest chance of rain of its hours |
+| `show_forecast_description` | The provider's own text forecast, e.g. *"Partly sunny, with a high near 75."* (mainly the US National Weather Service) |
 
-## ⚡ Runs smoothly everywhere
+All of them are off by default, apart from the hour limit, and all are in the visual editor.
 
-- `animation_quality: high | medium | low` for wall tablets and older devices. It sets the frame rate (60 / 30 / 20 FPS), particle count and canvas resolution.
-- Animations pause while the card is off-screen.
-- With the system **"reduce motion"** setting on, the card shows a still frame.
+## ✨ Also in this release
 
-## 🎛️ New interactive demo
+![Also in this release](./more.jpg)
 
-![Interactive demo](./demo.jpg)
+- **Minimal layout you can read.** Bigger temperature, condition, details and clock.
+- **Short forecasts fill the card.** With two days from Yandex Weather, or a few hours, the forecast spreads across the full width instead of hugging the left edge.
+- **Wind units that just work.** `wind_speed_unit` now has `auto` (the default), and `ms`, `kmh`, `mph` and `kn` convert all wind on the card, forecasts included. Speeds and gusts are rounded the same way.
+- **Clean YAML from the visual editor.** It saves only what you changed, with `type` and `entity` first, instead of every option with its default.
+- **Readable chance of precipitation** on light daytime skies.
+- **Every language complete.** Slovenian is new, and Estonian and all other languages are fully translated.
+- **Fixes.** Forecasts keep updating after switching dashboard views, and the card bundle is about 70 KB smaller.
 
-Try every condition, time of day, moon phase and option in the browser: **[teuchezh.github.io/dynamic-weather-card](https://teuchezh.github.io/dynamic-weather-card/demo.html)**.
+## 🎛️ Set it up in the demo, copy the YAML
+
+![Copy the YAML from the demo](./demo.jpg)
+
+The **YAML** button in the [demo](https://teuchezh.github.io/dynamic-weather-card/demo.html) shows the card you set up there as YAML, ready to paste into a manual card.
 
 > **Upgrading:**
-> - The background CSS variables (`--day-gradient-start` and the others) now only affect `visual_style: classic`.
+> - **Wind units.** The previous visual editor saved `wind_speed_unit: ms` into every card it created. That setting now converts all wind to m/s, so a card whose integration reports km/h will switch to m/s. To keep your integration's unit, pick **Auto** for the wind speed unit in the editor, or remove the line.
 > - After updating, refresh the browser cache (Ctrl+Shift+R) or clear the frontend cache in the companion app.
 
 <details>
-<summary>🇷🇺 «Осеннее обострение»: кратко по-русски</summary>
+<summary>🇷🇺 Кратко по-русски</summary>
 
-- **Новая графика по умолчанию:**
-  - небо подстраивается под погоду и время суток;
-  - многослойные облака;
-  - дождь, снег, град и туман с глубиной;
-  - капли на стекле в дождь;
-  - порывы ветра и осенние листья;
-  - звёзды и луна в реальной фазе;
-  - северное сияние (`show_aurora: true`);
-  - лучи солнца.
-
-  Прежний вид включается опцией `visual_style: classic`.
-- **Новые данные** (по умолчанию выключены):
-  - `show_precipitation_outlook`: когда начнутся или закончатся осадки;
-  - `show_temperature_bars`: полоски температур в прогнозе по дням;
-  - `show_pressure`, `show_uv_index`, `show_dew_point`, `aqi_entity`.
-- **Производительность:**
-  - `animation_quality: high | medium | low` для планшетов;
-  - пауза анимации вне экрана;
-  - неподвижный кадр при системной настройке «уменьшить движение».
-- **Новое демо:** [teuchezh.github.io/dynamic-weather-card](https://teuchezh.github.io/dynamic-weather-card/demo.html).
+- **Прогнозы:**
+  - `hourly_forecast_chart`: график почасовой температуры, окрашенный по температуре, со столбиками вероятности осадков;
+  - `show_forecast_wind`: направление, скорость и порывы ветра для каждого часа и дня;
+  - `hourly_forecast_hours` больше не ограничен 24 часами: `72` — три дня, у каждого нового дня есть подпись;
+  - `hourly_forecast_step`: прогноз раз в несколько часов, например `3` — 00:00, 03:00, 06:00…;
+  - `show_forecast_description`: текстовый прогноз поставщика погоды (в основном метеослужба США).
+- **Ещё:**
+  - крупный текст в компактной раскладке;
+  - короткий прогноз (например, 2 дня Яндекса) растягивается на всю ширину;
+  - единицы ветра: `wind_speed_unit: auto` по умолчанию, а `ms`, `kmh`, `mph`, `kn` переводят весь ветер на карточке;
+  - визуальный редактор сохраняет только изменённые опции;
+  - кнопка **YAML** в [демо](https://teuchezh.github.io/dynamic-weather-card/demo.html);
+  - все переводы полные, добавлен словенский.
+- ⚠️ **При обновлении.** Старый редактор записывал в карточки `wind_speed_unit: ms`. Теперь эта настройка переводит ветер в м/с. Чтобы оставить единицы интеграции (например, км/ч у Яндекса), выберите в редакторе «Авто» или удалите строку.
 
 </details>
 
