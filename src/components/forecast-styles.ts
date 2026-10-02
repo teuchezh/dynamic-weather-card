@@ -206,6 +206,60 @@ export const forecastStyles = css`
     font-size: 10px;
   }
 
+  /* Hourly temperature chart: each item draws its part of the curve, across half the gap on each side */
+  .forecast-chart {
+    position: relative;
+    align-self: stretch;
+    margin: 0 -8px;
+  }
+
+  .forecast-chart svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .chart-line {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  }
+
+  .chart-dot {
+    position: absolute;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+  }
+
+  .chart-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 18px;
+    white-space: nowrap;
+    text-shadow: var(--card-text-shadow);
+  }
+
+  .chart-bar {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 18px;
+    margin-left: -9px;
+    border-radius: 3px 3px 0 0;
+    background: rgba(79, 179, 255, 0.55);
+  }
+
   .forecast-unavailable {
     opacity: 0.6;
     font-size: 14px;

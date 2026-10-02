@@ -73,6 +73,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_hourly_forecast: DEFAULT_CONFIG.showHourlyForecast,
       hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
       hourly_forecast_step: DEFAULT_CONFIG.hourlyForecastStep,
+      hourly_forecast_chart: DEFAULT_CONFIG.hourlyForecastChart,
       show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
       daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays,
       show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
@@ -166,7 +167,8 @@ export class DynamicWeatherCardEditor extends LitElement {
               { name: 'hourly_forecast_hours', selector: { number: { min: 1, step: 1, mode: 'box' } } },
               { name: 'hourly_forecast_step', selector: { number: { min: 1, max: 12, step: 1, mode: 'box', unit_of_measurement: 'h' } } }
             ),
-            { name: 'hourly_forecast_title', selector: { text: {} } }
+            { name: 'hourly_forecast_title', selector: { text: {} } },
+            toggle('hourly_forecast_chart')
           ]
           : []),
         toggle('show_daily_forecast'),

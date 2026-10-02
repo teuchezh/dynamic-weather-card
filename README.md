@@ -268,6 +268,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `show_hourly_forecast` | boolean | `false` | Hourly forecast |
 | `hourly_forecast_hours` | number | `5` | Hours to show. No upper limit: a large number (e.g. `168`) shows everything the provider forecasts. A forecast spanning several days marks where each new day starts |
 | `hourly_forecast_step` | number | `1` | Show every N hours, e.g. `3` for 00:00, 03:00, 06:00 … Each entry shows the highest chance of precipitation of its hours. `hourly_forecast_hours` is the number of entries |
+| `hourly_forecast_chart` | boolean | `false` | Temperatures as a smooth curve colored by temperature, with the chance of precipitation as bars under it |
 | `hourly_forecast_title` | string | translated | Custom title; `""` hides it |
 | `show_daily_forecast` | boolean | `false` | Daily forecast with high, low and chance of precipitation |
 | `daily_forecast_days` | number | `5` | Days to show, 1–14 |

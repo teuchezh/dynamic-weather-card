@@ -143,6 +143,7 @@ export interface WeatherCardConfig {
   showDailyForecast?: boolean;
   hourlyForecastHours?: number;
   hourlyForecastStep?: number;
+  hourlyForecastChart?: boolean;
   showForecastDescription?: boolean;
   dailyForecastDays?: number;
   hourlyForecastTitle?: string | null;
@@ -271,6 +272,7 @@ export interface ConfigInput {
   show_daily_forecast?: boolean;
   hourly_forecast_hours?: number;
   hourly_forecast_step?: number;
+  hourly_forecast_chart?: boolean;
   show_forecast_description?: boolean;
   daily_forecast_days?: number;
   hourly_forecast_title?: string;

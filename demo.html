@@ -774,6 +774,7 @@
             showDailyForecast: false,
             hourlyForecastHours: 5,
             hourlyForecastStep: 1,
+            hourlyForecastChart: true,
             dailyForecastDays: 5,
             hourlyForecastTitle: '',
             dailyForecastTitle: '',
@@ -947,6 +948,7 @@
                 { type: 'segmented', key: 'clockFormat', label: ['clockFormat', 'Clock Format'], options: [['24h', '24h'], ['12h', '12h']] },
                 { type: 'toggles', label: ['forecasts', 'Forecasts'], items: [
                     ['showHourlyForecast', 'hourlyForecast', 'Hourly Forecast'],
+                    ['hourlyForecastChart', 'hourlyChart', 'Hourly temperature chart'],
                     ['showDailyForecast', 'dailyForecast', 'Daily Forecast'],
                     ['showPrecipitationOutlook', 'precipitationOutlook', 'Rain start/stop time'],
                     ['showTemperatureBars', 'temperatureBars', 'Temperature bars'],
@@ -1385,6 +1387,7 @@
                 show_hourly_forecast: state.showHourlyForecast,
                 hourly_forecast_hours: state.hourlyForecastHours,
                 hourly_forecast_step: state.hourlyForecastStep,
+                hourly_forecast_chart: state.hourlyForecastChart,
                 show_forecast_description: state.showForecastDescription,
                 show_daily_forecast: state.showDailyForecast,
                 daily_forecast_days: state.dailyForecastDays,
@@ -1429,7 +1432,7 @@
             show_precipitation_outlook: false, show_temperature_bars: false, show_forecast_wind: false,
             show_forecast_description: false, show_aurora: false, show_raindrops: true, show_wind_effects: true,
             show_clock: false, show_date: false, clock_position: 'top', clock_format: '24h',
-            show_hourly_forecast: false, hourly_forecast_hours: 5, hourly_forecast_step: 1,
+            show_hourly_forecast: false, hourly_forecast_hours: 5, hourly_forecast_step: 1, hourly_forecast_chart: false,
             show_daily_forecast: false, daily_forecast_days: 5,
             layout: 'default', visual_style: 'modern', animation_quality: 'high', show_animations: true
         };
@@ -1460,7 +1463,7 @@
             // Home Assistant's language is picked up automatically
             if (state.language === initialLanguage) delete config.language;
             // Settings of switched-off parts
-            if (!state.showHourlyForecast) ['hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_title'].forEach(k => delete config[k]);
+            if (!state.showHourlyForecast) ['hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_title', 'hourly_forecast_chart'].forEach(k => delete config[k]);
             if (!state.showDailyForecast) ['daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars'].forEach(k => delete config[k]);
             if (!state.showHourlyForecast && !state.showDailyForecast) delete config.show_forecast_wind;
             if (!state.showWind) ['show_wind_gust', 'show_wind_direction'].forEach(k => delete config[k]);

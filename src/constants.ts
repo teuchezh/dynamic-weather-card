@@ -45,6 +45,7 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   showDailyForecast: false,
   hourlyForecastHours: 5,
   hourlyForecastStep: 1,
+  hourlyForecastChart: false,
   showForecastDescription: false,
   dailyForecastDays: 5,
   hourlyForecastTitle: null as string | null,
