@@ -17,7 +17,7 @@ A Home Assistant weather card with a living sky.
   - Feels-like temperature, humidity, wind, pressure, UV index, dew point, air quality and a clock.
 - **Your own sensors.** Use a personal weather station or any other sensor on top of the weather entity.
 - **Light on devices.** `animation_quality` for wall tablets. Animations pause off-screen and respect "reduce motion". The classic look is still available.
-- **Visual editor** grouped into sections, in 17 languages.
+- **Visual editor** grouped into sections, in 18 languages.
 
 ## 🚀 Quick start
 

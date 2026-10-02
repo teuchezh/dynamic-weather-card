@@ -277,7 +277,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `language` | string | `auto` | `auto` (Home Assistant's language) or `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `et` |
+| `language` | string | `auto` | `auto` (Home Assistant's language) or `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `sl`, `et` |
 | `show_clock` | boolean | `false` | Current time |
 | `show_date` | boolean | `false` | Current date, e.g. "Wed, September 30" |
 | `clock_position` | string | `top` | `top` (top right) or `details` (in the details row) |
@@ -351,7 +351,7 @@ Without any sun data it falls back to fixed hours: sunrise 6:00–8:00, day unti
 
 ## 🌍 Languages
 
-English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文 and Eesti (weather conditions only). The card follows the Home Assistant language unless you set `language`.
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文, Slovenščina and Eesti (weather conditions only). The card follows the Home Assistant language unless you set `language`.
 
 To add or improve a translation, edit `src/internationalization/locales/<code>/translation.json` right on GitHub and open a pull request against `main`. No coding needed. New languages are picked up automatically, and missing keys fall back to English.
 
