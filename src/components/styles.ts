@@ -334,14 +334,14 @@ export const cardStyles = css`
 
   /* ---- Minimal layout ---- */
   .weather-card.layout--minimal {
-    min-height: 56px;
+    min-height: 72px;
   }
 
   .weather-card.layout--minimal .content {
     flex-direction: row;
     align-items: center;
-    padding: 4px 12px;
-    gap: 12px;
+    padding: 8px 16px;
+    gap: 16px;
     min-height: inherit;
   }
 
@@ -354,22 +354,22 @@ export const cardStyles = css`
   }
 
   .mini-condition {
-    font-size: 11px;
-    opacity: 0.85;
-    font-weight: 400;
+    font-size: 15px;
+    opacity: 0.9;
+    font-weight: 500;
     white-space: nowrap;
   }
 
   .mini-temp {
-    font-size: 44px;
-    font-weight: 100;
+    font-size: 52px;
+    font-weight: 200;
     line-height: 1;
   }
 
   .mini-temp-low {
-    font-size: 11px;
-    opacity: 0.7;
-    margin-top: 1px;
+    font-size: 14px;
+    opacity: 0.75;
+    margin-top: 2px;
   }
 
   .mini-details {
@@ -377,7 +377,7 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 4px;
     min-width: 0;
   }
 

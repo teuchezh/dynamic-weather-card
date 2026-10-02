@@ -57,12 +57,12 @@ export class WeatherClock extends LitElement {
     }
 
     :host([compact]) .clock {
-      font-size: 26px;
+      font-size: 32px;
     }
 
     :host([compact]) .date {
       margin-top: 2px;
-      font-size: 13px;
+      font-size: 14px;
     }
   `;
 

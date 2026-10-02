@@ -34,8 +34,8 @@ export class WeatherDetails extends LitElement {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      gap: 4px 12px;
-      font-size: 12px;
+      gap: 4px 16px;
+      font-size: 14px;
     }
 
     .info-item {
@@ -68,7 +68,7 @@ export class WeatherDetails extends LitElement {
     :host([compact]) .sun-group {
       display: flex;
       flex-direction: row;
-      gap: 12px;
+      gap: 16px;
     }
   `;
 
