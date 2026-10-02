@@ -307,6 +307,10 @@
       "slovenian": "Sloveeni"
     },
     "raindrops": "Vihmapiisad klaasil",
-    "windEffects": "Tuulepuhangud ja lehed"
+    "windEffects": "Tuulepuhangud ja lehed",
+    "yamlTitle": "Kaardi YAML",
+    "copy": "Kopeeri",
+    "copied": "Kopeeritud",
+    "yamlHint": "Kleebi see Home Assistanti käsitsi kaarti ja asenda weather.home oma ilmaolemiga. Vaikeväärtustega valikuid ei kuvata."
   }
 }

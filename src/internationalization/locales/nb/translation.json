@@ -307,6 +307,10 @@
     "visualStyleModern": "✨ Moderne",
     "windBearing": "Vindretning",
     "windEffects": "Vindkast og blader",
-    "windyDay": "Vindfullt"
+    "windyDay": "Vindfullt",
+    "yamlTitle": "Kortets YAML",
+    "copy": "Kopier",
+    "copied": "Kopiert",
+    "yamlHint": "Lim det inn i et manuelt kort i Home Assistant, og bytt ut weather.home med din værentitet. Innstillinger med standardverdier er ikke tatt med."
   }
 }

@@ -307,6 +307,10 @@
       "slovenian": "Slovenian"
     },
     "raindrops": "Raindrops on the glass",
-    "windEffects": "Wind gusts and leaves"
+    "windEffects": "Wind gusts and leaves",
+    "yamlTitle": "Card YAML",
+    "copy": "Copy",
+    "copied": "Copied",
+    "yamlHint": "Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity. Options left at their defaults are not listed."
   }
 }

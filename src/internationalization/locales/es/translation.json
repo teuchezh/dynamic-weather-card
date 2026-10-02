@@ -307,6 +307,10 @@
     "visualStyleModern": "✨ Moderno",
     "windBearing": "Dirección del viento",
     "windEffects": "Ráfagas y hojas",
-    "windyDay": "Ventoso"
+    "windyDay": "Ventoso",
+    "yamlTitle": "YAML de la tarjeta",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "yamlHint": "Pégalo en una tarjeta manual de Home Assistant y sustituye weather.home por tu entidad del tiempo. Las opciones con valores predeterminados no se incluyen."
   }
 }

@@ -307,6 +307,10 @@
     "visualStyleModern": "✨ Moderný",
     "windBearing": "Smer vetra",
     "windEffects": "Nárazy vetra a lístie",
-    "windyDay": "Veterno"
+    "windyDay": "Veterno",
+    "yamlTitle": "YAML karty",
+    "copy": "Kopírovať",
+    "copied": "Skopírované",
+    "yamlHint": "Vložte ho do manuálnej karty v Home Assistant a nahraďte weather.home vlastnou entitou počasia. Možnosti s predvolenými hodnotami nie sú uvedené."
   }
 }

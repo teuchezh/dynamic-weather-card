@@ -307,6 +307,10 @@
       "slovenian": "Slovenščina"
     },
     "raindrops": "Dežne kaplje na steklu",
-    "windEffects": "Sunki vetra in listje"
+    "windEffects": "Sunki vetra in listje",
+    "yamlTitle": "YAML kartice",
+    "copy": "Kopiraj",
+    "copied": "Kopirano",
+    "yamlHint": "Prilepite ga v ročno kartico v Home Assistantu in zamenjajte weather.home s svojo vremensko entiteto. Možnosti s privzetimi vrednostmi niso navedene."
   }
 }

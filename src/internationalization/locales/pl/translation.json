@@ -307,6 +307,10 @@
     "visualStyleModern": "✨ Nowoczesny",
     "windBearing": "Kierunek wiatru",
     "windEffects": "Porywy wiatru i liście",
-    "windyDay": "Wietrznie"
+    "windyDay": "Wietrznie",
+    "yamlTitle": "YAML karty",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano",
+    "yamlHint": "Wklej go do karty ręcznej w Home Assistant i zastąp weather.home swoją encją pogody. Opcje z wartościami domyślnymi nie są wymienione."
   }
 }

@@ -307,6 +307,10 @@
     "visualStyleModern": "✨ Moderne",
     "windBearing": "Direction du vent",
     "windEffects": "Rafales et feuilles",
-    "windyDay": "Venteux"
+    "windyDay": "Venteux",
+    "yamlTitle": "YAML de la carte",
+    "copy": "Copier",
+    "copied": "Copié",
+    "yamlHint": "Collez-le dans une carte manuelle de Home Assistant et remplacez weather.home par votre entité météo. Les options laissées par défaut ne sont pas listées."
   }
 }

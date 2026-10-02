@@ -580,6 +580,38 @@
             text-decoration: none;
         }
 
+        /* ---------- YAML export ---------- */
+        .yaml-code {
+            margin: 0;
+            padding: 14px 16px;
+            max-height: 45vh;
+            overflow: auto;
+            background: var(--glass-strong);
+            border-radius: var(--radius-md);
+            font: 12.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            white-space: pre;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        @media (min-width: 1024px) {
+            .yaml-code { max-height: 60vh; }
+        }
+
+        .yaml-copy {
+            margin-top: 10px;
+            width: 100%;
+            height: 42px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--accent);
+            color: #fff;
+            font: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
         .footnote {
             font-size: 12px;
             color: var(--text-secondary);
@@ -592,6 +624,7 @@
             .tab-label { max-width: 60px; }
             .brand-subtitle { display: none; }
             .demo-label { display: none; }
+            .yaml-label { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -616,6 +649,10 @@
             <button class="icon-btn" id="tour-btn" type="button" title="Demo">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
                 <span class="demo-label" data-i18n="startDemo">Start Demo Mode</span>
+            </button>
+            <button class="icon-btn" id="yaml-btn" type="button" title="YAML" aria-label="YAML">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 7 3.5 12l5 5M15.5 7l5 5-5 5"/></svg>
+                <span class="yaml-label">YAML</span>
             </button>
             <a class="icon-btn" href="https://github.com/teuchezh/dynamic-weather-card" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
@@ -841,7 +878,11 @@
             ['more', 'tabMore', 'More']
         ];
 
+        // Sheets opened from the top bar instead of the tab bar
+        const EXTRA_SHEETS = [['yaml', 'yamlTitle', 'Card YAML']];
+
         const PANELS = {
+            yaml: () => [{ type: 'yaml' }],
             weather: () => [
                 { type: 'presets', label: ['quickPresets', 'Quick Presets'] },
                 { type: 'chips', key: 'condition', label: ['condition', 'Condition'], cols: 4,
@@ -948,7 +989,7 @@
             sheet.classList.toggle('open', !!id);
             document.getElementById('stage').classList.toggle('sheet-open', !!id);
             if (id) {
-                const tab = TABS.find(([tabId]) => tabId === id);
+                const tab = [...TABS, ...EXTRA_SHEETS].find(([tabId]) => tabId === id);
                 document.getElementById('sheet-title').textContent = t(tab[1], tab[2]);
                 renderPanel(id);
             }
@@ -1130,6 +1171,21 @@
                 case 'note': {
                     return el('p', 'footnote', t(c.text[0], c.text[1]));
                 }
+                case 'yaml': {
+                    const group = el('div', 'group');
+                    const code = el('pre', 'yaml-code');
+                    code.id = 'yaml-code';
+                    code.textContent = cardYaml();
+                    const copy = el('button', 'yaml-copy', t('copy', 'Copy'));
+                    copy.type = 'button';
+                    copy.addEventListener('click', async () => {
+                        await copyText(cardYaml());
+                        copy.textContent = `✓ ${t('copied', 'Copied')}`;
+                        setTimeout(() => { copy.textContent = t('copy', 'Copy'); }, 1500);
+                    });
+                    group.append(code, copy, el('p', 'footnote', t('yamlHint', 'Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity. Options left at their defaults are not listed.')));
+                    return group;
+                }
                 case 'links': {
                     const group = groupWithTitle(['links', 'Links']);
                     const list = el('div', 'card-list links');
@@ -1172,6 +1228,9 @@
             body.querySelectorAll('[data-text]').forEach(input => {
                 if (document.activeElement !== input) input.value = state[input.dataset.text] ?? '';
             });
+            const yamlCode = document.getElementById('yaml-code');
+            if (yamlCode) yamlCode.textContent = cardYaml();
+            document.getElementById('yaml-btn').classList.toggle('active', activeTab === 'yaml');
             const playBtn = document.getElementById('time-play-btn');
             if (playBtn) playBtn.textContent = timePlay ? `⏸ ${t('pause', 'Pause')}` : `▶ ${t('play24h', 'Play 24 hours')}`;
             const tourBtn = document.getElementById('tour-btn');
@@ -1357,6 +1416,84 @@
             return config;
         }
 
+        // ============================================================================
+        // YAML EXPORT: the configured card as Home Assistant YAML
+        // ============================================================================
+
+        // What the card does when an option is left out, so those options can be skipped
+        const CARD_DEFAULTS = {
+            overlay_opacity: 0.1, text_shadow: 1, wind_speed_unit: 'ms',
+            show_feels_like: true, show_min_temp: true, show_humidity: true, show_wind: true,
+            show_wind_direction: true, show_wind_gust: true, show_sunrise_sunset: true,
+            show_pressure: false, show_uv_index: false, show_dew_point: false,
+            show_precipitation_outlook: false, show_temperature_bars: false, show_forecast_wind: false,
+            show_forecast_description: false, show_aurora: false, show_raindrops: true, show_wind_effects: true,
+            show_clock: false, show_date: false, clock_position: 'top', clock_format: '24h',
+            show_hourly_forecast: false, hourly_forecast_hours: 5, hourly_forecast_step: 1,
+            show_daily_forecast: false, daily_forecast_days: 5,
+            layout: 'default', visual_style: 'modern', animation_quality: 'high', show_animations: true
+        };
+
+        // The demo's mock entities, renamed to look like real ones
+        const YAML_ENTITIES = {
+            'weather.test': 'weather.home',
+            'sensor.station_temperature': 'sensor.outdoor_temperature',
+            'sensor.station_feels_like': 'sensor.outdoor_feels_like',
+            'sensor.station_humidity': 'sensor.outdoor_humidity',
+            'sensor.station_wind_speed': 'sensor.wind_speed',
+            'sensor.station_wind_gust': 'sensor.wind_gust',
+            'sensor.station_wind_bearing': 'sensor.wind_bearing',
+            'sensor.station_precipitation': 'sensor.precipitation',
+            'sensor.demo_aqi': 'sensor.air_quality_index'
+        };
+
+        let initialLanguage = null;
+
+        function cardYaml() {
+            const config = buildCardConfig();
+            for (const [key, value] of Object.entries(config)) {
+                if (YAML_ENTITIES[value]) config[key] = YAML_ENTITIES[value];
+                if (key in CARD_DEFAULTS && CARD_DEFAULTS[key] === value) delete config[key];
+            }
+            // The demo's own height for each layout stands in for the card's automatic height
+            if (state.height === (state.layout === 'minimal' ? 80 : 200)) delete config.height;
+            // Home Assistant's language is picked up automatically
+            if (state.language === initialLanguage) delete config.language;
+            // Settings of switched-off parts
+            if (!state.showHourlyForecast) ['hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_title'].forEach(k => delete config[k]);
+            if (!state.showDailyForecast) ['daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars'].forEach(k => delete config[k]);
+            if (!state.showHourlyForecast && !state.showDailyForecast) delete config.show_forecast_wind;
+            if (!state.showWind) ['show_wind_gust', 'show_wind_direction'].forEach(k => delete config[k]);
+            if (!state.showClock && !state.showDate) delete config.clock_position;
+
+            // Plain when YAML reads it back as the same string, quoted otherwise (e.g. "Home: garden")
+            const scalar = value => {
+                if (typeof value !== 'string') return String(value);
+                const plain = /^[A-Za-z_][\w.\-/: ]*$/.test(value) && !/: |:$| $/.test(value)
+                    && !/^(true|false|yes|no|on|off|null)$/i.test(value);
+                return plain ? value : JSON.stringify(value);
+            };
+            const first = ['type', 'entity', 'name', 'layout'].filter(key => key in config);
+            const keys = [...first, ...Object.keys(config).filter(key => !first.includes(key))];
+            return keys.map(key => `${key}: ${scalar(config[key])}`).join('\n') + '\n';
+        }
+
+        async function copyText(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+            } catch {
+                // Older browsers or a page without clipboard permission
+                const area = document.createElement('textarea');
+                area.value = text;
+                area.style.position = 'fixed';
+                area.style.opacity = '0';
+                document.body.appendChild(area);
+                area.select();
+                document.execCommand('copy');
+                area.remove();
+            }
+        }
+
         function timeOfDayFromMinutes(minutes) {
             if (minutes >= 360 && minutes < 480) return { type: 'sunrise', progress: (minutes - 360) / 120 };
             if (minutes >= 480 && minutes < 1080) return { type: 'day', progress: (minutes - 480) / 600 };
@@ -1504,6 +1641,7 @@
         // ============================================================================
         function init() {
             state.language = window.i18n.lang;
+            initialLanguage = state.language;
             applyStaticTranslations();
             renderTabbar();
             updateCard();
@@ -1515,6 +1653,7 @@
 
         document.getElementById('sheet-close').addEventListener('click', () => openTab(null));
         document.getElementById('tour-btn').addEventListener('click', () => (tourTimer ? stopTour() : startTour()));
+        document.getElementById('yaml-btn').addEventListener('click', () => openTab(activeTab === 'yaml' ? null : 'yaml'));
         document.addEventListener('keydown', e => { if (e.key === 'Escape') openTab(null); });
         window.addEventListener('resize', updateSheetOffset);
         new ResizeObserver(updateSheetOffset).observe(document.getElementById('sheet'));
