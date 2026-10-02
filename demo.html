@@ -1184,7 +1184,7 @@
                         copy.textContent = `✓ ${t('copied', 'Copied')}`;
                         setTimeout(() => { copy.textContent = t('copy', 'Copy'); }, 1500);
                     });
-                    group.append(code, copy, el('p', 'footnote', t('yamlHint', 'Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity. Options left at their defaults are not listed.')));
+                    group.append(code, copy, el('p', 'footnote', t('yamlHint', 'Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity.')));
                     return group;
                 }
                 case 'links': {
@@ -1422,19 +1422,20 @@
         // YAML EXPORT: the configured card as Home Assistant YAML
         // ============================================================================
 
-        // What the card does when an option is left out, so those options can be skipped
-        const CARD_DEFAULTS = {
-            overlay_opacity: 0.1, text_shadow: 1, wind_speed_unit: 'auto',
-            show_feels_like: true, show_min_temp: true, show_humidity: true, show_wind: true,
-            show_wind_direction: true, show_wind_gust: true, show_sunrise_sunset: true,
-            show_pressure: false, show_uv_index: false, show_dew_point: false,
-            show_precipitation_outlook: false, show_temperature_bars: false, show_forecast_wind: false,
-            show_forecast_description: false, show_aurora: false, show_raindrops: true, show_wind_effects: true,
-            show_clock: false, show_date: false, clock_position: 'top', clock_format: '24h',
-            show_hourly_forecast: false, hourly_forecast_hours: 5, hourly_forecast_step: 1, hourly_forecast_chart: false,
-            show_daily_forecast: false, daily_forecast_days: 5,
-            layout: 'default', visual_style: 'modern', animation_quality: 'high', show_animations: true
-        };
+        // Options in the order of the README and the visual editor, one commented group each
+        const YAML_GROUPS = [
+            [null, ['type', 'entity', 'name']],
+            ['Appearance', ['layout', 'height', 'visual_style', 'animation_quality', 'show_animations', 'show_aurora', 'show_raindrops',
+                'show_wind_effects', 'overlay_opacity', 'text_shadow', 'text_color', 'border_radius', 'sun_position_x', 'sun_position_y']],
+            ['Details', ['show_feels_like', 'show_min_temp', 'show_humidity', 'show_pressure', 'show_uv_index', 'show_dew_point',
+                'show_sunrise_sunset', 'show_precipitation_outlook', 'show_wind', 'show_wind_gust', 'show_wind_direction', 'wind_speed_unit']],
+            ['Forecast', ['show_hourly_forecast', 'hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_chart', 'hourly_forecast_title',
+                'show_daily_forecast', 'daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars', 'show_forecast_wind',
+                'show_forecast_description']],
+            ['Language, clock and date', ['language', 'show_clock', 'show_date', 'clock_position', 'clock_format']],
+            ['Sensors', ['temperature_entity', 'feels_like_entity', 'humidity_entity', 'wind_speed_entity', 'wind_gust_entity',
+                'wind_bearing_entity', 'precipitation_entity', 'aqi_entity']]
+        ];
 
         // The demo's mock entities, renamed to look like real ones
         const YAML_ENTITIES = {
@@ -1451,11 +1452,11 @@
 
         let initialLanguage = null;
 
+        // Every setting of the demo, spelled out, except those of switched-off parts
         function cardYaml() {
             const config = buildCardConfig();
             for (const [key, value] of Object.entries(config)) {
                 if (YAML_ENTITIES[value]) config[key] = YAML_ENTITIES[value];
-                if (key in CARD_DEFAULTS && CARD_DEFAULTS[key] === value) delete config[key];
             }
             // The demo's own height for each layout stands in for the card's automatic height
             if (state.height === (state.layout === 'minimal' ? 80 : 200)) delete config.height;
@@ -1466,18 +1467,33 @@
             if (!state.showDailyForecast) ['daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars'].forEach(k => delete config[k]);
             if (!state.showHourlyForecast && !state.showDailyForecast) delete config.show_forecast_wind;
             if (!state.showWind) ['show_wind_gust', 'show_wind_direction'].forEach(k => delete config[k]);
+            if (!state.showWind && !config.show_forecast_wind) delete config.wind_speed_unit;
             if (!state.showClock && !state.showDate) delete config.clock_position;
 
             // Plain when YAML reads it back as the same string, quoted otherwise (e.g. "Home: garden")
             const scalar = value => {
                 if (typeof value !== 'string') return String(value);
-                const plain = /^[A-Za-z_][\w.\-/: ]*$/.test(value) && !/: |:$| $/.test(value)
-                    && !/^(true|false|yes|no|on|off|null)$/i.test(value);
+                // Not a number ("1e3"), a YAML 1.1 time ("12:30") or a boolean word
+                const plain = /^\w[\w.\-/: ]*$/.test(value) && !/: |:$| $/.test(value)
+                    && !Number.isFinite(Number(value)) && !/^\d+(:\d+)+$/.test(value)
+                    && !/^(true|false|yes|no|on|off|y|n|null)$/i.test(value);
                 return plain ? value : JSON.stringify(value);
             };
-            const first = ['type', 'entity', 'name', 'layout'].filter(key => key in config);
-            const keys = [...first, ...Object.keys(config).filter(key => !first.includes(key))];
-            return keys.map(key => `${key}: ${scalar(config[key])}`).join('\n') + '\n';
+            const lines = [];
+            const listed = new Set();
+            const add = (title, keys) => {
+                const present = keys.filter(key => key in config && !listed.has(key));
+                if (present.length === 0) return;
+                if (title) lines.push('', `# ${title}`);
+                for (const key of present) {
+                    lines.push(`${key}: ${scalar(config[key])}`);
+                    listed.add(key);
+                }
+            };
+            for (const [title, keys] of YAML_GROUPS) add(title, keys);
+            // Anything not in a group yet
+            add('Other', Object.keys(config));
+            return lines.join('\n') + '\n';
         }
 
         async function copyText(text) {

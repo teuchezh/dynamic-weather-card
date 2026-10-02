@@ -318,6 +318,6 @@
     "yamlTitle": "Kártya YAML",
     "copy": "Másolás",
     "copied": "Másolva",
-    "yamlHint": "Illeszd be egy kézi kártyába a Home Assistantben, és cseréld a weather.home-ot a saját időjárás-entitásodra. Az alapértelmezett értékű opciók nem szerepelnek benne."
+    "yamlHint": "Illeszd be egy kézi kártyába a Home Assistantben, és cseréld a weather.home-ot a saját időjárás-entitásodra."
   }
 }

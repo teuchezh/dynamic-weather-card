@@ -318,6 +318,6 @@
     "yamlTitle": "Kortets YAML",
     "copy": "Kopiér",
     "copied": "Kopieret",
-    "yamlHint": "Indsæt det i et manuelt kort i Home Assistant, og erstat weather.home med din vejrenhed. Indstillinger med standardværdier er ikke med."
+    "yamlHint": "Indsæt det i et manuelt kort i Home Assistant, og erstat weather.home med din vejrenhed."
   }
 }

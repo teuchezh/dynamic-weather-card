@@ -318,6 +318,6 @@
     "yamlTitle": "Kaart-YAML",
     "copy": "Kopiëren",
     "copied": "Gekopieerd",
-    "yamlHint": "Plak het in een handmatige kaart in Home Assistant en vervang weather.home door je weerentiteit. Opties met standaardwaarden staan er niet in."
+    "yamlHint": "Plak het in een handmatige kaart in Home Assistant en vervang weather.home door je weerentiteit."
   }
 }

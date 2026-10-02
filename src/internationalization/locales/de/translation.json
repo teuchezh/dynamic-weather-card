@@ -318,6 +318,6 @@
     "yamlTitle": "Karten-YAML",
     "copy": "Kopieren",
     "copied": "Kopiert",
-    "yamlHint": "In Home Assistant in eine manuelle Karte einfügen und weather.home durch deine Wetter-Entität ersetzen. Optionen mit Standardwerten werden nicht aufgeführt."
+    "yamlHint": "In Home Assistant in eine manuelle Karte einfügen und weather.home durch deine Wetter-Entität ersetzen."
   }
 }

@@ -318,6 +318,6 @@
     "yamlTitle": "YAML karty",
     "copy": "Kopírovať",
     "copied": "Skopírované",
-    "yamlHint": "Vložte ho do manuálnej karty v Home Assistant a nahraďte weather.home vlastnou entitou počasia. Možnosti s predvolenými hodnotami nie sú uvedené."
+    "yamlHint": "Vložte ho do manuálnej karty v Home Assistant a nahraďte weather.home vlastnou entitou počasia."
   }
 }

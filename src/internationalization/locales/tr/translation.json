@@ -318,6 +318,6 @@
     "yamlTitle": "Kart YAML",
     "copy": "Kopyala",
     "copied": "Kopyalandı",
-    "yamlHint": "Home Assistant’ta manuel bir karta yapıştırın ve weather.home yerine kendi hava durumu varlığınızı yazın. Varsayılan değerdeki seçenekler listelenmez."
+    "yamlHint": "Home Assistant’ta manuel bir karta yapıştırın ve weather.home yerine kendi hava durumu varlığınızı yazın."
   }
 }

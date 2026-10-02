@@ -318,6 +318,6 @@
     "yamlTitle": "YAML kartice",
     "copy": "Kopiraj",
     "copied": "Kopirano",
-    "yamlHint": "Nalepite ga u ručnu karticu u Home Assistantu i zamenite weather.home svojim entitetom vremena. Opcije sa podrazumevanim vrednostima nisu navedene."
+    "yamlHint": "Nalepite ga u ručnu karticu u Home Assistantu i zamenite weather.home svojim entitetom vremena."
   }
 }

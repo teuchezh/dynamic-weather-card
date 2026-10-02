@@ -318,6 +318,6 @@
     "yamlTitle": "Card YAML",
     "copy": "Copy",
     "copied": "Copied",
-    "yamlHint": "Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity. Options left at their defaults are not listed."
+    "yamlHint": "Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity."
   }
 }

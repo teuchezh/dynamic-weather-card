@@ -318,6 +318,6 @@
     "yamlTitle": "YAML della scheda",
     "copy": "Copia",
     "copied": "Copiato",
-    "yamlHint": "Incollalo in una scheda manuale di Home Assistant e sostituisci weather.home con la tua entità meteo. Le opzioni con valori predefiniti non sono elencate."
+    "yamlHint": "Incollalo in una scheda manuale di Home Assistant e sostituisci weather.home con la tua entità meteo."
   }
 }

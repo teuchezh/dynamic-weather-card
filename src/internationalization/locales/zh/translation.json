@@ -318,6 +318,6 @@
     "yamlTitle": "卡片 YAML",
     "copy": "复制",
     "copied": "已复制",
-    "yamlHint": "粘贴到 Home Assistant 的“手动”卡片中，并将 weather.home 替换为你的天气实体。保持默认值的选项不会列出。"
+    "yamlHint": "粘贴到 Home Assistant 的“手动”卡片中，并将 weather.home 替换为你的天气实体。"
   }
 }
