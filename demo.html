@@ -657,7 +657,22 @@
 
         try {
             const { i18n, resolveLanguage } = await import('./dynamic-weather-card.js');
-            i18n.setLanguage(resolveLanguage());
+            // The demo page's own strings are not in the card bundle: load them from the translation files
+            const loaded = new Set();
+            window.loadDemoStrings = async lang => {
+                if (loaded.has(lang)) return;
+                loaded.add(lang);
+                try {
+                    const response = await fetch(`src/internationalization/locales/${lang}/translation.json`);
+                    const { demo } = await response.json();
+                    if (demo) i18n.addTranslations(lang, { demo });
+                } catch (err) {
+                    console.warn(`Demo strings for "${lang}" not loaded`, err);
+                }
+            };
+            const lang = resolveLanguage();
+            await Promise.all([window.loadDemoStrings('en'), window.loadDemoStrings(lang)]);
+            i18n.setLanguage(lang);
             window.i18n = i18n;
             window.cardLoaded = true;
             window.dispatchEvent(new CustomEvent('card-ready'));
@@ -1377,9 +1392,15 @@
             }
             if (languageChanged) {
                 window.i18n?.setLanguage(state.language);
-                applyStaticTranslations();
-                renderTabbar();
-                if (activeTab) openTab(activeTab);
+                const refresh = () => {
+                    applyStaticTranslations();
+                    renderTabbar();
+                    if (activeTab) openTab(activeTab);
+                    syncControls();
+                };
+                refresh();
+                // Re-render once this language's demo strings have loaded
+                window.loadDemoStrings?.(state.language).then(refresh);
             }
             syncControls();
             requestAnimationFrame(updateSheetOffset);

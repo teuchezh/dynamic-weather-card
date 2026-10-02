@@ -55,6 +55,9 @@ jobs:
         run: |
           mkdir -p _site
           cp demo.html dynamic-weather-card.js _site/
+          # The demo loads its own strings from the translation files
+          mkdir -p _site/src/internationalization
+          cp -r src/internationalization/locales _site/src/internationalization/
           # Open the demo from the site root too
           cat > _site/index.html <<'EOF'
           <!DOCTYPE html>

@@ -1,5 +1,6 @@
 import { translations } from './locales.generated';
 import type { SupportedLanguage } from './locales.generated';
+import type { Translation } from './types';
 
 class I18n {
   lang: SupportedLanguage = 'en';
@@ -20,6 +21,16 @@ class I18n {
     );
 
     return (fromFallback as string) ?? key;
+  }
+
+  /**
+   * Merge extra strings into a loaded language, e.g. the demo page's strings,
+   * which are not part of the card bundle
+   */
+  addTranslations(lang: string, extra: Partial<Translation>): void {
+    const current = translations[lang as SupportedLanguage];
+    if (!current) return;
+    translations[lang as SupportedLanguage] = { ...current, ...extra };
   }
 
   setLanguage(lang: string): void {
