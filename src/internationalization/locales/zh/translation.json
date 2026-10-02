@@ -163,7 +163,9 @@
     "language_nb": "挪威语（书面挪威语）",
     "language_sl": "斯洛文尼亚语",
     "language_tr": "土耳其语",
-    "hourly_forecast_hours_helper": "无上限：例如 72 表示三天，填更大的数可显示服务商提供的全部预报"
+    "hourly_forecast_hours_helper": "无上限：例如 72 表示三天，填更大的数可显示服务商提供的全部预报",
+    "styles": "自定义 CSS",
+    "styles_helper": "应用于卡片及其所有部分的 CSS，例如 .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "动态天气卡片",
@@ -318,6 +320,8 @@
     "yamlTitle": "卡片 YAML",
     "copy": "复制",
     "copied": "已复制",
-    "yamlHint": "粘贴到 Home Assistant 的“手动”卡片中，并将 weather.home 替换为你的天气实体。"
+    "yamlHint": "粘贴到 Home Assistant 的“手动”卡片中，并将 weather.home 替换为你的天气实体。",
+    "customCss": "自定义 CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js';
 import { getSVGIcon, windDirection } from '../icons/svg-icons.js';
 import { formatTime, convertWindSpeed, getWindSpeedUnit } from '../utils.js';
 import { i18n } from '../internationalization/index.js';
+import { applyUserStyles } from '../user-styles.js';
 import type { WeatherData, SunData, DetailsConfig, WeatherEntityAttributes } from '../types.js';
 
 export class WeatherDetails extends LitElement {
@@ -11,6 +12,8 @@ export class WeatherDetails extends LitElement {
   @property({ type: Object }) config: DetailsConfig | null = null;
   @property({ type: Object }) entityAttributes: WeatherEntityAttributes | null = null;
   @property({ type: Boolean, reflect: true }) compact = false;
+  // The card's `styles` option, added to this part's own styles
+  @property({ attribute: false }) userStyles: string | null = null;
 
   static styles = css`
     :host {
@@ -25,7 +28,7 @@ export class WeatherDetails extends LitElement {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 6px 12px;
-      font-size: 13px;
+      font-size: var(--dwc-details-size, 13px);
       opacity: 0.9;
       text-shadow: var(--card-text-shadow);
     }
@@ -35,7 +38,7 @@ export class WeatherDetails extends LitElement {
       flex-direction: row;
       flex-wrap: wrap;
       gap: 4px 16px;
-      font-size: 14px;
+      font-size: var(--dwc-details-size, 14px);
     }
 
     .info-item {
@@ -71,6 +74,11 @@ export class WeatherDetails extends LitElement {
       gap: 16px;
     }
   `;
+
+  updated(changedProperties: Map<string, unknown>): void {
+    super.updated(changedProperties);
+    if (changedProperties.has('userStyles')) applyUserStyles(this.shadowRoot, this.userStyles);
+  }
 
   private hasContent(): boolean {
     if (!this.weather || !this.config) return false;

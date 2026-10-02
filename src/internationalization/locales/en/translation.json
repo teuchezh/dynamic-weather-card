@@ -163,7 +163,9 @@
     "show_wind_effects": "Wind gusts and leaves",
     "show_raindrops_helper": "In rain, Modern graphics",
     "show_wind_effects_helper": "In windy weather or above 8 m/s",
-    "hourly_forecast_hours_helper": "No upper limit: e.g. 72 for three days, or more to show everything the provider forecasts"
+    "hourly_forecast_hours_helper": "No upper limit: e.g. 72 for three days, or more to show everything the provider forecasts",
+    "styles": "Custom CSS",
+    "styles_helper": "CSS for the card and all its parts, e.g. .temperature { font-size: 48px; }"
   },
   "demo": {
     "aurora": "Northern lights",
@@ -318,6 +320,8 @@
     "yamlTitle": "Card YAML",
     "copy": "Copy",
     "copied": "Copied",
-    "yamlHint": "Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity."
+    "yamlHint": "Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity.",
+    "customCss": "Custom CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

@@ -163,7 +163,9 @@
     "language_sr": "Szerb",
     "language_tr": "Török",
     "language_zh": "Kínai",
-    "hourly_forecast_hours_helper": "Nincs felső határ: pl. 72 három napra, vagy több a szolgáltató teljes előrejelzéséhez"
+    "hourly_forecast_hours_helper": "Nincs felső határ: pl. 72 három napra, vagy több a szolgáltató teljes előrejelzéséhez",
+    "styles": "Saját CSS",
+    "styles_helper": "CSS a kártyához és minden részéhez, pl. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -318,6 +320,8 @@
     "yamlTitle": "Kártya YAML",
     "copy": "Másolás",
     "copied": "Másolva",
-    "yamlHint": "Illeszd be egy kézi kártyába a Home Assistantben, és cseréld a weather.home-ot a saját időjárás-entitásodra."
+    "yamlHint": "Illeszd be egy kézi kártyába a Home Assistantben, és cseréld a weather.home-ot a saját időjárás-entitásodra.",
+    "customCss": "Saját CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

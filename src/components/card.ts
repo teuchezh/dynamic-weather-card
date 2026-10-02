@@ -16,6 +16,7 @@ import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes } from './weather-data.js';
 import { getPrecipitationOutlook } from '../precipitation-outlook.js';
 import { getSVGIcon } from '../icons/svg-icons.js';
+import { applyUserStyles } from '../user-styles.js';
 import { formatTime, convertSpeedUnit, windDisplayUnit, windUnitLabel, WIND_UNIT_SETTINGS, type WindUnitSetting } from '../utils.js';
 import type { ForecastWindOptions } from './forecast-wind-row.js';
 import './clock.js';
@@ -102,6 +103,7 @@ export class AnimatedWeatherCard extends LitElement {
 
   updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
+    applyUserStyles(this.shadowRoot, this.config?.styles);
 
     if (changedProperties.has('config')) {
       const prev = changedProperties.get('config') as WeatherCardConfigInternal | undefined;
@@ -254,6 +256,7 @@ export class AnimatedWeatherCard extends LitElement {
       showWindEffects: config.show_wind_effects !== false,
       showTemperatureBars: config.show_temperature_bars === true,
       showForecastDescription: config.show_forecast_description === true,
+      styles: typeof config.styles === 'string' ? config.styles : null,
       showForecastWind: config.show_forecast_wind === true,
       showForecast: config.show_forecast === true,
       showHourlyForecast: showHourlyForecast === true,
@@ -451,6 +454,7 @@ export class AnimatedWeatherCard extends LitElement {
               ${this.renderPrecipitationOutlook(weather)}
             </div>
             <weather-clock
+              .userStyles=${this.config.styles ?? null}
               .format=${this.config.showClock && this.config.clockPosition === 'top' ? this.config.clockFormat : null}
               .showDate=${!!this.config.showDate && this.config.clockPosition === 'top'}
               .lang=${i18n.lang}
@@ -458,12 +462,14 @@ export class AnimatedWeatherCard extends LitElement {
           </div>
           <div class="details ${(this.config.showClock || this.config.showDate) && this.config.clockPosition === 'details' ? 'details--clock' : ''}">
             <weather-details
+              .userStyles=${this.config.styles ?? null}
               .weather=${weather}
               .sunData=${sunData}
               .config=${this.getDetailsConfig()}
               .entityAttributes=${getWeatherAttributes(hass, this.config.entity)}
             ></weather-details>
             <weather-clock
+              .userStyles=${this.config.styles ?? null}
               .format=${this.config.showClock && this.config.clockPosition === 'details' ? this.config.clockFormat : null}
               .showDate=${!!this.config.showDate && this.config.clockPosition === 'details'}
               .lang=${i18n.lang}
@@ -471,6 +477,7 @@ export class AnimatedWeatherCard extends LitElement {
           </div>
           ${this.renderForecastDescription(weather)}
           <hourly-forecast
+            .userStyles=${this.config.styles ?? null}
             .forecast=${hourlyForecast}
             .wind=${windOptions}
             .chart=${this.config.hourlyForecastChart === true}
@@ -480,6 +487,7 @@ export class AnimatedWeatherCard extends LitElement {
             .forecastTitle=${this.config.hourlyForecastTitle ?? null}
           ></hourly-forecast>
           <daily-forecast
+            .userStyles=${this.config.styles ?? null}
             .forecast=${dailyForecast}
             .wind=${windOptions}
             .lang=${i18n.lang}
@@ -524,6 +532,7 @@ export class AnimatedWeatherCard extends LitElement {
           <div class="mini-details">
             <div class="mini-condition">${i18n.t(weather.condition)}</div>
             <weather-details
+              .userStyles=${this.config.styles ?? null}
               .weather=${weather}
               .sunData=${sunData}
               .config=${this.getDetailsConfig()}
@@ -533,6 +542,7 @@ export class AnimatedWeatherCard extends LitElement {
           </div>
           ${this.config.showClock || this.config.showDate ? html`
             <weather-clock
+              .userStyles=${this.config.styles ?? null}
               .format=${this.config.showClock ? this.config.clockFormat : null}
               .showDate=${!!this.config.showDate}
               .lang=${i18n.lang}

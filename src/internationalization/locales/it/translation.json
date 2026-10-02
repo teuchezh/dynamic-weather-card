@@ -163,7 +163,9 @@
     "language_sr": "Serbo",
     "language_tr": "Turco",
     "language_zh": "Cinese",
-    "hourly_forecast_hours_helper": "Nessun limite: ad es. 72 per tre giorni, o di più per mostrare tutte le previsioni del fornitore"
+    "hourly_forecast_hours_helper": "Nessun limite: ad es. 72 per tre giorni, o di più per mostrare tutte le previsioni del fornitore",
+    "styles": "CSS personalizzato",
+    "styles_helper": "CSS per la scheda e tutte le sue parti, ad es. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -318,6 +320,8 @@
     "yamlTitle": "YAML della scheda",
     "copy": "Copia",
     "copied": "Copiato",
-    "yamlHint": "Incollalo in una scheda manuale di Home Assistant e sostituisci weather.home con la tua entità meteo."
+    "yamlHint": "Incollalo in una scheda manuale di Home Assistant e sostituisci weather.home con la tua entità meteo.",
+    "customCss": "CSS personalizzato",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

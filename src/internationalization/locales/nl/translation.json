@@ -163,7 +163,9 @@
     "language_sr": "Servisch",
     "language_tr": "Turks",
     "language_zh": "Chinees",
-    "hourly_forecast_hours_helper": "Geen maximum: bijv. 72 voor drie dagen, of meer om de hele verwachting van de provider te tonen"
+    "hourly_forecast_hours_helper": "Geen maximum: bijv. 72 voor drie dagen, of meer om de hele verwachting van de provider te tonen",
+    "styles": "Eigen CSS",
+    "styles_helper": "CSS voor de kaart en al haar onderdelen, bijv. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamische Weerkaart",
@@ -318,6 +320,8 @@
     "yamlTitle": "Kaart-YAML",
     "copy": "Kopiëren",
     "copied": "Gekopieerd",
-    "yamlHint": "Plak het in een handmatige kaart in Home Assistant en vervang weather.home door je weerentiteit."
+    "yamlHint": "Plak het in een handmatige kaart in Home Assistant en vervang weather.home door je weerentiteit.",
+    "customCss": "Eigen CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

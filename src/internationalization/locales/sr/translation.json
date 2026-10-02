@@ -163,7 +163,9 @@
     "language_sr": "Srpski",
     "language_tr": "Turski",
     "language_zh": "Kineski",
-    "hourly_forecast_hours_helper": "Bez ograničenja: npr. 72 za tri dana, ili više da bi se prikazala cela prognoza dobavljača"
+    "hourly_forecast_hours_helper": "Bez ograničenja: npr. 72 za tri dana, ili više da bi se prikazala cela prognoza dobavljača",
+    "styles": "Sopstveni CSS",
+    "styles_helper": "CSS za karticu i sve njene delove, npr. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -318,6 +320,8 @@
     "yamlTitle": "YAML kartice",
     "copy": "Kopiraj",
     "copied": "Kopirano",
-    "yamlHint": "Nalepite ga u ručnu karticu u Home Assistantu i zamenite weather.home svojim entitetom vremena."
+    "yamlHint": "Nalepite ga u ručnu karticu u Home Assistantu i zamenite weather.home svojim entitetom vremena.",
+    "customCss": "Sopstveni CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

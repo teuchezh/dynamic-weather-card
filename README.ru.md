@@ -241,6 +241,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `border_radius` | number | тема | Скругление углов в px; `0` для прямых углов |
 | `sun_position_x` | number | авто | Закрепить солнце или луну по горизонтали, в % ширины карточки. Не задано — движется по времени суток |
 | `sun_position_y` | number | авто | Закрепить солнце или луну по вертикали, в % высоты карточки |
+| `styles` | string | — | Свой CSS для карточки и всех её частей, см. [Стилизация](#styling) |
 
 > Кроме того, вне экрана анимация ставится на паузу, а при включённой в системе настройке «уменьшить движение» карточка рисует один неподвижный кадр.
 
@@ -306,6 +307,42 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `aqi_entity` | Индекс качества воздуха; показывается, если задан |
 | `sunrise_entity`, `sunset_entity` | Время восхода и заката, для интеграций, которые его не отдают |
 | `templow_attribute` | Атрибут погодной сущности с минимальной температурой за сегодня, если у интеграции он называется необычно |
+
+### Стилизация<a id="styling"></a>
+
+**CSS-переменные** меняют основные размеры. Они работают из темы, из `styles` и из card-mod:
+
+| Переменная | По умолчанию | Что |
+|---|---|---|
+| `--dwc-temperature-size` | `64px` (компактная: `52px`) | Текущая температура |
+| `--dwc-condition-size` | `20px` (компактная: `15px`) | Состояние, например «Солнечно» |
+| `--dwc-details-size` | `13px` (компактная: `14px`) | Влажность, ветер, восход и другие детали |
+| `--dwc-clock-size` | `48px` (телефоны: `36px`, компактная: `32px`) | Часы |
+| `--dwc-date-size` | `16px` (компактная: `14px`) | Дата |
+| `--dwc-padding` | `20px` (компактная: `8px 16px`) | Отступы вокруг содержимого |
+| `--dwc-text-color` | `white` | Текст и иконки (то же, что `text_color`) |
+| `--dwc-border-radius` | тема | Углы (то же, что `border_radius`) |
+
+**`styles`** добавляет ваш CSS в карточку и во все её части (детали, часы, прогнозы). Эти правила идут после встроенных, поэтому `!important` не нужен:
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+show_clock: true
+styles: |
+  ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
+  .feels-like { font-size: 14px; }
+  .details { flex-direction: column; align-items: flex-start; }
+  .forecast-title { letter-spacing: 0; text-transform: none; }
+```
+
+**card-mod** достаёт только до самой карточки, но не до её частей, а его правила проигрывают встроенным стилям. В нём используйте переменные:
+
+```yaml
+card_mod:
+  style: |
+    ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
+```
 
 ### Действия
 

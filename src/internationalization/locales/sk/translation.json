@@ -163,7 +163,9 @@
     "language_sr": "Srbčina",
     "language_tr": "Turečtina",
     "language_zh": "Čínština",
-    "hourly_forecast_hours_helper": "Bez obmedzenia: napr. 72 na tri dni alebo viac, aby sa zobrazila celá predpoveď poskytovateľa"
+    "hourly_forecast_hours_helper": "Bez obmedzenia: napr. 72 na tri dni alebo viac, aby sa zobrazila celá predpoveď poskytovateľa",
+    "styles": "Vlastné CSS",
+    "styles_helper": "CSS pre kartu a všetky jej časti, napr. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamická karta počasia",
@@ -318,6 +320,8 @@
     "yamlTitle": "YAML karty",
     "copy": "Kopírovať",
     "copied": "Skopírované",
-    "yamlHint": "Vložte ho do manuálnej karty v Home Assistant a nahraďte weather.home vlastnou entitou počasia."
+    "yamlHint": "Vložte ho do manuálnej karty v Home Assistant a nahraďte weather.home vlastnou entitou počasia.",
+    "customCss": "Vlastné CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

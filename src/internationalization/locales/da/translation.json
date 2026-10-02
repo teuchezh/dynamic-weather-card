@@ -163,7 +163,9 @@
     "language_sr": "Serbisk",
     "language_tr": "Tyrkisk",
     "language_zh": "Kinesisk",
-    "hourly_forecast_hours_helper": "Ingen øvre grænse: f.eks. 72 for tre dage, eller mere for at vise hele udbyderens prognose"
+    "hourly_forecast_hours_helper": "Ingen øvre grænse: f.eks. 72 for tre dage, eller mere for at vise hele udbyderens prognose",
+    "styles": "Egen CSS",
+    "styles_helper": "CSS til kortet og alle dets dele, fx .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamisk vejrkort",
@@ -318,6 +320,8 @@
     "yamlTitle": "Kortets YAML",
     "copy": "Kopiér",
     "copied": "Kopieret",
-    "yamlHint": "Indsæt det i et manuelt kort i Home Assistant, og erstat weather.home med din vejrenhed."
+    "yamlHint": "Indsæt det i et manuelt kort i Home Assistant, og erstat weather.home med din vejrenhed.",
+    "customCss": "Egen CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

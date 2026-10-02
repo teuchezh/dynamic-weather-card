@@ -163,7 +163,9 @@
     "show_wind_effects": "Tuulepuhangud ja lehed",
     "show_raindrops_helper": "Vihmaga, moodne graafika",
     "show_wind_effects_helper": "Tuulise ilmaga või üle 8 m/s",
-    "hourly_forecast_hours_helper": "Ülempiirita: nt 72 kolme päeva jaoks või rohkem, et näidata pakkuja kogu prognoosi"
+    "hourly_forecast_hours_helper": "Ülempiirita: nt 72 kolme päeva jaoks või rohkem, et näidata pakkuja kogu prognoosi",
+    "styles": "Oma CSS",
+    "styles_helper": "CSS kaardile ja kõigile selle osadele, nt .temperature { font-size: 48px; }"
   },
   "demo": {
     "aurora": "Virmalised",
@@ -318,6 +320,8 @@
     "yamlTitle": "Kaardi YAML",
     "copy": "Kopeeri",
     "copied": "Kopeeritud",
-    "yamlHint": "Kleebi see Home Assistanti käsitsi kaarti ja asenda weather.home oma ilmaolemiga."
+    "yamlHint": "Kleebi see Home Assistanti käsitsi kaarti ja asenda weather.home oma ilmaolemiga.",
+    "customCss": "Oma CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

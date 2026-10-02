@@ -163,7 +163,9 @@
     "show_wind_effects": "Sunki vetra in listje",
     "show_raindrops_helper": "Ob dežju, moderna grafika",
     "show_wind_effects_helper": "Ob vetrovnem vremenu ali nad 8 m/s",
-    "hourly_forecast_hours_helper": "Brez omejitve: npr. 72 za tri dni ali več za prikaz celotne napovedi ponudnika"
+    "hourly_forecast_hours_helper": "Brez omejitve: npr. 72 za tri dni ali več za prikaz celotne napovedi ponudnika",
+    "styles": "Lasten CSS",
+    "styles_helper": "CSS za kartico in vse njene dele, npr. .temperature { font-size: 48px; }"
   },
   "demo": {
     "aurora": "Severni sij",
@@ -318,6 +320,8 @@
     "yamlTitle": "YAML kartice",
     "copy": "Kopiraj",
     "copied": "Kopirano",
-    "yamlHint": "Prilepite ga v ročno kartico v Home Assistantu in zamenjajte weather.home s svojo vremensko entiteto."
+    "yamlHint": "Prilepite ga v ročno kartico v Home Assistantu in zamenjajte weather.home s svojo vremensko entiteto.",
+    "customCss": "Lasten CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

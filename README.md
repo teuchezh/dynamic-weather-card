@@ -241,6 +241,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `border_radius` | number | theme | Corner radius in px; `0` for square corners |
 | `sun_position_x` | number | auto | Pin the sun or moon horizontally, in % of the card width. Unset = follows the time of day |
 | `sun_position_y` | number | auto | Pin the sun or moon vertically, in % of the card height |
+| `styles` | string | — | Your own CSS for the card and all its parts, see [Styling](#styling) |
 
 > The card also pauses its animation while it is off-screen, and draws a single still frame when the system "reduce motion" setting is on.
 
@@ -306,6 +307,42 @@ Optional. Each sensor replaces the weather entity's value. When the sensor is un
 | `aqi_entity` | Air quality index; shown whenever it is set |
 | `sunrise_entity`, `sunset_entity` | Sunrise and sunset times, for integrations that don't provide them |
 | `templow_attribute` | Weather entity attribute with today's minimum temperature, if your integration uses an unusual name |
+
+### Styling<a id="styling"></a>
+
+**CSS variables** change the main sizes. They work from a theme, from `styles` and from card-mod:
+
+| Variable | Default | What |
+|---|---|---|
+| `--dwc-temperature-size` | `64px` (minimal: `52px`) | Current temperature |
+| `--dwc-condition-size` | `20px` (minimal: `15px`) | Condition, e.g. "Sunny" |
+| `--dwc-details-size` | `13px` (minimal: `14px`) | Humidity, wind, sunrise and the other details |
+| `--dwc-clock-size` | `48px` (phones: `36px`, minimal: `32px`) | Clock |
+| `--dwc-date-size` | `16px` (minimal: `14px`) | Date |
+| `--dwc-padding` | `20px` (minimal: `8px 16px`) | Space around the content |
+| `--dwc-text-color` | `white` | Text and icons (same as `text_color`) |
+| `--dwc-border-radius` | theme | Corners (same as `border_radius`) |
+
+**`styles`** adds your own CSS to the card and to each of its parts (details, clock, forecasts). Its rules come after the card's own, so no `!important` is needed:
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+show_clock: true
+styles: |
+  ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
+  .feels-like { font-size: 14px; }
+  .details { flex-direction: column; align-items: flex-start; }
+  .forecast-title { letter-spacing: 0; text-transform: none; }
+```
+
+**card-mod** reaches only the card itself, not its parts, and its rules lose to the card's own styles. Use the variables there:
+
+```yaml
+card_mod:
+  style: |
+    ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
+```
 
 ### Actions
 

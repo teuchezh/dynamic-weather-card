@@ -163,7 +163,9 @@
     "wind_gust_entity": "Vindkastsensor",
     "wind_speed_entity": "Vindhastighetssensor",
     "language_sl": "Slovensk",
-    "hourly_forecast_hours_helper": "Ingen øvre grense: f.eks. 72 for tre dager, eller mer for å vise hele varselet fra leverandøren"
+    "hourly_forecast_hours_helper": "Ingen øvre grense: f.eks. 72 for tre dager, eller mer for å vise hele varselet fra leverandøren",
+    "styles": "Egen CSS",
+    "styles_helper": "CSS for kortet og alle delene, f.eks. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -318,6 +320,8 @@
     "yamlTitle": "Kortets YAML",
     "copy": "Kopier",
     "copied": "Kopiert",
-    "yamlHint": "Lim det inn i et manuelt kort i Home Assistant, og bytt ut weather.home med din værentitet."
+    "yamlHint": "Lim det inn i et manuelt kort i Home Assistant, og bytt ut weather.home med din værentitet.",
+    "customCss": "Egen CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

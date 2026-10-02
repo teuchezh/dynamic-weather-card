@@ -146,6 +146,8 @@ export interface WeatherCardConfig {
   hourlyForecastStep?: number;
   hourlyForecastChart?: boolean;
   showForecastDescription?: boolean;
+  // Custom CSS for the card and all its parts
+  styles?: string | null;
   dailyForecastDays?: number;
   hourlyForecastTitle?: string | null;
   dailyForecastTitle?: string | null;
@@ -275,6 +277,7 @@ export interface ConfigInput {
   hourly_forecast_step?: number;
   hourly_forecast_chart?: boolean;
   show_forecast_description?: boolean;
+  styles?: string;
   daily_forecast_days?: number;
   hourly_forecast_title?: string;
   daily_forecast_title?: string;

@@ -163,7 +163,9 @@
     "language_sr": "Serbisch",
     "language_tr": "Türkisch",
     "language_zh": "Chinesisch",
-    "hourly_forecast_hours_helper": "Ohne Obergrenze: z. B. 72 für drei Tage oder mehr, um die ganze Vorhersage des Anbieters zu zeigen"
+    "hourly_forecast_hours_helper": "Ohne Obergrenze: z. B. 72 für drei Tage oder mehr, um die ganze Vorhersage des Anbieters zu zeigen",
+    "styles": "Eigenes CSS",
+    "styles_helper": "CSS für die Karte und alle ihre Teile, z. B. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamische Wetterkarte",
@@ -318,6 +320,8 @@
     "yamlTitle": "Karten-YAML",
     "copy": "Kopieren",
     "copied": "Kopiert",
-    "yamlHint": "In Home Assistant in eine manuelle Karte einfügen und weather.home durch deine Wetter-Entität ersetzen."
+    "yamlHint": "In Home Assistant in eine manuelle Karte einfügen und weather.home durch deine Wetter-Entität ersetzen.",
+    "customCss": "Eigenes CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }
