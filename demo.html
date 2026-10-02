@@ -780,7 +780,7 @@
             dailyForecastTitle: '',
             clockPosition: 'top',
             clockFormat: '24h',
-            windSpeedUnit: 'ms',
+            windSpeedUnit: 'auto',
             language: 'en'
         };
 
@@ -868,7 +868,6 @@
         // ============================================================================
         // PANELS (declarative controls)
         // ============================================================================
-        const windUnit = () => (state.windSpeedUnit === 'kmh' ? ' km/h' : ' m/s');
         const formatTime = minutes => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
 
         const TABS = [
@@ -890,7 +889,7 @@
                   options: CONDITIONS.map(([value, emoji, key]) => ({ value, emoji, label: t(key, value) })) },
                 { type: 'range', key: 'temperature', label: ['temperature', 'Temperature'], min: -30, max: 45, format: v => `${v}°` },
                 { type: 'range', key: 'humidity', label: ['humidity', 'Humidity (%)'], min: 0, max: 100, format: v => `${v}%` },
-                { type: 'range', key: 'windSpeed', label: ['windSpeed', 'Wind Speed'], min: 0, max: 30, format: v => `${v}${windUnit()}` },
+                { type: 'range', key: 'windSpeed', label: ['windSpeed', 'Wind Speed'], min: 0, max: 30, format: v => `${v} m/s` },
                 { type: 'range', key: 'windBearing', label: ['windBearing', 'Wind Direction (°)'], min: 0, max: 359, format: v => `${v}° ${['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(v / 45) % 8]}` },
                 { type: 'toggles', items: [['useSensors', 'stationSensors', 'Station sensors']] },
                 { type: 'note', text: ['stationSensorsHint', 'Station sensors override temperature, humidity, wind and precipitation with mock personal weather station values.'] }
@@ -939,7 +938,7 @@
                     ['showDewPoint', 'dewPoint', 'Dew Point'],
                     ['showAqi', 'aqi', 'Air Quality (sensor)']
                 ] },
-                { type: 'segmented', key: 'windSpeedUnit', label: ['windSpeedUnit', 'Wind Speed Unit'], options: [['ms', 'm/s'], ['kmh', 'km/h']] },
+                { type: 'segmented', key: 'windSpeedUnit', label: ['windSpeedUnit', 'Wind Speed Unit'], options: [['auto', t('autoShort', 'Auto')], ['ms', 'm/s'], ['kmh', 'km/h'], ['mph', 'mph'], ['kn', 'kn']] },
                 { type: 'toggles', label: ['clockAndDate', 'Clock'], items: [
                     ['showClock', 'showClock', 'Clock'],
                     ['showDate', 'showDate', 'Date']
@@ -1425,7 +1424,7 @@
 
         // What the card does when an option is left out, so those options can be skipped
         const CARD_DEFAULTS = {
-            overlay_opacity: 0.1, text_shadow: 1, wind_speed_unit: 'ms',
+            overlay_opacity: 0.1, text_shadow: 1, wind_speed_unit: 'auto',
             show_feels_like: true, show_min_temp: true, show_humidity: true, show_wind: true,
             show_wind_direction: true, show_wind_gust: true, show_sunrise_sunset: true,
             show_pressure: false, show_uv_index: false, show_dew_point: false,

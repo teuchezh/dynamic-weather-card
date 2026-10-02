@@ -255,7 +255,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `show_wind` | boolean | `true` | Wind speed |
 | `show_wind_gust` | boolean | `true` | Wind gusts, after the speed |
 | `show_wind_direction` | boolean | `true` | Wind direction arrow |
-| `wind_speed_unit` | string | `ms` | `ms` or `kmh`, only for integrations that don't report a unit |
+| `wind_speed_unit` | string | `auto` | `auto` shows wind in the unit of the integration or wind sensor. `ms`, `kmh`, `mph` or `kn` convert all wind on the card, forecasts included |
 | `show_pressure` | boolean | `false` | Pressure, in the weather entity's unit |
 | `show_uv_index` | boolean | `false` | UV index |
 | `show_dew_point` | boolean | `false` | Dew point |
@@ -345,7 +345,7 @@ tap_action:
 
 Without any sun data it falls back to fixed hours: sunrise 6:00–8:00, day until 18:00, sunset until 20:00.
 
-**Wind units.** Units are detected from the integration: m/s, km/h, mph, knots or ft/s. Only integrations that don't report a unit need `wind_speed_unit`. The wind animation converts everything to m/s.
+**Wind units.** Units are detected from the integration or the wind sensor: m/s, km/h, mph, knots or ft/s; integrations that don't report one are taken as m/s. With `wind_speed_unit: auto` wind is shown as it comes, otherwise everything (current wind, gusts and forecasts) is converted to the chosen unit. km/h, mph and knots are rounded to whole numbers. The wind animation converts everything to m/s.
 
 **Forecasts.** The card subscribes to Home Assistant's hourly and daily forecasts. Older integrations that only offer a `forecast` attribute also work: hourly entries are then grouped into days, with the day's high, low, chance of precipitation and strongest wind.
 

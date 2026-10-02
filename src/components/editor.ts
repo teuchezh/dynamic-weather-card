@@ -5,6 +5,8 @@ import { i18n } from '../internationalization/index';
 import { resolveLanguage } from '../internationalization/resolveLanguage';
 import { translations } from '../internationalization/locales.generated';
 import type { HomeAssistant } from '../types';
+import { WIND_UNIT_SETTINGS } from '../utils';
+import { cleanEditorConfig } from '../editor-config';
 
 type HaFormSchema = Array<{
   name: string;
@@ -45,53 +47,61 @@ const languageLabel = (code: string): string => {
   }
 };
 
+// What the card does when an option is left out (keys as in YAML)
+const editorDefaults = (): WeatherCardEditorConfig => ({
+  layout: DEFAULT_CONFIG.layout,
+  height: DEFAULT_CONFIG.height,
+  show_feels_like: DEFAULT_CONFIG.showFeelsLike,
+  show_wind: DEFAULT_CONFIG.showWind,
+  show_wind_gust: DEFAULT_CONFIG.showWindGust,
+  show_wind_direction: DEFAULT_CONFIG.showWindDirection,
+  show_humidity: DEFAULT_CONFIG.showHumidity,
+  show_pressure: DEFAULT_CONFIG.showPressure,
+  show_uv_index: DEFAULT_CONFIG.showUvIndex,
+  show_dew_point: DEFAULT_CONFIG.showDewPoint,
+  show_min_temp: DEFAULT_CONFIG.showMinTemp,
+  show_precipitation_outlook: DEFAULT_CONFIG.showPrecipitationOutlook,
+  show_temperature_bars: DEFAULT_CONFIG.showTemperatureBars,
+  show_forecast_wind: DEFAULT_CONFIG.showForecastWind,
+  show_forecast_description: DEFAULT_CONFIG.showForecastDescription,
+  show_aurora: DEFAULT_CONFIG.showAurora,
+  show_raindrops: DEFAULT_CONFIG.showRaindrops,
+  show_wind_effects: DEFAULT_CONFIG.showWindEffects,
+  show_hourly_forecast: DEFAULT_CONFIG.showHourlyForecast,
+  hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
+  hourly_forecast_step: DEFAULT_CONFIG.hourlyForecastStep,
+  hourly_forecast_chart: DEFAULT_CONFIG.hourlyForecastChart,
+  show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
+  daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays,
+  show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
+  show_animations: DEFAULT_CONFIG.showAnimations,
+  visual_style: DEFAULT_CONFIG.visualStyle,
+  animation_quality: DEFAULT_CONFIG.animationQuality,
+  show_clock: DEFAULT_CONFIG.showClock,
+  show_date: DEFAULT_CONFIG.showDate,
+  clock_position: DEFAULT_CONFIG.clockPosition,
+  clock_format: DEFAULT_CONFIG.clockFormat,
+  overlay_opacity: DEFAULT_CONFIG.overlayOpacity,
+  text_shadow: DEFAULT_CONFIG.textShadow,
+  language: DEFAULT_CONFIG.language,
+  wind_speed_unit: DEFAULT_CONFIG.windSpeedUnit
+});
+
 export class DynamicWeatherCardEditor extends LitElement {
   @property({ attribute: false }) hass?: HomeAssistant;
   @state() private _config: WeatherCardEditorConfig = {};
 
   setConfig(config: WeatherCardEditorConfig): void {
-    this._config = {
-      name: '',
-      layout: DEFAULT_CONFIG.layout,
-      height: DEFAULT_CONFIG.height,
-      show_feels_like: DEFAULT_CONFIG.showFeelsLike,
-      show_wind: DEFAULT_CONFIG.showWind,
-      show_wind_gust: DEFAULT_CONFIG.showWindGust,
-      show_wind_direction: DEFAULT_CONFIG.showWindDirection,
-      show_humidity: DEFAULT_CONFIG.showHumidity,
-      show_pressure: DEFAULT_CONFIG.showPressure,
-      show_uv_index: DEFAULT_CONFIG.showUvIndex,
-      show_dew_point: DEFAULT_CONFIG.showDewPoint,
-      show_min_temp: DEFAULT_CONFIG.showMinTemp,
-      show_precipitation_outlook: DEFAULT_CONFIG.showPrecipitationOutlook,
-      show_temperature_bars: DEFAULT_CONFIG.showTemperatureBars,
-      show_forecast_wind: DEFAULT_CONFIG.showForecastWind,
-      show_forecast_description: DEFAULT_CONFIG.showForecastDescription,
-      show_aurora: DEFAULT_CONFIG.showAurora,
-      show_raindrops: DEFAULT_CONFIG.showRaindrops,
-      show_wind_effects: DEFAULT_CONFIG.showWindEffects,
-      show_hourly_forecast: DEFAULT_CONFIG.showHourlyForecast,
-      hourly_forecast_hours: DEFAULT_CONFIG.hourlyForecastHours,
-      hourly_forecast_step: DEFAULT_CONFIG.hourlyForecastStep,
-      hourly_forecast_chart: DEFAULT_CONFIG.hourlyForecastChart,
-      show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
-      daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays,
-      show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
-      show_animations: DEFAULT_CONFIG.showAnimations,
-      visual_style: DEFAULT_CONFIG.visualStyle,
-      animation_quality: DEFAULT_CONFIG.animationQuality,
-      show_clock: DEFAULT_CONFIG.showClock,
-      show_date: DEFAULT_CONFIG.showDate,
-      clock_position: DEFAULT_CONFIG.clockPosition,
-      clock_format: DEFAULT_CONFIG.clockFormat,
-      overlay_opacity: DEFAULT_CONFIG.overlayOpacity,
-      text_shadow: DEFAULT_CONFIG.textShadow,
-      language: DEFAULT_CONFIG.language,
-      wind_speed_unit: DEFAULT_CONFIG.windSpeedUnit,
-      sunrise_entity: '',
-      sunset_entity: '',
-      ...config
-    };
+    // show_forecast is the old name of show_hourly_forecast, which wins when both are set
+    const { show_forecast: legacyForecast, ...rest } = config;
+    this._config = rest.show_hourly_forecast === undefined && legacyForecast !== undefined
+      ? { ...rest, show_hourly_forecast: legacyForecast }
+      : rest;
+  }
+
+  // The form shows each option's default when the YAML leaves it out
+  private get _formData(): WeatherCardEditorConfig {
+    return { ...editorDefaults(), ...this._config };
   }
 
   // Before rendering, so section titles and labels use the HA language from the first render
@@ -104,7 +114,7 @@ export class DynamicWeatherCardEditor extends LitElement {
   }
 
   private get _schema(): HaFormSchema {
-    const config = this._config;
+    const config = this._formData;
     const isOn = (name: string): boolean => config[name] === true;
     const section = (name: string, icon: string, schema: HaFormSchema): HaFormSchema[number] => ({
       name,
@@ -155,7 +165,7 @@ export class DynamicWeatherCardEditor extends LitElement {
         ...(isOn('show_wind')
           ? [
             grid(toggle('show_wind_gust'), toggle('show_wind_direction')),
-            select('wind_speed_unit', ['ms', 'kmh'])
+            select('wind_speed_unit', [...WIND_UNIT_SETTINGS])
           ]
           : [])
       ]),
@@ -239,7 +249,7 @@ export class DynamicWeatherCardEditor extends LitElement {
     const value = ev.detail?.value;
     if (!value) return;
 
-    this._config = value;
+    this._config = cleanEditorConfig(value, editorDefaults());
     this.dispatchEvent(new CustomEvent('config-changed', {
       detail: { config: this._config },
       bubbles: true,
@@ -255,7 +265,7 @@ export class DynamicWeatherCardEditor extends LitElement {
     return html`
       <ha-form
         .hass=${this.hass}
-        .data=${this._config}
+        .data=${this._formData}
         .schema=${this._schema}
         .computeLabel=${this._computeLabel}
         .computeHelper=${this._computeHelper}

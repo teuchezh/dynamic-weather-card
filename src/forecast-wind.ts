@@ -1,4 +1,4 @@
-import { convertWindSpeed } from './utils.js';
+import { convertSpeedUnit } from './utils.js';
 import type { WeatherForecast } from './types.js';
 
 export interface DayWind {
@@ -53,20 +53,20 @@ export interface ForecastWind {
 }
 
 /**
- * A forecast entry's wind in the card's display unit, or null when the provider reports no wind speed.
+ * A forecast entry's wind in the display unit, in whole numbers, or null when the provider reports no wind speed.
  * Gusts are shown only when they are stronger than the speed.
  */
-export function getForecastWind(
-  item: WeatherForecast,
-  attrs: { wind_speed_unit?: string },
-  configUnit: 'ms' | 'kmh'
-): ForecastWind | null {
-  const speed = convertWindSpeed(toNumber(item.wind_speed), attrs, configUnit);
+export function getForecastWind(item: WeatherForecast, fromUnit: string, toUnit: string): ForecastWind | null {
+  const convert = (value: unknown): number | null => {
+    const number = toNumber(value);
+    return number === null ? null : Math.round(convertSpeedUnit(number, fromUnit, toUnit));
+  };
+  const speed = convert(item.wind_speed);
   if (speed === null) return null;
-  const gust = convertWindSpeed(toNumber(item.wind_gust_speed), attrs, configUnit);
+  const gust = convert(item.wind_gust_speed);
   return {
-    speed: Math.round(speed),
-    gust: gust !== null && Math.round(gust) > Math.round(speed) ? Math.round(gust) : null,
+    speed,
+    gust: gust !== null && gust > speed ? gust : null,
     bearing: toNumber(item.wind_bearing)
   };
 }

@@ -63,7 +63,7 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   sunPositionX: null as number | null,
   sunPositionY: null as number | null,
   textColor: null as string | null,
-  windSpeedUnit: 'ms',
+  windSpeedUnit: 'auto',
   showAnimations: true,
   layout: 'default' as 'default' | 'minimal',
   visualStyle: 'modern' as 'modern' | 'classic',

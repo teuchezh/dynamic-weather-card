@@ -1,3 +1,4 @@
+import type { WindUnitSetting } from './utils';
 /**
  * Type definitions for Home Assistant and Weather Card
  */
@@ -161,7 +162,7 @@ export interface WeatherCardConfig {
   sunPositionX?: number | null;
   sunPositionY?: number | null;
   textColor?: string | null;
-  windSpeedUnit?: 'ms' | 'kmh';
+  windSpeedUnit?: WindUnitSetting;
   showAnimations?: boolean;
   layout?: 'default' | 'minimal';
   visualStyle?: VisualStyle;
@@ -289,7 +290,7 @@ export interface ConfigInput {
   sun_position_y?: number;
   text_color?: string;
   language?: 'auto' | SupportedLanguage;
-  wind_speed_unit?: 'ms' | 'kmh';
+  wind_speed_unit?: WindUnitSetting;
   show_animations?: boolean;
   layout?: 'default' | 'minimal';
   visual_style?: VisualStyle;
@@ -351,7 +352,7 @@ export interface DetailsConfig {
   showWindDirection: boolean;
   showSunriseSunset: boolean;
   clockFormat: '12h' | '24h';
-  windSpeedUnit: 'ms' | 'kmh';
+  windSpeedUnit: WindUnitSetting;
 }
 
 // Custom Card Registration

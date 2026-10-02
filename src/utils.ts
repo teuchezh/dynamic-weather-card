@@ -335,63 +335,66 @@ export function convertSpeedUnit(value: number, fromUnit: string, toUnit: string
   return (value * from) / to;
 }
 
+/** Wind unit setting: 'auto' shows wind in the unit it comes in, the others convert to that unit */
+export type WindUnitSetting = 'auto' | 'ms' | 'kmh' | 'mph' | 'kn';
+
+export const WIND_UNIT_SETTINGS: readonly WindUnitSetting[] = ['auto', 'ms', 'kmh', 'mph', 'kn'];
+
+const SETTING_UNITS: Record<Exclude<WindUnitSetting, 'auto'>, string> = { ms: 'm/s', kmh: 'km/h', mph: 'mph', kn: 'kn' };
+
+const normalizeSpeedUnit = (unit: string): string => unit.toLowerCase().replace(/[^a-z]/g, '');
+
 /**
- * Convert wind speed for legacy providers that don't specify wind_speed_unit
- * If provider has wind_speed_unit attribute, returns value as-is (no conversion)
+ * The unit wind is shown in: the chosen one, or with 'auto' the unit the values come in.
+ * Integrations that report no unit give m/s.
+ */
+export function windDisplayUnit(sourceUnit: string | null | undefined, setting: WindUnitSetting = 'auto'): string {
+  if (setting !== 'auto' && SETTING_UNITS[setting]) return SETTING_UNITS[setting];
+  return sourceUnit || 'm/s';
+}
+
+/** Whole numbers for km/h, mph and knots; one decimal for m/s and ft/s */
+export function roundWindSpeed(value: number, unit: string): number {
+  return ['kmh', 'kmph', 'mph', 'kn', 'kt', 'kts', 'knots'].includes(normalizeSpeedUnit(unit))
+    ? Math.round(value)
+    : Math.round(value * 10) / 10;
+}
+
+/**
+ * A wind speed in the display unit. `attrs.wind_speed_unit` is the unit the value comes in
+ * (none: m/s, for legacy integrations).
  */
 export function convertWindSpeed(
   speed: number | null,
   attrs: { wind_speed_unit?: string },
-  configUnit: 'ms' | 'kmh'
+  setting: WindUnitSetting = 'auto'
 ): number | null {
   if (speed == null) return null;
+  const from = attrs.wind_speed_unit || 'm/s';
+  const to = windDisplayUnit(from, setting);
+  return roundWindSpeed(convertSpeedUnit(speed, from, to), to);
+}
 
-  // If provider specifies wind_speed_unit, trust it and don't convert
-  if (attrs.wind_speed_unit) {
-    return Math.round(speed * 10) / 10;
-  }
-
-  // Legacy provider without wind_speed_unit - use config option
-  // Assume provider returns m/s, convert to km/h if requested
-  if (configUnit === 'kmh') {
-    return Math.round(speed * 3.6 * 10) / 10;
-  }
-
-  return Math.round(speed * 10) / 10;
+/** Translated label of a speed unit; unknown units are shown as they are */
+export function windUnitLabel(unit: string, t: (key: string) => string): string {
+  const normalized = normalizeSpeedUnit(unit);
+  if (normalized === 'kmh' || normalized === 'kmph') return t('wind_unit_kmh');
+  if (normalized === 'ms' || normalized === 'mps') return t('wind_unit_ms');
+  if (normalized === 'mph') return t('wind_unit_mph');
+  if (['kn', 'kt', 'kts', 'knots'].includes(normalized)) return t('wind_unit_knots');
+  if (normalized === 'fts' || normalized === 'ftps') return t('wind_unit_fts');
+  return unit;
 }
 
 /**
- * Get wind speed unit label based on entity attributes or config
+ * Label of the display unit for wind that comes in `attrs.wind_speed_unit`
  */
 export function getWindSpeedUnit(
   attrs: { wind_speed_unit?: string },
-  configUnit: 'ms' | 'kmh',
+  setting: WindUnitSetting,
   t: (key: string) => string
 ): string {
-  const unit = attrs.wind_speed_unit;
-
-  // If provider specifies wind_speed_unit, use it
-  if (unit) {
-    const normalizedUnit = unit.toLowerCase().replace(/[^a-z]/g, '');
-
-    if (normalizedUnit === 'kmh' || normalizedUnit === 'kmph') {
-      return t('wind_unit_kmh');
-    } else if (normalizedUnit === 'ms' || normalizedUnit === 'mps') {
-      return t('wind_unit_ms');
-    } else if (normalizedUnit === 'mph') {
-      return t('wind_unit_mph');
-    } else if (normalizedUnit === 'knots' || normalizedUnit === 'kn' || normalizedUnit === 'kt') {
-      return t('wind_unit_knots');
-    } else if (normalizedUnit === 'fts' || normalizedUnit === 'ftps') {
-      return t('wind_unit_fts');
-    }
-
-    // Fallback: return the original unit if we don't recognize it
-    return unit;
-  }
-
-  // Legacy provider - use config option
-  return configUnit === 'kmh' ? t('wind_unit_kmh') : t('wind_unit_ms');
+  return windUnitLabel(windDisplayUnit(attrs.wind_speed_unit || 'm/s', setting), t);
 }
 
 /**

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { convertSpeedUnit, convertWindSpeed, getWindSpeedUnit } from '../src/utils';
+import { convertSpeedUnit, convertWindSpeed, getWindSpeedUnit, roundWindSpeed, windDisplayUnit } from '../src/utils';
 import { getWeatherData, readSensor } from '../src/components/weather-data';
 import { temperatureColor } from '../src/temperature-color';
 import type { HomeAssistant, WeatherEntityAttributes } from '../src/types';
@@ -27,17 +27,31 @@ describe('speed units', () => {
     expect(convertSpeedUnit(5, 'furlongs', 'm/s')).toBe(5);
   });
 
-  test('legacy providers without a unit use wind_speed_unit', () => {
-    expect(convertWindSpeed(10, {}, 'kmh')).toBe(36);
-    expect(convertWindSpeed(10, {}, 'ms')).toBe(10);
-    // A provider that reports a unit is shown as is
-    expect(convertWindSpeed(12.34, { wind_speed_unit: 'km/h' }, 'ms')).toBe(12.3);
+  test('auto keeps the unit the wind comes in; integrations without a unit give m/s', () => {
+    expect(convertWindSpeed(12.34, { wind_speed_unit: 'km/h' }, 'auto')).toBe(12);
+    expect(convertWindSpeed(4.56, {}, 'auto')).toBe(4.6);
   });
 
-  test('unit label comes from the provider when it has one', () => {
+  test('a chosen unit converts, whatever the integration reports', () => {
+    expect(convertWindSpeed(10, {}, 'kmh')).toBe(36);
+    expect(convertWindSpeed(36, { wind_speed_unit: 'km/h' }, 'ms')).toBe(10);
+    expect(convertWindSpeed(10, { wind_speed_unit: 'm/s' }, 'mph')).toBe(22);
+    expect(convertWindSpeed(10, { wind_speed_unit: 'm/s' }, 'kn')).toBe(19);
+  });
+
+  test('whole numbers for km/h, mph and knots, one decimal for m/s', () => {
+    expect(roundWindSpeed(28.8, 'km/h')).toBe(29);
+    expect(roundWindSpeed(8.04, 'm/s')).toBe(8);
+    expect(roundWindSpeed(8.06, 'm/s')).toBe(8.1);
+  });
+
+  test('unit label follows the display unit', () => {
     const t = (key: string) => key;
-    expect(getWindSpeedUnit({ wind_speed_unit: 'km/h' }, 'ms', t)).toBe('wind_unit_kmh');
-    expect(getWindSpeedUnit({}, 'kmh', t)).toBe('wind_unit_kmh');
+    expect(getWindSpeedUnit({ wind_speed_unit: 'km/h' }, 'auto', t)).toBe('wind_unit_kmh');
+    expect(getWindSpeedUnit({ wind_speed_unit: 'km/h' }, 'ms', t)).toBe('wind_unit_ms');
+    expect(getWindSpeedUnit({}, 'auto', t)).toBe('wind_unit_ms');
+    expect(getWindSpeedUnit({}, 'kn', t)).toBe('wind_unit_knots');
+    expect(windDisplayUnit('mph', 'auto')).toBe('mph');
   });
 });
 

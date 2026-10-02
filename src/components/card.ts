@@ -16,7 +16,7 @@ import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes } from './weather-data.js';
 import { getPrecipitationOutlook } from '../precipitation-outlook.js';
 import { getSVGIcon } from '../icons/svg-icons.js';
-import { formatTime, convertSpeedUnit, getWindSpeedUnit } from '../utils.js';
+import { formatTime, convertSpeedUnit, windDisplayUnit, windUnitLabel, WIND_UNIT_SETTINGS, type WindUnitSetting } from '../utils.js';
 import type { ForecastWindOptions } from './forecast-wind-row.js';
 import './clock.js';
 import './details.js';
@@ -225,7 +225,7 @@ export class AnimatedWeatherCard extends LitElement {
       showWindDirection: this.config.showWindDirection ?? true,
       showSunriseSunset: this.config.showSunriseSunset ?? true,
       clockFormat: this.config.clockFormat ?? '24h',
-      windSpeedUnit: this.config.windSpeedUnit ?? 'ms'
+      windSpeedUnit: this.config.windSpeedUnit ?? DEFAULT_CONFIG.windSpeedUnit
     };
   }
 
@@ -276,7 +276,7 @@ export class AnimatedWeatherCard extends LitElement {
       sunPositionY: config.sun_position_y ?? DEFAULT_CONFIG.sunPositionY,
       textColor: config.text_color?.trim() || DEFAULT_CONFIG.textColor,
       language: config.language || DEFAULT_CONFIG.language,
-      windSpeedUnit: config.wind_speed_unit || DEFAULT_CONFIG.windSpeedUnit,
+      windSpeedUnit: WIND_UNIT_SETTINGS.includes(config.wind_speed_unit as WindUnitSetting) ? config.wind_speed_unit as WindUnitSetting : DEFAULT_CONFIG.windSpeedUnit,
       showAnimations: config.show_animations !== false,
       layout: config.layout || DEFAULT_CONFIG.layout,
       visualStyle: config.visual_style === 'classic' ? 'classic' : 'modern',
@@ -426,7 +426,7 @@ export class AnimatedWeatherCard extends LitElement {
     cardClasses: string,
     cardStyle: string
   ): TemplateResult {
-    const windOptions = this.getForecastWindOptions(hass);
+    const windOptions = this.getForecastWindOptions(hass, weather);
     return html`
       <div class="${cardClasses}" style="${cardStyle}">
         ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
@@ -493,13 +493,14 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
-  // Wind in the forecasts: forecast values are in the weather entity's unit (sensors only override the current wind)
-  private getForecastWindOptions(hass: HomeAssistant): ForecastWindOptions | null {
+  // Wind in the forecasts: forecast values come in the weather entity's unit and are shown in the same unit
+  // as the current wind (a wind speed sensor's unit with 'auto'), so the card never mixes units
+  private getForecastWindOptions(hass: HomeAssistant, weather: ReturnType<typeof getWeatherData>): ForecastWindOptions | null {
     if (!this.config.showForecastWind) return null;
-    const unit = getWeatherAttributes(hass, this.config.entity).wind_speed_unit;
-    const attrs = unit ? { wind_speed_unit: unit } : {};
-    const configUnit = this.config.windSpeedUnit ?? DEFAULT_CONFIG.windSpeedUnit;
-    return { attrs, configUnit, unit: getWindSpeedUnit(attrs, configUnit, i18n.t.bind(i18n)) };
+    const entityUnit = getWeatherAttributes(hass, this.config.entity).wind_speed_unit;
+    const fromUnit = typeof entityUnit === 'string' && entityUnit ? entityUnit : 'm/s';
+    const toUnit = windDisplayUnit(weather.windSpeedUnit ?? fromUnit, this.config.windSpeedUnit ?? DEFAULT_CONFIG.windSpeedUnit);
+    return { fromUnit, toUnit, unit: windUnitLabel(toUnit, i18n.t.bind(i18n)) };
   }
 
   private renderMinimal(

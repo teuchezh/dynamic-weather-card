@@ -34,21 +34,19 @@ describe('aggregateWind', () => {
 });
 
 describe('getForecastWind', () => {
-  test('rounds to whole numbers and keeps the provider unit', () => {
-    expect(getForecastWind(entry({ wind_speed: 4.6, wind_gust_speed: 9.2, wind_bearing: 225 }), { wind_speed_unit: 'km/h' }, 'ms'))
+  test('converts to the display unit, in whole numbers', () => {
+    expect(getForecastWind(entry({ wind_speed: 4.6, wind_gust_speed: 9.2, wind_bearing: 225 }), 'km/h', 'km/h'))
       .toEqual({ speed: 5, gust: 9, bearing: 225 });
-  });
-
-  test('legacy providers without a unit use wind_speed_unit', () => {
-    expect(getForecastWind(entry({ wind_speed: 5 }), {}, 'kmh')?.speed).toBe(18);
+    expect(getForecastWind(entry({ wind_speed: 5 }), 'm/s', 'km/h')?.speed).toBe(18);
+    expect(getForecastWind(entry({ wind_speed: 18 }), 'km/h', 'm/s')?.speed).toBe(5);
   });
 
   test('gusts no stronger than the speed are not shown', () => {
-    expect(getForecastWind(entry({ wind_speed: 5, wind_gust_speed: 5.2 }), {}, 'ms')?.gust).toBeNull();
+    expect(getForecastWind(entry({ wind_speed: 5, wind_gust_speed: 5.2 }), 'm/s', 'm/s')?.gust).toBeNull();
   });
 
   test('no wind speed: no wind row', () => {
-    expect(getForecastWind(entry({ wind_bearing: 90 }), {}, 'ms')).toBeNull();
+    expect(getForecastWind(entry({ wind_bearing: 90 }), 'm/s', 'm/s')).toBeNull();
   });
 });
 
