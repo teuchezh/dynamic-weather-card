@@ -161,6 +161,36 @@ export const forecastStyles = css`
     text-shadow: var(--card-text-shadow);
   }
 
+  .forecast-wind {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0.85;
+    text-shadow: var(--card-text-shadow);
+  }
+
+  .forecast-wind-arrow {
+    display: inline-flex;
+    filter: var(--card-icon-filter);
+  }
+
+  .forecast-wind-arrow svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .forecast-wind-gust,
+  .forecast-wind-unit {
+    opacity: 0.7;
+  }
+
+  .forecast-wind-unit {
+    margin-left: 1px;
+    font-size: 10px;
+  }
+
   .forecast-unavailable {
     opacity: 0.6;
     font-size: 14px;

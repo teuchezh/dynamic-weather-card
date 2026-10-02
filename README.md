@@ -272,6 +272,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `daily_forecast_days` | number | `5` | Days to show, 1–14 |
 | `daily_forecast_title` | string | translated | Custom title; `""` hides it |
 | `show_temperature_bars` | boolean | `false` | Each day's low–high range as a colored bar on one shared scale, with today's temperature marked |
+| `show_forecast_wind` | boolean | `false` | Wind direction, speed and gusts for each hour and day, when the provider reports them |
 
 ### Language, clock and date
 
@@ -343,7 +344,7 @@ Without any sun data it falls back to fixed hours: sunrise 6:00–8:00, day unti
 
 **Wind units.** Units are detected from the integration: m/s, km/h, mph, knots or ft/s. Only integrations that don't report a unit need `wind_speed_unit`. The wind animation converts everything to m/s.
 
-**Forecasts.** The card subscribes to Home Assistant's hourly and daily forecasts. Older integrations that only offer a `forecast` attribute also work: hourly entries are then grouped into days, with the day's high, low and chance of precipitation.
+**Forecasts.** The card subscribes to Home Assistant's hourly and daily forecasts. Older integrations that only offer a `forecast` attribute also work: hourly entries are then grouped into days, with the day's high, low, chance of precipitation and strongest wind.
 
 **Precipitation outlook.** It looks 12 hours ahead in the hourly forecast. An hour counts as wet when its condition is rain, snow, sleet, hail or storm, or when the chance of precipitation is at least 50%.
 

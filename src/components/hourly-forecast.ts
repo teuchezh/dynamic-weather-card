@@ -4,6 +4,7 @@ import { getWeatherConditionIcon } from '../icons/svg-icons.js';
 import { formatForecastTime, getDayStarts, setupHorizontalScroll } from '../utils.js';
 import { i18n } from '../internationalization/index.js';
 import { forecastStyles } from './forecast-styles.js';
+import { renderForecastWind, type ForecastWindOptions } from './forecast-wind-row.js';
 import type { WeatherForecast } from '../types.js';
 
 export class HourlyForecast extends LitElement {
@@ -12,6 +13,8 @@ export class HourlyForecast extends LitElement {
   @property({ type: String }) forecastTitle: string | null = null;
   @property({ type: String }) clockFormat: '12h' | '24h' = '24h';
   @property({ type: String }) lang: string = 'en';
+  // Wind row under each item (null = off)
+  @property({ attribute: false }) wind: ForecastWindOptions | null = null;
 
   static styles = forecastStyles;
 
@@ -50,6 +53,7 @@ export class HourlyForecast extends LitElement {
         <div class="forecast-time">${formatForecastTime(item.datetime, this.clockFormat, i18n.t('am'), i18n.t('pm'))}</div>
         <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
         <div class="forecast-temp">${this.getTemperature(item)}°</div>
+        ${renderForecastWind(item, this.wind)}
         ${precipitation != null && precipitation > 0 ? html`<div class="forecast-precipitation">${Math.round(precipitation)}%</div>` : ''}
       </div>
     `;

@@ -4,6 +4,7 @@ import { getWeatherConditionIcon } from '../icons/svg-icons.js';
 import { formatForecastDay, setupHorizontalScroll } from '../utils.js';
 import { i18n } from '../internationalization/index.js';
 import { forecastStyles } from './forecast-styles.js';
+import { renderForecastWind, type ForecastWindOptions } from './forecast-wind-row.js';
 import { temperatureColor } from '../temperature-color.js';
 import type { WeatherForecast } from '../types.js';
 
@@ -17,6 +18,8 @@ export class DailyForecast extends LitElement {
   // Custom section title: null = default (translated), '' = hidden
   @property({ type: String }) forecastTitle: string | null = null;
   @property({ type: String }) lang: string = 'en';
+  // Wind row under each item (null = off)
+  @property({ attribute: false }) wind: ForecastWindOptions | null = null;
   // Temperature range bars: each day's low..high on a scale shared by all shown days
   @property({ type: Boolean }) showBars = false;
   // Current temperature, marked on today's bar
@@ -80,6 +83,7 @@ export class DailyForecast extends LitElement {
           ${marker}
         </div>
         <div class="forecast-temp forecast-temp-low-bar">${low}°</div>
+        ${renderForecastWind(item, this.wind)}
         ${precipitation !== null ? html`<div class="forecast-precipitation">${precipitation}%</div>` : ''}
       </div>
     `;
@@ -96,6 +100,7 @@ export class DailyForecast extends LitElement {
         <div class="forecast-temp">
           ${this.getTemperature(item)}°${low !== null ? html`<span class="forecast-temp-low">${low}°</span>` : ''}
         </div>
+        ${renderForecastWind(item, this.wind)}
         ${precipitation !== null ? html`<div class="forecast-precipitation">${precipitation}%</div>` : ''}
       </div>
     `;

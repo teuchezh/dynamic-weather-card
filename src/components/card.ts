@@ -16,7 +16,8 @@ import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes } from './weather-data.js';
 import { getPrecipitationOutlook } from '../precipitation-outlook.js';
 import { getSVGIcon } from '../icons/svg-icons.js';
-import { formatTime, convertSpeedUnit } from '../utils.js';
+import { formatTime, convertSpeedUnit, getWindSpeedUnit } from '../utils.js';
+import type { ForecastWindOptions } from './forecast-wind-row.js';
 import './clock.js';
 import './details.js';
 import './hourly-forecast.js';
@@ -241,6 +242,7 @@ export class AnimatedWeatherCard extends LitElement {
       showRaindrops: config.show_raindrops !== false,
       showWindEffects: config.show_wind_effects !== false,
       showTemperatureBars: config.show_temperature_bars === true,
+      showForecastWind: config.show_forecast_wind === true,
       showForecast: config.show_forecast === true,
       showHourlyForecast: showHourlyForecast === true,
       showDailyForecast: config.show_daily_forecast === true,
@@ -409,6 +411,7 @@ export class AnimatedWeatherCard extends LitElement {
     cardClasses: string,
     cardStyle: string
   ): TemplateResult {
+    const windOptions = this.getForecastWindOptions(hass);
     return html`
       <div class="${cardClasses}" style="${cardStyle}">
         ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
@@ -453,12 +456,14 @@ export class AnimatedWeatherCard extends LitElement {
           </div>
           <hourly-forecast
             .forecast=${hourlyForecast}
+            .wind=${windOptions}
             .lang=${i18n.lang}
             .clockFormat=${this.config.clockFormat ?? '24h'}
             .forecastTitle=${this.config.hourlyForecastTitle ?? null}
           ></hourly-forecast>
           <daily-forecast
             .forecast=${dailyForecast}
+            .wind=${windOptions}
             .lang=${i18n.lang}
             .forecastTitle=${this.config.dailyForecastTitle ?? null}
             .showBars=${this.config.showTemperatureBars === true}
@@ -468,6 +473,15 @@ export class AnimatedWeatherCard extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  // Wind in the forecasts: forecast values are in the weather entity's unit (sensors only override the current wind)
+  private getForecastWindOptions(hass: HomeAssistant): ForecastWindOptions | null {
+    if (!this.config.showForecastWind) return null;
+    const unit = getWeatherAttributes(hass, this.config.entity).wind_speed_unit;
+    const attrs = unit ? { wind_speed_unit: unit } : {};
+    const configUnit = this.config.windSpeedUnit ?? DEFAULT_CONFIG.windSpeedUnit;
+    return { attrs, configUnit, unit: getWindSpeedUnit(attrs, configUnit, i18n.t.bind(i18n)) };
   }
 
   private renderMinimal(

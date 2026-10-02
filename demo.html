@@ -726,6 +726,7 @@
             showAqi: false,
             showPrecipitationOutlook: true,
             showTemperatureBars: true,
+            showForecastWind: true,
             showAurora: false,
             showRaindrops: true,
             showWindEffects: true,
@@ -905,7 +906,8 @@
                     ['showHourlyForecast', 'hourlyForecast', 'Hourly Forecast'],
                     ['showDailyForecast', 'dailyForecast', 'Daily Forecast'],
                     ['showPrecipitationOutlook', 'precipitationOutlook', 'Rain start/stop time'],
-                    ['showTemperatureBars', 'temperatureBars', 'Temperature bars']
+                    ['showTemperatureBars', 'temperatureBars', 'Temperature bars'],
+                    ['showForecastWind', 'forecastWind', 'Wind in forecasts']
                 ] },
                 { type: 'range', key: 'hourlyForecastHours', label: ['hourlyForecastHours', 'Hourly Forecast Hours'], min: 1, max: 168 },
                 { type: 'range', key: 'dailyForecastDays', label: ['dailyForecastDays', 'Daily Forecast Days'], min: 1, max: 14 },
@@ -1207,13 +1209,18 @@
                 if (i <= 2) condition = currentCondition === 'clear-night' ? 'sunny' : currentCondition;
                 else if (i <= 5) condition = nowWet ? 'partlycloudy' : baseTemp <= 0 ? 'snowy' : 'rainy';
                 const wet = /rain|pouring|snow|hail|lightning/.test(condition);
+                // Wind that changes from day to day and turns slowly through the day
+                const windSpeed = Math.max(1, Math.round([3, 6, 2, 9, 4, 7, 5, 11][dayIndex % 8] + Math.sin(i / 4) * 2));
                 forecast.push({
                     datetime: time.toISOString(),
                     condition,
                     temperature: temp,
                     temp,
                     // The card shows the day's max chance in the daily forecast
-                    precipitation_probability: wet ? Math.floor(Math.random() * (20 + (time.getDate() % 4) * 25)) : 0
+                    precipitation_probability: wet ? Math.floor(Math.random() * (20 + (time.getDate() % 4) * 25)) : 0,
+                    wind_speed: windSpeed,
+                    wind_gust_speed: Math.round(windSpeed * 1.6),
+                    wind_bearing: Math.round((dayIndex * 70 + i * 5) % 360)
                 });
             }
             forecastCache = { key, forecast };
@@ -1287,6 +1294,7 @@
                 show_dew_point: state.showDewPoint,
                 show_precipitation_outlook: state.showPrecipitationOutlook,
                 show_temperature_bars: state.showTemperatureBars,
+                show_forecast_wind: state.showForecastWind,
                 show_aurora: state.showAurora,
                 show_raindrops: state.showRaindrops,
                 show_wind_effects: state.showWindEffects,

@@ -63,6 +63,7 @@ export interface WeatherForecast {
   precipitation?: number;
   precipitation_probability?: number;
   wind_speed?: number;
+  wind_gust_speed?: number;
   wind_bearing?: number;
   // Alternative temperature property names from various providers
   temp?: number;
@@ -131,6 +132,7 @@ export interface WeatherCardConfig {
   showMinTemp?: boolean;
   showPrecipitationOutlook?: boolean;
   showTemperatureBars?: boolean;
+  showForecastWind?: boolean;
   showAurora?: boolean;
   showRaindrops?: boolean;
   showWindEffects?: boolean;
@@ -257,6 +259,7 @@ export interface ConfigInput {
   show_min_temp?: boolean;
   show_precipitation_outlook?: boolean;
   show_temperature_bars?: boolean;
+  show_forecast_wind?: boolean;
   show_aurora?: boolean;
   show_raindrops?: boolean;
   show_wind_effects?: boolean;

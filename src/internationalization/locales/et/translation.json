@@ -91,6 +91,8 @@
     "show_dew_point": "Kastepunkt",
     "show_precipitation_outlook": "Millal vihm algab/lõpeb",
     "show_temperature_bars": "Temperatuuriribad",
+    "show_forecast_wind": "Tuul prognoosides",
+    "show_forecast_wind_helper": "Iga tunni ja päeva tuule suund, kiirus ja puhangud, kui ilmateenus neid edastab",
     "pressure_entity": "Õhurõhu andur",
     "uv_index_entity": "UV-indeksi andur",
     "dew_point_entity": "Kastepunkti andur",

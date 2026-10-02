@@ -65,6 +65,7 @@ export class DynamicWeatherCardEditor extends LitElement {
       show_min_temp: DEFAULT_CONFIG.showMinTemp,
       show_precipitation_outlook: DEFAULT_CONFIG.showPrecipitationOutlook,
       show_temperature_bars: DEFAULT_CONFIG.showTemperatureBars,
+      show_forecast_wind: DEFAULT_CONFIG.showForecastWind,
       show_aurora: DEFAULT_CONFIG.showAurora,
       show_raindrops: DEFAULT_CONFIG.showRaindrops,
       show_wind_effects: DEFAULT_CONFIG.showWindEffects,
@@ -172,7 +173,8 @@ export class DynamicWeatherCardEditor extends LitElement {
             ),
             toggle('show_temperature_bars')
           ]
-          : [])
+          : []),
+        ...(isOn('show_hourly_forecast') || isOn('show_daily_forecast') ? [toggle('show_forecast_wind')] : [])
       ]),
       section('clock', 'mdi:clock-outline', [
         {

@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from '../constants.js';
+import { aggregateWind } from '../forecast-wind.js';
 import type {
   HomeAssistant,
   WeatherForecast,
@@ -150,6 +151,7 @@ export class ForecastService {
       hourScore: number;
       temperatures: number[];
       precipitationProbabilities: number[];
+      entries: WeatherForecast[];
     }>();
 
     fallbackWeatherData.forecast.forEach(item => {
@@ -161,7 +163,7 @@ export class ForecastService {
       const key = toDayKey(itemDate);
       const hourScore = Math.abs((itemDate.getHours() + itemDate.getMinutes() / 60) - 12);
       const temperature = item.temperature ?? item.temp ?? item.native_temperature;
-      const existing = dayBuckets.get(key) ?? { item, itemDate, hourScore, temperatures: [], precipitationProbabilities: [] };
+      const existing = dayBuckets.get(key) ?? { item, itemDate, hourScore, temperatures: [], precipitationProbabilities: [], entries: [] };
 
       if (hourScore < existing.hourScore) {
         existing.item = item;
@@ -170,18 +172,21 @@ export class ForecastService {
       }
       if (temperature != null) existing.temperatures.push(temperature);
       if (item.precipitation_probability != null) existing.precipitationProbabilities.push(item.precipitation_probability);
+      existing.entries.push(item);
       dayBuckets.set(key, existing);
     });
 
     return Array.from(dayBuckets.values())
       .sort((a, b) => a.itemDate.getTime() - b.itemDate.getTime())
-      .map(({ item, temperatures, precipitationProbabilities }) => {
-        // Several (hourly) entries for a day: summarize them as the day's high/low and max precipitation chance
+      .map(({ item, temperatures, precipitationProbabilities, entries }) => {
+        // Several (hourly) entries for a day: summarize them as the day's high/low, max precipitation chance
+        // and strongest wind with its prevailing direction
         if (temperatures.length < 2) return item;
         const daily: WeatherForecast = {
           ...item,
           temperature: Math.max(...temperatures),
-          templow: item.templow ?? item.native_templow ?? Math.min(...temperatures)
+          templow: item.templow ?? item.native_templow ?? Math.min(...temperatures),
+          ...aggregateWind(entries)
         };
         if (precipitationProbabilities.length > 0) {
           daily.precipitation_probability = Math.max(...precipitationProbabilities);
