@@ -352,7 +352,7 @@ tap_action:
 
 ## 🌍 Языки
 
-English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文, Slovenščina и Eesti (только названия погоды). Карточка следует языку Home Assistant, если не задан `language`.
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文, Slovenščina и Eesti. Карточка следует языку Home Assistant, если не задан `language`.
 
 Чтобы добавить или улучшить перевод, отредактируйте `src/internationalization/locales/<code>/translation.json` прямо на GitHub и откройте pull request в `main`. Программировать не нужно. Новые языки подхватываются автоматически, а недостающие ключи берутся из английского.
 

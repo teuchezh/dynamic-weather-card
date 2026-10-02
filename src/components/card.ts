@@ -225,7 +225,6 @@ export class AnimatedWeatherCard extends LitElement {
     this.config = {
       type: 'custom:dynamic-weather-card',
       entity: config.entity,
-      icons_path: config.icons_path,
       name: config.name,
       height: config.height || DEFAULT_CONFIG.height,
       showFeelsLike: config.show_feels_like !== false,

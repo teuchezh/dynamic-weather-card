@@ -245,7 +245,6 @@ export interface ActionConfig {
 export interface ConfigInput {
   type?: string;
   entity: string;
-  icons_path?: string;
   name?: string;
   height?: number;
   show_feels_like?: boolean;
@@ -324,7 +323,6 @@ export interface SensorEntities {
 // Internal Card Configuration (normalized)
 export interface WeatherCardConfigInternal extends WeatherCardConfig {
   name?: string;
-  icons_path?: string;
   sunriseEntity?: string | null;
   sunsetEntity?: string | null;
   templowAttribute?: string | null;

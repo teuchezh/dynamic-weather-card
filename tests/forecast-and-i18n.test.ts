@@ -104,7 +104,6 @@ describe('i18n', () => {
     i18n.setLanguage('ru');
     expect(i18n.t('sunny')).toBe('Солнечно');
     i18n.setLanguage('et');
-    // Estonian has no demo strings
     expect(i18n.t('editor.show_aurora')).toBe('Virmalised');
     expect(i18n.t('no.such.key')).toBe('no.such.key');
     i18n.setLanguage('en');

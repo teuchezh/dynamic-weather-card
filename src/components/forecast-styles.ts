@@ -154,11 +154,25 @@ export const forecastStyles = css`
     opacity: 0.6;
   }
 
+  /* Text in the card's own color, readable on any sky; the blue drop marks it as precipitation */
   .forecast-precipitation {
+    display: flex;
+    align-items: center;
+    gap: 3px;
     font-size: 11px;
-    opacity: 0.75;
-    color: #8ecbff;
+    font-weight: 500;
+    opacity: 0.9;
     text-shadow: var(--card-text-shadow);
+  }
+
+  .forecast-precipitation::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    background: #4fb3ff;
+    box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.25);
   }
 
   .forecast-wind {
