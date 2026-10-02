@@ -20,6 +20,7 @@
   "windy-variant": "Szeles, felhős",
   "feels_like": "Hőérzet",
   "forecast_title": "Mai előrejelzés",
+  "forecast_title_hourly": "Óránkénti előrejelzés",
   "daily_forecast_title": "Napi előrejelzés",
   "no_data": "Nincs adat",
   "forecast_unavailable": "Előrejelzés nem elérhető",
@@ -149,7 +150,8 @@
     "language_sl": "Szlovén",
     "language_sr": "Szerb",
     "language_tr": "Török",
-    "language_zh": "Kínai"
+    "language_zh": "Kínai",
+    "hourly_forecast_hours_helper": "Nincs felső határ: pl. 72 három napra, vagy több a szolgáltató teljes előrejelzéséhez"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",

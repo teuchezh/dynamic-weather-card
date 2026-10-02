@@ -20,6 +20,7 @@
   "windy-variant": "Vetrovno, oblačno",
   "feels_like": "Občutno kot",
   "forecast_title": "Današnja napoved",
+  "forecast_title_hourly": "Urna napoved",
   "daily_forecast_title": "Dnevna napoved",
   "no_data": "Ni podatkov",
   "forecast_unavailable": "Napoved nedostopna",
@@ -149,7 +150,8 @@
     "show_raindrops": "Dežne kaplje na steklu",
     "show_wind_effects": "Sunki vetra in listje",
     "show_raindrops_helper": "Ob dežju, moderna grafika",
-    "show_wind_effects_helper": "Ob vetrovnem vremenu ali nad 8 m/s"
+    "show_wind_effects_helper": "Ob vetrovnem vremenu ali nad 8 m/s",
+    "hourly_forecast_hours_helper": "Brez omejitve: npr. 72 za tri dni ali več za prikaz celotne napovedi ponudnika"
   },
   "demo": {
     "aurora": "Severni sij",

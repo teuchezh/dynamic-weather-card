@@ -20,6 +20,7 @@
   "windy-variant": "Winderig, bewolkt",
   "feels_like": "Gevoelstemperatuur",
   "forecast_title": "Voorspelling van vandaag",
+  "forecast_title_hourly": "Uurverwachting",
   "daily_forecast_title": "Dagelijkse voorspelling",
   "no_data": "Geen gegevens",
   "forecast_unavailable": "Voorspelling niet beschikbaar",
@@ -149,7 +150,8 @@
     "language_sl": "Sloveens",
     "language_sr": "Servisch",
     "language_tr": "Turks",
-    "language_zh": "Chinees"
+    "language_zh": "Chinees",
+    "hourly_forecast_hours_helper": "Geen maximum: bijv. 72 voor drie dagen, of meer om de hele verwachting van de provider te tonen"
   },
   "demo": {
     "pageTitle": "Dynamische Weerkaart",

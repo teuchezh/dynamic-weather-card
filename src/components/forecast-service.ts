@@ -6,6 +6,8 @@ import type {
   WeatherData
 } from '../types.js';
 
+const HOUR_MS = 3600000;
+
 export class ForecastService {
   private hourlyForecast: WeatherForecast[] = [];
   private dailyForecast: WeatherForecast[] = [];
@@ -89,36 +91,31 @@ export class ForecastService {
     }
   }
 
+  /**
+   * Upcoming hourly entries, up to `hours` of them. There is no upper limit:
+   * a large number shows everything the provider forecasts.
+   */
   getHourlyForecast(
     hours: number,
     fallbackWeatherData: WeatherData | null
   ): WeatherForecast[] {
-    const maxHours = Math.max(1, Math.floor(Number(hours ?? DEFAULT_CONFIG.hourlyForecastHours)));
+    const maxHours = Math.max(1, Math.floor(Number(hours ?? DEFAULT_CONFIG.hourlyForecastHours)) || DEFAULT_CONFIG.hourlyForecastHours);
+    const subscribed = this.hourlyForecast && this.hourlyForecast.length > 0;
+    const source = subscribed ? this.hourlyForecast : fallbackWeatherData?.forecast ?? [];
 
-    if (this.hourlyForecast && this.hourlyForecast.length > 0) {
-      return this.hourlyForecast.slice(0, maxHours);
-    }
+    const now = Date.now();
+    const entries = source
+      .map(item => ({ item, time: new Date(item.datetime).getTime() }))
+      .filter(({ time }) => !Number.isNaN(time))
+      .sort((a, b) => a.time - b.time)
+      // The hour in progress stays, hours that are over are dropped
+      .filter(({ time }) => time > now - HOUR_MS);
 
-    if (!fallbackWeatherData?.forecast || fallbackWeatherData.forecast.length === 0) {
-      return [];
-    }
+    // An older integration's forecast attribute may be daily: keep showing only the next day of it
+    const hourly = entries.length < 2 || entries[1].time - entries[0].time <= 3 * HOUR_MS;
+    const upcoming = subscribed || hourly ? entries : entries.filter(({ time }) => time < now + 24 * HOUR_MS);
 
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const todayForecast = fallbackWeatherData.forecast.filter(item => {
-      if (!item.datetime) return false;
-      const itemDate = new Date(item.datetime);
-      const itemDay = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
-      return itemDay.getTime() === today.getTime() ||
-        (itemDay.getTime() === tomorrow.getTime() && itemDate.getHours() <= now.getHours());
-    });
-
-    return todayForecast
-      .sort((a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime())
-      .slice(0, maxHours);
+    return upcoming.slice(0, maxHours).map(({ item }) => item);
   }
 
   getDailyForecast(

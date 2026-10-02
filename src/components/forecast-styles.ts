@@ -65,6 +65,30 @@ export const forecastStyles = css`
     min-width: 60px;
   }
 
+  /* Hourly forecast spanning several days: the first hour of each new day */
+  .forecast-day {
+    min-height: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    text-shadow: var(--card-text-shadow);
+  }
+
+  .forecast-item.day-start {
+    position: relative;
+  }
+
+  .forecast-item.day-start::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
   .forecast-time {
     font-size: 12px;
     opacity: 0.7;

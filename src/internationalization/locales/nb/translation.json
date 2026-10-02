@@ -20,6 +20,7 @@
   "windy-variant": "Vindfullt, skyet",
   "feels_like": "Føles som",
   "forecast_title": "Dagens værvarsel",
+  "forecast_title_hourly": "Timevarsel",
   "daily_forecast_title": "Daglig værvarsel",
   "no_data": "Ingen data",
   "forecast_unavailable": "Værvarsel utilgjengelig",
@@ -149,7 +150,8 @@
     "wind_bearing_entity": "Vindretningssensor",
     "wind_gust_entity": "Vindkastsensor",
     "wind_speed_entity": "Vindhastighetssensor",
-    "language_sl": "Slovensk"
+    "language_sl": "Slovensk",
+    "hourly_forecast_hours_helper": "Ingen øvre grense: f.eks. 72 for tre dager, eller mer for å vise hele varselet fra leverandøren"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",

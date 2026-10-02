@@ -266,7 +266,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `show_hourly_forecast` | boolean | `false` | Hourly forecast |
-| `hourly_forecast_hours` | number | `5` | Hours to show, 1–24 |
+| `hourly_forecast_hours` | number | `5` | Hours to show. No upper limit: a large number (e.g. `168`) shows everything the provider forecasts. A forecast spanning several days marks where each new day starts |
 | `hourly_forecast_title` | string | translated | Custom title; `""` hides it |
 | `show_daily_forecast` | boolean | `false` | Daily forecast with high, low and chance of precipitation |
 | `daily_forecast_days` | number | `5` | Days to show, 1–14 |

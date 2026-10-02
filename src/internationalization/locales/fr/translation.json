@@ -20,6 +20,7 @@
   "windy-variant": "Venteux, nuageux",
   "feels_like": "Ressenti",
   "forecast_title": "Prévisions du jour",
+  "forecast_title_hourly": "Prévisions horaires",
   "daily_forecast_title": "Prévisions quotidiennes",
   "no_data": "Aucune donnée",
   "forecast_unavailable": "Prévisions non disponibles",
@@ -149,7 +150,8 @@
     "language_sl": "Slovène",
     "language_sr": "Serbe",
     "language_tr": "Turc",
-    "language_zh": "Chinois"
+    "language_zh": "Chinois",
+    "hourly_forecast_hours_helper": "Sans limite : p. ex. 72 pour trois jours, ou plus pour afficher toute la prévision du fournisseur"
   },
   "demo": {
     "pageTitle": "Carte Météo Dynamique",

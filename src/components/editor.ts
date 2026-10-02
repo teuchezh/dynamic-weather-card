@@ -159,7 +159,7 @@ export class DynamicWeatherCardEditor extends LitElement {
         toggle('show_hourly_forecast'),
         ...(isOn('show_hourly_forecast')
           ? [grid(
-            { name: 'hourly_forecast_hours', selector: { number: { min: 1, max: 24, step: 1, mode: 'box' } } },
+            { name: 'hourly_forecast_hours', selector: { number: { min: 1, step: 1, mode: 'box' } } },
             { name: 'hourly_forecast_title', selector: { text: {} } }
           )]
           : []),

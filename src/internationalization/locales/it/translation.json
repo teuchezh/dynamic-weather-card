@@ -20,6 +20,7 @@
   "windy-variant": "Ventoso, nuvoloso",
   "feels_like": "Percepita",
   "forecast_title": "Previsioni di oggi",
+  "forecast_title_hourly": "Previsioni orarie",
   "daily_forecast_title": "Previsioni Giornaliere",
   "no_data": "Nessun dato",
   "forecast_unavailable": "Previsioni non disponibili",
@@ -149,7 +150,8 @@
     "language_sl": "Sloveno",
     "language_sr": "Serbo",
     "language_tr": "Turco",
-    "language_zh": "Cinese"
+    "language_zh": "Cinese",
+    "hourly_forecast_hours_helper": "Nessun limite: ad es. 72 per tre giorni, o di più per mostrare tutte le previsioni del fornitore"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",

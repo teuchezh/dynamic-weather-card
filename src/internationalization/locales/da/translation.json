@@ -20,6 +20,7 @@
   "windy-variant": "Blæsende, overskyet",
   "feels_like": "Føles som",
   "forecast_title": "Dagens vejrudsigt",
+  "forecast_title_hourly": "Timeprognose",
   "daily_forecast_title": "Daglig vejrudsigt",
   "no_data": "Ingen data",
   "forecast_unavailable": "Vejrudsigt utilgængelig",
@@ -149,7 +150,8 @@
     "language_sl": "Slovensk",
     "language_sr": "Serbisk",
     "language_tr": "Tyrkisk",
-    "language_zh": "Kinesisk"
+    "language_zh": "Kinesisk",
+    "hourly_forecast_hours_helper": "Ingen øvre grænse: f.eks. 72 for tre dage, eller mere for at vise hele udbyderens prognose"
   },
   "demo": {
     "pageTitle": "Dynamisk vejrkort",

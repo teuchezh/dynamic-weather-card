@@ -20,6 +20,7 @@
   "clear-night": "Selge öö",
   "feels_like": "Tundub nagu",
   "forecast_title": "Tänane prognoos",
+  "forecast_title_hourly": "Tunniprognoos",
   "daily_forecast_title": "Päevaprognoos",
   "no_data": "Andmed puuduvad",
   "forecast_unavailable": "Prognoos pole saadaval",
@@ -149,6 +150,7 @@
     "show_raindrops": "Vihmapiisad klaasil",
     "show_wind_effects": "Tuulepuhangud ja lehed",
     "show_raindrops_helper": "Vihmaga, moodne graafika",
-    "show_wind_effects_helper": "Tuulise ilmaga või üle 8 m/s"
+    "show_wind_effects_helper": "Tuulise ilmaga või üle 8 m/s",
+    "hourly_forecast_hours_helper": "Ülempiirita: nt 72 kolme päeva jaoks või rohkem, et näidata pakkuja kogu prognoosi"
   }
 }

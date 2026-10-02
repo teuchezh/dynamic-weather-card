@@ -907,7 +907,7 @@
                     ['showPrecipitationOutlook', 'precipitationOutlook', 'Rain start/stop time'],
                     ['showTemperatureBars', 'temperatureBars', 'Temperature bars']
                 ] },
-                { type: 'range', key: 'hourlyForecastHours', label: ['hourlyForecastHours', 'Hourly Forecast Hours'], min: 1, max: 24 },
+                { type: 'range', key: 'hourlyForecastHours', label: ['hourlyForecastHours', 'Hourly Forecast Hours'], min: 1, max: 168 },
                 { type: 'range', key: 'dailyForecastDays', label: ['dailyForecastDays', 'Daily Forecast Days'], min: 1, max: 14 },
                 { type: 'text', key: 'hourlyForecastTitle', label: ['hourlyForecastTitle', 'Hourly Forecast Title'], placeholder: ['placeholderDefault', 'Default'] },
                 { type: 'text', key: 'dailyForecastTitle', label: ['dailyForecastTitle', 'Daily Forecast Title'], placeholder: ['placeholderDefault', 'Default'] }
@@ -1248,7 +1248,7 @@
                             // Rough dew point from temperature and humidity
                             dew_point: Math.round(state.temperature - (100 - state.humidity) / 5),
                             friendly_name: 'Demo Weather',
-                            forecast: generateForecast(state.temperature, Math.max(state.dailyForecastDays, 2), state.condition),
+                            forecast: generateForecast(state.temperature, Math.max(state.dailyForecastDays, 2, Math.ceil(state.hourlyForecastHours / 24) + 1), state.condition),
                             sunrise: sunrise.toISOString(),
                             sunset: sunset.toISOString()
                         }

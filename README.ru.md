@@ -266,7 +266,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | Параметр | Тип | По умолчанию | Описание |
 |---|---|---|---|
 | `show_hourly_forecast` | boolean | `false` | Прогноз по часам |
-| `hourly_forecast_hours` | number | `5` | Сколько часов показывать, 1–24 |
+| `hourly_forecast_hours` | number | `5` | Сколько часов показывать. Без ограничений: большое число (например, `168`) покажет весь прогноз провайдера. Если прогноз захватывает несколько дней, начало каждого дня отмечено |
 | `hourly_forecast_title` | string | перевод | Свой заголовок; `""` скрывает его |
 | `show_daily_forecast` | boolean | `false` | Прогноз по дням: максимум, минимум и вероятность осадков |
 | `daily_forecast_days` | number | `5` | Сколько дней показывать, 1–14 |

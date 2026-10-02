@@ -20,6 +20,7 @@
   "windy-variant": "Ventoso, nublado",
   "feels_like": "Sensación térmica",
   "forecast_title": "Previsión para hoy",
+  "forecast_title_hourly": "Pronóstico por horas",
   "daily_forecast_title": "Previsión Diaria",
   "no_data": "Sin datos",
   "forecast_unavailable": "Previsión no disponible",
@@ -149,7 +150,8 @@
     "language_sl": "Esloveno",
     "language_sr": "Serbio",
     "language_tr": "Turco",
-    "language_zh": "Chino"
+    "language_zh": "Chino",
+    "hourly_forecast_hours_helper": "Sin límite: p. ej. 72 para tres días, o más para mostrar todo el pronóstico del proveedor"
   },
   "demo": {
     "pageTitle": "Tarjeta Meteorológica Dinámica",

@@ -145,6 +145,20 @@ export function formatForecastTime(datetime: string, format: '12h' | '24h' = '24
 }
 
 /**
+ * For each forecast entry, whether it is the first one of a new calendar day (local time).
+ * The first entry only is when it is already past today (e.g. the forecast starts at midnight).
+ */
+export function getDayStarts(forecast: Array<{ datetime: string }>, now: Date = new Date()): boolean[] {
+  let previous = now.toDateString();
+  return forecast.map(item => {
+    const day = new Date(item.datetime).toDateString();
+    const starts = day !== previous;
+    previous = day;
+    return starts;
+  });
+}
+
+/**
  * Format forecast date as a short weekday + day/month label.
  */
 export function formatForecastDay(datetime: string, locale?: string): string {

@@ -20,6 +20,7 @@
   "windy-variant": "Windig, bewölkt",
   "feels_like": "Gefühlt",
   "forecast_title": "Heutige Vorhersage",
+  "forecast_title_hourly": "Stündliche Vorhersage",
   "daily_forecast_title": "Tagesvorhersage",
   "no_data": "Keine Daten",
   "forecast_unavailable": "Vorhersage nicht verfügbar",
@@ -149,7 +150,8 @@
     "language_sl": "Slowenisch",
     "language_sr": "Serbisch",
     "language_tr": "Türkisch",
-    "language_zh": "Chinesisch"
+    "language_zh": "Chinesisch",
+    "hourly_forecast_hours_helper": "Ohne Obergrenze: z. B. 72 für drei Tage oder mehr, um die ganze Vorhersage des Anbieters zu zeigen"
   },
   "demo": {
     "pageTitle": "Dynamische Wetterkarte",

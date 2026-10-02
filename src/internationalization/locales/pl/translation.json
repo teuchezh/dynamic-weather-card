@@ -20,6 +20,7 @@
   "windy-variant": "Wietrznie, pochmurno",
   "feels_like": "Odczuwalnie",
   "forecast_title": "Prognoza na dziś",
+  "forecast_title_hourly": "Prognoza godzinowa",
   "daily_forecast_title": "Prognoza dzienna",
   "no_data": "Brak danych",
   "forecast_unavailable": "Prognoza niedostępna",
@@ -149,7 +150,8 @@
     "language_sl": "Słoweński",
     "language_sr": "Serbski",
     "language_tr": "Turecki",
-    "language_zh": "Chiński"
+    "language_zh": "Chiński",
+    "hourly_forecast_hours_helper": "Bez limitu: np. 72 na trzy dni lub więcej, aby pokazać całą prognozę dostawcy"
   },
   "demo": {
     "pageTitle": "Dynamiczna karta pogody",

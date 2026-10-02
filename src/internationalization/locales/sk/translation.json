@@ -20,6 +20,7 @@
   "windy-variant": "Veterno, oblačno",
   "feels_like": "Pocitová teplota",
   "forecast_title": "Predpoveď na dnes",
+  "forecast_title_hourly": "Hodinová predpoveď",
   "daily_forecast_title": "Denná predpoveď",
   "no_data": "Žiadne dáta",
   "forecast_unavailable": "Predpoveď nedostupná",
@@ -149,7 +150,8 @@
     "language_sl": "Slovinčina",
     "language_sr": "Srbčina",
     "language_tr": "Turečtina",
-    "language_zh": "Čínština"
+    "language_zh": "Čínština",
+    "hourly_forecast_hours_helper": "Bez obmedzenia: napr. 72 na tri dni alebo viac, aby sa zobrazila celá predpoveď poskytovateľa"
   },
   "demo": {
     "pageTitle": "Dynamická karta počasia",

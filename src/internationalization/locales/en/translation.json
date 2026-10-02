@@ -20,6 +20,7 @@
   "windy-variant": "Windy, cloudy",
   "feels_like": "Feels like",
   "forecast_title": "Today's Forecast",
+  "forecast_title_hourly": "Hourly Forecast",
   "daily_forecast_title": "Daily Forecast",
   "no_data": "No data",
   "forecast_unavailable": "Forecast unavailable",
@@ -149,7 +150,8 @@
     "show_raindrops": "Raindrops on the glass",
     "show_wind_effects": "Wind gusts and leaves",
     "show_raindrops_helper": "In rain, Modern graphics",
-    "show_wind_effects_helper": "In windy weather or above 8 m/s"
+    "show_wind_effects_helper": "In windy weather or above 8 m/s",
+    "hourly_forecast_hours_helper": "No upper limit: e.g. 72 for three days, or more to show everything the provider forecasts"
   },
   "demo": {
     "aurora": "Northern lights",

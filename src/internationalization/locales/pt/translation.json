@@ -20,6 +20,7 @@
   "windy-variant": "Ventoso, nublado",
   "feels_like": "Sensação",
   "forecast_title": "Previsão de hoje",
+  "forecast_title_hourly": "Previsão horária",
   "daily_forecast_title": "Previsão diária",
   "no_data": "Sem dados",
   "forecast_unavailable": "Previsão indisponível",
@@ -149,7 +150,8 @@
     "visual_style": "Gráficos",
     "visual_style_classic": "Clássico",
     "visual_style_modern": "Moderno",
-    "language_sl": "Esloveno"
+    "language_sl": "Esloveno",
+    "hourly_forecast_hours_helper": "Sem limite: p. ex. 72 para três dias, ou mais para mostrar toda a previsão do fornecedor"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",

@@ -20,6 +20,7 @@
   "windy-variant": "Rüzgarlı, bulutlu",
   "feels_like": "Hissedilen",
   "forecast_title": "Saatlik tahmin",
+  "forecast_title_hourly": "Saatlik tahmin",
   "daily_forecast_title": "Günlük hava tahmini",
   "no_data": "Veri yok",
   "forecast_unavailable": "Tahmin mevcut değil",
@@ -149,7 +150,8 @@
     "wind_gust_entity": "Rüzgâr hamlesi sensörü",
     "wind_speed_entity": "Rüzgâr hızı sensörü",
     "language_nb": "Norveççe (Bokmål)",
-    "language_sl": "Slovence"
+    "language_sl": "Slovence",
+    "hourly_forecast_hours_helper": "Üst sınır yok: ör. üç gün için 72 veya sağlayıcının tüm tahmini için daha fazlası"
   },
   "demo": {
     "pageTitle": "Dinamik Hava Durumu Kartı",

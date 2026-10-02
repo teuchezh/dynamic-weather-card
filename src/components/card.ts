@@ -453,6 +453,7 @@ export class AnimatedWeatherCard extends LitElement {
           </div>
           <hourly-forecast
             .forecast=${hourlyForecast}
+            .lang=${i18n.lang}
             .clockFormat=${this.config.clockFormat ?? '24h'}
             .forecastTitle=${this.config.hourlyForecastTitle ?? null}
           ></hourly-forecast>

@@ -20,6 +20,7 @@
   "windy-variant": "Vetrovito, oblačno",
   "feels_like": "Subjektivni osećaj",
   "forecast_title": "Prognoza",
+  "forecast_title_hourly": "Satna prognoza",
   "daily_forecast_title": "Dnevna prognoza",
   "no_data": "Nema podataka",
   "forecast_unavailable": "Prognoza nije dostupna",
@@ -149,7 +150,8 @@
     "language_sl": "Slovenački",
     "language_sr": "Srpski",
     "language_tr": "Turski",
-    "language_zh": "Kineski"
+    "language_zh": "Kineski",
+    "hourly_forecast_hours_helper": "Bez ograničenja: npr. 72 za tri dana, ili više da bi se prikazala cela prognoza dobavljača"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",

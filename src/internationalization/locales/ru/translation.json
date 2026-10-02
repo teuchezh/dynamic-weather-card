@@ -20,6 +20,7 @@
   "windy-variant": "Ветрено, облачно",
   "feels_like": "Ощущается как",
   "forecast_title": "Прогноз на сегодня",
+  "forecast_title_hourly": "Почасовой прогноз",
   "daily_forecast_title": "Ежедневный прогноз",
   "no_data": "Нет данных",
   "forecast_unavailable": "Прогноз недоступен",
@@ -149,7 +150,8 @@
     "show_raindrops": "Капли на стекле",
     "show_wind_effects": "Порывы ветра и листья",
     "show_raindrops_helper": "В дождь, в современной графике",
-    "show_wind_effects_helper": "В ветреную погоду или при ветре от 8 м/с"
+    "show_wind_effects_helper": "В ветреную погоду или при ветре от 8 м/с",
+    "hourly_forecast_hours_helper": "Без ограничений: например, 72 — три дня, или больше, чтобы показать весь прогноз провайдера"
   },
   "demo": {
     "aurora": "Северное сияние",

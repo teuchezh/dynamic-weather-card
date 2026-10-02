@@ -150,6 +150,8 @@ export interface Translation {
   'windy-variant'?: string;
   feels_like: string;
   forecast_title: string;
+  // Default hourly title when the forecast reaches past today
+  forecast_title_hourly?: string;
   daily_forecast_title: string;
   no_data: string;
   forecast_unavailable: string;
