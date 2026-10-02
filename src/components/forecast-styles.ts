@@ -56,12 +56,13 @@ export const forecastStyles = css`
     background: rgba(255, 255, 255, 0.5);
   }
 
+  /* Items share the width when they fit (e.g. a provider with only two days), and scroll when they don't */
   .forecast-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    flex-shrink: 0;
+    flex: 1 0 auto;
     min-width: 60px;
   }
 
