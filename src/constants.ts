@@ -24,10 +24,12 @@ export const TEMPLOW_ATTRIBUTES: readonly string[] = [
 // Default configuration
 export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>> = {
   showFeelsLike: true,
-  showWind: false,
-  showWindGust: false,
-  showWindDirection: false,
-  showHumidity: false,
+  // On unless set to false, matching the card (these used to differ, so the editor
+  // turned them off for new cards while YAML without them showed them)
+  showWind: true,
+  showWindGust: true,
+  showWindDirection: true,
+  showHumidity: true,
   showPressure: false,
   showUvIndex: false,
   showDewPoint: false,
@@ -44,7 +46,7 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   dailyForecastDays: 5,
   hourlyForecastTitle: null as string | null,
   dailyForecastTitle: null as string | null,
-  showSunriseSunset: false,
+  showSunriseSunset: true,
   showClock: false,
   showDate: false,
   clockPosition: 'top',

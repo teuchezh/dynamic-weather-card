@@ -180,5 +180,6 @@ export interface Translation {
     storm: string;
   };
   editor: EditorTranslations;
-  demo: DemoTranslations;
+  // Demo page strings; a locale may leave them out and fall back to English
+  demo?: DemoTranslations;
 }

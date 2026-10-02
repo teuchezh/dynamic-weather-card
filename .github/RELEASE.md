@@ -10,7 +10,7 @@ The Release workflow runs every **Monday at 06:17 UTC** (09:17 MSK). It publishe
 
 - `feat:` / `fix:` / `perf:` (any scope, including breaking `!`)
 - `chore(deps):` — runtime dependency updates (they change the bundle)
-- `chore(l10n):` — translation updates from Weblate
+- `chore(l10n):` — translation updates
 
 Docs, CI, dev-dependency (`chore(deps-dev)`) and other chore commits don't trigger a release on their own; they ship with the next one.
 
