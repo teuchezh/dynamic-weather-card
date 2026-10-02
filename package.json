@@ -11,6 +11,7 @@
     "lint:fix": "bun run eslint src/ --fix",
     "prebuild": "bun run locales:generate && bun run locales:check && bun run lint",
     "typecheck": "bun run tsc --noEmit",
+    "test": "bun test",
     "locales:generate": "bun run scripts/generate-locales.ts",
     "locales:check": "bun run scripts/check-locales.ts"
   },

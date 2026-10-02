@@ -15,11 +15,14 @@ bun run build        # Production build (runs lint first)
 bun run lint         # Check code style
 bun run lint:fix     # Auto-fix lint issues
 bun run typecheck    # TypeScript type checking
+bun test             # Unit tests (tests/*.test.ts)
 ```
 
 ## Testing
 
-No automated tests. Manual testing via `demo.html` - open in browser to test various weather conditions and configurations.
+Unit tests in `tests/` run with `bun test` (also in CI). They cover the pure logic: precipitation outlook, time of day, moon phase, sky palettes, units, sensor overrides, forecast aggregation, i18n and translation files. Build-time globals such as `__VERSION__` are set in `tests/setup.ts` (preloaded via `bunfig.toml`).
+
+Animations and UI are tested manually via `demo.html` - serve the repo root and open it in a browser to try weather conditions and configurations.
 
 ## Architecture Overview
 

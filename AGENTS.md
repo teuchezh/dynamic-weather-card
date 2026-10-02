@@ -402,7 +402,8 @@ bun run typecheck
 
 ## Testing
 
-Local testing via `demo.html` - a static page with various configurations and weather conditions.
+- Unit tests: `tests/*.test.ts`, run with `bun test` (also in CI). Pure logic only: precipitation outlook, time of day, moon phase, sky, units, sensors, forecast aggregation, i18n and translation files.
+- Visual and UI testing via `demo.html` - a static page with various configurations and weather conditions.
 
 ## Compatibility
 

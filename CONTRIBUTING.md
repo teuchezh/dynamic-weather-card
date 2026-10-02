@@ -89,6 +89,7 @@ git checkout -b feature/your-feature-name
    ```bash
    bun run lint        # Check code style
    bun run typecheck   # Check TypeScript types
+   bun test            # Run unit tests
    bun run build       # Build the project
    ```
 
@@ -159,6 +160,10 @@ export class MyAnimation extends BaseAnimation {
 
 ## Testing
 
+### Unit Tests
+
+Pure logic lives under test in `tests/*.test.ts` and runs with `bun test` (CI runs it on every PR). When you change something like the precipitation outlook, sun times, units or forecast aggregation, add or update a test there. Use local `Date` values (`new Date(2026, 9, 2, 14, 0)`) so tests pass in any time zone.
+
 ### Manual Testing
 
 1. Run `bun run build`, then serve the repository root (e.g. `python3 -m http.server`) and open `demo.html`
@@ -181,6 +186,7 @@ Run all checks:
 ```bash
 bun run lint       # ESLint
 bun run typecheck  # TypeScript
+bun test           # Unit tests
 bun run build      # Production build
 ```
 
@@ -188,33 +194,19 @@ bun run build      # Production build
 
 We welcome translations for new languages!
 
+### Improving a Translation
+
+Edit `src/internationalization/locales/<code>/translation.json` and open a pull request against `main`. Use `locales/en/translation.json` as the reference: missing keys fall back to English, keys that `en` doesn't have are rejected by `bun run locales:check`. Keep placeholders such as `{kind}`, `{time}` and `{hours}` as they are (a unit test checks this).
+
 ### Adding a New Language
 
-1. Create a new folder: `src/internationalization/locales/[lang-code]/`
-2. Add `translation.ts` file with all translation keys
-3. Import in `src/internationalization/index.ts`
-4. Add language to `WeatherCardConfig` type in `src/types.ts`
-5. Update README.md and README.ru.md with the new language
+1. Create `src/internationalization/locales/<code>/translation.json`, starting from a copy of the English file.
+2. Add the language's name to `en` (and, if you can, `ru`): `editor.language_<code>` and `demo.language.<name>`.
+3. Regenerate the locale index: `bun run locales:generate` (CI fails until `locales.generated.ts` is up to date).
+4. Add the language to the demo's language picker (`LANGUAGES` in `demo.html`) and to the language lists in `README.md` and `README.ru.md`.
+5. Run `bun run locales:check` and `bun test`.
 
-### Translation File Template
-
-```typescript
-export default {
-  weather: 'Weather',
-  feels_like: 'Feels like',
-  humidity: 'Humidity',
-  wind_speed: 'Wind speed',
-  wind_gust: 'Gusts',
-  wind_direction: 'Wind direction',
-  pressure: 'Pressure',
-  visibility: 'Visibility',
-  sunrise: 'Sunrise',
-  sunset: 'Sunset',
-  // ... all other keys
-};
-```
-
-Check existing translations in `src/internationalization/locales/` for the complete list of keys.
+The `demo` block of each file is only used by the demo page and is left out of the card bundle.
 
 ## Adding New Features
 

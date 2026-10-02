@@ -30,6 +30,12 @@ jobs:
       - name: Lint
         run: bun lint
 
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Unit tests
+        run: bun test
+
       - name: Build
         run: bun run build
 
