@@ -78,6 +78,14 @@
     "clock_format": "Format",
     "clock_format_12h": "12-timers (AM/PM)",
     "clock_format_24h": "24-timers",
+    "clock_size": "Størrelse",
+    "clock_size_small": "Liten",
+    "clock_size_medium": "Middels",
+    "clock_size_large": "Stor",
+    "clock_weight": "Tykkelse",
+    "clock_weight_thin": "Tynn",
+    "clock_weight_regular": "Normal",
+    "clock_weight_bold": "Fet",
     "overlay_opacity": "Mørklegging",
     "text_shadow": "Tekstskygge",
     "language": "Språk",
@@ -164,7 +172,9 @@
     "wind_gust_entity": "Vindkastsensor",
     "wind_speed_entity": "Vindhastighetssensor",
     "language_sl": "Slovensk",
-    "hourly_forecast_hours_helper": "Ingen øvre grense: f.eks. 72 for tre dager, eller mer for å vise hele varselet fra leverandøren"
+    "hourly_forecast_hours_helper": "Ingen øvre grense: f.eks. 72 for tre dager, eller mer for å vise hele varselet fra leverandøren",
+    "styles": "Egen CSS",
+    "styles_helper": "CSS for kortet og alle delene, f.eks. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -207,6 +217,14 @@
     "clockFormat": "Klokkeformat",
     "clockFormat12h": "12-timers (AM/PM)",
     "clockFormat24h": "24-timers",
+    "clockSize": "Klokkestørrelse",
+    "clockSizeSmall": "Liten",
+    "clockSizeMedium": "Middels",
+    "clockSizeLarge": "Stor",
+    "clockWeight": "Klokkens skrifttykkelse",
+    "clockWeightThin": "Tynn",
+    "clockWeightRegular": "Normal",
+    "clockWeightBold": "Fet",
     "overlayOpacity": "Gjennomsiktighet for overlegg (0-1)",
     "windSpeedUnit": "Vindhastighetsenhet",
     "dailyForecastDays": "Dager i daglig værvarsel",
@@ -320,6 +338,8 @@
     "yamlTitle": "Kortets YAML",
     "copy": "Kopier",
     "copied": "Kopiert",
-    "yamlHint": "Lim det inn i et manuelt kort i Home Assistant, og bytt ut weather.home med din værentitet."
+    "yamlHint": "Lim det inn i et manuelt kort i Home Assistant, og bytt ut weather.home med din værentitet.",
+    "customCss": "Egen CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

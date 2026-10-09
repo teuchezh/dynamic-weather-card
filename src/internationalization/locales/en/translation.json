@@ -111,6 +111,14 @@
     "clock_format": "Format",
     "clock_format_12h": "12-hour (AM/PM)",
     "clock_format_24h": "24-hour",
+    "clock_size": "Size",
+    "clock_size_small": "Small",
+    "clock_size_medium": "Medium",
+    "clock_size_large": "Large",
+    "clock_weight": "Weight",
+    "clock_weight_thin": "Thin",
+    "clock_weight_regular": "Regular",
+    "clock_weight_bold": "Bold",
     "overlay_opacity": "Darkening",
     "text_shadow": "Text shadow",
     "text_color": "Text color",
@@ -164,7 +172,9 @@
     "show_wind_effects": "Wind gusts and leaves",
     "show_raindrops_helper": "In rain, Modern graphics",
     "show_wind_effects_helper": "In windy weather or above 8 m/s",
-    "hourly_forecast_hours_helper": "No upper limit: e.g. 72 for three days, or more to show everything the provider forecasts"
+    "hourly_forecast_hours_helper": "No upper limit: e.g. 72 for three days, or more to show everything the provider forecasts",
+    "styles": "Custom CSS",
+    "styles_helper": "CSS for the card and all its parts, e.g. .temperature { font-size: 48px; }"
   },
   "demo": {
     "aurora": "Northern lights",
@@ -260,6 +270,14 @@
     "clockFormat": "Clock Format",
     "clockFormat12h": "12-hour (AM/PM)",
     "clockFormat24h": "24-hour",
+    "clockSize": "Clock size",
+    "clockSizeSmall": "Small",
+    "clockSizeMedium": "Medium",
+    "clockSizeLarge": "Large",
+    "clockWeight": "Clock weight",
+    "clockWeightThin": "Thin",
+    "clockWeightRegular": "Regular",
+    "clockWeightBold": "Bold",
     "overlayOpacity": "Overlay Opacity (0-1)",
     "windSpeedUnit": "Wind Speed Unit",
     "dailyForecastDays": "Daily Forecast Days",
@@ -320,6 +338,8 @@
     "yamlTitle": "Card YAML",
     "copy": "Copy",
     "copied": "Copied",
-    "yamlHint": "Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity."
+    "yamlHint": "Paste it into a Manual card in Home Assistant and replace weather.home with your weather entity.",
+    "customCss": "Custom CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

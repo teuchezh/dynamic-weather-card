@@ -7,6 +7,7 @@ import { forecastStyles } from './forecast-styles.js';
 import { renderForecastWind, type ForecastWindOptions } from './forecast-wind-row.js';
 import { chartPieces, type ChartPiece } from '../forecast-chart.js';
 import { temperatureColor } from '../temperature-color.js';
+import { applyUserStyles } from '../user-styles.js';
 import type { WeatherForecast } from '../types.js';
 
 // Chart area in pixels: labels above the curve, the curve, then the precipitation bars
@@ -20,6 +21,8 @@ export class HourlyForecast extends LitElement {
   @property({ type: String }) lang: string = 'en';
   // Wind row under each item (null = off)
   @property({ attribute: false }) wind: ForecastWindOptions | null = null;
+  // The card's `styles` option, added to this part's own styles
+  @property({ attribute: false }) userStyles: string | null = null;
   // Temperatures as a curve instead of numbers under the icons
   @property({ type: Boolean }) chart = false;
   @property({ type: String }) temperatureUnit: string = '°C';
@@ -33,6 +36,11 @@ export class HourlyForecast extends LitElement {
     this.updateComplete.then(() => {
       this._cleanup = setupHorizontalScroll(this.shadowRoot, '.forecast-scroll');
     });
+  }
+
+  updated(changedProperties: Map<string, unknown>): void {
+    super.updated(changedProperties);
+    if (changedProperties.has('userStyles')) applyUserStyles(this.shadowRoot, this.userStyles);
   }
 
   disconnectedCallback(): void {

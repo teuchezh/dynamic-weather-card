@@ -6,6 +6,7 @@ import { i18n } from '../internationalization/index.js';
 import { forecastStyles } from './forecast-styles.js';
 import { renderForecastWind, type ForecastWindOptions } from './forecast-wind-row.js';
 import { temperatureColor } from '../temperature-color.js';
+import { applyUserStyles } from '../user-styles.js';
 import type { WeatherForecast } from '../types.js';
 
 function isToday(datetime: string): boolean {
@@ -20,6 +21,8 @@ export class DailyForecast extends LitElement {
   @property({ type: String }) lang: string = 'en';
   // Wind row under each item (null = off)
   @property({ attribute: false }) wind: ForecastWindOptions | null = null;
+  // The card's `styles` option, added to this part's own styles
+  @property({ attribute: false }) userStyles: string | null = null;
   // Temperature range bars: each day's low..high on a scale shared by all shown days
   @property({ type: Boolean }) showBars = false;
   // Current temperature, marked on today's bar
@@ -35,6 +38,11 @@ export class DailyForecast extends LitElement {
     this.updateComplete.then(() => {
       this._cleanup = setupHorizontalScroll(this.shadowRoot, '.forecast-scroll');
     });
+  }
+
+  updated(changedProperties: Map<string, unknown>): void {
+    super.updated(changedProperties);
+    if (changedProperties.has('userStyles')) applyUserStyles(this.shadowRoot, this.userStyles);
   }
 
   disconnectedCallback(): void {

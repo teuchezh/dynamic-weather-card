@@ -94,7 +94,7 @@ export const cardStyles = css`
   .content {
     position: relative;
     z-index: 2;
-    padding: 20px;
+    padding: var(--dwc-padding, 20px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -116,7 +116,7 @@ export const cardStyles = css`
   }
 
   .temperature {
-    font-size: 64px;
+    font-size: var(--dwc-temperature-size, 64px);
     font-weight: 100;
     line-height: 1;
     margin: 0;
@@ -141,7 +141,7 @@ export const cardStyles = css`
   }
 
   .condition {
-    font-size: 20px;
+    font-size: var(--dwc-condition-size, 20px);
     font-weight: 400;
     opacity: 0.9;
   }
@@ -340,7 +340,7 @@ export const cardStyles = css`
   .weather-card.layout--minimal .content {
     flex-direction: row;
     align-items: center;
-    padding: 8px 16px;
+    padding: var(--dwc-padding, 8px 16px);
     gap: 16px;
     min-height: inherit;
   }
@@ -354,14 +354,14 @@ export const cardStyles = css`
   }
 
   .mini-condition {
-    font-size: 15px;
+    font-size: var(--dwc-condition-size, 15px);
     opacity: 0.9;
     font-weight: 500;
     white-space: nowrap;
   }
 
   .mini-temp {
-    font-size: 52px;
+    font-size: var(--dwc-temperature-size, 52px);
     font-weight: 200;
     line-height: 1;
   }

@@ -78,6 +78,14 @@
     "clock_format": "Formato",
     "clock_format_12h": "12 ore (AM/PM)",
     "clock_format_24h": "24 ore",
+    "clock_size": "Dimensione",
+    "clock_size_small": "Piccola",
+    "clock_size_medium": "Media",
+    "clock_size_large": "Grande",
+    "clock_weight": "Spessore",
+    "clock_weight_thin": "Sottile",
+    "clock_weight_regular": "Normale",
+    "clock_weight_bold": "Grassetto",
     "overlay_opacity": "Oscuramento",
     "text_shadow": "Ombra del testo",
     "language": "Lingua",
@@ -164,7 +172,9 @@
     "language_sr-Latn": "Serbo (latino)",
     "language_tr": "Turco",
     "language_zh": "Cinese",
-    "hourly_forecast_hours_helper": "Nessun limite: ad es. 72 per tre giorni, o di più per mostrare tutte le previsioni del fornitore"
+    "hourly_forecast_hours_helper": "Nessun limite: ad es. 72 per tre giorni, o di più per mostrare tutte le previsioni del fornitore",
+    "styles": "CSS personalizzato",
+    "styles_helper": "CSS per la scheda e tutte le sue parti, ad es. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -207,6 +217,14 @@
     "clockFormat": "Formato Orologio",
     "clockFormat12h": "12 ore (AM/PM)",
     "clockFormat24h": "24 ore",
+    "clockSize": "Dimensione dell'orologio",
+    "clockSizeSmall": "Piccola",
+    "clockSizeMedium": "Media",
+    "clockSizeLarge": "Grande",
+    "clockWeight": "Spessore dell'orologio",
+    "clockWeightThin": "Sottile",
+    "clockWeightRegular": "Normale",
+    "clockWeightBold": "Grassetto",
     "overlayOpacity": "Opacità Sovrapposizione (0-1)",
     "windSpeedUnit": "Unità Velocità Vento",
     "dailyForecastDays": "Giorni di Previsione",
@@ -320,6 +338,8 @@
     "yamlTitle": "YAML della scheda",
     "copy": "Copia",
     "copied": "Copiato",
-    "yamlHint": "Incollalo in una scheda manuale di Home Assistant e sostituisci weather.home con la tua entità meteo."
+    "yamlHint": "Incollalo in una scheda manuale di Home Assistant e sostituisci weather.home con la tua entità meteo.",
+    "customCss": "CSS personalizzato",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

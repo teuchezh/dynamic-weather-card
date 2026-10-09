@@ -241,6 +241,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `border_radius` | number | theme | Corner radius in px; `0` for square corners |
 | `sun_position_x` | number | auto | Pin the sun or moon horizontally, in % of the card width. Unset = follows the time of day |
 | `sun_position_y` | number | auto | Pin the sun or moon vertically, in % of the card height |
+| `styles` | string | — | Your own CSS for the card and all its parts, see [Styling](#styling) |
 
 > The card also pauses its animation while it is off-screen, and draws a single still frame when the system "reduce motion" setting is on.
 
@@ -286,6 +287,8 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `show_date` | boolean | `false` | Current date, e.g. "Wed, September 30" |
 | `clock_position` | string | `top` | `top` (top right) or `details` (in the details row) |
 | `clock_format` | string | `24h` | `24h` or `12h` |
+| `clock_size` | string | `medium` | Size of the clock and date: `small`, `medium` or `large` |
+| `clock_weight` | string | `thin` | Clock font weight: `thin`, `regular` or `bold` (bold also makes the date semi-bold) |
 
 ### Sensors
 
@@ -306,6 +309,91 @@ Optional. Each sensor replaces the weather entity's value. When the sensor is un
 | `aqi_entity` | Air quality index; shown whenever it is set |
 | `sunrise_entity`, `sunset_entity` | Sunrise and sunset times, for integrations that don't provide them |
 | `templow_attribute` | Weather entity attribute with today's minimum temperature, if your integration uses an unusual name |
+
+### Styling<a id="styling"></a>
+
+Start with the options: `text_color`, `text_shadow`, `border_radius`, `overlay_opacity`, `clock_size` and `clock_weight` cover the most common changes. For anything else, the card takes your own CSS.
+
+#### 1. Where to put your CSS
+
+Add it to the `styles` option, in YAML or in the visual editor (**Appearance → Custom CSS**). It applies to the whole card, including the clock, the details and the forecasts, and it wins over the card's own styles without `!important`.
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+styles: |
+  .temperature { color: #ffd60a; }
+```
+
+#### 2. Change sizes with variables
+
+For sizes, set a variable on `ha-card` instead of styling elements one by one:
+
+```yaml
+styles: |
+  ha-card {
+    --dwc-temperature-size: 40px;
+    --dwc-details-size: 15px;
+  }
+```
+
+| Variable | Default | What it changes |
+|---|---|---|
+| `--dwc-temperature-size` | `64px` (minimal: `52px`) | Current temperature |
+| `--dwc-condition-size` | `20px` (minimal: `15px`) | Condition, e.g. "Sunny" |
+| `--dwc-details-size` | `13px` (minimal: `14px`) | Humidity, wind, sunrise and the other details |
+| `--dwc-clock-size` | `48px` (phones: `36px`, minimal: `32px`) | Clock; overrides `clock_size` |
+| `--dwc-date-size` | `16px` (minimal: `14px`) | Date; overrides `clock_size` |
+| `--dwc-padding` | `20px` (minimal: `8px 16px`) | Space around the content |
+| `--dwc-text-color` | `white` | Text and icons (same as `text_color`) |
+| `--dwc-border-radius` | theme | Corners (same as `border_radius`) |
+
+The variables also work from a [theme](https://www.home-assistant.io/integrations/frontend/#defining-themes) and from card-mod.
+
+#### 3. What to target
+
+| Part of the card | Selector |
+|---|---|
+| Whole card | `ha-card` |
+| Card name | `.location` |
+| Condition, temperature, low | `.condition`, `.temperature`, `.temp-min` |
+| Feels like, rain start/stop line | `.feels-like`, `.precipitation-outlook` |
+| Details (humidity, wind, sunrise …) | `.info-grid` (the grid), `.info-item` (one detail), `.info-icon` |
+| Clock and date | `.clock`, `.date` |
+| Text forecast | `.forecast-description` |
+| Forecasts | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-wind` |
+| Minimal layout | `.mini-temp`, `.mini-condition` |
+
+To find anything else, right-click the card in the browser and choose **Inspect**. Class names other than the variables may change between versions; the variables stay.
+
+#### 4. Recipes
+
+```yaml
+styles: |
+  /* Details in one column */
+  .info-grid { grid-template-columns: 1fr; }
+
+  /* Forecast titles in normal case */
+  .forecast-title { text-transform: none; letter-spacing: 0; }
+
+  /* Bigger forecast icons */
+  .forecast-icon svg { width: 40px; height: 40px; }
+
+  /* A compact card for a small tablet */
+  ha-card { --dwc-temperature-size: 44px; --dwc-padding: 14px; }
+```
+
+#### 5. card-mod
+
+You don't need card-mod for this card: `styles` does the same and also reaches the clock, the details and the forecasts. If you already use card-mod, set the variables there:
+
+```yaml
+card_mod:
+  style: |
+    ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
+```
+
+Other card-mod rules only reach the top of the card (temperature, condition, feels like) and need `!important`. They don't reach the clock, the details or the forecasts, because those are separate components; use `styles` for them.
 
 ### Actions
 

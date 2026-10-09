@@ -487,6 +487,12 @@
             border-radius: var(--radius-md);
         }
 
+        textarea.text-input {
+            min-height: 96px;
+            resize: vertical;
+            font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        }
+
         .text-input::placeholder { color: var(--text-secondary); }
         .text-input:focus { box-shadow: inset 0 0 0 2px var(--accent); }
 
@@ -747,6 +753,7 @@
             overlayOpacity: 0.1,
             textShadow: 1,
             textColor: '',
+            styles: '',
             sunX: null,
             sunY: null,
             name: '',
@@ -780,6 +787,8 @@
             dailyForecastTitle: '',
             clockPosition: 'top',
             clockFormat: '24h',
+            clockSize: 'medium',
+            clockWeight: 'thin',
             windSpeedUnit: 'auto',
             language: 'en'
         };
@@ -921,7 +930,8 @@
                 { type: 'segmented', key: 'textShadow', label: ['textShadow', 'Text Shadow'], options: [[0, '0'], [1, '1'], [2, '2'], [3, '3']] },
                 { type: 'swatches', key: 'textColor', label: ['textColor', 'Text Color'], options: ['', '#ffffff', '#1c1c1e', '#ffd60a', '#64d2ff', '#ff9f0a'] },
                 { type: 'range', key: 'sunX', label: ['sunPositionX', 'Sun/Moon X (%)'], min: 0, max: 100, nullable: true, format: v => `${v}%` },
-                { type: 'range', key: 'sunY', label: ['sunPositionY', 'Sun/Moon Y (%)'], min: 0, max: 100, nullable: true, format: v => `${v}%` }
+                { type: 'range', key: 'sunY', label: ['sunPositionY', 'Sun/Moon Y (%)'], min: 0, max: 100, nullable: true, format: v => `${v}%` },
+                { type: 'text', key: 'styles', multiline: true, label: ['customCss', 'Custom CSS'], placeholder: ['customCssPlaceholder', '.temperature { font-size: 48px; }'] }
             ],
             content: () => [
                 { type: 'text', key: 'name', label: ['cardName', 'Card Name'], placeholder: ['placeholderEmpty', 'Leave empty to hide'] },
@@ -945,6 +955,8 @@
                 ] },
                 { type: 'segmented', key: 'clockPosition', label: ['clockPosition', 'Clock Position'], options: [['top', t('clockPositionTop', 'Top right')], ['details', t('clockPositionDetails', 'Details row')]] },
                 { type: 'segmented', key: 'clockFormat', label: ['clockFormat', 'Clock Format'], options: [['24h', '24h'], ['12h', '12h']] },
+                { type: 'segmented', key: 'clockSize', label: ['clockSize', 'Clock size'], options: [['small', t('clockSizeSmall', 'Small')], ['medium', t('clockSizeMedium', 'Medium')], ['large', t('clockSizeLarge', 'Large')]] },
+                { type: 'segmented', key: 'clockWeight', label: ['clockWeight', 'Clock weight'], options: [['thin', t('clockWeightThin', 'Thin')], ['regular', t('clockWeightRegular', 'Regular')], ['bold', t('clockWeightBold', 'Bold')]] },
                 { type: 'toggles', label: ['forecasts', 'Forecasts'], items: [
                     ['showHourlyForecast', 'hourlyForecast', 'Hourly Forecast'],
                     ['hourlyForecastChart', 'hourlyChart', 'Hourly temperature chart'],
@@ -1116,8 +1128,9 @@
                 }
                 case 'text': {
                     const group = groupWithTitle(c.label);
-                    const input = el('input', 'text-input');
-                    input.type = 'text';
+                    const input = el(c.multiline ? 'textarea' : 'input', 'text-input');
+                    if (!c.multiline) input.type = 'text';
+                    input.spellcheck = false;
                     input.placeholder = t(c.placeholder[0], c.placeholder[1]);
                     input.dataset.text = c.key;
                     input.addEventListener('input', () => setState({ [c.key]: input.value }));
@@ -1383,6 +1396,8 @@
                 show_date: state.showDate,
                 clock_position: state.clockPosition,
                 clock_format: state.clockFormat,
+                clock_size: state.clockSize,
+                clock_weight: state.clockWeight,
                 show_hourly_forecast: state.showHourlyForecast,
                 hourly_forecast_hours: state.hourlyForecastHours,
                 hourly_forecast_step: state.hourlyForecastStep,
@@ -1401,6 +1416,7 @@
             if (state.dailyForecastTitle) config.daily_forecast_title = state.dailyForecastTitle;
             if (state.showAqi) config.aqi_entity = 'sensor.demo_aqi';
             if (state.textColor) config.text_color = state.textColor;
+            if (state.styles.trim()) config.styles = state.styles;
             if (state.borderRadius !== null) config.border_radius = state.borderRadius;
             if (state.sunX !== null) config.sun_position_x = state.sunX;
             if (state.sunY !== null) config.sun_position_y = state.sunY;
@@ -1426,13 +1442,13 @@
         const YAML_GROUPS = [
             [null, ['type', 'entity', 'name']],
             ['Appearance', ['layout', 'height', 'visual_style', 'animation_quality', 'show_animations', 'show_aurora', 'show_raindrops',
-                'show_wind_effects', 'overlay_opacity', 'text_shadow', 'text_color', 'border_radius', 'sun_position_x', 'sun_position_y']],
+                'show_wind_effects', 'overlay_opacity', 'text_shadow', 'text_color', 'border_radius', 'sun_position_x', 'sun_position_y', 'styles']],
             ['Details', ['show_feels_like', 'show_min_temp', 'show_humidity', 'show_pressure', 'show_uv_index', 'show_dew_point',
                 'show_sunrise_sunset', 'show_precipitation_outlook', 'show_wind', 'show_wind_gust', 'show_wind_direction', 'wind_speed_unit']],
             ['Forecast', ['show_hourly_forecast', 'hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_chart', 'hourly_forecast_title',
                 'show_daily_forecast', 'daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars', 'show_forecast_wind',
                 'show_forecast_description']],
-            ['Language, clock and date', ['language', 'show_clock', 'show_date', 'clock_position', 'clock_format']],
+            ['Language, clock and date', ['language', 'show_clock', 'show_date', 'clock_position', 'clock_format', 'clock_size', 'clock_weight']],
             ['Sensors', ['temperature_entity', 'feels_like_entity', 'humidity_entity', 'wind_speed_entity', 'wind_gust_entity',
                 'wind_bearing_entity', 'precipitation_entity', 'aqi_entity']]
         ];
@@ -1486,7 +1502,13 @@
                 if (present.length === 0) return;
                 if (title) lines.push('', `# ${title}`);
                 for (const key of present) {
-                    lines.push(`${key}: ${scalar(config[key])}`);
+                    const value = config[key];
+                    // Several lines (custom CSS) as a block
+                    if (typeof value === 'string' && value.includes('\n')) {
+                        lines.push(`${key}: |`, ...value.replace(/\s+$/, '').split('\n').map(line => line ? `  ${line}` : ''));
+                    } else {
+                        lines.push(`${key}: ${scalar(value)}`);
+                    }
                     listed.add(key);
                 }
             };

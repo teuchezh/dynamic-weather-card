@@ -78,6 +78,14 @@
     "clock_format": "格式",
     "clock_format_12h": "12小时制 (AM/PM)",
     "clock_format_24h": "24小时制",
+    "clock_size": "大小",
+    "clock_size_small": "小",
+    "clock_size_medium": "中",
+    "clock_size_large": "大",
+    "clock_weight": "字重",
+    "clock_weight_thin": "细",
+    "clock_weight_regular": "常规",
+    "clock_weight_bold": "粗",
     "overlay_opacity": "暗化",
     "text_shadow": "文字阴影",
     "language": "语言",
@@ -164,7 +172,9 @@
     "language_nb": "挪威语（书面挪威语）",
     "language_sl": "斯洛文尼亚语",
     "language_tr": "土耳其语",
-    "hourly_forecast_hours_helper": "无上限：例如 72 表示三天，填更大的数可显示服务商提供的全部预报"
+    "hourly_forecast_hours_helper": "无上限：例如 72 表示三天，填更大的数可显示服务商提供的全部预报",
+    "styles": "自定义 CSS",
+    "styles_helper": "应用于卡片及其所有部分的 CSS，例如 .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "动态天气卡片",
@@ -207,6 +217,14 @@
     "clockFormat": "时间格式",
     "clockFormat12h": "12小时制 (AM/PM)",
     "clockFormat24h": "24小时制",
+    "clockSize": "时钟大小",
+    "clockSizeSmall": "小",
+    "clockSizeMedium": "中",
+    "clockSizeLarge": "大",
+    "clockWeight": "时钟字重",
+    "clockWeightThin": "细",
+    "clockWeightRegular": "常规",
+    "clockWeightBold": "粗",
     "overlayOpacity": "遮罩层透明度 (0-1)",
     "windSpeedUnit": "风速单位",
     "dailyForecastDays": "每日预报天数",
@@ -320,6 +338,8 @@
     "yamlTitle": "卡片 YAML",
     "copy": "复制",
     "copied": "已复制",
-    "yamlHint": "粘贴到 Home Assistant 的“手动”卡片中，并将 weather.home 替换为你的天气实体。"
+    "yamlHint": "粘贴到 Home Assistant 的“手动”卡片中，并将 weather.home 替换为你的天气实体。",
+    "customCss": "自定义 CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

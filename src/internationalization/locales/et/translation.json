@@ -111,6 +111,14 @@
     "clock_format": "Vorming",
     "clock_format_12h": "12-tunnine (AM/PM)",
     "clock_format_24h": "24-tunnine",
+    "clock_size": "Suurus",
+    "clock_size_small": "Väike",
+    "clock_size_medium": "Keskmine",
+    "clock_size_large": "Suur",
+    "clock_weight": "Paksus",
+    "clock_weight_thin": "Õhuke",
+    "clock_weight_regular": "Tavaline",
+    "clock_weight_bold": "Paks",
     "overlay_opacity": "Tumendus",
     "text_shadow": "Teksti vari",
     "text_color": "Teksti värv",
@@ -164,7 +172,9 @@
     "show_wind_effects": "Tuulepuhangud ja lehed",
     "show_raindrops_helper": "Vihmaga, moodne graafika",
     "show_wind_effects_helper": "Tuulise ilmaga või üle 8 m/s",
-    "hourly_forecast_hours_helper": "Ülempiirita: nt 72 kolme päeva jaoks või rohkem, et näidata pakkuja kogu prognoosi"
+    "hourly_forecast_hours_helper": "Ülempiirita: nt 72 kolme päeva jaoks või rohkem, et näidata pakkuja kogu prognoosi",
+    "styles": "Oma CSS",
+    "styles_helper": "CSS kaardile ja kõigile selle osadele, nt .temperature { font-size: 48px; }"
   },
   "demo": {
     "aurora": "Virmalised",
@@ -260,6 +270,14 @@
     "clockFormat": "Kella vorming",
     "clockFormat12h": "12-tunnine (AM/PM)",
     "clockFormat24h": "24-tunnine",
+    "clockSize": "Kella suurus",
+    "clockSizeSmall": "Väike",
+    "clockSizeMedium": "Keskmine",
+    "clockSizeLarge": "Suur",
+    "clockWeight": "Kella kirja paksus",
+    "clockWeightThin": "Õhuke",
+    "clockWeightRegular": "Tavaline",
+    "clockWeightBold": "Paks",
     "overlayOpacity": "Ülekatte läbipaistmatus (0-1)",
     "windSpeedUnit": "Tuule kiiruse ühik",
     "dailyForecastDays": "Päevaprognoosi päevad",
@@ -320,6 +338,8 @@
     "yamlTitle": "Kaardi YAML",
     "copy": "Kopeeri",
     "copied": "Kopeeritud",
-    "yamlHint": "Kleebi see Home Assistanti käsitsi kaarti ja asenda weather.home oma ilmaolemiga."
+    "yamlHint": "Kleebi see Home Assistanti käsitsi kaarti ja asenda weather.home oma ilmaolemiga.",
+    "customCss": "Oma CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

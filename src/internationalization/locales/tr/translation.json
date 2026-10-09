@@ -78,6 +78,14 @@
     "clock_format": "Biçim",
     "clock_format_12h": "12 saat (ÖÖ/ÖS)",
     "clock_format_24h": "24 saat",
+    "clock_size": "Boyut",
+    "clock_size_small": "Küçük",
+    "clock_size_medium": "Orta",
+    "clock_size_large": "Büyük",
+    "clock_weight": "Kalınlık",
+    "clock_weight_thin": "İnce",
+    "clock_weight_regular": "Normal",
+    "clock_weight_bold": "Kalın",
     "overlay_opacity": "Karartma",
     "text_shadow": "Metin gölgesi",
     "language": "Dil",
@@ -164,7 +172,9 @@
     "wind_speed_entity": "Rüzgâr hızı sensörü",
     "language_nb": "Norveççe (Bokmål)",
     "language_sl": "Slovence",
-    "hourly_forecast_hours_helper": "Üst sınır yok: ör. üç gün için 72 veya sağlayıcının tüm tahmini için daha fazlası"
+    "hourly_forecast_hours_helper": "Üst sınır yok: ör. üç gün için 72 veya sağlayıcının tüm tahmini için daha fazlası",
+    "styles": "Özel CSS",
+    "styles_helper": "Kart ve tüm parçaları için CSS, ör. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dinamik Hava Durumu Kartı",
@@ -207,6 +217,14 @@
     "clockFormat": "Saat formatı",
     "clockFormat12h": "12 saat (ÖÖ/ÖS)",
     "clockFormat24h": "24 saat",
+    "clockSize": "Saat boyutu",
+    "clockSizeSmall": "Küçük",
+    "clockSizeMedium": "Orta",
+    "clockSizeLarge": "Büyük",
+    "clockWeight": "Saat kalınlığı",
+    "clockWeightThin": "İnce",
+    "clockWeightRegular": "Normal",
+    "clockWeightBold": "Kalın",
     "overlayOpacity": "Kaplama opaklığı (0-1)",
     "windSpeedUnit": "Rüzgar hız birimi",
     "dailyForecastDays": "Tahmin günleri",
@@ -320,6 +338,8 @@
     "yamlTitle": "Kart YAML",
     "copy": "Kopyala",
     "copied": "Kopyalandı",
-    "yamlHint": "Home Assistant’ta manuel bir karta yapıştırın ve weather.home yerine kendi hava durumu varlığınızı yazın."
+    "yamlHint": "Home Assistant’ta manuel bir karta yapıştırın ve weather.home yerine kendi hava durumu varlığınızı yazın.",
+    "customCss": "Özel CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

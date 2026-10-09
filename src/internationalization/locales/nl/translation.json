@@ -78,6 +78,14 @@
     "clock_format": "Notatie",
     "clock_format_12h": "12-uurs (AM/PM)",
     "clock_format_24h": "24-uurs",
+    "clock_size": "Grootte",
+    "clock_size_small": "Klein",
+    "clock_size_medium": "Middel",
+    "clock_size_large": "Groot",
+    "clock_weight": "Letterdikte",
+    "clock_weight_thin": "Dun",
+    "clock_weight_regular": "Normaal",
+    "clock_weight_bold": "Vet",
     "overlay_opacity": "Verduistering",
     "text_shadow": "Tekstschaduw",
     "language": "Taal",
@@ -164,7 +172,9 @@
     "language_sr-Latn": "Servisch (Latijns)",
     "language_tr": "Turks",
     "language_zh": "Chinees",
-    "hourly_forecast_hours_helper": "Geen maximum: bijv. 72 voor drie dagen, of meer om de hele verwachting van de provider te tonen"
+    "hourly_forecast_hours_helper": "Geen maximum: bijv. 72 voor drie dagen, of meer om de hele verwachting van de provider te tonen",
+    "styles": "Eigen CSS",
+    "styles_helper": "CSS voor de kaart en al haar onderdelen, bijv. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamische Weerkaart",
@@ -207,6 +217,14 @@
     "clockFormat": "Klokformaat",
     "clockFormat12h": "12-uurs (AM/PM)",
     "clockFormat24h": "24-uurs",
+    "clockSize": "Klokgrootte",
+    "clockSizeSmall": "Klein",
+    "clockSizeMedium": "Middel",
+    "clockSizeLarge": "Groot",
+    "clockWeight": "Letterdikte van de klok",
+    "clockWeightThin": "Dun",
+    "clockWeightRegular": "Normaal",
+    "clockWeightBold": "Vet",
     "overlayOpacity": "Overlay-transparantie (0-1)",
     "windSpeedUnit": "Windsnelheidseenheid",
     "dailyForecastDays": "Voorspellingsdagen",
@@ -320,6 +338,8 @@
     "yamlTitle": "Kaart-YAML",
     "copy": "Kopiëren",
     "copied": "Gekopieerd",
-    "yamlHint": "Plak het in een handmatige kaart in Home Assistant en vervang weather.home door je weerentiteit."
+    "yamlHint": "Plak het in een handmatige kaart in Home Assistant en vervang weather.home door je weerentiteit.",
+    "customCss": "Eigen CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

@@ -78,6 +78,14 @@
     "clock_format": "Formátum",
     "clock_format_12h": "12 órás (DE/DU)",
     "clock_format_24h": "24 órás",
+    "clock_size": "Méret",
+    "clock_size_small": "Kicsi",
+    "clock_size_medium": "Közepes",
+    "clock_size_large": "Nagy",
+    "clock_weight": "Vastagság",
+    "clock_weight_thin": "Vékony",
+    "clock_weight_regular": "Normál",
+    "clock_weight_bold": "Félkövér",
     "overlay_opacity": "Sötétítés",
     "text_shadow": "Szövegárnyék",
     "language": "Nyelv",
@@ -164,7 +172,9 @@
     "language_sr-Latn": "Szerb (latin)",
     "language_tr": "Török",
     "language_zh": "Kínai",
-    "hourly_forecast_hours_helper": "Nincs felső határ: pl. 72 három napra, vagy több a szolgáltató teljes előrejelzéséhez"
+    "hourly_forecast_hours_helper": "Nincs felső határ: pl. 72 három napra, vagy több a szolgáltató teljes előrejelzéséhez",
+    "styles": "Saját CSS",
+    "styles_helper": "CSS a kártyához és minden részéhez, pl. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -207,6 +217,14 @@
     "clockFormat": "Óra formátum",
     "clockFormat12h": "12 órás (DE/DU)",
     "clockFormat24h": "24 órás",
+    "clockSize": "Óra mérete",
+    "clockSizeSmall": "Kicsi",
+    "clockSizeMedium": "Közepes",
+    "clockSizeLarge": "Nagy",
+    "clockWeight": "Óra betűvastagsága",
+    "clockWeightThin": "Vékony",
+    "clockWeightRegular": "Normál",
+    "clockWeightBold": "Félkövér",
     "overlayOpacity": "Fedőréteg átlátszóság (0–1)",
     "windSpeedUnit": "Szélsebesség egység",
     "dailyForecastDays": "Napi napok",
@@ -320,6 +338,8 @@
     "yamlTitle": "Kártya YAML",
     "copy": "Másolás",
     "copied": "Másolva",
-    "yamlHint": "Illeszd be egy kézi kártyába a Home Assistantben, és cseréld a weather.home-ot a saját időjárás-entitásodra."
+    "yamlHint": "Illeszd be egy kézi kártyába a Home Assistantben, és cseréld a weather.home-ot a saját időjárás-entitásodra.",
+    "customCss": "Saját CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

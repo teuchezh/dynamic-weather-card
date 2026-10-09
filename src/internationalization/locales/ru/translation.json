@@ -111,6 +111,14 @@
     "clock_format": "Формат",
     "clock_format_12h": "12-часовой (AM/PM)",
     "clock_format_24h": "24-часовой",
+    "clock_size": "Размер",
+    "clock_size_small": "Маленький",
+    "clock_size_medium": "Средний",
+    "clock_size_large": "Крупный",
+    "clock_weight": "Начертание",
+    "clock_weight_thin": "Тонкое",
+    "clock_weight_regular": "Обычное",
+    "clock_weight_bold": "Жирное",
     "overlay_opacity": "Затемнение",
     "text_shadow": "Тень текста",
     "text_color": "Цвет текста",
@@ -164,7 +172,9 @@
     "show_wind_effects": "Порывы ветра и листья",
     "show_raindrops_helper": "В дождь, в современной графике",
     "show_wind_effects_helper": "В ветреную погоду или при ветре от 8 м/с",
-    "hourly_forecast_hours_helper": "Без ограничений: например, 72 — три дня, или больше, чтобы показать весь прогноз провайдера"
+    "hourly_forecast_hours_helper": "Без ограничений: например, 72 — три дня, или больше, чтобы показать весь прогноз провайдера",
+    "styles": "Свой CSS",
+    "styles_helper": "CSS для карточки и всех её частей, например .temperature { font-size: 48px; }"
   },
   "demo": {
     "aurora": "Северное сияние",
@@ -260,6 +270,14 @@
     "clockFormat": "Формат часов",
     "clockFormat12h": "12-часовой (AM/PM)",
     "clockFormat24h": "24-часовой",
+    "clockSize": "Размер часов",
+    "clockSizeSmall": "Маленький",
+    "clockSizeMedium": "Средний",
+    "clockSizeLarge": "Крупный",
+    "clockWeight": "Начертание часов",
+    "clockWeightThin": "Тонкое",
+    "clockWeightRegular": "Обычное",
+    "clockWeightBold": "Жирное",
     "overlayOpacity": "Прозрачность подложки (0-1)",
     "windSpeedUnit": "Единицы скорости ветра",
     "dailyForecastDays": "Дни прогноза",
@@ -320,6 +338,8 @@
     "yamlTitle": "YAML карточки",
     "copy": "Копировать",
     "copied": "Скопировано",
-    "yamlHint": "Вставьте в карточку «Вручную» в Home Assistant и замените weather.home на свою погодную сущность."
+    "yamlHint": "Вставьте в карточку «Вручную» в Home Assistant и замените weather.home на свою погодную сущность.",
+    "customCss": "Свой CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

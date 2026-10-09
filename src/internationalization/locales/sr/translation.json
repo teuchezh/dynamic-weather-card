@@ -78,6 +78,14 @@
     "clock_format": "Формат",
     "clock_format_12h": "12h",
     "clock_format_24h": "24h",
+    "clock_size": "Величина",
+    "clock_size_small": "Мала",
+    "clock_size_medium": "Средња",
+    "clock_size_large": "Велика",
+    "clock_weight": "Дебљина",
+    "clock_weight_thin": "Танка",
+    "clock_weight_regular": "Обична",
+    "clock_weight_bold": "Подебљана",
     "overlay_opacity": "Затамњење",
     "language": "Језик",
     "language_auto": "Аутоматски",
@@ -164,7 +172,9 @@
     "language_sr-Latn": "Српски (латиница)",
     "language_tr": "Турски",
     "language_zh": "Кинески",
-    "hourly_forecast_hours_helper": "Без ограничења: нпр. 72 за три дана, или више да би се приказала цела прогноза добављача"
+    "hourly_forecast_hours_helper": "Без ограничења: нпр. 72 за три дана, или више да би се приказала цела прогноза добављача",
+    "styles": "Сопствени CSS",
+    "styles_helper": "CSS за картицу и све њене делове, нпр. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -207,6 +217,14 @@
     "clockFormat": "Формат сата",
     "clockFormat12h": "12h",
     "clockFormat24h": "24h",
+    "clockSize": "Величина сата",
+    "clockSizeSmall": "Мала",
+    "clockSizeMedium": "Средња",
+    "clockSizeLarge": "Велика",
+    "clockWeight": "Дебљина сата",
+    "clockWeightThin": "Танка",
+    "clockWeightRegular": "Обична",
+    "clockWeightBold": "Подебљана",
     "overlayOpacity": "Прозирност (0-1)",
     "windSpeedUnit": "Јединица брзине",
     "dailyForecastDays": "Број дана",
@@ -320,6 +338,8 @@
     "yamlTitle": "YAML картице",
     "copy": "Копирај",
     "copied": "Копирано",
-    "yamlHint": "Налепите га у ручну картицу у Home Assistantu и замените weather.home својим ентитетом времена."
+    "yamlHint": "Налепите га у ручну картицу у Home Assistantu и замените weather.home својим ентитетом времена.",
+    "customCss": "Сопствени CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

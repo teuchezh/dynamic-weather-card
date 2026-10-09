@@ -111,6 +111,14 @@
     "clock_format": "Oblika",
     "clock_format_12h": "12-urna (AM/PM)",
     "clock_format_24h": "24-urna",
+    "clock_size": "Velikost",
+    "clock_size_small": "Majhna",
+    "clock_size_medium": "Srednja",
+    "clock_size_large": "Velika",
+    "clock_weight": "Debelina",
+    "clock_weight_thin": "Tanka",
+    "clock_weight_regular": "Običajna",
+    "clock_weight_bold": "Krepka",
     "overlay_opacity": "Zatemnitev",
     "text_shadow": "Senca besedila",
     "text_color": "Barva besedila",
@@ -164,7 +172,9 @@
     "show_wind_effects": "Sunki vetra in listje",
     "show_raindrops_helper": "Ob dežju, moderna grafika",
     "show_wind_effects_helper": "Ob vetrovnem vremenu ali nad 8 m/s",
-    "hourly_forecast_hours_helper": "Brez omejitve: npr. 72 za tri dni ali več za prikaz celotne napovedi ponudnika"
+    "hourly_forecast_hours_helper": "Brez omejitve: npr. 72 za tri dni ali več za prikaz celotne napovedi ponudnika",
+    "styles": "Lasten CSS",
+    "styles_helper": "CSS za kartico in vse njene dele, npr. .temperature { font-size: 48px; }"
   },
   "demo": {
     "aurora": "Severni sij",
@@ -260,6 +270,14 @@
     "clockFormat": "Oblika ure",
     "clockFormat12h": "12-urna (AM/PM)",
     "clockFormat24h": "24-urna",
+    "clockSize": "Velikost ure",
+    "clockSizeSmall": "Majhna",
+    "clockSizeMedium": "Srednja",
+    "clockSizeLarge": "Velika",
+    "clockWeight": "Debelina pisave ure",
+    "clockWeightThin": "Tanka",
+    "clockWeightRegular": "Običajna",
+    "clockWeightBold": "Krepka",
     "overlayOpacity": "Prosojnost prekrivanja (0-1)",
     "windSpeedUnit": "Enota hitrosti vetra",
     "dailyForecastDays": "Dnevi dnevne napovedi",
@@ -320,6 +338,8 @@
     "yamlTitle": "YAML kartice",
     "copy": "Kopiraj",
     "copied": "Kopirano",
-    "yamlHint": "Prilepite ga v ročno kartico v Home Assistantu in zamenjajte weather.home s svojo vremensko entiteto."
+    "yamlHint": "Prilepite ga v ročno kartico v Home Assistantu in zamenjajte weather.home s svojo vremensko entiteto.",
+    "customCss": "Lasten CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

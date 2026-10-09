@@ -78,6 +78,14 @@
     "clock_format": "Format",
     "clock_format_12h": "12-timer (FM/EM)",
     "clock_format_24h": "24-timer",
+    "clock_size": "Størrelse",
+    "clock_size_small": "Lille",
+    "clock_size_medium": "Mellem",
+    "clock_size_large": "Stor",
+    "clock_weight": "Tykkelse",
+    "clock_weight_thin": "Tynd",
+    "clock_weight_regular": "Normal",
+    "clock_weight_bold": "Fed",
     "overlay_opacity": "Mørkning",
     "language": "Sprog",
     "language_auto": "Automatisk",
@@ -164,7 +172,9 @@
     "language_sr-Latn": "Serbisk (latinsk)",
     "language_tr": "Tyrkisk",
     "language_zh": "Kinesisk",
-    "hourly_forecast_hours_helper": "Ingen øvre grænse: f.eks. 72 for tre dage, eller mere for at vise hele udbyderens prognose"
+    "hourly_forecast_hours_helper": "Ingen øvre grænse: f.eks. 72 for tre dage, eller mere for at vise hele udbyderens prognose",
+    "styles": "Egen CSS",
+    "styles_helper": "CSS til kortet og alle dets dele, fx .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamisk vejrkort",
@@ -207,6 +217,14 @@
     "clockFormat": "Urformat",
     "clockFormat12h": "12-timer (FM/EM)",
     "clockFormat24h": "24-timer",
+    "clockSize": "Urets størrelse",
+    "clockSizeSmall": "Lille",
+    "clockSizeMedium": "Mellem",
+    "clockSizeLarge": "Stor",
+    "clockWeight": "Urets skrifttykkelse",
+    "clockWeightThin": "Tynd",
+    "clockWeightRegular": "Normal",
+    "clockWeightBold": "Fed",
     "overlayOpacity": "Overlejringsopacitet (0-1)",
     "windSpeedUnit": "Vindhastighed enhed",
     "dailyForecastDays": "Dage i daglig vejrudsigt",
@@ -320,6 +338,8 @@
     "yamlTitle": "Kortets YAML",
     "copy": "Kopiér",
     "copied": "Kopieret",
-    "yamlHint": "Indsæt det i et manuelt kort i Home Assistant, og erstat weather.home med din vejrenhed."
+    "yamlHint": "Indsæt det i et manuelt kort i Home Assistant, og erstat weather.home med din vejrenhed.",
+    "customCss": "Egen CSS",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

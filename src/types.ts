@@ -1,4 +1,8 @@
 import type { WindUnitSetting } from './utils';
+
+export type ClockSize = 'small' | 'medium' | 'large';
+export type ClockWeight = 'thin' | 'regular' | 'bold';
+
 /**
  * Type definitions for Home Assistant and Weather Card
  */
@@ -146,6 +150,8 @@ export interface WeatherCardConfig {
   hourlyForecastStep?: number;
   hourlyForecastChart?: boolean;
   showForecastDescription?: boolean;
+  // Custom CSS for the card and all its parts
+  styles?: string | null;
   dailyForecastDays?: number;
   hourlyForecastTitle?: string | null;
   dailyForecastTitle?: string | null;
@@ -154,6 +160,8 @@ export interface WeatherCardConfig {
   showDate?: boolean;
   clockPosition?: 'top' | 'details';
   clockFormat?: '12h' | '24h';
+  clockSize?: ClockSize;
+  clockWeight?: ClockWeight;
   overlayOpacity?: number;
   textShadow?: number;
   language?: 'auto' | SupportedLanguage;
@@ -275,6 +283,7 @@ export interface ConfigInput {
   hourly_forecast_step?: number;
   hourly_forecast_chart?: boolean;
   show_forecast_description?: boolean;
+  styles?: string;
   daily_forecast_days?: number;
   hourly_forecast_title?: string;
   daily_forecast_title?: string;
@@ -283,6 +292,8 @@ export interface ConfigInput {
   show_date?: boolean;
   clock_position?: 'top' | 'details';
   clock_format?: '12h' | '24h';
+  clock_size?: ClockSize;
+  clock_weight?: ClockWeight;
   overlay_opacity?: number;
   text_shadow?: number;
   border_radius?: number;

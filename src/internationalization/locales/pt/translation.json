@@ -89,6 +89,14 @@
     "clock_format": "Formato",
     "clock_format_12h": "12 horas (AM/PM)",
     "clock_format_24h": "24 horas",
+    "clock_size": "Tamanho",
+    "clock_size_small": "Pequeno",
+    "clock_size_medium": "Médio",
+    "clock_size_large": "Grande",
+    "clock_weight": "Espessura",
+    "clock_weight_thin": "Fina",
+    "clock_weight_regular": "Normal",
+    "clock_weight_bold": "Negrito",
     "overlay_opacity": "Escurecimento",
     "text_shadow": "Sombra do texto",
     "text_color": "Cor do texto",
@@ -164,7 +172,9 @@
     "visual_style_classic": "Clássico",
     "visual_style_modern": "Moderno",
     "language_sl": "Esloveno",
-    "hourly_forecast_hours_helper": "Sem limite: p. ex. 72 para três dias, ou mais para mostrar toda a previsão do fornecedor"
+    "hourly_forecast_hours_helper": "Sem limite: p. ex. 72 para três dias, ou mais para mostrar toda a previsão do fornecedor",
+    "styles": "CSS personalizado",
+    "styles_helper": "CSS para o cartão e todas as suas partes, p. ex. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Dynamic Weather Card",
@@ -213,6 +223,14 @@
     "clockFormat": "Formato do relógio",
     "clockFormat12h": "12 horas (AM/PM)",
     "clockFormat24h": "24 horas",
+    "clockSize": "Tamanho do relógio",
+    "clockSizeSmall": "Pequeno",
+    "clockSizeMedium": "Médio",
+    "clockSizeLarge": "Grande",
+    "clockWeight": "Espessura do relógio",
+    "clockWeightThin": "Fina",
+    "clockWeightRegular": "Normal",
+    "clockWeightBold": "Negrito",
     "overlayOpacity": "Opacidade do overlay (0-1)",
     "windSpeedUnit": "Unidade de velocidade do vento",
     "dailyForecastDays": "Dias da previsão diária",
@@ -320,6 +338,8 @@
     "yamlTitle": "YAML do cartão",
     "copy": "Copiar",
     "copied": "Copiado",
-    "yamlHint": "Cole-o num cartão manual do Home Assistant e substitua weather.home pela sua entidade meteorológica."
+    "yamlHint": "Cole-o num cartão manual do Home Assistant e substitua weather.home pela sua entidade meteorológica.",
+    "customCss": "CSS personalizado",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }

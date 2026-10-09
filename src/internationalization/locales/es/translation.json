@@ -78,6 +78,14 @@
     "clock_format": "Formato",
     "clock_format_12h": "12 horas (AM/PM)",
     "clock_format_24h": "24 horas",
+    "clock_size": "Tamaño",
+    "clock_size_small": "Pequeño",
+    "clock_size_medium": "Mediano",
+    "clock_size_large": "Grande",
+    "clock_weight": "Grosor",
+    "clock_weight_thin": "Fino",
+    "clock_weight_regular": "Normal",
+    "clock_weight_bold": "Negrita",
     "overlay_opacity": "Oscurecimiento",
     "text_shadow": "Sombra del texto",
     "language": "Idioma",
@@ -164,7 +172,9 @@
     "language_sr-Latn": "Serbio (latino)",
     "language_tr": "Turco",
     "language_zh": "Chino",
-    "hourly_forecast_hours_helper": "Sin límite: p. ej. 72 para tres días, o más para mostrar todo el pronóstico del proveedor"
+    "hourly_forecast_hours_helper": "Sin límite: p. ej. 72 para tres días, o más para mostrar todo el pronóstico del proveedor",
+    "styles": "CSS propio",
+    "styles_helper": "CSS para la tarjeta y todas sus partes, p. ej. .temperature { font-size: 48px; }"
   },
   "demo": {
     "pageTitle": "Tarjeta Meteorológica Dinámica",
@@ -207,6 +217,14 @@
     "clockFormat": "Formato del Reloj",
     "clockFormat12h": "12 horas (AM/PM)",
     "clockFormat24h": "24 horas",
+    "clockSize": "Tamaño del reloj",
+    "clockSizeSmall": "Pequeño",
+    "clockSizeMedium": "Mediano",
+    "clockSizeLarge": "Grande",
+    "clockWeight": "Grosor del reloj",
+    "clockWeightThin": "Fino",
+    "clockWeightRegular": "Normal",
+    "clockWeightBold": "Negrita",
     "overlayOpacity": "Opacidad de Superposición (0-1)",
     "windSpeedUnit": "Unidad de Velocidad del Viento",
     "dailyForecastDays": "Días de Previsión",
@@ -320,6 +338,8 @@
     "yamlTitle": "YAML de la tarjeta",
     "copy": "Copiar",
     "copied": "Copiado",
-    "yamlHint": "Pégalo en una tarjeta manual de Home Assistant y sustituye weather.home por tu entidad del tiempo."
+    "yamlHint": "Pégalo en una tarjeta manual de Home Assistant y sustituye weather.home por tu entidad del tiempo.",
+    "customCss": "CSS propio",
+    "customCssPlaceholder": ".temperature { font-size: 48px; }"
   }
 }
