@@ -136,6 +136,7 @@
     "language_tr": "Турецкий",
     "language_nb": "Норвежский (букмол)",
     "language_sl": "Словенский",
+    "language_sr-Latn": "Сербский (латиница)",
     "wind_speed_unit": "Единица скорости ветра",
     "wind_speed_unit_ms": "м/с",
     "wind_speed_unit_kmh": "км/ч",
@@ -313,7 +314,8 @@
       "chinese": "Китайский",
       "turkish": "Турецкий",
       "norwegian": "Норвежский (букмол)",
-      "slovenian": "Словенский"
+      "slovenian": "Словенский",
+      "serbianLatin": "Сербский (латиница)"
     },
     "raindrops": "Капли на стекле",
     "windEffects": "Порывы ветра и листья",
