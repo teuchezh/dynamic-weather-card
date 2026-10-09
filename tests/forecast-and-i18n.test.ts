@@ -42,7 +42,13 @@ describe('ForecastService', () => {
 
   test('a real daily forecast is passed through, limited to the requested days', () => {
     const service = new ForecastService(() => {});
-    const days = [0, 1, 2, 3].map(i => ({ datetime: `2026-10-0${i + 2}T12:00:00Z`, temperature: 20 + i, templow: 10 + i }));
+    const today = new Date();
+    today.setHours(12, 0, 0, 0);
+    const days = [0, 1, 2, 3].map(i => {
+      const date = new Date(today);
+      date.setDate(date.getDate() + i);
+      return { datetime: date.toISOString(), temperature: 20 + i, templow: 10 + i };
+    });
     expect(service.getDailyForecast(2, weatherWith(days))).toHaveLength(2);
   });
 
