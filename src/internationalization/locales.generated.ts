@@ -17,10 +17,11 @@ import ru from './locales/ru/translation.json';
 import sk from './locales/sk/translation.json';
 import sl from './locales/sl/translation.json';
 import sr from './locales/sr/translation.json';
+import sr_Latn from './locales/sr-Latn/translation.json';
 import tr from './locales/tr/translation.json';
 import zh from './locales/zh/translation.json';
 
-export type SupportedLanguage = 'da' | 'de' | 'en' | 'es' | 'et' | 'fr' | 'hu' | 'it' | 'nb' | 'nl' | 'pl' | 'pt' | 'ru' | 'sk' | 'sl' | 'sr' | 'tr' | 'zh';
+export type SupportedLanguage = 'da' | 'de' | 'en' | 'es' | 'et' | 'fr' | 'hu' | 'it' | 'nb' | 'nl' | 'pl' | 'pt' | 'ru' | 'sk' | 'sl' | 'sr' | 'sr-Latn' | 'tr' | 'zh';
 
 export const translations: Record<SupportedLanguage, Translation> = {
   da: da as Translation,
@@ -39,6 +40,7 @@ export const translations: Record<SupportedLanguage, Translation> = {
   sk: sk as Translation,
   sl: sl as Translation,
   sr: sr as Translation,
+  'sr-Latn': sr_Latn as Translation,
   tr: tr as Translation,
   zh: zh as Translation
 };
