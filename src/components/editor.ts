@@ -81,6 +81,8 @@ const editorDefaults = (): WeatherCardEditorConfig => ({
   show_date: DEFAULT_CONFIG.showDate,
   clock_position: DEFAULT_CONFIG.clockPosition,
   clock_format: DEFAULT_CONFIG.clockFormat,
+  clock_size: DEFAULT_CONFIG.clockSize,
+  clock_weight: DEFAULT_CONFIG.clockWeight,
   overlay_opacity: DEFAULT_CONFIG.overlayOpacity,
   text_shadow: DEFAULT_CONFIG.textShadow,
   language: DEFAULT_CONFIG.language,
@@ -210,7 +212,10 @@ export class DynamicWeatherCardEditor extends LitElement {
         },
         grid(toggle('show_clock'), toggle('show_date')),
         ...(isOn('show_clock') || isOn('show_date')
-          ? [grid(select('clock_position', ['top', 'details']), select('clock_format', ['24h', '12h']))]
+          ? [
+            grid(select('clock_position', ['top', 'details']), select('clock_format', ['24h', '12h'])),
+            grid(select('clock_size', ['small', 'medium', 'large']), select('clock_weight', ['thin', 'regular', 'bold']))
+          ]
           : [])
       ]),
       section('sensors', 'mdi:access-point', [

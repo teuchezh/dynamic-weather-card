@@ -1,6 +1,6 @@
 import { LitElement, html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { DEFAULT_CONFIG } from '../constants.js';
+import { CLOCK_SCALE, CLOCK_WEIGHT, DEFAULT_CONFIG } from '../constants.js';
 import { i18n } from '../internationalization/index.js';
 import { resolveLanguage } from '../internationalization/resolveLanguage.js';
 import {
@@ -272,6 +272,8 @@ export class AnimatedWeatherCard extends LitElement {
       showDate: config.show_date === true,
       clockPosition: config.clock_position || DEFAULT_CONFIG.clockPosition,
       clockFormat: config.clock_format || DEFAULT_CONFIG.clockFormat,
+      clockSize: config.clock_size && config.clock_size in CLOCK_SCALE ? config.clock_size : DEFAULT_CONFIG.clockSize,
+      clockWeight: config.clock_weight && config.clock_weight in CLOCK_WEIGHT ? config.clock_weight : DEFAULT_CONFIG.clockWeight,
       overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
       textShadow: config.text_shadow !== undefined ? config.text_shadow : DEFAULT_CONFIG.textShadow,
       borderRadius: config.border_radius ?? DEFAULT_CONFIG.borderRadius,
@@ -395,7 +397,11 @@ export class AnimatedWeatherCard extends LitElement {
       )
       : [];
 
-    const cardStyle = `min-height: ${minHeight}; ${skyStyle} ${overlayStyle} ${shadowStyle} cursor: pointer;`;
+    const clockStyle = `--dwc-clock-scale: ${CLOCK_SCALE[this.config.clockSize ?? DEFAULT_CONFIG.clockSize]}; `
+      + `--dwc-clock-weight: ${CLOCK_WEIGHT[this.config.clockWeight ?? DEFAULT_CONFIG.clockWeight]}; `
+      + `--dwc-date-weight: ${this.config.clockWeight === 'bold' ? 600 : 400};`;
+
+    const cardStyle = `min-height: ${minHeight}; ${skyStyle} ${overlayStyle} ${shadowStyle} ${clockStyle} cursor: pointer;`;
     const borderRadius = this.config.borderRadius;
     // Accept only values the browser parses as a color, so the option can't inject other declarations
     const textColor = this.config.textColor && CSS.supports('color', this.config.textColor)

@@ -1,4 +1,4 @@
-import type { WeatherCardConfig } from './types';
+import type { ClockSize, ClockWeight, WeatherCardConfig } from './types';
 
 // Version is injected from package.json during build
 declare const __VERSION__: string;
@@ -22,6 +22,10 @@ export const TEMPLOW_ATTRIBUTES: readonly string[] = [
 ] as const;
 
 // Default configuration
+// Multiplies the layout's own clock and date sizes, so `medium` keeps them as they are
+export const CLOCK_SCALE: Record<ClockSize, number> = { small: 0.75, medium: 1, large: 1.35 };
+export const CLOCK_WEIGHT: Record<ClockWeight, number> = { thin: 200, regular: 400, bold: 700 };
+
 export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>> = {
   showFeelsLike: true,
   // On unless set to false, matching the card (these used to differ, so the editor
@@ -56,6 +60,8 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   showDate: false,
   clockPosition: 'top',
   clockFormat: '24h',
+  clockSize: 'medium',
+  clockWeight: 'thin',
   overlayOpacity: 0.1,
   textShadow: 1,
   language: 'auto',

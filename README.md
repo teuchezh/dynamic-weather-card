@@ -287,6 +287,8 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `show_date` | boolean | `false` | Current date, e.g. "Wed, September 30" |
 | `clock_position` | string | `top` | `top` (top right) or `details` (in the details row) |
 | `clock_format` | string | `24h` | `24h` or `12h` |
+| `clock_size` | string | `medium` | Size of the clock and date: `small`, `medium` or `large` |
+| `clock_weight` | string | `thin` | Clock font weight: `thin`, `regular` or `bold` (bold also makes the date semi-bold) |
 
 ### Sensors
 
@@ -317,8 +319,8 @@ Optional. Each sensor replaces the weather entity's value. When the sensor is un
 | `--dwc-temperature-size` | `64px` (minimal: `52px`) | Current temperature |
 | `--dwc-condition-size` | `20px` (minimal: `15px`) | Condition, e.g. "Sunny" |
 | `--dwc-details-size` | `13px` (minimal: `14px`) | Humidity, wind, sunrise and the other details |
-| `--dwc-clock-size` | `48px` (phones: `36px`, minimal: `32px`) | Clock |
-| `--dwc-date-size` | `16px` (minimal: `14px`) | Date |
+| `--dwc-clock-size` | `48px` (phones: `36px`, minimal: `32px`) | Clock; overrides `clock_size` |
+| `--dwc-date-size` | `16px` (minimal: `14px`) | Date; overrides `clock_size` |
 | `--dwc-padding` | `20px` (minimal: `8px 16px`) | Space around the content |
 | `--dwc-text-color` | `white` | Text and icons (same as `text_color`) |
 | `--dwc-border-radius` | theme | Corners (same as `border_radius`) |

@@ -287,6 +287,8 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_date` | boolean | `false` | Текущая дата, например «ср, 30 сентября» |
 | `clock_position` | string | `top` | `top` (вверху справа) или `details` (в строке деталей) |
 | `clock_format` | string | `24h` | `24h` или `12h` |
+| `clock_size` | string | `medium` | Размер часов и даты: `small`, `medium` или `large` |
+| `clock_weight` | string | `thin` | Начертание часов: `thin`, `regular` или `bold` (при `bold` дата тоже полужирная) |
 
 ### Датчики
 
@@ -317,8 +319,8 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `--dwc-temperature-size` | `64px` (компактная: `52px`) | Текущая температура |
 | `--dwc-condition-size` | `20px` (компактная: `15px`) | Состояние, например «Солнечно» |
 | `--dwc-details-size` | `13px` (компактная: `14px`) | Влажность, ветер, восход и другие детали |
-| `--dwc-clock-size` | `48px` (телефоны: `36px`, компактная: `32px`) | Часы |
-| `--dwc-date-size` | `16px` (компактная: `14px`) | Дата |
+| `--dwc-clock-size` | `48px` (телефоны: `36px`, компактная: `32px`) | Часы; важнее `clock_size` |
+| `--dwc-date-size` | `16px` (компактная: `14px`) | Дата; важнее `clock_size` |
 | `--dwc-padding` | `20px` (компактная: `8px 16px`) | Отступы вокруг содержимого |
 | `--dwc-text-color` | `white` | Текст и иконки (то же, что `text_color`) |
 | `--dwc-border-radius` | тема | Углы (то же, что `border_radius`) |

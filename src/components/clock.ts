@@ -28,8 +28,8 @@ export class WeatherClock extends LitElement {
     .clock {
       margin-top: 0;
       margin-bottom: 0;
-      font-size: var(--dwc-clock-size, 48px);
-      font-weight: 200;
+      font-size: var(--dwc-clock-size, calc(48px * var(--dwc-clock-scale, 1)));
+      font-weight: var(--dwc-clock-weight, 200);
       line-height: 1;
       color: var(--dwc-text-color, white);
       text-align: right;
@@ -40,7 +40,7 @@ export class WeatherClock extends LitElement {
 
     @media (max-width: 600px) {
       .clock {
-        font-size: var(--dwc-clock-size, 36px);
+        font-size: var(--dwc-clock-size, calc(36px * var(--dwc-clock-scale, 1)));
         margin-top: 0;
         margin-bottom: 0;
       }
@@ -48,8 +48,8 @@ export class WeatherClock extends LitElement {
 
     .date {
       margin-top: 4px;
-      font-size: var(--dwc-date-size, 16px);
-      font-weight: 400;
+      font-size: var(--dwc-date-size, calc(16px * var(--dwc-clock-scale, 1)));
+      font-weight: var(--dwc-date-weight, 400);
       line-height: 1.2;
       opacity: 0.85;
       color: var(--dwc-text-color, white);
@@ -60,12 +60,12 @@ export class WeatherClock extends LitElement {
     }
 
     :host([compact]) .clock {
-      font-size: var(--dwc-clock-size, 32px);
+      font-size: var(--dwc-clock-size, calc(32px * var(--dwc-clock-scale, 1)));
     }
 
     :host([compact]) .date {
       margin-top: 2px;
-      font-size: var(--dwc-date-size, 14px);
+      font-size: var(--dwc-date-size, calc(14px * var(--dwc-clock-scale, 1)));
     }
   `;
 

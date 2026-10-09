@@ -787,6 +787,8 @@
             dailyForecastTitle: '',
             clockPosition: 'top',
             clockFormat: '24h',
+            clockSize: 'medium',
+            clockWeight: 'thin',
             windSpeedUnit: 'auto',
             language: 'en'
         };
@@ -953,6 +955,8 @@
                 ] },
                 { type: 'segmented', key: 'clockPosition', label: ['clockPosition', 'Clock Position'], options: [['top', t('clockPositionTop', 'Top right')], ['details', t('clockPositionDetails', 'Details row')]] },
                 { type: 'segmented', key: 'clockFormat', label: ['clockFormat', 'Clock Format'], options: [['24h', '24h'], ['12h', '12h']] },
+                { type: 'segmented', key: 'clockSize', label: ['clockSize', 'Clock size'], options: [['small', t('clockSizeSmall', 'Small')], ['medium', t('clockSizeMedium', 'Medium')], ['large', t('clockSizeLarge', 'Large')]] },
+                { type: 'segmented', key: 'clockWeight', label: ['clockWeight', 'Clock weight'], options: [['thin', t('clockWeightThin', 'Thin')], ['regular', t('clockWeightRegular', 'Regular')], ['bold', t('clockWeightBold', 'Bold')]] },
                 { type: 'toggles', label: ['forecasts', 'Forecasts'], items: [
                     ['showHourlyForecast', 'hourlyForecast', 'Hourly Forecast'],
                     ['hourlyForecastChart', 'hourlyChart', 'Hourly temperature chart'],
@@ -1392,6 +1396,8 @@
                 show_date: state.showDate,
                 clock_position: state.clockPosition,
                 clock_format: state.clockFormat,
+                clock_size: state.clockSize,
+                clock_weight: state.clockWeight,
                 show_hourly_forecast: state.showHourlyForecast,
                 hourly_forecast_hours: state.hourlyForecastHours,
                 hourly_forecast_step: state.hourlyForecastStep,
@@ -1442,7 +1448,7 @@
             ['Forecast', ['show_hourly_forecast', 'hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_chart', 'hourly_forecast_title',
                 'show_daily_forecast', 'daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars', 'show_forecast_wind',
                 'show_forecast_description']],
-            ['Language, clock and date', ['language', 'show_clock', 'show_date', 'clock_position', 'clock_format']],
+            ['Language, clock and date', ['language', 'show_clock', 'show_date', 'clock_position', 'clock_format', 'clock_size', 'clock_weight']],
             ['Sensors', ['temperature_entity', 'feels_like_entity', 'humidity_entity', 'wind_speed_entity', 'wind_gust_entity',
                 'wind_bearing_entity', 'precipitation_entity', 'aqi_entity']]
         ];
