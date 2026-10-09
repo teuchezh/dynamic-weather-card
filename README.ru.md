@@ -281,7 +281,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 
 | Параметр | Тип | По умолчанию | Описание |
 |---|---|---|---|
-| `language` | string | `auto` | `auto` (язык Home Assistant) или `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `pl`, `nb`, `tr`, `zh`, `sl`, `et` |
+| `language` | string | `auto` | `auto` (язык Home Assistant) или `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `sr-Latn`, `pl`, `nb`, `tr`, `zh`, `sl`, `et` |
 | `show_clock` | boolean | `false` | Текущее время |
 | `show_date` | boolean | `false` | Текущая дата, например «ср, 30 сентября» |
 | `clock_position` | string | `top` | `top` (вверху справа) или `details` (в строке деталей) |
@@ -355,7 +355,7 @@ tap_action:
 
 ## 🌍 Языки
 
-English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Srpski, Polski, Norsk (bokmål), Türkçe, 中文, Slovenščina и Eesti. Карточка следует языку Home Assistant, если не задан `language`.
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Српски, Srpski (latinica), Polski, Norsk (bokmål), Türkçe, 中文, Slovenščina и Eesti. Карточка следует языку Home Assistant, если не задан `language`.
 
 Чтобы добавить или улучшить перевод, отредактируйте `src/internationalization/locales/<code>/translation.json` прямо на GitHub и откройте pull request в `main`. Программировать не нужно. Новые языки подхватываются автоматически, а недостающие ключи берутся из английского.
 
