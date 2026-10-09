@@ -161,6 +161,7 @@
     "language_pt": "Portugalski",
     "language_sl": "Slovenački",
     "language_sr": "Srpski",
+    "language_sr-Latn": "Srpski (latinica)",
     "language_tr": "Turski",
     "language_zh": "Kineski",
     "hourly_forecast_hours_helper": "Bez ograničenja: npr. 72 za tri dana, ili više da bi se prikazala cela prognoza dobavljača"
@@ -253,6 +254,7 @@
       "polish": "Poljski",
       "portuguese": "Portugalski",
       "serbian": "Srpski",
+      "serbianLatin": "Srpski (latinica)",
       "chinese": "Kineski",
       "norwegian": "Norveški (bokmål)",
       "slovenian": "Slovenački",

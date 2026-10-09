@@ -161,6 +161,7 @@
     "language_pl": "Polnisch",
     "language_sl": "Slowenisch",
     "language_sr": "Serbisch",
+    "language_sr-Latn": "Serbisch (lateinisch)",
     "language_tr": "Türkisch",
     "language_zh": "Chinesisch",
     "hourly_forecast_hours_helper": "Ohne Obergrenze: z. B. 72 für drei Tage oder mehr, um die ganze Vorhersage des Anbieters zu zeigen"
@@ -253,6 +254,7 @@
       "polish": "Polnisch",
       "portuguese": "Portugiesisch",
       "serbian": "Serbisch",
+      "serbianLatin": "Serbisch (lateinisch)",
       "chinese": "Chinesisch",
       "norwegian": "Norwegisch (Bokmål)",
       "slovenian": "Slowenisch",

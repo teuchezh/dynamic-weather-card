@@ -161,6 +161,7 @@
     "language_pt": "Portugisisk",
     "language_sl": "Slovensk",
     "language_sr": "Serbisk",
+    "language_sr-Latn": "Serbisk (latinsk)",
     "language_tr": "Tyrkisk",
     "language_zh": "Kinesisk",
     "hourly_forecast_hours_helper": "Ingen øvre grænse: f.eks. 72 for tre dage, eller mere for at vise hele udbyderens prognose"
@@ -253,6 +254,7 @@
       "polish": "Polsk",
       "portuguese": "Portugisisk",
       "serbian": "Serbisk",
+      "serbianLatin": "Serbisk (latinsk)",
       "chinese": "Kinesisk",
       "norwegian": "Norsk (bokmål)",
       "slovenian": "Slovensk",

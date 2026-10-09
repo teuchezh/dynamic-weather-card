@@ -161,6 +161,7 @@
     "language_pl": "Lengyel",
     "language_sl": "Szlovén",
     "language_sr": "Szerb",
+    "language_sr-Latn": "Szerb (latin)",
     "language_tr": "Török",
     "language_zh": "Kínai",
     "hourly_forecast_hours_helper": "Nincs felső határ: pl. 72 három napra, vagy több a szolgáltató teljes előrejelzéséhez"
@@ -253,6 +254,7 @@
       "polish": "Lengyel",
       "portuguese": "Portugál",
       "serbian": "Szerb",
+      "serbianLatin": "Szerb (latin)",
       "chinese": "Kínai",
       "norwegian": "Norvég (bokmål)",
       "slovenian": "Szlovén",
