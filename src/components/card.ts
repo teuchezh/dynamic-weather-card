@@ -365,16 +365,16 @@ export class AnimatedWeatherCard extends LitElement {
     const overlayStyle = `--overlay-opacity: ${overlayOpacity};`;
 
     const shadowStrength = this.config.textShadow ?? DEFAULT_CONFIG.textShadow;
+    const shadowLayers = [[1, 2, 0.4], [2, 6, 0.3], [4, 12, 0.2]] as const;
+    const shadowColor = (alpha: number): string => `rgba(0,0,0,${Math.min(1, alpha * shadowStrength).toFixed(2)})`;
     const textShadowValue = shadowStrength === 0
       ? 'none'
-      : [
-        `0 1px 2px rgba(0,0,0,${Math.min(1, 0.4 * shadowStrength).toFixed(2)})`,
-        `0 2px 6px rgba(0,0,0,${Math.min(1, 0.3 * shadowStrength).toFixed(2)})`,
-        `0 4px 12px rgba(0,0,0,${Math.min(1, 0.2 * shadowStrength).toFixed(2)})`
-      ].join(', ');
+      : shadowLayers.map(([y, blur, alpha]) => `0 ${y}px ${blur}px ${shadowColor(alpha)}`).join(', ');
+    // Icons get the text's layers so both darken alike. drop-shadow's blur is a standard deviation
+    // (half of text-shadow's), and chained drop-shadows also shade each other, hence the lighter alpha.
     const iconFilterValue = shadowStrength === 0
       ? 'none'
-      : `drop-shadow(0px 1px 3px rgba(0,0,0,${Math.min(1, 0.6 * shadowStrength).toFixed(2)}))`;
+      : shadowLayers.map(([y, blur, alpha]) => `drop-shadow(0 ${y}px ${blur / 2}px ${shadowColor(alpha * 0.7)})`).join(' ');
     const shadowStyle = `--card-text-shadow: ${textShadowValue}; --card-icon-filter: ${iconFilterValue};`;
 
     const hourlyForecast = this.config.showHourlyForecast
