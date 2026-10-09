@@ -1,429 +1,98 @@
 # AGENTS.md - Dynamic Weather Card Architecture
 
-## Project Overview
+A Home Assistant Lovelace card with an animated, weather-aware sky, details and forecasts. Lit + TypeScript, built with Bun into one ESM file, distributed through HACS. User-facing options are documented in `README.md`; this file is for working on the code.
 
-Dynamic Weather Card is a custom weather card for Home Assistant with realistic weather condition animations on Canvas. The project is built using Lit (Web Components) and TypeScript.
-
-**Key Features:**
-- 🎨 Animated weather effects on Canvas
-- ☀️ Dynamic background based on time of day (sunrise, day, sunset, night)
-- 🌧️ Realistic animations: rain, snow, hail, fog, thunderstorm
-- 📊 Hourly and daily forecasts
-- 🌍 Automatic language detection from Home Assistant settings
-- ⚙️ Full customization of displayed elements
-
-## Project Structure
+## Project structure
 
 ```
-animated-weather-card/
-├── src/
-│   ├── animations/          # Weather animation modules
-│   │   ├── base.ts         # Base animation class
-│   │   ├── sunny.ts        # Sunny weather animation
-│   │   ├── rainy.ts        # Rain animation
-│   │   ├── snowy.ts        # Snow animation
-│   │   ├── cloudy.ts       # Cloudy animation
-│   │   ├── foggy.ts        # Fog animation
-│   │   ├── hail.ts         # Hail animation
-│   │   └── thunderstorm.ts # Thunderstorm animation
-│   ├── components/          # UI components
-│   │   ├── card.ts         # Main card component
-│   │   └── styles.ts       # CSS styles
-│   ├── icons/              # Weather icons
-│   │   ├── weather-conditions.ts
-│   │   └── svg-icons.ts
-│   ├── internationalization/ # Localization
-│   │   ├── locales/        # Translations (en, ru, de, fr, nl, es, it)
-│   │   ├── directive.ts
-│   │   ├── index.ts
-│   │   ├── resolveLanguage.ts
-│   │   └── types.ts
-│   ├── types/              # TypeScript types
-│   │   ├── svg.d.ts
-│   │   └── index.ts
-│   ├── constants.ts        # Constants and mappings
-│   ├── utils.ts            # Utilities
-│   └── index.ts            # Entry point
-├── build.ts                # Build script
-├── package.json
-└── tsconfig.json
+src/
+├── index.ts                    # Registers dynamic-weather-card and its editor, exports i18n
+├── components/
+│   ├── card.ts                 # Main element: config, hass, layout (default / minimal), rendering
+│   ├── styles.ts               # Card styles (sky, layout, typography, CSS variables)
+│   ├── animation-manager.ts    # Canvas, frame loop, quality, off-screen pause, reduced motion
+│   ├── weather-data.ts         # Current weather from the entity, with sensor overrides
+│   ├── forecast-service.ts     # Forecast subscriptions, hourly/daily selection, text forecast
+│   ├── details.ts              # <weather-details>: humidity, wind, sun times, pressure …
+│   ├── clock.ts                # <weather-clock>: clock and date
+│   ├── hourly-forecast.ts      # <hourly-forecast>: strip, day labels, temperature chart
+│   ├── daily-forecast.ts       # <daily-forecast>: days, temperature bars
+│   ├── forecast-styles.ts      # Styles shared by both forecasts
+│   ├── forecast-wind-row.ts    # Wind row of a forecast item
+│   ├── action-handler.ts       # tap / hold / double-tap actions
+│   └── editor.ts               # Visual editor (ha-form schema)
+├── animations/                 # One class per weather type, extending BaseAnimation
+│   ├── base.ts, quality.ts     # Base class; high / medium / low presets
+│   ├── clouds.ts, night-sky.ts # Shared cloud layers; stars and the moon phase
+│   ├── aurora.ts, glass-drops.ts, wind.ts   # Optional effects
+│   └── classic/                # The pre-2026.10 graphics, for visual_style: classic
+├── sky.ts                      # Sky and cloud colors from the condition and time of day
+├── precipitation-outlook.ts    # "Rain expected around 16:00"
+├── forecast-chart.ts           # Temperature curve, split into one piece per forecast item
+├── forecast-wind.ts            # Forecast wind: daily aggregation, display units
+├── temperature-color.ts        # Colors of the temperature bars and the chart
+├── editor-config.ts            # Cleans the editor's YAML (type and entity first, no defaults)
+├── user-styles.ts              # The styles option: CSS added to every part's shadow root
+├── icons/svg-icons.ts          # Inline SVG icons
+├── internationalization/       # i18n singleton, JSON locales, generated locale index
+├── constants.ts                # DEFAULT_CONFIG and other constants
+├── types.ts                    # Home Assistant and card types
+└── utils.ts                    # Time of day, units, formatting, horizontal scroll
+tests/                          # bun test, pure logic only
+scripts/                        # Locale index generation and checks
+build.ts                        # Production build
+demo.html                       # Interactive demo and manual test bench
 ```
 
-## Component Architecture
+## How it fits together
 
-### 1. Main Component - AnimatedWeatherCard
+**Config.** `card.ts` `setConfig()` turns the YAML (`ConfigInput`, snake_case) into `WeatherCardConfigInternal` (camelCase), applying the defaults from `DEFAULT_CONFIG`. The editor uses the same defaults for its form and saves only what differs from them (`editor-config.ts`).
 
-**File:** [src/components/card.ts](src/components/card.ts)
+**Current weather.** On every `hass` update, `getWeatherData()` (`weather-data.ts`) reads the weather entity and lets configured sensors override single values. A wind speed sensor also sets the unit the wind comes in.
 
-The main Web Component built on Lit Element. Responsible for:
+**Forecasts.** `ForecastService` subscribes to `weather/subscribe_forecast`: hourly always, daily when the daily forecast is on, twice-daily for the text forecast. Older integrations fall back to the entity's `forecast` attribute; hourly entries are then grouped into days. The card subscribes again after being re-attached to the page.
 
-- **UI Rendering**: Displaying weather data, temperature, humidity, wind, etc.
-- **Canvas Management**: Initialization and management of canvas element for animations
-- **Animation Lifecycle**: Starting and stopping the animation loop
-- **Home Assistant Integration**: Fetching weather data from entities via the `hass` object
-- **Interactivity**: Handling tap/hold/double-tap user actions
-- **Responsiveness**: ResizeObserver for adapting canvas to container size
+**Rendering.** The card renders the details, clock and forecasts as separate Lit elements, each in its own shadow root. That's why the `styles` option is added to each of them (`user-styles.ts`) and why the size variables (`--dwc-*`) are CSS custom properties: they inherit into every part.
 
-**Key Methods:**
-- `setConfig(config)`: Set card configuration
-- `connectedCallback()`: Initialization when connected to DOM
-- `setupCanvas()`: Create and configure canvas
-- `draw()`: Main rendering method, selects animation based on weather conditions
-- `getWeatherData()`: Extract weather data from Home Assistant
-- `getTodayForecast()` / `getWeekForecast()`: Get weather forecast
+**Animation.** `AnimationManager` owns the canvas. It picks the animation for the condition, passes sky colors from `sky.ts`, wind speed and the optional effects, caps the frame rate by quality, pauses off-screen and draws a still frame under "reduce motion". `visual_style: classic` hands drawing to `animations/classic/`.
 
-**State:**
-- `@property hass`: Home Assistant object
-- `@property config`: Card configuration
-- `@state currentTime`: Current time for clock display
+**i18n.** `i18n.t('key')` with English fallback. Locales are `locales/<code>/translation.json`; `scripts/generate-locales.ts` writes `locales.generated.ts`. The `demo` block of each file is used only by `demo.html` and is stripped from the card bundle by a plugin in `build.ts`.
 
-### 2. Animation System
+## Common changes
 
-**Base Class:** [src/animations/base.ts](src/animations/base.ts)
+### New animation
 
-All animations inherit from `BaseAnimation`, which provides:
-- Reference to canvas context (`ctx`)
-- Base methods for drawing clouds (`drawCloud`, `drawClouds`)
+1. Add a class in `src/animations/` extending `BaseAnimation` and implement `draw()`.
+2. Create it in `AnimationManager.initializeAnimations()` and call it from the `switch` in `AnimationManager.draw()`.
+3. If it needs its own sky, add a palette in `sky.ts`.
+4. Check it in `demo.html`, also with `animation_quality: low` and "reduce motion".
 
-**Specialized Animations:**
+### New option
 
-#### SunnyAnimation ([sunny.ts](src/animations/sunny.ts))
-- Draws sun with rays during daytime
-- Draws moon and stars at night
-- Adapts to time of day (sunrise, day, sunset, night)
+1. `src/types.ts`: add it to `ConfigInput` (YAML) and `WeatherCardConfig`.
+2. `src/constants.ts`: add the default to `DEFAULT_CONFIG`.
+3. `src/components/card.ts`: read it in `setConfig()` and use it.
+4. `src/components/editor.ts`: add a field to the schema and the default to `editorDefaults`.
+5. Translations: `editor.<option>` (and `editor.<option>_helper`) in every `locales/*/translation.json`; at least `en`.
+6. `demo.html`: a control, `buildCardConfig()` and a place in `YAML_GROUPS`.
+7. `README.md` and `README.ru.md`: a row in the options tables.
 
-#### RainyAnimation ([rainy.ts](src/animations/rainy.ts))
-- Particle system for raindrops
-- Support for normal and heavy rain (pouring)
-- Dark clouds and drops with gravity effect
+### New language
 
-#### SnowyAnimation ([snowy.ts](src/animations/snowy.ts))
-- Particle system for snowflakes
-- Smooth falling with swaying motion
-- Various snowflake sizes
+See [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-new-language).
 
-#### CloudyAnimation ([cloudy.ts](src/animations/cloudy.ts))
-- Multiple cloud layers
-- Smooth cloud movement
+## Build, test, release
 
-#### FoggyAnimation ([foggy.ts](src/animations/foggy.ts))
-- Fog layers with varying opacity
-- Fog movement effect
-
-#### HailAnimation ([hail.ts](src/animations/hail.ts))
-- Hail particles with fast falling
-- Bounce simulation on ground impact
-
-#### ThunderstormAnimation ([thunderstorm.ts](src/animations/thunderstorm.ts))
-- Lightning flashes
-- Optional rain
-- Dark storm clouds
-
-**Usage Pattern:**
-```typescript
-// In card.ts:428-489
-private draw(): void {
-  const condition = weather.condition.toLowerCase();
-
-  switch (condition) {
-    case 'sunny':
-      this.animations.sunny?.draw(Date.now(), width, height, timeOfDay);
-      break;
-    case 'rainy':
-      this.animations.rainy?.draw(Date.now(), width, height, timeOfDay, false);
-      break;
-    // ...
-  }
-}
-```
-
-### 3. Localization System
-
-**Structure:** [src/internationalization/](src/internationalization/)
-
-**Components:**
-- `index.ts`: Main `I18n` class for managing translations
-- `directive.ts`: Lit directive for i18n in templates
-- `resolveLanguage.ts`: Language detection (auto or from config)
-- `locales/`: Translations for supported languages
-
-**Supported Languages:**
-- English (en)
-- Русский (ru)
-- Deutsch (de)
-- Français (fr)
-- Nederlands (nl)
-- Español (es)
-- Italiano (it)
-
-**Usage:**
-```typescript
-import { i18n } from '../internationalization';
-
-// In code
-i18n.t('feels_like') // "Feels like"
-
-// In templates
-html`<div>${i18n.t('weather')}</div>`
-```
-
-### 4. Utilities and Helpers
-
-**File:** [src/utils.ts](src/utils.ts)
-
-**Main Functions:**
-
-- `getTimeOfDay()`: Determine time of day (sunrise, day, sunset, night)
-- `getTimeOfDayWithSunData(sunData)`: Same but with actual sunrise/sunset data
-- `getBackgroundGradient(timeOfDay)`: Generate background gradient for time of day
-- `formatForecastTime(datetime)`: Format time for forecast
-- `formatForecastDay(datetime, lang)`: Format day of week
-- `getSunriseSunsetData()`: Extract sunrise/sunset data
-- `formatTime(date)`: Format time as HH:MM
-
-### 5. Constants
-
-**File:** [src/constants.ts](src/constants.ts)
-
-Contains:
-- `DEFAULT_CONFIG`: Default configuration
-- `TEMPLOW_ATTRIBUTES`: List of attributes for finding minimum temperature
-- Weather condition mappings
-
-### 6. Types
-
-**File:** [src/types.ts](src/types.ts)
-
-TypeScript interfaces and types:
-- `HomeAssistant`: Home Assistant object interface
-- `HassEntity`: Home Assistant entity
-- `WeatherCardConfig`: Card configuration
-- `WeatherForecast`: Forecast item
-- `TimeOfDay`: Time of day with progress
-- `BackgroundGradient`: Background gradient
-- `WeatherEntityAttributes`: Weather entity attributes
-
-## Design Patterns
-
-### 1. Component-Based Architecture
-Using Web Components (Lit Element) for logic and style encapsulation.
-
-### 2. Observer Pattern
-- `ResizeObserver` for tracking container size changes
-- Reactive properties (`@property`, `@state`) in Lit for automatic UI updates
-
-### 3. Strategy Pattern
-Different animation classes with unified `draw()` interface, selected at runtime based on weather conditions.
-
-### 4. Singleton Pattern
-`i18n` object for centralized translation management.
-
-### 5. Template Method Pattern
-`BaseAnimation` base class defines common methods, overridden in subclasses.
-
-## Component Lifecycle
-
-```
-1. setConfig(config)
-   ↓
-2. connectedCallback()
-   ↓
-3. updateComplete.then()
-   ↓
-4. setupCanvas()
-   ↓
-5. initializeAnimations()
-   ↓
-6. startAnimation() → requestAnimationFrame loop
-   ↓
-7. draw() → select and render animation
-   ↓
-8. disconnectedCallback() → cleanup resources
-```
-
-## Main Data Flows
-
-### Weather Data Retrieval
-
-```
-Home Assistant Entity
-  ↓
-hass.states[config.entity]
-  ↓
-getWeatherData() → WeatherData
-  ↓
-Render in template
-```
-
-### Animation Loop
-
-```
-requestAnimationFrame
-  ↓
-draw()
-  ↓
-Determine condition + timeOfDay
-  ↓
-Select animation (sunny/rainy/snowy/etc)
-  ↓
-animation.draw(time, width, height, timeOfDay)
-  ↓
-Canvas rendering
-```
-
-### Localization Update
-
-```
-User config / Home Assistant language
-  ↓
-resolveLanguage()
-  ↓
-i18n.setLanguage()
-  ↓
-Automatic re-render via Lit reactivity
-```
-
-## Configuration and Setup
-
-The card is configured via YAML configuration in Home Assistant:
-
-```yaml
-type: custom:dynamic-weather-card
-entity: weather.home
-name: My Weather
-height: 250
-language: auto
-overlay_opacity: 0.2
-wind_speed_unit: ms
-show_feels_like: true
-show_min_temp: true
-show_humidity: true
-show_wind: true
-show_hourly_forecast: true
-hourly_forecast_hours: 5
-show_daily_forecast: false
-daily_forecast_days: 5
-show_sunrise_sunset: true
-show_clock: true
-clock_position: top
-```
-
-## Performance
-
-**Optimizations:**
-
-1. **Canvas Rendering**
-   - Device Pixel Ratio scaling for clarity on Retina displays
-   - Canvas context reuse
-
-2. **Animation Loop**
-   - `requestAnimationFrame` for smooth 60 FPS animation
-   - Animation loop cleanup on `disconnectedCallback()`
-
-3. **Event Handling**
-   - Debouncing for resize events via ResizeObserver
-   - Passive event listeners where possible
-
-4. **Memory Management**
-   - Explicit cleanup of timers, intervals, and listeners
-   - Animation frame cancellation on disconnect
-
-## Extending Functionality
-
-### Adding a New Animation
-
-1. Create a class in `src/animations/new-animation.ts`:
-```typescript
-import { BaseAnimation } from './base';
-import type { TimeOfDay } from '../types';
-
-export class NewAnimation extends BaseAnimation {
-  draw(time: number, width: number, height: number, timeOfDay: TimeOfDay): void {
-    // Your animation logic
-  }
-}
-```
-
-2. Register in [card.ts:211-223](src/components/card.ts#L211-L223):
-```typescript
-this.animations = {
-  // ...
-  newWeather: new NewAnimation(this.ctx)
-};
-```
-
-3. Add case in [card.ts:428-489](src/components/card.ts#L428-L489):
-```typescript
-case 'new-condition':
-  this.animations.newWeather?.draw(Date.now(), width, height, timeOfDay);
-  break;
-```
-
-### Adding a New Language
-
-1. Create file `src/internationalization/locales/xx/translation.ts`:
-```typescript
-export default {
-  weather: 'Weather',
-  feels_like: 'Feels like',
-  // ...
-};
-```
-
-2. Import in [src/internationalization/index.ts](src/internationalization/index.ts)
-
-## Build and Deployment
-
-**Commands:**
 ```bash
-# Install dependencies
 bun install
-
-# Development with hot-reload
-bun run dev
-
-# Production build (with linting)
-bun run build
-
-# Linting
+bun run dev          # watch build into dynamic-weather-card.js
+bun run build        # locales check, lint, production build
 bun run lint
-bun run lint:fix
-
-# Type checking
 bun run typecheck
+bun test
 ```
 
-**Build Process:**
-- Entry point: [src/index.ts](src/index.ts)
-- Bundler: Bun bundler
-- Output file: `dynamic-weather-card.js`
-- Format: ESM (ES Modules)
-- Target: Browser
-
-## Testing
-
-- Unit tests: `tests/*.test.ts`, run with `bun test` (also in CI). Pure logic only: precipitation outlook, time of day, moon phase, sky, units, sensors, forecast aggregation, i18n and translation files.
-- Visual and UI testing via `demo.html` - a static page with various configurations and weather conditions.
-
-## Compatibility
-
-- **Home Assistant**: 2021.4+
-- **Browsers**: Modern browsers with Web Components support
-- **Weather Integrations**: OpenWeatherMap, Met.no, AccuWeather, Yandex Weather, and others
-
-## Related Resources
-
-- [GitHub Repository](https://github.com/teuchezh/dynamic-weather-card)
-- [HACS Integration](https://github.com/hacs/integration)
-- [Live Demo](https://teuchezh.github.io/dynamic-weather-card/demo.html)
-- [Basmilius Weather Icons](https://github.com/basmilius/weather-icons) - Icons used
-
-## License
-
-MIT License - open source project.
-
----
-
-**Document Version:** 1.0
-**Last Updated:** 2026-01-20
-**Project Version:** 0.4.0
+- The build output `dynamic-weather-card.js` is not committed. Releases attach it, and the Pages workflow builds its own copy for the demo.
+- `demo.html` loads `./dynamic-weather-card.js`: run `bun run build` and serve the repository root (e.g. `python3 -m http.server`).
+- Unit tests cover pure logic: precipitation outlook, time of day, moon phase, sky, units, sensors, forecast aggregation and selection, the chart curve, editor YAML, i18n and translation files. `tests/setup.ts` defines build-time globals.
+- Releases are CalVer and weekly; see [.github/RELEASE.md](.github/RELEASE.md).

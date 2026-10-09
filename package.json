@@ -31,7 +31,6 @@
     "url": "https://github.com/teuchezh/dynamic-weather-card"
   },
   "dependencies": {
-    "@bybas/weather-icons": "^2.0.0",
     "lit": "^3.3.3"
   },
   "devDependencies": {
@@ -40,7 +39,6 @@
     "@typescript-eslint/parser": "^8.71.0",
     "eslint": "^10.11.0",
     "eslint-plugin-lit": "^2.3.1",
-    "tslib": "^2.8.1",
     "typescript": "^5.9.3"
   }
 }

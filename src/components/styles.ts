@@ -136,10 +136,6 @@ export const cardStyles = css`
     gap: 16px;
   }
 
-  .details--clock .info-grid {
-    flex: 1;
-  }
-
   .condition {
     font-size: var(--dwc-condition-size, 20px);
     font-weight: 400;
@@ -200,24 +196,6 @@ export const cardStyles = css`
     opacity: 0.7;
   }
 
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px 12px;
-    font-size: 13px;
-    opacity: 0.9;
-  }
-
-  .info-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .info-item span:last-child {
-    white-space: nowrap;
-  }
-
   .info-icon {
     font-size: 16px;
     width: 20px;
@@ -232,104 +210,6 @@ export const cardStyles = css`
     width: 20px;
     height: 20px;
     display: block;
-  }
-
-  .forecast-container {
-    margin-top: 20px;
-    padding-top: 20px;
-    padding-bottom: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    width: 100%;
-  }
-
-  .forecast-title {
-    font-size: 14px;
-    font-weight: 500;
-    opacity: 0.8;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .forecast-scroll {
-    display: flex;
-    gap: 16px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 12px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-  }
-
-  .forecast-scroll::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .forecast-scroll::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-  }
-
-  .forecast-scroll::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-  }
-
-  .forecast-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-  }
-
-  .forecast-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-    min-width: 60px;
-  }
-
-  .forecast-time {
-    font-size: 12px;
-    opacity: 0.7;
-    font-weight: 400;
-  }
-
-  .forecast-icon {
-    line-height: 1;
-  }
-
-  .forecast-icon svg {
-    width: 32px;
-    height: 32px;
-    display: block;
-  }
-
-  .forecast-temp {
-    font-size: 16px;
-    font-weight: 500;
-    opacity: 0.9;
-  }
-
-  .clock {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 48px;
-    font-weight: 200;
-    line-height: 1;
-    color: var(--dwc-text-color, white);
-    text-align: right;
-    text-shadow: var(--card-text-shadow);
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  @media (max-width: 600px) {
-    .clock {
-      font-size: 36px;
-      margin-top: 0;
-      margin-bottom: 0;
-    }
   }
 
   /* ---- Minimal layout ---- */
