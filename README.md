@@ -312,9 +312,32 @@ Optional. Each sensor replaces the weather entity's value. When the sensor is un
 
 ### Styling<a id="styling"></a>
 
-**CSS variables** change the main sizes. They work from a theme, from `styles` and from card-mod:
+Start with the options: `text_color`, `text_shadow`, `border_radius`, `overlay_opacity`, `clock_size` and `clock_weight` cover the most common changes. For anything else, the card takes your own CSS.
 
-| Variable | Default | What |
+#### 1. Where to put your CSS
+
+Add it to the `styles` option, in YAML or in the visual editor (**Appearance → Custom CSS**). It applies to the whole card, including the clock, the details and the forecasts, and it wins over the card's own styles without `!important`.
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+styles: |
+  .temperature { color: #ffd60a; }
+```
+
+#### 2. Change sizes with variables
+
+For sizes, set a variable on `ha-card` instead of styling elements one by one:
+
+```yaml
+styles: |
+  ha-card {
+    --dwc-temperature-size: 40px;
+    --dwc-details-size: 15px;
+  }
+```
+
+| Variable | Default | What it changes |
 |---|---|---|
 | `--dwc-temperature-size` | `64px` (minimal: `52px`) | Current temperature |
 | `--dwc-condition-size` | `20px` (minimal: `15px`) | Condition, e.g. "Sunny" |
@@ -325,26 +348,52 @@ Optional. Each sensor replaces the weather entity's value. When the sensor is un
 | `--dwc-text-color` | `white` | Text and icons (same as `text_color`) |
 | `--dwc-border-radius` | theme | Corners (same as `border_radius`) |
 
-**`styles`** adds your own CSS to the card and to each of its parts (details, clock, forecasts). Its rules come after the card's own, so no `!important` is needed:
+The variables also work from a [theme](https://www.home-assistant.io/integrations/frontend/#defining-themes) and from card-mod.
+
+#### 3. What to target
+
+| Part of the card | Selector |
+|---|---|
+| Whole card | `ha-card` |
+| Card name | `.location` |
+| Condition, temperature, low | `.condition`, `.temperature`, `.temp-min` |
+| Feels like, rain start/stop line | `.feels-like`, `.precipitation-outlook` |
+| Details (humidity, wind, sunrise …) | `.info-grid` (the grid), `.info-item` (one detail), `.info-icon` |
+| Clock and date | `.clock`, `.date` |
+| Text forecast | `.forecast-description` |
+| Forecasts | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-wind` |
+| Minimal layout | `.mini-temp`, `.mini-condition` |
+
+To find anything else, right-click the card in the browser and choose **Inspect**. Class names other than the variables may change between versions; the variables stay.
+
+#### 4. Recipes
 
 ```yaml
-type: custom:dynamic-weather-card
-entity: weather.home
-show_clock: true
 styles: |
-  ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
-  .feels-like { font-size: 14px; }
-  .details { flex-direction: column; align-items: flex-start; }
-  .forecast-title { letter-spacing: 0; text-transform: none; }
+  /* Details in one column */
+  .info-grid { grid-template-columns: 1fr; }
+
+  /* Forecast titles in normal case */
+  .forecast-title { text-transform: none; letter-spacing: 0; }
+
+  /* Bigger forecast icons */
+  .forecast-icon svg { width: 40px; height: 40px; }
+
+  /* A compact card for a small tablet */
+  ha-card { --dwc-temperature-size: 44px; --dwc-padding: 14px; }
 ```
 
-**card-mod** reaches only the card itself, not its parts, and its rules lose to the card's own styles. Use the variables there:
+#### 5. card-mod
+
+You don't need card-mod for this card: `styles` does the same and also reaches the clock, the details and the forecasts. If you already use card-mod, set the variables there:
 
 ```yaml
 card_mod:
   style: |
     ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
 ```
+
+Other card-mod rules only reach the top of the card (temperature, condition, feels like) and need `!important`. They don't reach the clock, the details or the forecasts, because those are separate components; use `styles` for them.
 
 ### Actions
 

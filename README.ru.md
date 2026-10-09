@@ -312,9 +312,32 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 
 ### Стилизация<a id="styling"></a>
 
-**CSS-переменные** меняют основные размеры. Они работают из темы, из `styles` и из card-mod:
+Сначала попробуйте опции: `text_color`, `text_shadow`, `border_radius`, `overlay_opacity`, `clock_size` и `clock_weight` закрывают самые частые пожелания. Для всего остального карточка принимает ваш CSS.
 
-| Переменная | По умолчанию | Что |
+#### 1. Куда писать CSS
+
+В опцию `styles`, в YAML или в визуальном редакторе (**Внешний вид → Свой CSS**). Он применяется ко всей карточке, включая часы, детали и прогнозы, и перекрывает встроенные стили без `!important`.
+
+```yaml
+type: custom:dynamic-weather-card
+entity: weather.home
+styles: |
+  .temperature { color: #ffd60a; }
+```
+
+#### 2. Размеры — через переменные
+
+Чтобы поменять размеры, задайте переменную на `ha-card`, а не стилизуйте элементы по одному:
+
+```yaml
+styles: |
+  ha-card {
+    --dwc-temperature-size: 40px;
+    --dwc-details-size: 15px;
+  }
+```
+
+| Переменная | По умолчанию | Что меняет |
 |---|---|---|
 | `--dwc-temperature-size` | `64px` (компактная: `52px`) | Текущая температура |
 | `--dwc-condition-size` | `20px` (компактная: `15px`) | Состояние, например «Солнечно» |
@@ -325,26 +348,52 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `--dwc-text-color` | `white` | Текст и иконки (то же, что `text_color`) |
 | `--dwc-border-radius` | тема | Углы (то же, что `border_radius`) |
 
-**`styles`** добавляет ваш CSS в карточку и во все её части (детали, часы, прогнозы). Эти правила идут после встроенных, поэтому `!important` не нужен:
+Переменные работают и из [темы](https://www.home-assistant.io/integrations/frontend/#defining-themes), и из card-mod.
+
+#### 3. Что как называется
+
+| Часть карточки | Селектор |
+|---|---|
+| Вся карточка | `ha-card` |
+| Название карточки | `.location` |
+| Состояние, температура, минимум | `.condition`, `.temperature`, `.temp-min` |
+| «Ощущается как», строка «когда пойдёт дождь» | `.feels-like`, `.precipitation-outlook` |
+| Детали (влажность, ветер, восход…) | `.info-grid` (сетка), `.info-item` (одна деталь), `.info-icon` |
+| Часы и дата | `.clock`, `.date` |
+| Текстовый прогноз | `.forecast-description` |
+| Прогнозы | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-wind` |
+| Компактная раскладка | `.mini-temp`, `.mini-condition` |
+
+Остальное можно найти в браузере: правый клик по карточке → **Просмотреть код**. Имена классов могут меняться между версиями, переменные — нет.
+
+#### 4. Рецепты
 
 ```yaml
-type: custom:dynamic-weather-card
-entity: weather.home
-show_clock: true
 styles: |
-  ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
-  .feels-like { font-size: 14px; }
-  .details { flex-direction: column; align-items: flex-start; }
-  .forecast-title { letter-spacing: 0; text-transform: none; }
+  /* Детали в один столбец */
+  .info-grid { grid-template-columns: 1fr; }
+
+  /* Заголовки прогнозов обычными буквами */
+  .forecast-title { text-transform: none; letter-spacing: 0; }
+
+  /* Иконки в прогнозе крупнее */
+  .forecast-icon svg { width: 40px; height: 40px; }
+
+  /* Компактнее для небольшого планшета */
+  ha-card { --dwc-temperature-size: 44px; --dwc-padding: 14px; }
 ```
 
-**card-mod** достаёт только до самой карточки, но не до её частей, а его правила проигрывают встроенным стилям. В нём используйте переменные:
+#### 5. card-mod
+
+Для этой карточки card-mod не нужен: `styles` делает то же самое и достаёт до часов, деталей и прогнозов. Если вы уже пользуетесь card-mod, задавайте в нём переменные:
 
 ```yaml
 card_mod:
   style: |
     ha-card { --dwc-temperature-size: 40px; --dwc-clock-size: 28px; }
 ```
+
+Остальные правила card-mod действуют только на верхнюю часть карточки (температура, состояние, «ощущается как») и требуют `!important`. До часов, деталей и прогнозов они не доходят, потому что это отдельные компоненты; для них используйте `styles`.
 
 ### Действия
 
