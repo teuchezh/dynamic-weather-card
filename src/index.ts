@@ -5,7 +5,6 @@ import { registerSkyProperties } from './sky';
 import type { CustomCardRegistration } from './types';
 
 export { i18n } from './internationalization/index';
-export { t } from './internationalization/directive';
 export { resolveLanguage } from './internationalization/resolveLanguage';
 
 // Register custom elements

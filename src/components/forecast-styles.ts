@@ -259,9 +259,4 @@ export const forecastStyles = css`
     border-radius: 3px 3px 0 0;
     background: rgba(79, 179, 255, 0.55);
   }
-
-  .forecast-unavailable {
-    opacity: 0.6;
-    font-size: 14px;
-  }
 `;

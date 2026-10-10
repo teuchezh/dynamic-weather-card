@@ -12,28 +12,22 @@ export interface DemoTranslations {
   temperatureBars?: string;
   pageTitle: string;
   pageSubtitle: string;
-  livePreview: string;
-  configuration: string;
   quickPresets: string;
   sunnyDay: string;
   rainy: string;
   snowy: string;
   clearNight: string;
-  weatherCondition: string;
   condition: string;
   temperature: string;
   humidity: string;
   windSpeed: string;
   timeOfDay: string;
   timeMode: string;
-  autoTime: string;
   manualControl: string;
   sunrise: string;
   day: string;
   sunset: string;
   night: string;
-  currentTime: string;
-  displayOptions: string;
   cardName: string;
   height: string;
   feelsLike: string;
@@ -48,8 +42,6 @@ export interface DemoTranslations {
   clockPositionTop: string;
   clockPositionDetails: string;
   clockFormat: string;
-  clockFormat12h: string;
-  clockFormat24h: string;
   clockSize: string;
   clockSizeSmall: string;
   clockSizeMedium: string;
@@ -62,18 +54,13 @@ export interface DemoTranslations {
   windSpeedUnit: string;
   dailyForecastDays: string;
   hourlyForecastHours: string;
-  updateCard: string;
   startDemo: string;
   stopDemo: string;
   madeWith: string;
   loading: string;
-  errorTitle: string;
-  errorDetails: string;
-  errorServer: string;
   placeholderEmpty: string;
   weatherConditions: {
     sunny: string;
-    clear: string;
     clearNight: string;
     partlyCloudy: string;
     cloudy: string;
@@ -88,15 +75,6 @@ export interface DemoTranslations {
   };
   language: {
     title: string;
-    english: string;
-    russian: string;
-    french: string;
-    german: string;
-    dutch: string;
-    spanish: string;
-    italian: string;
-    slovak: string;
-    hungarian: string;
   };
 }
 
@@ -170,15 +148,12 @@ export interface Translation {
   forecast_title_hourly?: string;
   daily_forecast_title: string;
   no_data: string;
-  forecast_unavailable: string;
   weather: string;
-  language: string;
   wind_unit_kmh: string;
   wind_unit_ms: string;
   wind_unit_mph: string;
   wind_unit_knots: string;
   wind_unit_fts: string;
-  show_clock: string;
   am: string;
   pm: string;
   pressure: string;

@@ -28,21 +28,19 @@ Animations and UI are tested manually via `demo.html` - serve the repo root and 
 
 See **AGENTS.md** for detailed architecture documentation. Key points:
 
-- **Entry point**: `src/index.ts` registers `custom:dynamic-weather-card`
-- **Main component**: `src/components/card.ts` - Lit Element handling UI, canvas, and HA integration
-- **Animation system**: `src/animations/` - Each weather condition has its own class extending `BaseAnimation`
-- **i18n**: `src/internationalization/` - Singleton `i18n` object with `i18n.t('key')` for translations
+- **Entry point**: `src/index.ts` registers `custom:dynamic-weather-card` and its editor
+- **Main component**: `src/components/card.ts` - config, Home Assistant data, rendering; details, clock and forecasts are separate Lit elements in `src/components/`
+- **Animation system**: `src/animations/` - one class per weather type extending `BaseAnimation`, driven by `src/components/animation-manager.ts`
+- **i18n**: `src/internationalization/` - Singleton `i18n` object with `i18n.t('key')`; translations are `locales/<code>/translation.json`
 
 ### Adding New Animation
 
-1. Create class in `src/animations/` extending `BaseAnimation`
-2. Implement `draw(time, width, height, timeOfDay)` method
-3. Register in `card.ts` at `initializeAnimations()` and add case in `draw()` method
+1. Create class in `src/animations/` extending `BaseAnimation` and implement `draw()`
+2. Create it in `AnimationManager.initializeAnimations()` and add a case in `AnimationManager.draw()`
 
-### Adding New Language
+### Adding New Option or Language
 
-1. Create `src/internationalization/locales/XX/translation.ts`
-2. Import in `src/internationalization/index.ts`
+See the step lists in AGENTS.md (option) and CONTRIBUTING.md (language).
 
 ## Code Conventions
 

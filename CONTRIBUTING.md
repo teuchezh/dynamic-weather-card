@@ -201,7 +201,7 @@ Edit `src/internationalization/locales/<code>/translation.json` and open a pull 
 ### Adding a New Language
 
 1. Create `src/internationalization/locales/<code>/translation.json`, starting from a copy of the English file.
-2. Add the language's name to `en` (and, if you can, `ru`): `editor.language_<code>` and `demo.language.<name>`.
+2. Add the language's name to `en` (and, if you can, `ru`): `editor.language_<code>`. The demo names languages itself.
 3. Regenerate the locale index: `bun run locales:generate` (CI fails until `locales.generated.ts` is up to date).
 4. Add the language to the demo's language picker (`LANGUAGES` in `demo.html`) and to the language lists in `README.md` and `README.ru.md`.
 5. Run `bun run locales:check` and `bun test`.
@@ -212,20 +212,19 @@ The `demo` block of each file is only used by the demo page and is left out of t
 
 ### New Weather Animation
 
-1. Create animation class in `src/animations/new-animation.ts`
-2. Extend `BaseAnimation`
-3. Implement `draw()` method
-4. Register in `src/components/card.ts` (initializeAnimations + draw method)
-5. Test with `demo.html`
-6. Update documentation
+1. Create an animation class in `src/animations/` extending `BaseAnimation`, and implement `draw()`
+2. Create it in `AnimationManager.initializeAnimations()` and call it from `AnimationManager.draw()` (`src/components/animation-manager.ts`)
+3. Test with `demo.html`, also with `animation_quality: low`
+4. Update documentation
 
 ### New Configuration Option
 
-1. Add to `WeatherCardConfig` interface in `src/types.ts`
+1. Add to `ConfigInput` and `WeatherCardConfig` in `src/types.ts`
 2. Add to `DEFAULT_CONFIG` in `src/constants.ts`
-3. Implement the feature in `src/components/card.ts`
-4. Update README.md and README.ru.md
-5. Test thoroughly
+3. Read it in `setConfig()` and implement the feature in `src/components/card.ts`
+4. Add it to the visual editor (`src/components/editor.ts`: schema and `editorDefaults`) with a label in the translations
+5. Add it to `demo.html` and to README.md and README.ru.md
+6. Test thoroughly
 
 ## Getting Help
 
