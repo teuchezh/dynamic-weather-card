@@ -66,9 +66,13 @@ export const forecastStyles = css`
     min-width: 60px;
   }
 
-  /* Hourly forecast spanning several days: the first hour of each new day */
+  /* Hourly forecast spanning several days: the first hour of each new day.
+     Fixed height so weekday text cannot grow this row and shift the temperature chart
+     (pieces meet in local coords; a vertical offset at day boundaries breaks the line). */
   .forecast-day {
-    min-height: 14px;
+    height: 14px;
+    line-height: 14px;
+    overflow: hidden;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.4px;
