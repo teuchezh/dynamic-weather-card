@@ -140,6 +140,25 @@ describe('resolveLanguage', () => {
     expect(resolveLanguage({ hassLang: 'cs-CZ' })).toBe('cs');
     expect(resolveLanguage({ hassLang: 'lv' })).toBe('lv');
   });
+
+  test('keeps Traditional Chinese instead of falling back to Simplified', () => {
+    expect(resolveLanguage({ hassLang: 'zh-Hant' })).toBe('zh-Hant');
+    expect(resolveLanguage({ hassLang: 'zh-hant' })).toBe('zh-Hant');
+    expect(resolveLanguage({ configLang: 'zh-Hant' })).toBe('zh-Hant');
+  });
+
+  test('maps Traditional Chinese region tags to zh-Hant', () => {
+    expect(resolveLanguage({ hassLang: 'zh-TW' })).toBe('zh-Hant');
+    expect(resolveLanguage({ hassLang: 'zh-HK' })).toBe('zh-Hant');
+    expect(resolveLanguage({ hassLang: 'zh-MO' })).toBe('zh-Hant');
+    expect(resolveLanguage({ hassLang: 'zh-Hant-TW' })).toBe('zh-Hant');
+  });
+
+  test('keeps Simplified Chinese for zh and zh-CN', () => {
+    expect(resolveLanguage({ hassLang: 'zh' })).toBe('zh');
+    expect(resolveLanguage({ hassLang: 'zh-CN' })).toBe('zh');
+    expect(resolveLanguage({ hassLang: 'zh-Hans' })).toBe('zh');
+  });
 });
 
 describe('translation files', () => {
