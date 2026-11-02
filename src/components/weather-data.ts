@@ -40,34 +40,76 @@ export function getWeatherAttributes(hass: HomeAssistant | undefined, entityId: 
   return entity ? entity.attributes : {} as WeatherEntityAttributes;
 }
 
+function isSameLocalDay(datetime: string, now: Date = new Date()): boolean {
+  const date = new Date(datetime);
+  if (Number.isNaN(date.getTime())) return false;
+  return (
+    date.getFullYear() === now.getFullYear()
+    && date.getMonth() === now.getMonth()
+    && date.getDate() === now.getDate()
+  );
+}
+
+function forecastTemperature(item: WeatherForecast): number | null {
+  const value = item.temperature ?? item.temp ?? item.native_temperature;
+  return value != null && Number.isFinite(value) ? value : null;
+}
+
+/**
+ * Today's low from entity attributes, legacy forecast attributes, subscribed
+ * daily forecast (`templow` / `native_templow`), or min of today's hourly temps.
+ */
+export function resolveTemplow(
+  attrs: WeatherEntityAttributes,
+  config: { templowAttribute?: string | null },
+  dailyForecast: WeatherForecast[] = [],
+  hourlyForecast: WeatherForecast[] = [],
+  now: Date = new Date()
+): number | null {
+  if (config.templowAttribute && attrs[config.templowAttribute] != null) {
+    return attrs[config.templowAttribute] as number;
+  }
+
+  for (const attrName of TEMPLOW_ATTRIBUTES) {
+    if (attrs[attrName] != null) {
+      return attrs[attrName] as number;
+    }
+  }
+
+  const legacy =
+    (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow ?? attrs.forecast[0].native_templow ?? null : null)
+    || (attrs.forecast_hourly && attrs.forecast_hourly[0]
+      ? attrs.forecast_hourly[0].templow ?? attrs.forecast_hourly[0].native_templow ?? null
+      : null);
+  if (legacy != null) return legacy;
+
+  const todayDaily = dailyForecast.find(item => item.datetime && isSameLocalDay(item.datetime, now))
+    ?? dailyForecast[0];
+  const dailyLow = todayDaily?.templow ?? todayDaily?.native_templow;
+  if (dailyLow != null && Number.isFinite(dailyLow)) return dailyLow;
+
+  const todayHourlyTemps = hourlyForecast
+    .filter(item => item.datetime && isSameLocalDay(item.datetime, now))
+    .map(forecastTemperature)
+    .filter((value): value is number => value != null);
+  if (todayHourlyTemps.length > 0) return Math.min(...todayHourlyTemps);
+
+  return null;
+}
+
 export function getWeatherData(
   hass: HomeAssistant | undefined,
   entityId: string,
   config: { templowAttribute?: string | null; sensorEntities?: SensorEntities },
-  hourlyForecast: WeatherForecast[]
+  hourlyForecast: WeatherForecast[] = [],
+  dailyForecast: WeatherForecast[] = []
 ): WeatherData {
   const state = getWeatherState(hass, entityId);
   const attrs = getWeatherAttributes(hass, entityId);
 
   const condition = attrs.condition || state || 'sunny';
 
-  let templow: number | null = null;
-
-  if (config.templowAttribute && attrs[config.templowAttribute] != null) {
-    templow = attrs[config.templowAttribute] as number;
-  } else {
-    for (const attrName of TEMPLOW_ATTRIBUTES) {
-      if (attrs[attrName] != null) {
-        templow = attrs[attrName] as number;
-        break;
-      }
-    }
-
-    if (templow == null) {
-      templow = (attrs.forecast && attrs.forecast[0] ? attrs.forecast[0].templow ?? null : null)
-        || (attrs.forecast_hourly && attrs.forecast_hourly[0] ? attrs.forecast_hourly[0].native_templow ?? null : null);
-    }
-  }
+  const templow = resolveTemplow(attrs, config, dailyForecast, hourlyForecast);
 
   const sensors = config.sensorEntities || {};
   const temperatureSensor = readSensor(hass, sensors.temperature);
