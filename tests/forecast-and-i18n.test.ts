@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { ForecastService } from '../src/components/forecast-service';
 import { i18n } from '../src/internationalization/index';
+import { resolveLanguage } from '../src/internationalization/resolveLanguage';
 import { getDayStarts } from '../src/utils';
 import type { WeatherData, WeatherForecast } from '../src/types';
 
@@ -119,6 +120,25 @@ describe('i18n', () => {
     i18n.addTranslations('en', { demo: { pageTitle: 'Test title' } } as never);
     i18n.setLanguage('en');
     expect(i18n.t('demo.pageTitle')).toBe('Test title');
+  });
+});
+
+describe('resolveLanguage', () => {
+  test('keeps Serbian Latin instead of falling back to Cyrillic', () => {
+    expect(resolveLanguage({ hassLang: 'sr-Latn' })).toBe('sr-Latn');
+    expect(resolveLanguage({ hassLang: 'sr-latn' })).toBe('sr-Latn');
+    expect(resolveLanguage({ configLang: 'sr-Latn' })).toBe('sr-Latn');
+  });
+
+  test('maps plain Serbian and Cyrillic tags to sr', () => {
+    expect(resolveLanguage({ hassLang: 'sr' })).toBe('sr');
+    expect(resolveLanguage({ hassLang: 'sr-Cyrl' })).toBe('sr');
+  });
+
+  test('resolves new Czech and Latvian locales', () => {
+    expect(resolveLanguage({ hassLang: 'cs' })).toBe('cs');
+    expect(resolveLanguage({ hassLang: 'cs-CZ' })).toBe('cs');
+    expect(resolveLanguage({ hassLang: 'lv' })).toBe('lv');
   });
 });
 
