@@ -141,6 +141,8 @@
     "language_nb": "Norwegian (Bokmål)",
     "language_sl": "Slovenian",
     "language_sr-Latn": "Serbian (Latin)",
+    "language_cs": "Czech",
+    "language_lv": "Latvian",
     "wind_speed_unit": "Wind speed unit",
     "wind_speed_unit_ms": "m/s",
     "wind_speed_unit_kmh": "km/h",

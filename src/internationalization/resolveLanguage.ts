@@ -9,10 +9,16 @@ interface ResolveLanguageOptions {
 const normalize = (lang?: string): SupportedLanguage | undefined => {
   if (!lang) return undefined;
   const lower = lang.toLowerCase();
-  if (Object.hasOwn(translations, lower)) return lower as SupportedLanguage;
+  const codes = Object.keys(translations) as SupportedLanguage[];
+
+  // Exact match, case-insensitive (keeps tagged locales such as sr-Latn)
+  const exact = codes.find((code) => code.toLowerCase() === lower);
+  if (exact) return exact;
+
+  // Fallback to the base language (e.g. de-CH → de). Must not strip script
+  // subtags that have their own locale file before this point.
   const base = lower.split('-')[0];
-  if (Object.hasOwn(translations, base)) return base as SupportedLanguage;
-  return undefined;
+  return codes.find((code) => code.toLowerCase() === base);
 };
 
 export const resolveLanguage = ({ configLang, hassLang }: ResolveLanguageOptions = {}): SupportedLanguage => {
