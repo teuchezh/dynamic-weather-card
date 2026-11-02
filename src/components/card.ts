@@ -121,8 +121,9 @@ export class AnimatedWeatherCard extends LitElement {
 
     if (changedProperties.has('hass') || changedProperties.has('config')) {
       const entity = this.config.entity;
+      // Daily forecast also feeds min temperature when show_min_temp is on
       const options = {
-        daily: this.config.showDailyForecast ?? false,
+        daily: !!(this.config.showDailyForecast || this.config.showMinTemp),
         twiceDaily: this.config.showForecastDescription ?? false
       };
       const key = `${entity}|${options.daily}|${options.twiceDaily}`;
@@ -150,7 +151,8 @@ export class AnimatedWeatherCard extends LitElement {
       this.hass,
       this.config.entity,
       this.config,
-      this.forecastService.getHourlyData()
+      this.forecastService.getHourlyData(),
+      this.forecastService.getDailyData()
     );
     const weatherState = this.hass.states[this.config.entity];
     const sunData = getSunriseSunsetData(
@@ -334,7 +336,8 @@ export class AnimatedWeatherCard extends LitElement {
       this.hass,
       this.config.entity,
       this.config,
-      this.forecastService.getHourlyData()
+      this.forecastService.getHourlyData(),
+      this.forecastService.getDailyData()
     );
     const weatherState = this.hass.states[this.config.entity];
     const sunData = getSunriseSunsetData(

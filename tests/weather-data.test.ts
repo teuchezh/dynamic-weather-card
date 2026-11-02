@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 import { convertSpeedUnit, convertWindSpeed, getWindSpeedUnit, roundWindSpeed, windDisplayUnit } from '../src/utils';
-import { getWeatherData, readSensor } from '../src/components/weather-data';
+import { getWeatherData, readSensor, resolveTemplow } from '../src/components/weather-data';
 import { temperatureColor } from '../src/temperature-color';
-import type { HomeAssistant, WeatherEntityAttributes } from '../src/types';
+import type { HomeAssistant, WeatherEntityAttributes, WeatherForecast } from '../src/types';
 
 function mockHass(attributes: WeatherEntityAttributes, sensors: Record<string, [string, string?]> = {}): HomeAssistant {
   const states: Record<string, unknown> = {
@@ -130,6 +130,65 @@ describe('getWeatherData', () => {
     expect(data.windSpeedUnit).toBe('km/h');
     // 9 m/s from the entity, shown in km/h
     expect(data.windGust).toBeCloseTo(32.4);
+  });
+
+  test('templow comes from subscribed daily forecast when the entity has no low attribute', () => {
+    const attrs: WeatherEntityAttributes = { condition: 'partlycloudy', temperature: 10.3 };
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const daily: WeatherForecast[] = [
+      { datetime: today.toISOString(), temperature: 14, templow: 6 },
+      { datetime: tomorrow.toISOString(), temperature: 15, templow: 7 }
+    ];
+    const data = getWeatherData(mockHass(attrs), 'weather.home', {}, [], daily);
+    expect(data.templow).toBe(6);
+  });
+});
+
+describe('resolveTemplow', () => {
+  const now = new Date(2026, 9, 20, 12, 0, 0);
+
+  test('prefers entity attributes and templow_attribute over forecast', () => {
+    expect(resolveTemplow({ templow: 3 } as WeatherEntityAttributes, {}, [{ datetime: now.toISOString(), templow: 9 }], [], now)).toBe(3);
+    expect(resolveTemplow(
+      { custom_low: 4 } as WeatherEntityAttributes,
+      { templowAttribute: 'custom_low' },
+      [{ datetime: now.toISOString(), templow: 9 }],
+      [],
+      now
+    )).toBe(4);
+  });
+
+  test('uses native_templow from today\'s daily forecast entry', () => {
+    const daily: WeatherForecast[] = [
+      { datetime: new Date(2026, 9, 20, 0).toISOString(), native_templow: 5.5, temperature: 12 },
+      { datetime: new Date(2026, 9, 21, 0).toISOString(), native_templow: 8, temperature: 14 }
+    ];
+    expect(resolveTemplow({} as WeatherEntityAttributes, {}, daily, [], now)).toBe(5.5);
+  });
+
+  test('falls back to the first daily entry when none match today', () => {
+    const daily: WeatherForecast[] = [
+      { datetime: new Date(2026, 9, 21, 0).toISOString(), templow: 8 },
+      { datetime: new Date(2026, 9, 22, 0).toISOString(), templow: 9 }
+    ];
+    expect(resolveTemplow({} as WeatherEntityAttributes, {}, daily, [], now)).toBe(8);
+  });
+
+  test('falls back to the minimum of today\'s hourly temperatures', () => {
+    const hourly: WeatherForecast[] = [
+      { datetime: new Date(2026, 9, 20, 6).toISOString(), temperature: 7 },
+      { datetime: new Date(2026, 9, 20, 12).toISOString(), temperature: 14 },
+      { datetime: new Date(2026, 9, 20, 18).toISOString(), temperature: 11 },
+      { datetime: new Date(2026, 9, 21, 0).toISOString(), temperature: 4 }
+    ];
+    expect(resolveTemplow({} as WeatherEntityAttributes, {}, [], hourly, now)).toBe(7);
+  });
+
+  test('returns null when nothing provides a low', () => {
+    expect(resolveTemplow({} as WeatherEntityAttributes, {}, [], [], now)).toBeNull();
   });
 });
 
