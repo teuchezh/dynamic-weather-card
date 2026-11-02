@@ -78,9 +78,18 @@ export const SVG_ICONS: Record<string, SVGTemplateResult> = {
   `
 };
 
-// Wind direction arrow (simple custom SVG)
+/**
+ * Home Assistant `wind_bearing` is meteorological: degrees the wind comes FROM
+ * (0 = from north, 90 = from east, …). The arrow tip should point TOWARD where
+ * the wind is going, so rotate the north-pointing glyph by bearing + 180.
+ */
+export function windArrowRotation(bearing: number): number {
+  return (bearing + 180) % 360;
+}
+
+// Wind direction arrow (simple custom SVG; tip points toward wind destination)
 export const windDirection = (bearing: number): SVGTemplateResult => svg`
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="transform: rotate(${bearing}deg); transform-origin: center;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="transform: rotate(${windArrowRotation(bearing)}deg); transform-origin: center;">
     <path fill="currentColor" d="M12 2L4 20L12 17L20 20L12 2Z"/>
   </svg>
 `;
