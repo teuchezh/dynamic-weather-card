@@ -1,4 +1,4 @@
-import type { ClockSize, ClockWeight, WeatherCardConfig } from './types';
+import type { ClockSize, ClockWeight, DailyForecastLabel, WeatherCardConfig } from './types';
 
 // Version is injected from package.json during build
 declare const __VERSION__: string;
@@ -53,6 +53,7 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   showForecastDescription: false,
   styles: null as string | null,
   dailyForecastDays: 5,
+  dailyForecastLabel: 'full' as DailyForecastLabel,
   hourlyForecastTitle: null as string | null,
   dailyForecastTitle: null as string | null,
   showSunriseSunset: true,

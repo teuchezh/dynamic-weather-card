@@ -783,6 +783,7 @@
             hourlyForecastStep: 1,
             hourlyForecastChart: true,
             dailyForecastDays: 5,
+            dailyForecastLabel: 'full',
             hourlyForecastTitle: '',
             dailyForecastTitle: '',
             clockPosition: 'top',
@@ -970,6 +971,11 @@
                 { type: 'range', key: 'hourlyForecastHours', label: ['hourlyForecastHours', 'Hourly Forecast Hours'], min: 1, max: 168 },
                 { type: 'range', key: 'hourlyForecastStep', label: ['hourlyForecastStep', 'Hourly forecast step (h)'], min: 1, max: 6 },
                 { type: 'range', key: 'dailyForecastDays', label: ['dailyForecastDays', 'Daily Forecast Days'], min: 1, max: 14 },
+                { type: 'segmented', key: 'dailyForecastLabel', label: ['dailyForecastLabel', 'Daily day label'], options: [
+                    ['full', t('dailyForecastLabelFull', 'Full')],
+                    ['day', t('dailyForecastLabelDay', 'Day')],
+                    ['weekday', t('dailyForecastLabelWeekday', 'Weekday')]
+                ] },
                 { type: 'text', key: 'hourlyForecastTitle', label: ['hourlyForecastTitle', 'Hourly Forecast Title'], placeholder: ['placeholderDefault', 'Default'] },
                 { type: 'text', key: 'dailyForecastTitle', label: ['dailyForecastTitle', 'Daily Forecast Title'], placeholder: ['placeholderDefault', 'Default'] }
             ],
@@ -1364,6 +1370,7 @@
                     'sensor.station_wind_gust': { state: '6', attributes: { unit_of_measurement: 'm/s' } },
                     'sensor.station_wind_bearing': { state: '200', attributes: { unit_of_measurement: '°' } },
                     'sensor.station_precipitation': { state: '1.25', attributes: { unit_of_measurement: 'mm' } },
+                    'sensor.station_weather_summary': { state: 'Partly sunny this afternoon with a high near 20°.', attributes: {} },
                     'sensor.demo_aqi': { state: '42', attributes: { unit_of_measurement: 'AQI' } }
                 }
             };
@@ -1406,6 +1413,7 @@
                 show_forecast_description: state.showForecastDescription,
                 show_daily_forecast: state.showDailyForecast,
                 daily_forecast_days: state.dailyForecastDays,
+                daily_forecast_label: state.dailyForecastLabel,
                 language: state.language,
                 layout: state.layout,
                 visual_style: state.visualStyle,
@@ -1429,7 +1437,8 @@
                     wind_speed_entity: 'sensor.station_wind_speed',
                     wind_gust_entity: 'sensor.station_wind_gust',
                     wind_bearing_entity: 'sensor.station_wind_bearing',
-                    precipitation_entity: 'sensor.station_precipitation'
+                    precipitation_entity: 'sensor.station_precipitation',
+                    forecast_description_entity: 'sensor.station_weather_summary'
                 });
             }
             return config;
@@ -1447,11 +1456,11 @@
             ['Details', ['show_feels_like', 'show_min_temp', 'show_humidity', 'show_pressure', 'show_uv_index', 'show_dew_point',
                 'show_sunrise_sunset', 'show_precipitation_outlook', 'show_wind', 'show_wind_gust', 'show_wind_direction', 'wind_speed_unit']],
             ['Forecast', ['show_hourly_forecast', 'hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_chart', 'hourly_forecast_title',
-                'show_daily_forecast', 'daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars', 'show_forecast_wind',
+                'show_daily_forecast', 'daily_forecast_days', 'daily_forecast_title', 'daily_forecast_label', 'show_temperature_bars', 'show_forecast_wind',
                 'show_forecast_description']],
             ['Language, clock and date', ['language', 'show_clock', 'show_date', 'clock_position', 'clock_format', 'clock_size', 'clock_weight']],
             ['Sensors', ['temperature_entity', 'feels_like_entity', 'humidity_entity', 'wind_speed_entity', 'wind_gust_entity',
-                'wind_bearing_entity', 'precipitation_entity', 'aqi_entity']]
+                'wind_bearing_entity', 'precipitation_entity', 'aqi_entity', 'forecast_description_entity']]
         ];
 
         // The demo's mock entities, renamed to look like real ones
@@ -1464,6 +1473,7 @@
             'sensor.station_wind_gust': 'sensor.wind_gust',
             'sensor.station_wind_bearing': 'sensor.wind_bearing',
             'sensor.station_precipitation': 'sensor.precipitation',
+            'sensor.station_weather_summary': 'sensor.weather_summary',
             'sensor.demo_aqi': 'sensor.air_quality_index'
         };
 
@@ -1481,7 +1491,9 @@
             if (state.language === initialLanguage) delete config.language;
             // Settings of switched-off parts
             if (!state.showHourlyForecast) ['hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_title', 'hourly_forecast_chart'].forEach(k => delete config[k]);
-            if (!state.showDailyForecast) ['daily_forecast_days', 'daily_forecast_title', 'show_temperature_bars'].forEach(k => delete config[k]);
+            if (!state.showDailyForecast) ['daily_forecast_days', 'daily_forecast_title', 'daily_forecast_label', 'show_temperature_bars'].forEach(k => delete config[k]);
+            if (state.dailyForecastLabel === 'full') delete config.daily_forecast_label;
+            if (!state.showForecastDescription) delete config.forecast_description_entity;
             if (!state.showHourlyForecast && !state.showDailyForecast) delete config.show_forecast_wind;
             if (!state.showWind) ['show_wind_gust', 'show_wind_direction'].forEach(k => delete config[k]);
             if (!state.showWind && !config.show_forecast_wind) delete config.wind_speed_unit;

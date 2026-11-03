@@ -5,7 +5,7 @@ import { i18n } from '../internationalization/index';
 import { resolveLanguage } from '../internationalization/resolveLanguage';
 import { translations } from '../internationalization/locales.generated';
 import type { HomeAssistant } from '../types';
-import { WIND_UNIT_SETTINGS } from '../utils';
+import { DAILY_FORECAST_LABEL_SETTINGS, WIND_UNIT_SETTINGS } from '../utils';
 import { cleanEditorConfig } from '../editor-config';
 
 type HaFormSchema = Array<{
@@ -73,6 +73,7 @@ const editorDefaults = (): WeatherCardEditorConfig => ({
   hourly_forecast_chart: DEFAULT_CONFIG.hourlyForecastChart,
   show_daily_forecast: DEFAULT_CONFIG.showDailyForecast,
   daily_forecast_days: DEFAULT_CONFIG.dailyForecastDays,
+  daily_forecast_label: DEFAULT_CONFIG.dailyForecastLabel,
   show_sunrise_sunset: DEFAULT_CONFIG.showSunriseSunset,
   show_animations: DEFAULT_CONFIG.showAnimations,
   visual_style: DEFAULT_CONFIG.visualStyle,
@@ -191,11 +192,15 @@ export class DynamicWeatherCardEditor extends LitElement {
               { name: 'daily_forecast_days', selector: { number: { min: 1, max: 14, step: 1, mode: 'box' } } },
               { name: 'daily_forecast_title', selector: { text: {} } }
             ),
+            select('daily_forecast_label', [...DAILY_FORECAST_LABEL_SETTINGS]),
             toggle('show_temperature_bars')
           ]
           : []),
         ...(isOn('show_hourly_forecast') || isOn('show_daily_forecast') ? [toggle('show_forecast_wind')] : []),
-        toggle('show_forecast_description')
+        toggle('show_forecast_description'),
+        ...(isOn('show_forecast_description')
+          ? [{ name: 'forecast_description_entity', selector: { entity: { domain: ['sensor'] } } }]
+          : [])
       ]),
       section('clock', 'mdi:clock-outline', [
         {

@@ -13,11 +13,19 @@ import { getSkyColors, rgb } from '../sky.js';
 import { AnimationManager, type DrawParams } from './animation-manager.js';
 import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
-import { getWeatherData, getWeatherAttributes } from './weather-data.js';
+import { getWeatherData, getWeatherAttributes, readTextSensor } from './weather-data.js';
 import { getPrecipitationOutlook } from '../precipitation-outlook.js';
 import { getSVGIcon } from '../icons/svg-icons.js';
 import { applyUserStyles } from '../user-styles.js';
-import { formatTime, convertSpeedUnit, windDisplayUnit, windUnitLabel, WIND_UNIT_SETTINGS, type WindUnitSetting } from '../utils.js';
+import {
+  formatTime,
+  convertSpeedUnit,
+  windDisplayUnit,
+  windUnitLabel,
+  WIND_UNIT_SETTINGS,
+  DAILY_FORECAST_LABEL_SETTINGS,
+  type WindUnitSetting
+} from '../utils.js';
 import type { ForecastWindOptions } from './forecast-wind-row.js';
 import './clock.js';
 import './details.js';
@@ -31,7 +39,8 @@ import type {
   BackgroundGradient,
   ConfigInput,
   WeatherCardConfigInternal,
-  DetailsConfig
+  DetailsConfig,
+  DailyForecastLabel
 } from '../types.js';
 
 export class AnimatedWeatherCard extends LitElement {
@@ -215,7 +224,9 @@ export class AnimatedWeatherCard extends LitElement {
 
   private renderForecastDescription(weather: ReturnType<typeof getWeatherData>): TemplateResult {
     if (!this.config.showForecastDescription) return html``;
-    const text = this.forecastService.getForecastDescription(weather, this._testNow ?? new Date());
+    const text =
+      readTextSensor(this.hass, this.config.sensorEntities?.forecastDescription)
+      ?? this.forecastService.getForecastDescription(weather, this._testNow ?? new Date());
     if (!text) return html``;
     return html`<div class="forecast-description" title="${text}">${text}</div>`;
   }
@@ -269,6 +280,9 @@ export class AnimatedWeatherCard extends LitElement {
       hourlyForecastStep: config.hourly_forecast_step ?? DEFAULT_CONFIG.hourlyForecastStep,
       hourlyForecastChart: config.hourly_forecast_chart === true,
       dailyForecastDays: config.daily_forecast_days ?? DEFAULT_CONFIG.dailyForecastDays,
+      dailyForecastLabel: DAILY_FORECAST_LABEL_SETTINGS.includes(config.daily_forecast_label as DailyForecastLabel)
+        ? config.daily_forecast_label as DailyForecastLabel
+        : DEFAULT_CONFIG.dailyForecastLabel,
       hourlyForecastTitle: config.hourly_forecast_title ?? DEFAULT_CONFIG.hourlyForecastTitle,
       dailyForecastTitle: config.daily_forecast_title ?? DEFAULT_CONFIG.dailyForecastTitle,
       showSunriseSunset: config.show_sunrise_sunset !== false,
@@ -304,7 +318,8 @@ export class AnimatedWeatherCard extends LitElement {
         pressure: config.pressure_entity || null,
         uvIndex: config.uv_index_entity || null,
         dewPoint: config.dew_point_entity || null,
-        aqi: config.aqi_entity || null
+        aqi: config.aqi_entity || null,
+        forecastDescription: config.forecast_description_entity || null
       },
       tapAction: config.tap_action || { action: 'more-info' },
       holdAction: config.hold_action || { action: 'none' },
@@ -502,6 +517,7 @@ export class AnimatedWeatherCard extends LitElement {
             .forecast=${dailyForecast}
             .wind=${windOptions}
             .lang=${i18n.lang}
+            .labelFormat=${this.config.dailyForecastLabel ?? DEFAULT_CONFIG.dailyForecastLabel}
             .forecastTitle=${this.config.dailyForecastTitle ?? null}
             .showBars=${this.config.showTemperatureBars === true}
             .currentTemperature=${weather.temperature}
