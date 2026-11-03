@@ -173,7 +173,8 @@
     "styles": "自訂 CSS",
     "styles_helper": "套用到卡片及其所有部分的 CSS，例如 .temperature { font-size: 48px; }",
     "language_cs": "捷克文",
-    "language_lv": "拉脫維亞文"
+    "language_lv": "拉脫維亞文",
+    "language_ro": "羅馬尼亞文"
   },
   "demo": {
     "aurora": "極光",

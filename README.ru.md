@@ -443,7 +443,7 @@ tap_action:
 
 ## 🌍 Языки
 
-English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Српски, Srpski (latinica), Polski, Norsk (bokmål), Türkçe, 简体中文, 繁體中文, Slovenščina, Eesti, Čeština и Latviešu. Карточка следует языку Home Assistant, если не задан `language`.
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Српски, Srpski (latinica), Polski, Norsk (bokmål), Türkçe, 简体中文, 繁體中文, Slovenščina, Eesti, Čeština, Latviešu и Română. Карточка следует языку Home Assistant, если не задан `language`.
 
 Чтобы добавить или улучшить перевод, отредактируйте `src/internationalization/locales/<code>/translation.json` прямо на GitHub и откройте pull request в `main`. Программировать не нужно. Новые языки подхватываются автоматически, а недостающие ключи берутся из английского.
 

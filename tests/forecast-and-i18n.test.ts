@@ -141,6 +141,11 @@ describe('resolveLanguage', () => {
     expect(resolveLanguage({ hassLang: 'lv' })).toBe('lv');
   });
 
+  test('resolves Romanian locale', () => {
+    expect(resolveLanguage({ hassLang: 'ro' })).toBe('ro');
+    expect(resolveLanguage({ hassLang: 'ro-RO' })).toBe('ro');
+  });
+
   test('keeps Traditional Chinese instead of falling back to Simplified', () => {
     expect(resolveLanguage({ hassLang: 'zh-Hant' })).toBe('zh-Hant');
     expect(resolveLanguage({ hassLang: 'zh-hant' })).toBe('zh-Hant');
