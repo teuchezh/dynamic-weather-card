@@ -90,6 +90,24 @@ describe('ForecastService', () => {
     const daily = [0, 1, 2, 3].map(day => ({ datetime: new Date(Date.now() + day * 86400000 + 3600000).toISOString(), temperature: 20 }));
     expect(new ForecastService(() => {}).getHourlyForecast(24, weatherWith(daily))).toHaveLength(1);
   });
+
+  test('unchanged display content keeps the same array reference (avoids Lit re-renders)', () => {
+    const service = new ForecastService(() => {});
+    const source = weatherWith(hours(8));
+    const first = service.getHourlyForecast(5, source);
+    const second = service.getHourlyForecast(5, source);
+    expect(second).toBe(first);
+
+    const dailySource = weatherWith([0, 1, 2].map(day => {
+      const date = new Date();
+      date.setHours(12, 0, 0, 0);
+      date.setDate(date.getDate() + day);
+      return { datetime: date.toISOString(), temperature: 20 + day, templow: 10 + day };
+    }));
+    const dayFirst = service.getDailyForecast(2, dailySource);
+    const daySecond = service.getDailyForecast(2, dailySource);
+    expect(daySecond).toBe(dayFirst);
+  });
 });
 
 describe('getDayStarts', () => {

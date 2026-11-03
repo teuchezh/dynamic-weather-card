@@ -15,6 +15,8 @@ export const forecastStyles = css`
     padding-bottom: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
+    /* Own paint containment so the animated sky underneath is not re-blended per icon (#185) */
+    contain: layout paint style;
   }
 
   .forecast-title {
@@ -103,7 +105,8 @@ export const forecastStyles = css`
 
   .forecast-icon {
     line-height: 1;
-    filter: var(--card-icon-filter);
+    /* One drop-shadow instead of the card's triple filter (costly over a live canvas) */
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
   }
 
   .forecast-icon svg {
@@ -192,7 +195,7 @@ export const forecastStyles = css`
 
   .forecast-wind-arrow {
     display: inline-flex;
-    filter: var(--card-icon-filter);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
   }
 
   .forecast-wind-arrow svg {
