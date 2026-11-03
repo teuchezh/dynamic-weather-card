@@ -43,6 +43,8 @@ export class AnimatedWeatherCard extends LitElement {
   private actionHandler: ActionHandler;
   // Entity and forecast types of the current forecast subscription
   private subscriptionKey: string | null = null;
+  // Stable wind options object so forecast strips skip Lit updates when units are unchanged
+  private forecastWindOptions: ForecastWindOptions | null = null;
   _testTimeOfDay?: TimeOfDay;
   // Demo/testing override of the moon phase (0..1); null = real phase
   _testMoonPhase?: number | null;
@@ -513,11 +515,18 @@ export class AnimatedWeatherCard extends LitElement {
   // Wind in the forecasts: forecast values come in the weather entity's unit and are shown in the same unit
   // as the current wind (a wind speed sensor's unit with 'auto'), so the card never mixes units
   private getForecastWindOptions(hass: HomeAssistant, weather: ReturnType<typeof getWeatherData>): ForecastWindOptions | null {
-    if (!this.config.showForecastWind) return null;
+    if (!this.config.showForecastWind) {
+      this.forecastWindOptions = null;
+      return null;
+    }
     const entityUnit = getWeatherAttributes(hass, this.config.entity).wind_speed_unit;
     const fromUnit = typeof entityUnit === 'string' && entityUnit ? entityUnit : 'm/s';
     const toUnit = windDisplayUnit(weather.windSpeedUnit ?? fromUnit, this.config.windSpeedUnit ?? DEFAULT_CONFIG.windSpeedUnit);
-    return { fromUnit, toUnit, unit: windUnitLabel(toUnit, i18n.t.bind(i18n)) };
+    const unit = windUnitLabel(toUnit, i18n.t.bind(i18n));
+    const prev = this.forecastWindOptions;
+    if (prev && prev.fromUnit === fromUnit && prev.toUnit === toUnit && prev.unit === unit) return prev;
+    this.forecastWindOptions = { fromUnit, toUnit, unit };
+    return this.forecastWindOptions;
   }
 
   private renderMinimal(

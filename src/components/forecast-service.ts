@@ -64,12 +64,31 @@ export function thinHourlyForecast(entries: Array<{ item: WeatherForecast; time:
   });
 }
 
+/** Stable key of forecast rows that affect the Lit forecast strips' paint. */
+export function forecastDisplayKey(items: WeatherForecast[]): string {
+  return items.map(item => [
+    item.datetime,
+    item.condition,
+    item.temperature ?? item.temp ?? item.native_temperature,
+    item.templow ?? item.native_templow,
+    item.precipitation_probability,
+    item.wind_speed,
+    item.wind_bearing,
+    item.wind_gust_speed
+  ].join('\0')).join('\n');
+}
+
 export class ForecastService {
   private hourlyForecast: WeatherForecast[] = [];
   private dailyForecast: WeatherForecast[] = [];
   private twiceDailyForecast: WeatherForecast[] = [];
   private subscriptions: Array<Promise<(() => void)>> = [];
   private onUpdate: () => void;
+  // Same display content → same array reference so Lit skips forecast strip updates
+  private cachedHourlyKey = '';
+  private cachedHourly: WeatherForecast[] = [];
+  private cachedDailyKey = '';
+  private cachedDaily: WeatherForecast[] = [];
 
   constructor(onUpdate: () => void) {
     this.onUpdate = onUpdate;
@@ -172,7 +191,8 @@ export class ForecastService {
     const upcoming = subscribed || hourly ? entries : entries.filter(({ time }) => time < now + 24 * HOUR_MS);
 
     const everyHours = Math.max(1, Math.floor(Number(step)) || 1);
-    return thinHourlyForecast(upcoming, everyHours).slice(0, maxHours);
+    const next = thinHourlyForecast(upcoming, everyHours).slice(0, maxHours);
+    return this.rememberHourly(next);
   }
 
   getDailyForecast(
@@ -182,11 +202,11 @@ export class ForecastService {
     const maxDays = Math.max(1, Math.floor(Number(days ?? DEFAULT_CONFIG.dailyForecastDays)));
 
     if (this.dailyForecast && this.dailyForecast.length > 0) {
-      return this.dailyForecast.slice(0, maxDays);
+      return this.rememberDaily(this.dailyForecast.slice(0, maxDays));
     }
 
     if (!fallbackWeatherData?.forecast || fallbackWeatherData.forecast.length === 0) {
-      return [];
+      return this.rememberDaily([]);
     }
 
     const now = new Date();
@@ -232,7 +252,7 @@ export class ForecastService {
       dayBuckets.set(key, existing);
     });
 
-    return Array.from(dayBuckets.values())
+    const next = Array.from(dayBuckets.values())
       .sort((a, b) => a.itemDate.getTime() - b.itemDate.getTime())
       .map(({ item, temperatures, precipitationProbabilities, entries }) => {
         // Several (hourly) entries for a day: summarize them as the day's high/low, max precipitation chance
@@ -250,5 +270,22 @@ export class ForecastService {
         return daily;
       })
       .slice(0, maxDays);
+    return this.rememberDaily(next);
+  }
+
+  private rememberHourly(next: WeatherForecast[]): WeatherForecast[] {
+    const key = forecastDisplayKey(next);
+    if (key === this.cachedHourlyKey) return this.cachedHourly;
+    this.cachedHourlyKey = key;
+    this.cachedHourly = next;
+    return next;
+  }
+
+  private rememberDaily(next: WeatherForecast[]): WeatherForecast[] {
+    const key = forecastDisplayKey(next);
+    if (key === this.cachedDailyKey) return this.cachedDaily;
+    this.cachedDailyKey = key;
+    this.cachedDaily = next;
+    return next;
   }
 }
