@@ -1580,6 +1580,9 @@
             card.setConfig(buildConfigSafe());
             applyTestOverrides();
             card.hass = createMockHass();
+            // Config-only options (daily_forecast_label) must refresh the daily strip even when
+            // the mock forecast array is reused by reference
+            card.requestUpdate();
         }
 
         function buildConfigSafe() {

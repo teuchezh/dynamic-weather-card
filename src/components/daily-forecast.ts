@@ -20,7 +20,7 @@ export class DailyForecast extends LitElement {
   @property({ type: String }) forecastTitle: string | null = null;
   @property({ type: String }) lang: string = 'en';
   // Weekday heading style for each day
-  @property({ type: String }) labelFormat: DailyForecastLabel = 'full';
+  @property({ attribute: false }) labelFormat: DailyForecastLabel = 'full';
   // Wind row under each item (null = off)
   @property({ attribute: false }) wind: ForecastWindOptions | null = null;
   // The card's `styles` option, added to this part's own styles

@@ -212,4 +212,19 @@ describe('translation files', () => {
     walk(load(code), '');
     expect(empty).toEqual([]);
   });
+
+  // demo.html loads demo.* from each locale JSON (not the card bundle)
+  test.each(locales)('%s demo block has daily day-label keys', code => {
+    const demo = load(code).demo ?? {};
+    for (const key of [
+      'dailyForecastLabel',
+      'dailyForecastLabelFull',
+      'dailyForecastLabelDay',
+      'dailyForecastLabelWeekday',
+      'forecastDescriptionEntity'
+    ]) {
+      expect(typeof demo[key]).toBe('string');
+      expect(demo[key].trim().length).toBeGreaterThan(0);
+    }
+  });
 });

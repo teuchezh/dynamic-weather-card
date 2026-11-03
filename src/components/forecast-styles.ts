@@ -101,6 +101,7 @@ export const forecastStyles = css`
     opacity: 0.7;
     font-weight: 400;
     text-shadow: var(--card-text-shadow);
+    white-space: nowrap;
   }
 
   .forecast-icon {
