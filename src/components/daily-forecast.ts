@@ -7,7 +7,7 @@ import { forecastStyles } from './forecast-styles.js';
 import { renderForecastWind, type ForecastWindOptions } from './forecast-wind-row.js';
 import { temperatureColor } from '../temperature-color.js';
 import { applyUserStyles } from '../user-styles.js';
-import type { WeatherForecast } from '../types.js';
+import type { DailyForecastLabel, WeatherForecast } from '../types.js';
 
 function isToday(datetime: string): boolean {
   const date = new Date(datetime);
@@ -19,6 +19,8 @@ export class DailyForecast extends LitElement {
   // Custom section title: null = default (translated), '' = hidden
   @property({ type: String }) forecastTitle: string | null = null;
   @property({ type: String }) lang: string = 'en';
+  // Weekday heading style for each day
+  @property({ type: String }) labelFormat: DailyForecastLabel = 'full';
   // Wind row under each item (null = off)
   @property({ attribute: false }) wind: ForecastWindOptions | null = null;
   // The card's `styles` option, added to this part's own styles
@@ -83,7 +85,7 @@ export class DailyForecast extends LitElement {
 
     return html`
       <div class="forecast-item">
-        <div class="forecast-time">${formatForecastDay(item.datetime, this.lang)}</div>
+        <div class="forecast-time">${formatForecastDay(item.datetime, this.lang, this.labelFormat)}</div>
         <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
         <div class="forecast-temp">${high}°</div>
         <div class="temp-bar">
@@ -103,7 +105,7 @@ export class DailyForecast extends LitElement {
 
     return html`
       <div class="forecast-item">
-        <div class="forecast-time">${formatForecastDay(item.datetime, this.lang)}</div>
+        <div class="forecast-time">${formatForecastDay(item.datetime, this.lang, this.labelFormat)}</div>
         <div class="forecast-icon">${getWeatherConditionIcon(item.condition || 'sunny')}</div>
         <div class="forecast-temp">
           ${this.getTemperature(item)}°${low !== null ? html`<span class="forecast-temp-low">${low}°</span>` : ''}

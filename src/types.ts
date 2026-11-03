@@ -2,6 +2,8 @@ import type { WindUnitSetting } from './utils';
 
 export type ClockSize = 'small' | 'medium' | 'large';
 export type ClockWeight = 'thin' | 'regular' | 'bold';
+/** Daily forecast day heading: weekday+month+day, weekday+day, or weekday only */
+export type DailyForecastLabel = 'full' | 'day' | 'weekday';
 
 /**
  * Type definitions for Home Assistant and Weather Card
@@ -153,6 +155,7 @@ export interface WeatherCardConfig {
   // Custom CSS for the card and all its parts
   styles?: string | null;
   dailyForecastDays?: number;
+  dailyForecastLabel?: DailyForecastLabel;
   hourlyForecastTitle?: string | null;
   dailyForecastTitle?: string | null;
   showSunriseSunset?: boolean;
@@ -285,6 +288,7 @@ export interface ConfigInput {
   show_forecast_description?: boolean;
   styles?: string;
   daily_forecast_days?: number;
+  daily_forecast_label?: DailyForecastLabel;
   hourly_forecast_title?: string;
   daily_forecast_title?: string;
   show_sunrise_sunset?: boolean;
@@ -320,6 +324,7 @@ export interface ConfigInput {
   uv_index_entity?: string;
   dew_point_entity?: string;
   aqi_entity?: string;
+  forecast_description_entity?: string;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
@@ -338,6 +343,7 @@ export interface SensorEntities {
   uvIndex?: string | null;
   dewPoint?: string | null;
   aqi?: string | null;
+  forecastDescription?: string | null;
 }
 
 // Internal Card Configuration (normalized)

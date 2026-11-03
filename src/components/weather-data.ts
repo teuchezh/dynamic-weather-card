@@ -28,6 +28,21 @@ export function readSensor(hass: HomeAssistant | undefined, entityId?: string | 
   return { value, unit: typeof unit === 'string' ? unit : null };
 }
 
+const UNAVAILABLE_STATES = new Set(['unavailable', 'unknown', 'none', '']);
+
+/**
+ * Read a text sensor state. Returns null when the entity is missing or
+ * unavailable/unknown/empty, so callers fall back to the weather provider.
+ */
+export function readTextSensor(hass: HomeAssistant | undefined, entityId?: string | null): string | null {
+  if (!hass || !entityId) return null;
+  const entity = hass.states[entityId];
+  if (!entity) return null;
+  const value = typeof entity.state === 'string' ? entity.state.trim() : '';
+  if (!value || UNAVAILABLE_STATES.has(value.toLowerCase())) return null;
+  return value;
+}
+
 export function getWeatherState(hass: HomeAssistant | undefined, entityId: string): string | null {
   if (!hass || !entityId) return null;
   const entity = hass.states[entityId];

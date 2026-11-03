@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { convertSpeedUnit, convertWindSpeed, getWindSpeedUnit, roundWindSpeed, windDisplayUnit } from '../src/utils';
-import { getWeatherData, readSensor, resolveTemplow } from '../src/components/weather-data';
+import { getWeatherData, readSensor, readTextSensor, resolveTemplow } from '../src/components/weather-data';
 import { temperatureColor } from '../src/temperature-color';
 import type { HomeAssistant, WeatherEntityAttributes, WeatherForecast } from '../src/types';
 
@@ -67,6 +67,28 @@ describe('readSensor', () => {
     expect(readSensor(hass, 'sensor.off')).toBeNull();
     expect(readSensor(hass, 'sensor.text')).toBeNull();
     expect(readSensor(hass, null)).toBeNull();
+  });
+});
+
+describe('readTextSensor', () => {
+  test('reads a non-empty text state', () => {
+    const hass = mockHass({}, { 'sensor.summary': ['Partly sunny, high near 75.'] });
+    expect(readTextSensor(hass, 'sensor.summary')).toBe('Partly sunny, high near 75.');
+  });
+
+  test('trims whitespace and rejects unavailable states', () => {
+    const hass = mockHass({}, {
+      'sensor.padded': ['  breezy afternoon  '],
+      'sensor.off': ['unavailable'],
+      'sensor.unknown': ['unknown'],
+      'sensor.empty': ['']
+    });
+    expect(readTextSensor(hass, 'sensor.padded')).toBe('breezy afternoon');
+    expect(readTextSensor(hass, 'sensor.off')).toBeNull();
+    expect(readTextSensor(hass, 'sensor.unknown')).toBeNull();
+    expect(readTextSensor(hass, 'sensor.empty')).toBeNull();
+    expect(readTextSensor(hass, 'sensor.missing')).toBeNull();
+    expect(readTextSensor(hass, null)).toBeNull();
   });
 });
 

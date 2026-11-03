@@ -274,9 +274,10 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_daily_forecast` | boolean | `false` | Прогноз по дням: максимум, минимум и вероятность осадков |
 | `daily_forecast_days` | number | `5` | Сколько дней показывать, 1–14 |
 | `daily_forecast_title` | string | перевод | Свой заголовок; `""` скрывает его |
+| `daily_forecast_label` | string | `full` | Подпись дня в прогнозе по дням: `full` (напр. сб, 17 окт.), `day` (сб 17) или `weekday` (сб) |
 | `show_temperature_bars` | boolean | `false` | Диапазон мин.–макс. каждого дня цветной полоской на общей шкале, с отметкой текущей температуры на сегодняшней |
 | `show_forecast_wind` | boolean | `false` | Направление, скорость и порывы ветра для каждого часа и дня, если их передаёт поставщик погоды |
-| `show_forecast_description` | boolean | `false` | Текстовый прогноз поставщика погоды на текущий период, например *«Partly sunny, with a high near 75.»* Есть лишь у некоторых интеграций, в основном у метеослужбы США (NWS); иначе скрыт. Только в стандартной раскладке |
+| `show_forecast_description` | boolean | `false` | Текстовый прогноз поставщика погоды на текущий период, например *«Partly sunny, with a high near 75.»* Есть лишь у некоторых интеграций, в основном у метеослужбы США (NWS); иначе скрыт. Только в стандартной раскладке. Текст можно заменить через `forecast_description_entity` |
 
 ### Язык, часы и дата
 
@@ -307,6 +308,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `uv_index_entity` | УФ-индекс (при `show_uv_index`) |
 | `dew_point_entity` | Точка росы (при `show_dew_point`) |
 | `aqi_entity` | Индекс качества воздуха; показывается, если задан |
+| `forecast_description_entity` | Текстовый прогноз (при `show_forecast_description`). Показывается строка состояния датчика; если датчик недоступен, берётся текст поставщика погоды |
 | `sunrise_entity`, `sunset_entity` | Время восхода и заката, для интеграций, которые его не отдают |
 | `templow_attribute` | Атрибут погодной сущности с минимальной температурой за сегодня, если у интеграции он называется необычно |
 

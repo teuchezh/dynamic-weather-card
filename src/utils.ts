@@ -1,5 +1,16 @@
 import { TIME_THRESHOLDS } from './constants';
-import type { TimeOfDay, Position, PositionOverride, BackgroundGradient, SunMoonData, HassEntity, HomeAssistant } from './types';
+import type {
+  TimeOfDay,
+  Position,
+  PositionOverride,
+  BackgroundGradient,
+  SunMoonData,
+  HassEntity,
+  HomeAssistant,
+  DailyForecastLabel
+} from './types';
+
+export const DAILY_FORECAST_LABEL_SETTINGS: readonly DailyForecastLabel[] = ['full', 'day', 'weekday'];
 
 /**
  * Determine time of day and its progress (internal fallback)
@@ -159,17 +170,24 @@ export function getDayStarts(forecast: Array<{ datetime: string }>, now: Date = 
 }
 
 /**
- * Format forecast date as a short weekday + day/month label.
+ * Format forecast date for the daily strip.
+ * `full` = weekday + month + day (default), `day` = weekday + day, `weekday` = weekday only.
  */
-export function formatForecastDay(datetime: string, locale?: string): string {
+export function formatForecastDay(
+  datetime: string,
+  locale?: string,
+  label: DailyForecastLabel = 'full'
+): string {
   if (!datetime) return '';
   const date = new Date(datetime);
   if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleDateString(locale || undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short'
-  });
+  const options: Intl.DateTimeFormatOptions =
+    label === 'weekday'
+      ? { weekday: 'short' }
+      : label === 'day'
+        ? { weekday: 'short', day: 'numeric' }
+        : { weekday: 'short', day: 'numeric', month: 'short' };
+  return date.toLocaleDateString(locale || undefined, options);
 }
 
 /**

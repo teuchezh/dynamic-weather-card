@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { getTimeOfDayWithSunData, formatTime } from '../src/utils';
+import { getTimeOfDayWithSunData, formatTime, formatForecastDay } from '../src/utils';
 import { getMoonPhase } from '../src/animations/night-sky';
 import { getSkyKind, getSkyColors } from '../src/sky';
 
@@ -44,6 +44,36 @@ describe('formatTime', () => {
   test('12-hour clock with custom AM/PM labels', () => {
     expect(formatTime(time, '12h')).toBe('3:05 PM');
     expect(formatTime(new Date(2026, 9, 2, 0, 30), '12h', 'ДП', 'ПП')).toBe('12:30 ДП');
+  });
+});
+
+describe('formatForecastDay', () => {
+  // Saturday 17 Oct 2026
+  const datetime = new Date(2026, 9, 17, 12, 0).toISOString();
+
+  test('full includes weekday, month and day', () => {
+    const label = formatForecastDay(datetime, 'en-US', 'full');
+    expect(label).toContain('Sat');
+    expect(label).toMatch(/17/);
+    expect(label.toLowerCase()).toContain('oct');
+  });
+
+  test('day is weekday and day of month without month name', () => {
+    const label = formatForecastDay(datetime, 'en-US', 'day');
+    expect(label).toContain('Sat');
+    expect(label).toMatch(/17/);
+    expect(label.toLowerCase()).not.toContain('oct');
+  });
+
+  test('weekday is only the short weekday', () => {
+    const label = formatForecastDay(datetime, 'en-US', 'weekday');
+    expect(label).toContain('Sat');
+    expect(label).not.toMatch(/17/);
+  });
+
+  test('returns empty for invalid input', () => {
+    expect(formatForecastDay('', 'en-US')).toBe('');
+    expect(formatForecastDay('not-a-date', 'en-US')).toBe('');
   });
 });
 

@@ -274,9 +274,10 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `show_daily_forecast` | boolean | `false` | Daily forecast with high, low and chance of precipitation |
 | `daily_forecast_days` | number | `5` | Days to show, 1–14 |
 | `daily_forecast_title` | string | translated | Custom title; `""` hides it |
+| `daily_forecast_label` | string | `full` | Day heading in the daily forecast: `full` (e.g. Sat, Oct 17), `day` (Sat 17) or `weekday` (Sat) |
 | `show_temperature_bars` | boolean | `false` | Each day's low–high range as a colored bar on one shared scale, with today's temperature marked |
 | `show_forecast_wind` | boolean | `false` | Wind direction, speed and gusts for each hour and day, when the provider reports them |
-| `show_forecast_description` | boolean | `false` | The provider's text forecast for the current period, e.g. *"Partly sunny, with a high near 75."* Only some integrations have one, mainly the US National Weather Service; hidden otherwise. Default layout only |
+| `show_forecast_description` | boolean | `false` | The provider's text forecast for the current period, e.g. *"Partly sunny, with a high near 75."* Only some integrations have one, mainly the US National Weather Service; hidden otherwise. Default layout only. Override the text with `forecast_description_entity` |
 
 ### Language, clock and date
 
@@ -307,6 +308,7 @@ Optional. Each sensor replaces the weather entity's value. When the sensor is un
 | `uv_index_entity` | UV index (with `show_uv_index`) |
 | `dew_point_entity` | Dew point (with `show_dew_point`) |
 | `aqi_entity` | Air quality index; shown whenever it is set |
+| `forecast_description_entity` | Text forecast (with `show_forecast_description`). The sensor's state string is shown; when unavailable, the weather provider's text is used |
 | `sunrise_entity`, `sunset_entity` | Sunrise and sunset times, for integrations that don't provide them |
 | `templow_attribute` | Weather entity attribute with today's minimum temperature, if your integration uses an unusual name |
 
