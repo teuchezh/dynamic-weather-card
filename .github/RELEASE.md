@@ -4,9 +4,9 @@ The project uses trunk-based development: `main` is always releasable, and relea
 
 ## How to Release
 
-### Automatic weekly release
+### Automatic twice-weekly release
 
-The Release workflow runs every **Monday at 06:17 UTC** (09:17 MSK). It publishes a new release only if `main` has user-facing changes since the last release tag:
+The Release workflow runs every **Monday and Friday at 06:17 UTC** (09:17 MSK). It publishes a new release only if `main` has user-facing changes since the last release tag:
 
 - `feat:` / `fix:` / `perf:` (any scope, including breaking `!`)
 - `chore(deps):` — runtime dependency updates (they change the bundle)
@@ -16,7 +16,7 @@ Docs, CI, dev-dependency (`chore(deps-dev)`) and other chore commits don't trigg
 
 ### Manual release
 
-For an urgent fix, don't wait for Monday:
+For an urgent fix, don't wait for the next scheduled run:
 
 1. Go to GitHub Actions → Release workflow
 2. Click "Run workflow" (on the `main` branch)
