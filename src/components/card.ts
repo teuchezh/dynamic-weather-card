@@ -44,8 +44,8 @@ import type {
 } from '../types.js';
 
 export class AnimatedWeatherCard extends LitElement {
-  @property({ type: Object }) hass?: HomeAssistant;
-  @property({ type: Object }) config!: WeatherCardConfigInternal;
+  @property({ attribute: false }) hass?: HomeAssistant;
+  @property({ attribute: false }) config!: WeatherCardConfigInternal;
 
   private animationManager: AnimationManager;
   private forecastService: ForecastService;
@@ -329,6 +329,8 @@ export class AnimatedWeatherCard extends LitElement {
     if (this.config.language) {
       i18n.setLanguage(this.config.language);
     }
+    // Object config is attribute:false; ensure config-only changes (e.g. daily_forecast_label) re-render
+    this.requestUpdate();
   }
 
   private fireEvent(type: string, detail: Record<string, unknown> = {}): void {
