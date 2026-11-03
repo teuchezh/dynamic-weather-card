@@ -8,8 +8,9 @@ on:
         required: false
         type: string
   schedule:
-    # Weekly release, Mondays 06:17 UTC (09:17 MSK); skipped when nothing user-facing changed
+    # Twice weekly: Monday and Friday 06:17 UTC (09:17 MSK); skipped when nothing user-facing changed
     - cron: '17 6 * * 1'
+    - cron: '17 6 * * 5'
 
 concurrency:
   group: release
