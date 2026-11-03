@@ -15,6 +15,7 @@ import nb from './locales/nb/translation.json';
 import nl from './locales/nl/translation.json';
 import pl from './locales/pl/translation.json';
 import pt from './locales/pt/translation.json';
+import ro from './locales/ro/translation.json';
 import ru from './locales/ru/translation.json';
 import sk from './locales/sk/translation.json';
 import sl from './locales/sl/translation.json';
@@ -24,7 +25,7 @@ import tr from './locales/tr/translation.json';
 import zh from './locales/zh/translation.json';
 import zh_Hant from './locales/zh-Hant/translation.json';
 
-export type SupportedLanguage = 'cs' | 'da' | 'de' | 'en' | 'es' | 'et' | 'fr' | 'hu' | 'it' | 'lv' | 'nb' | 'nl' | 'pl' | 'pt' | 'ru' | 'sk' | 'sl' | 'sr' | 'sr-Latn' | 'tr' | 'zh' | 'zh-Hant';
+export type SupportedLanguage = 'cs' | 'da' | 'de' | 'en' | 'es' | 'et' | 'fr' | 'hu' | 'it' | 'lv' | 'nb' | 'nl' | 'pl' | 'pt' | 'ro' | 'ru' | 'sk' | 'sl' | 'sr' | 'sr-Latn' | 'tr' | 'zh' | 'zh-Hant';
 
 export const translations: Record<SupportedLanguage, Translation> = {
   cs: cs as Translation,
@@ -41,6 +42,7 @@ export const translations: Record<SupportedLanguage, Translation> = {
   nl: nl as Translation,
   pl: pl as Translation,
   pt: pt as Translation,
+  ro: ro as Translation,
   ru: ru as Translation,
   sk: sk as Translation,
   sl: sl as Translation,

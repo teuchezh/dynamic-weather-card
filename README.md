@@ -443,7 +443,7 @@ Without any sun data it falls back to fixed hours: sunrise 6:00–8:00, day unti
 
 ## 🌍 Languages
 
-English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Српски, Srpski (latinica), Polski, Norsk (bokmål), Türkçe, 简体中文, 繁體中文, Slovenščina, Eesti, Čeština and Latviešu. The card follows the Home Assistant language unless you set `language`.
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Српски, Srpski (latinica), Polski, Norsk (bokmål), Türkçe, 简体中文, 繁體中文, Slovenščina, Eesti, Čeština, Latviešu and Română. The card follows the Home Assistant language unless you set `language`.
 
 To add or improve a translation, edit `src/internationalization/locales/<code>/translation.json` right on GitHub and open a pull request against `main`. No coding needed. New languages are picked up automatically, and missing keys fall back to English.
 
