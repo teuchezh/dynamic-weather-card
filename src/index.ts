@@ -13,12 +13,11 @@ try {
   customElements.define('dynamic-weather-card', AnimatedWeatherCard);
   customElements.define('dynamic-weather-card-editor', DynamicWeatherCardEditor);
 
-  // Log version info
-  console.log(
-    `%cDynamic Weather Card %c${VERSION}`,
-    'color: #007AFF; font-weight: bold; font-size: 14px;',
-    'color: #666; font-size: 12px;',
-    '\nДинамическая карточка погоды'
+  // Home Assistant custom-card badge
+  console.info(
+    `%cDynamic Weather Card%c${VERSION}`,
+    'color: white; background: #007AFF; font-weight: bold; padding: 2px 8px; border-radius: 4px 0 0 4px',
+    'color: white; background: #424242; font-weight: bold; padding: 2px 8px; border-radius: 0 4px 4px 0'
   );
 
   // Register with Home Assistant

@@ -6,7 +6,7 @@ The project uses trunk-based development: `main` is always releasable, and relea
 
 ### Automatic twice-weekly release
 
-The Release workflow runs every **Monday and Friday at 06:17 UTC** (09:17 MSK). It publishes a new release only if `main` has user-facing changes since the last release tag:
+The Release workflow runs every **Monday and Friday at 15:00 UTC** (18:00 Moscow, 16:00 Berlin, 10:00 New York). It publishes a new release only if `main` has user-facing changes since the last release tag:
 
 - `feat:` / `fix:` / `perf:` (any scope, including breaking `!`)
 - `chore(deps):` — runtime dependency updates (they change the bundle)

@@ -30,23 +30,34 @@ export class HourlyForecast extends LitElement {
   static styles = forecastStyles;
 
   private _cleanup: (() => void) | null = null;
+  private _scrollElement: HTMLElement | null = null;
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.updateComplete.then(() => {
-      this._cleanup = setupHorizontalScroll(this.shadowRoot, '.forecast-scroll');
-    });
+    // The first update can run before the forecast arrives. Bind again once it has.
+    this.updateComplete.then(() => this.bindHorizontalScroll());
   }
 
   updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
     if (changedProperties.has('userStyles')) applyUserStyles(this.shadowRoot, this.userStyles);
+    this.bindHorizontalScroll();
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this._cleanup?.();
     this._cleanup = null;
+    this._scrollElement = null;
+  }
+
+  // The scroll container is absent while the forecast is empty, so bind whenever it appears
+  private bindHorizontalScroll(): void {
+    const element = this.shadowRoot?.querySelector('.forecast-scroll') as HTMLElement | null;
+    if (element === this._scrollElement) return;
+    this._cleanup?.();
+    this._scrollElement = element;
+    this._cleanup = element ? setupHorizontalScroll(this.shadowRoot, '.forecast-scroll') : null;
   }
 
   private getTemperature(item: WeatherForecast): number {
@@ -116,8 +127,10 @@ export class HourlyForecast extends LitElement {
     return html`
       <div class="forecast-container">
         ${this.forecastTitle !== '' ? html`<div class="forecast-title">${this.forecastTitle ?? i18n.t(multiDay ? 'forecast_title_hourly' : 'forecast_title')}</div>` : ''}
-        <div class="forecast-scroll">
-          ${this.forecast.map((item, index) => this.renderItem(item, dayStarts[index], multiDay, pieces?.[index] ?? null, index))}
+        <div class="forecast-scroll hourly">
+          <div class="forecast-track">
+            ${this.forecast.map((item, index) => this.renderItem(item, dayStarts[index], multiDay, pieces?.[index] ?? null, index))}
+          </div>
         </div>
       </div>
     `;
