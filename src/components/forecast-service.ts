@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from '../constants.js';
+import { sumPrecipitation, withHourlyPrecipitation } from '../forecast-precipitation.js';
 import { aggregateWind } from '../forecast-wind.js';
 import type {
   HomeAssistant,
@@ -72,6 +73,7 @@ export function forecastDisplayKey(items: WeatherForecast[]): string {
     item.temperature ?? item.temp ?? item.native_temperature,
     item.templow ?? item.native_templow,
     item.precipitation_probability,
+    item.precipitation,
     item.wind_speed,
     item.wind_bearing,
     item.wind_gust_speed
@@ -202,7 +204,9 @@ export class ForecastService {
     const maxDays = Math.max(1, Math.floor(Number(days ?? DEFAULT_CONFIG.dailyForecastDays)));
 
     if (this.dailyForecast && this.dailyForecast.length > 0) {
-      return this.rememberDaily(this.dailyForecast.slice(0, maxDays));
+      // A daily row already carries the day's rainfall. If the integration only
+      // sends hourly amounts, sum the hours of each day that is missing one.
+      return this.rememberDaily(withHourlyPrecipitation(this.dailyForecast.slice(0, maxDays), this.hourlyForecast));
     }
 
     if (!fallbackWeatherData?.forecast || fallbackWeatherData.forecast.length === 0) {
@@ -255,8 +259,8 @@ export class ForecastService {
     const next = Array.from(dayBuckets.values())
       .sort((a, b) => a.itemDate.getTime() - b.itemDate.getTime())
       .map(({ item, temperatures, precipitationProbabilities, entries }) => {
-        // Several (hourly) entries for a day: summarize them as the day's high/low, max precipitation chance
-        // and strongest wind with its prevailing direction
+        // Several (hourly) entries for a day: summarize them as the day's high/low, max precipitation chance,
+        // rainfall (the sum of the hours) and strongest wind with its prevailing direction
         if (temperatures.length < 2) return item;
         const daily: WeatherForecast = {
           ...item,
@@ -267,6 +271,8 @@ export class ForecastService {
         if (precipitationProbabilities.length > 0) {
           daily.precipitation_probability = Math.max(...precipitationProbabilities);
         }
+        const precipitation = sumPrecipitation(entries);
+        if (precipitation != null) daily.precipitation = precipitation;
         return daily;
       })
       .slice(0, maxDays);

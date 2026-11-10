@@ -6,6 +6,7 @@ import { i18n } from '../internationalization/index.js';
 import { forecastStyles } from './forecast-styles.js';
 import { renderForecastWind, type ForecastWindOptions } from './forecast-wind-row.js';
 import { temperatureColor } from '../temperature-color.js';
+import { formatDailyPrecipitation } from '../forecast-precipitation.js';
 import { applyUserStyles } from '../user-styles.js';
 import type { DailyForecastLabel, WeatherForecast } from '../types.js';
 
@@ -30,6 +31,8 @@ export class DailyForecast extends LitElement {
   // Current temperature, marked on today's bar
   @property({ type: Number }) currentTemperature: number | null = null;
   @property({ type: String }) temperatureUnit: string = '°C';
+  // Unit of the forecast's precipitation (mm or in). Empty when the entity doesn't report one.
+  @property({ type: String }) precipitationUnit: string | null = null;
 
   static styles = forecastStyles;
 
@@ -67,10 +70,22 @@ export class DailyForecast extends LitElement {
     return probability != null && probability > 0 ? Math.round(probability) : null;
   }
 
+  // Chance of precipitation, and the day's rainfall next to it when the amount is above zero
+  private renderPrecipitation(item: WeatherForecast): TemplateResult | string {
+    const probability = this.getPrecipitationProbability(item);
+    const amount = formatDailyPrecipitation(item.precipitation, this.precipitationUnit);
+    if (probability === null && amount === null) return '';
+    return html`
+      <div class="forecast-precipitation">
+        ${probability !== null ? `${probability}%` : ''}
+        ${amount !== null ? html`<span class="forecast-precip-amount">${amount}</span>` : ''}
+      </div>
+    `;
+  }
+
   private renderBarItem(item: WeatherForecast, scale: { min: number; max: number }): TemplateResult {
     const high = this.getTemperature(item);
     const low = this.getLowTemperature(item) ?? high;
-    const precipitation = this.getPrecipitationProbability(item);
     const range = Math.max(1, scale.max - scale.min);
     // Distance from the top/bottom of the track, in %
     const top = ((scale.max - high) / range) * 100;
@@ -94,14 +109,13 @@ export class DailyForecast extends LitElement {
         </div>
         <div class="forecast-temp forecast-temp-low-bar">${low}°</div>
         ${renderForecastWind(item, this.wind)}
-        ${precipitation !== null ? html`<div class="forecast-precipitation">${precipitation}%</div>` : ''}
+        ${this.renderPrecipitation(item)}
       </div>
     `;
   }
 
   private renderItem(item: WeatherForecast): TemplateResult {
     const low = this.getLowTemperature(item);
-    const precipitation = this.getPrecipitationProbability(item);
 
     return html`
       <div class="forecast-item">
@@ -111,7 +125,7 @@ export class DailyForecast extends LitElement {
           ${this.getTemperature(item)}°${low !== null ? html`<span class="forecast-temp-low">${low}°</span>` : ''}
         </div>
         ${renderForecastWind(item, this.wind)}
-        ${precipitation !== null ? html`<div class="forecast-precipitation">${precipitation}%</div>` : ''}
+        ${this.renderPrecipitation(item)}
       </div>
     `;
   }

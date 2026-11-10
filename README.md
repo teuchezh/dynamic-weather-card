@@ -271,7 +271,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `hourly_forecast_step` | number | `1` | Show every N hours, e.g. `3` for 00:00, 03:00, 06:00 … Each entry shows the highest chance of precipitation of its hours. `hourly_forecast_hours` is the number of entries |
 | `hourly_forecast_chart` | boolean | `false` | Temperatures as a smooth curve colored by temperature, with the chance of precipitation as bars under it |
 | `hourly_forecast_title` | string | translated | Custom title; `""` hides it |
-| `show_daily_forecast` | boolean | `false` | Daily forecast with high, low and chance of precipitation |
+| `show_daily_forecast` | boolean | `false` | Daily forecast with high, low, chance of precipitation and the day's rainfall. The amount uses the forecast's unit (usually mm) and is hidden when it is missing or zero |
 | `daily_forecast_days` | number | `5` | Days to show, 1–14 |
 | `daily_forecast_title` | string | translated | Custom title; `""` hides it |
 | `daily_forecast_label` | string | `full` | Day heading in the daily forecast: `full` (e.g. Sat, Oct 17), `day` (Sat 17) or `weekday` (Sat) |
@@ -366,7 +366,7 @@ The variables also work from a [theme](https://www.home-assistant.io/integration
 | Clock and date | `.clock`, `.date` |
 | Text forecast link and optional one-line summary | `.forecast-more`, `.forecast-description` |
 | Detailed forecast dialog | `.forecast-dialog` |
-| Forecasts | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-wind` |
+| Forecasts | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-precip-amount`, `.forecast-wind` |
 | Minimal layout | `.mini-temp`, `.mini-condition` |
 
 To find anything else, right-click the card in the browser and choose **Inspect**. Class names other than the variables may change between versions; the variables stay.
@@ -440,7 +440,7 @@ Without any sun data it falls back to fixed hours: sunrise 6:00–8:00, day unti
 
 **Wind units.** Units are detected from the integration or the wind sensor: m/s, km/h, mph, knots or ft/s; integrations that don't report one are taken as m/s. With `wind_speed_unit: auto` wind is shown as it comes, otherwise everything (current wind, gusts and forecasts) is converted to the chosen unit. km/h, mph and knots are rounded to whole numbers. The wind animation converts everything to m/s.
 
-**Forecasts.** The card subscribes to Home Assistant's hourly and daily forecasts. Older integrations that only offer a `forecast` attribute also work: hourly entries are then grouped into days, with the day's high, low, chance of precipitation and strongest wind.
+**Forecasts.** The card subscribes to Home Assistant's hourly and daily forecasts. Older integrations that only offer a `forecast` attribute also work: hourly entries are then grouped into days, with the day's high, low, chance of precipitation, rainfall (the sum of that day's hours) and strongest wind.
 
 **Precipitation outlook.** It looks 12 hours ahead in the hourly forecast. An hour counts as wet when its condition is rain, snow, sleet, hail or storm, or when the chance of precipitation is at least 50%.
 

@@ -556,6 +556,7 @@ export class AnimatedWeatherCard extends LitElement {
     forecastPopup: ForecastPopup | null
   ): TemplateResult {
     const windOptions = this.getForecastWindOptions(hass, weather);
+    const precipitationUnit = getWeatherAttributes(hass, this.config.entity).precipitation_unit;
     return html`
       <div class="${cardClasses}" style="${cardStyle}">
         ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
@@ -624,6 +625,7 @@ export class AnimatedWeatherCard extends LitElement {
             .showBars=${this.config.showTemperatureBars === true}
             .currentTemperature=${weather.temperature}
             .temperatureUnit=${getWeatherAttributes(hass, this.config.entity).temperature_unit ?? hass.config?.unit_system?.temperature ?? '°C'}
+            .precipitationUnit=${typeof precipitationUnit === 'string' ? precipitationUnit : null}
           ></daily-forecast>
         </div>
       </div>
