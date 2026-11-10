@@ -164,6 +164,11 @@ describe('resolveLanguage', () => {
     expect(resolveLanguage({ hassLang: 'ro-RO' })).toBe('ro');
   });
 
+  test('resolves Catalan locale', () => {
+    expect(resolveLanguage({ hassLang: 'ca' })).toBe('ca');
+    expect(resolveLanguage({ hassLang: 'ca-ES' })).toBe('ca');
+  });
+
   test('keeps Traditional Chinese instead of falling back to Simplified', () => {
     expect(resolveLanguage({ hassLang: 'zh-Hant' })).toBe('zh-Hant');
     expect(resolveLanguage({ hassLang: 'zh-hant' })).toBe('zh-Hant');
