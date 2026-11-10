@@ -33,11 +33,18 @@ export class WeatherDetails extends LitElement {
       text-shadow: var(--card-text-shadow);
     }
 
+    :host([compact]) {
+      min-width: 0;
+      max-width: 100%;
+    }
+
     :host([compact]) .info-grid {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+      align-items: center;
       gap: 4px 16px;
+      width: 100%;
       font-size: var(--dwc-details-size, 14px);
     }
 
@@ -68,10 +75,13 @@ export class WeatherDetails extends LitElement {
       display: block;
     }
 
+    /* One unit: the two times stay side by side and wrap together, without word labels */
     :host([compact]) .sun-group {
-      display: flex;
-      flex-direction: row;
-      gap: 16px;
+      display: inline-flex;
+      flex-flow: row nowrap;
+      flex: none;
+      align-items: center;
+      gap: 8px;
     }
   `;
 
