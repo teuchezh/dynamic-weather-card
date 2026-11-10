@@ -656,17 +656,21 @@ export class AnimatedWeatherCard extends LitElement {
   ): TemplateResult {
     const tempStr = weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data');
     const templowStr = weather.templow != null ? `↓ ${Math.round(weather.templow)}°` : null;
+    const templow = this.config.showMinTemp && templowStr
+      ? html`<span class="mini-temp-low">${templowStr}</span>`
+      : '';
 
+    // Reading order is the left column first (temperature, condition, details), then the clock.
+    // The clock is placed on the right in CSS so it stays third here without looking secondary.
     return html`
       <div class="${cardClasses} layout--minimal" style="${cardStyle}">
         ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
         <div class="content">
           <div class="mini-primary">
             <div class="mini-temp">${tempStr}</div>
-            ${this.config.showMinTemp && templowStr ? html`<div class="mini-temp-low">${templowStr}</div>` : ''}
+            <div class="mini-condition">${i18n.t(weather.condition)}${templow}</div>
           </div>
           <div class="mini-details">
-            <div class="mini-condition">${i18n.t(weather.condition)}</div>
             <weather-details
               .userStyles=${this.config.styles ?? null}
               .weather=${weather}

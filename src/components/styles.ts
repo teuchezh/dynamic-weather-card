@@ -329,26 +329,36 @@ export const cardStyles = css`
   }
 
   .weather-card.layout--minimal .content {
-    flex-direction: row;
+    display: grid;
+    /* The clock column collapses when the clock is off, so the gap lives on the clock itself */
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "lead clock"
+      "details clock";
     align-items: center;
+    column-gap: 0;
+    row-gap: 6px;
     padding: var(--dwc-padding, 8px 16px);
-    gap: 16px;
     min-height: inherit;
   }
 
   .mini-primary {
+    grid-area: lead;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    flex-shrink: 0;
-    gap: 0;
+    gap: 2px;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .mini-condition {
+    max-width: 100%;
     font-size: var(--dwc-condition-size, 15px);
-    opacity: 0.9;
     font-weight: 500;
-    white-space: nowrap;
+    line-height: 1.25;
+    opacity: 0.9;
+    overflow-wrap: break-word;
   }
 
   .mini-temp {
@@ -357,19 +367,28 @@ export const cardStyles = css`
     line-height: 1;
   }
 
+  /* On the condition line, smaller than the condition, so it does not compete with the temperature */
   .mini-temp-low {
-    font-size: 14px;
-    opacity: 0.75;
-    margin-top: 2px;
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0.85;
   }
 
   .mini-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
+    grid-area: details;
     min-width: 0;
+    max-width: 100%;
+  }
+
+  .weather-card.layout--minimal weather-clock {
+    grid-area: clock;
+    align-self: center;
+    justify-self: end;
+    margin-left: 16px;
+    opacity: 1;
   }
 
 `;

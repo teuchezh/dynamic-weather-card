@@ -63,6 +63,10 @@ export class WeatherClock extends LitElement {
 
     :host([compact]) .clock {
       font-size: var(--dwc-clock-size, calc(32px * var(--dwc-clock-scale, 1)));
+      /* Fixed weight: the card default is 200, which reads as faded next to the temperature */
+      font-weight: 400;
+      opacity: 1;
+      white-space: nowrap;
     }
 
     :host([compact]) .date {
