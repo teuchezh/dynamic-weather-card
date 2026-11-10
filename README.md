@@ -288,6 +288,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `show_date` | boolean | `false` | Current date, e.g. "Wed, September 30" |
 | `clock_position` | string | `top` | `top` (top right) or `details` (in the details row) |
 | `clock_format` | string | `24h` | `24h` or `12h` |
+| `show_clock_seconds` | boolean | `false` | Append seconds to the clock (`14:30:05` or `2:30:05 PM`) |
 | `clock_size` | string | `medium` | Size of the clock and date: `small`, `medium` or `large` |
 | `clock_weight` | string | `thin` | Clock font weight: `thin`, `regular` or `bold` (bold also makes the date semi-bold) |
 

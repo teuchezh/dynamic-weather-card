@@ -160,6 +160,7 @@ export interface WeatherCardConfig {
   dailyForecastTitle?: string | null;
   showSunriseSunset?: boolean;
   showClock?: boolean;
+  showClockSeconds?: boolean;
   showDate?: boolean;
   clockPosition?: 'top' | 'details';
   clockFormat?: '12h' | '24h';
@@ -293,6 +294,7 @@ export interface ConfigInput {
   daily_forecast_title?: string;
   show_sunrise_sunset?: boolean;
   show_clock?: boolean;
+  show_clock_seconds?: boolean;
   show_date?: boolean;
   clock_position?: 'top' | 'details';
   clock_format?: '12h' | '24h';

@@ -8,6 +8,7 @@ export class WeatherClock extends LitElement {
   @property({ type: String }) format: '12h' | '24h' | null = null;
   @property({ type: Boolean, reflect: true }) compact = false;
   @property({ type: Boolean }) showDate = false;
+  @property({ type: Boolean }) showSeconds = false;
   @property({ type: String }) lang = 'en';
   // The card's `styles` option, added to this part's own styles
   @property({ attribute: false }) userStyles: string | null = null;
@@ -33,6 +34,7 @@ export class WeatherClock extends LitElement {
       line-height: 1;
       color: var(--dwc-text-color, white);
       text-align: right;
+      white-space: nowrap;
       text-shadow: var(--card-text-shadow);
       z-index: 2;
       pointer-events: none;
@@ -82,7 +84,7 @@ export class WeatherClock extends LitElement {
   updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
     if (changedProperties.has('userStyles')) applyUserStyles(this.shadowRoot, this.userStyles);
-    if (changedProperties.has('format') || changedProperties.has('showDate') || changedProperties.has('lang')) {
+    if (changedProperties.has('format') || changedProperties.has('showSeconds') || changedProperties.has('showDate') || changedProperties.has('lang')) {
       this.restartTimer();
     }
   }
@@ -105,7 +107,7 @@ export class WeatherClock extends LitElement {
   private updateTime(): void {
     const now = new Date();
     if (this.format) {
-      this.currentTime = formatClockTime(now, this.format, i18n.t('am'), i18n.t('pm'));
+      this.currentTime = formatClockTime(now, this.format, i18n.t('am'), i18n.t('pm'), this.showSeconds);
     }
     if (this.showDate) {
       this.currentDate = formatDate(now, this.lang);
