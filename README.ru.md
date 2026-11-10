@@ -283,7 +283,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 
 | Параметр | Тип | По умолчанию | Описание |
 |---|---|---|---|
-| `language` | string | `auto` | `auto` (язык Home Assistant) или `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `sr-Latn`, `pl`, `nb`, `tr`, `zh`, `zh-Hant`, `sl`, `et`, `cs`, `lv` |
+| `language` | string | `auto` | `auto` (язык Home Assistant) или `en`, `ru`, `de`, `fr`, `nl`, `es`, `it`, `hu`, `sk`, `pt`, `da`, `sr`, `sr-Latn`, `pl`, `nb`, `tr`, `zh`, `zh-Hant`, `sl`, `et`, `cs`, `lv`, `ro`, `ca` |
 | `show_clock` | boolean | `false` | Текущее время |
 | `show_date` | boolean | `false` | Текущая дата, например «ср, 30 сентября» |
 | `clock_position` | string | `top` | `top` (вверху справа) или `details` (в строке деталей) |
@@ -445,7 +445,7 @@ tap_action:
 
 ## 🌍 Языки
 
-English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Српски, Srpski (latinica), Polski, Norsk (bokmål), Türkçe, 简体中文, 繁體中文, Slovenščina, Eesti, Čeština, Latviešu и Română. Карточка следует языку Home Assistant, если не задан `language`.
+English, Русский, Deutsch, Français, Nederlands, Español, Italiano, Magyar, Slovenčina, Português, Dansk, Српски, Srpski (latinica), Polski, Norsk (bokmål), Türkçe, 简体中文, 繁體中文, Slovenščina, Eesti, Čeština, Latviešu, Română и Català. Карточка следует языку Home Assistant, если не задан `language`.
 
 Чтобы добавить или улучшить перевод, отредактируйте `src/internationalization/locales/<code>/translation.json` прямо на GitHub и откройте pull request в `main`. Программировать не нужно. Новые языки подхватываются автоматически, а недостающие ключи берутся из английского.
 
