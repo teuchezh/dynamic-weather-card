@@ -79,6 +79,7 @@ const editorDefaults = (): WeatherCardEditorConfig => ({
   visual_style: DEFAULT_CONFIG.visualStyle,
   animation_quality: DEFAULT_CONFIG.animationQuality,
   show_clock: DEFAULT_CONFIG.showClock,
+  show_clock_seconds: DEFAULT_CONFIG.showClockSeconds,
   show_date: DEFAULT_CONFIG.showDate,
   clock_position: DEFAULT_CONFIG.clockPosition,
   clock_format: DEFAULT_CONFIG.clockFormat,
@@ -219,6 +220,7 @@ export class DynamicWeatherCardEditor extends LitElement {
         ...(isOn('show_clock') || isOn('show_date')
           ? [
             grid(select('clock_position', ['top', 'details']), select('clock_format', ['24h', '12h'])),
+            ...(isOn('show_clock') ? [toggle('show_clock_seconds')] : []),
             grid(select('clock_size', ['small', 'medium', 'large']), select('clock_weight', ['thin', 'regular', 'bold']))
           ]
           : [])

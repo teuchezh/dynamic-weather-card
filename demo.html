@@ -776,6 +776,7 @@
             showRaindrops: true,
             showWindEffects: true,
             showClock: false,
+            showClockSeconds: false,
             showDate: false,
             showHourlyForecast: false,
             showDailyForecast: false,
@@ -953,6 +954,7 @@
                 { type: 'segmented', key: 'windSpeedUnit', label: ['windSpeedUnit', 'Wind Speed Unit'], options: [['auto', t('autoShort', 'Auto')], ['ms', 'm/s'], ['kmh', 'km/h'], ['mph', 'mph'], ['kn', 'kn']] },
                 { type: 'toggles', label: ['clockAndDate', 'Clock'], items: [
                     ['showClock', 'showClock', 'Clock'],
+                    ['showClockSeconds', 'showClockSeconds', 'Seconds'],
                     ['showDate', 'showDate', 'Date']
                 ] },
                 { type: 'segmented', key: 'clockPosition', label: ['clockPosition', 'Clock Position'], options: [['top', t('clockPositionTop', 'Top right')], ['details', t('clockPositionDetails', 'Details row')]] },
@@ -1401,6 +1403,7 @@
                 show_raindrops: state.showRaindrops,
                 show_wind_effects: state.showWindEffects,
                 show_clock: state.showClock,
+                show_clock_seconds: state.showClockSeconds,
                 show_date: state.showDate,
                 clock_position: state.clockPosition,
                 clock_format: state.clockFormat,
@@ -1458,7 +1461,7 @@
             ['Forecast', ['show_hourly_forecast', 'hourly_forecast_hours', 'hourly_forecast_step', 'hourly_forecast_chart', 'hourly_forecast_title',
                 'show_daily_forecast', 'daily_forecast_days', 'daily_forecast_title', 'daily_forecast_label', 'show_temperature_bars', 'show_forecast_wind',
                 'show_forecast_description']],
-            ['Language, clock and date', ['language', 'show_clock', 'show_date', 'clock_position', 'clock_format', 'clock_size', 'clock_weight']],
+            ['Language, clock and date', ['language', 'show_clock', 'show_clock_seconds', 'show_date', 'clock_position', 'clock_format', 'clock_size', 'clock_weight']],
             ['Sensors', ['temperature_entity', 'feels_like_entity', 'humidity_entity', 'wind_speed_entity', 'wind_gust_entity',
                 'wind_bearing_entity', 'precipitation_entity', 'aqi_entity', 'forecast_description_entity']]
         ];

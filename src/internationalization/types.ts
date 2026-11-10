@@ -100,6 +100,8 @@ export interface EditorTranslations {
   sunrise_entity: string;
   sunset_entity: string;
   show_clock: string;
+  show_clock_seconds: string;
+  show_clock_seconds_helper: string;
   clock_position: string;
   clock_position_top: string;
   clock_position_details: string;

@@ -287,6 +287,7 @@ export class AnimatedWeatherCard extends LitElement {
       dailyForecastTitle: config.daily_forecast_title ?? DEFAULT_CONFIG.dailyForecastTitle,
       showSunriseSunset: config.show_sunrise_sunset !== false,
       showClock: config.show_clock === true,
+      showClockSeconds: config.show_clock_seconds === true,
       showDate: config.show_date === true,
       clockPosition: config.clock_position || DEFAULT_CONFIG.clockPosition,
       clockFormat: config.clock_format || DEFAULT_CONFIG.clockFormat,
@@ -484,6 +485,7 @@ export class AnimatedWeatherCard extends LitElement {
             <weather-clock
               .userStyles=${this.config.styles ?? null}
               .format=${this.config.showClock && this.config.clockPosition === 'top' ? this.config.clockFormat : null}
+              .showSeconds=${this.config.showClockSeconds === true}
               .showDate=${!!this.config.showDate && this.config.clockPosition === 'top'}
               .lang=${i18n.lang}
             ></weather-clock>
@@ -499,6 +501,7 @@ export class AnimatedWeatherCard extends LitElement {
             <weather-clock
               .userStyles=${this.config.styles ?? null}
               .format=${this.config.showClock && this.config.clockPosition === 'details' ? this.config.clockFormat : null}
+              .showSeconds=${this.config.showClockSeconds === true}
               .showDate=${!!this.config.showDate && this.config.clockPosition === 'details'}
               .lang=${i18n.lang}
             ></weather-clock>
@@ -580,6 +583,7 @@ export class AnimatedWeatherCard extends LitElement {
             <weather-clock
               .userStyles=${this.config.styles ?? null}
               .format=${this.config.showClock ? this.config.clockFormat : null}
+              .showSeconds=${this.config.showClockSeconds === true}
               .showDate=${!!this.config.showDate}
               .lang=${i18n.lang}
               .compact=${true}

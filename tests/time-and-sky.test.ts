@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { getTimeOfDayWithSunData, formatTime, formatForecastDay } from '../src/utils';
+import { getTimeOfDayWithSunData, formatTime, formatClockTime, formatForecastDay } from '../src/utils';
 import { getMoonPhase } from '../src/animations/night-sky';
 import { getSkyKind, getSkyColors } from '../src/sky';
 
@@ -44,6 +44,37 @@ describe('formatTime', () => {
   test('12-hour clock with custom AM/PM labels', () => {
     expect(formatTime(time, '12h')).toBe('3:05 PM');
     expect(formatTime(new Date(2026, 9, 2, 0, 30), '12h', 'ДП', 'ПП')).toBe('12:30 ДП');
+  });
+});
+
+describe('formatClockTime', () => {
+  const afternoon = new Date(2026, 9, 2, 15, 5, 7);
+  const morning = new Date(2026, 9, 2, 7, 0, 4);
+  const midnight = new Date(2026, 9, 2, 0, 30, 9);
+  const noon = new Date(2026, 9, 2, 12, 0, 0);
+
+  test('24-hour clock without seconds', () => {
+    expect(formatClockTime(afternoon, '24h', 'AM', 'PM')).toBe('15:05');
+    expect(formatClockTime(morning, '24h', 'AM', 'PM', false)).toBe('07:00');
+  });
+
+  test('12-hour clock without seconds', () => {
+    expect(formatClockTime(afternoon, '12h', 'AM', 'PM')).toBe('3:05 PM');
+    expect(formatClockTime(midnight, '12h', 'ДП', 'ПП')).toBe('12:30 ДП');
+    expect(formatClockTime(noon, '12h', 'AM', 'PM')).toBe('12:00 PM');
+  });
+
+  test('24-hour clock with seconds', () => {
+    expect(formatClockTime(afternoon, '24h', 'AM', 'PM', true)).toBe('15:05:07');
+    expect(formatClockTime(morning, '24h', 'AM', 'PM', true)).toBe('07:00:04');
+    expect(formatClockTime(midnight, '24h', 'AM', 'PM', true)).toBe('00:30:09');
+  });
+
+  test('12-hour clock with seconds', () => {
+    expect(formatClockTime(afternoon, '12h', 'AM', 'PM', true)).toBe('3:05:07 PM');
+    expect(formatClockTime(morning, '12h', 'AM', 'PM', true)).toBe('7:00:04 AM');
+    expect(formatClockTime(midnight, '12h', 'ДП', 'ПП', true)).toBe('12:30:09 ДП');
+    expect(formatClockTime(noon, '12h', 'AM', 'PM', true)).toBe('12:00:00 PM');
   });
 });
 

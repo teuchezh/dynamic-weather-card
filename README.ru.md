@@ -288,6 +288,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_date` | boolean | `false` | Текущая дата, например «ср, 30 сентября» |
 | `clock_position` | string | `top` | `top` (вверху справа) или `details` (в строке деталей) |
 | `clock_format` | string | `24h` | `24h` или `12h` |
+| `show_clock_seconds` | boolean | `false` | Добавлять секунды к часам (`14:30:05` или `2:30:05 PM`) |
 | `clock_size` | string | `medium` | Размер часов и даты: `small`, `medium` или `large` |
 | `clock_weight` | string | `thin` | Начертание часов: `thin`, `regular` или `bold` (при `bold` дата тоже полужирная) |
 

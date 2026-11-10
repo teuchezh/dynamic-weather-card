@@ -434,19 +434,19 @@ export function formatClockTime(
   date: Date,
   format: '12h' | '24h',
   amLabel: string,
-  pmLabel: string
+  pmLabel: string,
+  showSeconds = false
 ): string {
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = showSeconds ? `:${String(date.getSeconds()).padStart(2, '0')}` : '';
   if (format === '12h') {
     let hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, '0');
     const period = hours >= 12 ? pmLabel : amLabel;
     hours = hours % 12 || 12;
-    return `${hours}:${minutes} ${period}`;
-  } else {
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return `${hours}:${minutes}${seconds} ${period}`;
   }
+  const hours = String(date.getHours()).padStart(2, '0');
+  return `${hours}:${minutes}${seconds}`;
 }
 
 /**
