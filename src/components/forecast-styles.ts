@@ -267,4 +267,40 @@ export const forecastStyles = css`
     border-radius: 3px 3px 0 0;
     background: rgba(79, 179, 255, 0.55);
   }
+
+  /* Hourly columns are tighter than the daily ones so the default hour count fits a
+     typical card (about 400–500px) without a scrollbar. flex-shrink stays 0, so a
+     long hour count, or a card narrow enough that the columns would be unreadable,
+     still scrolls instead of squeezing the hours. */
+  .forecast-scroll.hourly {
+    --hour-gap: 8px;
+    display: block;
+  }
+
+  .forecast-scroll.hourly .forecast-track {
+    display: flex;
+    gap: var(--hour-gap);
+    width: max-content;
+    min-width: 100%;
+    /* The curve crosses half the gap. Clip that overhang at the strip ends so it
+       does not widen the scrollport; the pieces between hours stay visible. */
+    overflow: hidden;
+  }
+
+  .forecast-scroll.hourly .forecast-item {
+    min-width: 48px;
+  }
+
+  .forecast-scroll.hourly .forecast-chart {
+    margin: 0 calc(var(--hour-gap) / -2);
+  }
+
+  .forecast-scroll.hourly .forecast-item.day-start::before {
+    left: calc(var(--hour-gap) / -2);
+  }
+
+  .forecast-scroll.hourly .chart-bar {
+    width: 14px;
+    margin-left: -7px;
+  }
 `;

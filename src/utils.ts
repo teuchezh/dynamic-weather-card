@@ -462,10 +462,10 @@ export function setupHorizontalScroll(
 
   const handler = (e: Event) => {
     const wheelEvent = e as WheelEvent;
-    if (wheelEvent.deltaY !== 0) {
-      e.preventDefault();
-      element.scrollLeft += wheelEvent.deltaY;
-    }
+    // Leave vertical scrolling alone when every item is already visible
+    if (wheelEvent.deltaY === 0 || element.scrollWidth <= element.clientWidth) return;
+    e.preventDefault();
+    element.scrollLeft += wheelEvent.deltaY;
   };
   element.addEventListener('wheel', handler, { passive: false });
 
