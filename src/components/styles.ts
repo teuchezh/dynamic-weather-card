@@ -160,17 +160,128 @@ export const cardStyles = css`
     margin-top: 8px;
   }
 
-  /* The provider's text forecast; long ones are cut at three lines (full text on hover) */
+  /* Short summary only when a separate detailed forecast fills the dialog */
+  .forecast-extra {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
   .forecast-description {
-    margin-top: 16px;
-    font-size: 14px;
-    line-height: 1.4;
-    opacity: 0.9;
+    align-self: stretch;
+    font-size: var(--dwc-details-size, 13px);
+    line-height: 1.3;
+    opacity: 0.85;
     text-shadow: var(--card-text-shadow);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Text link, same size as the detail labels. Not a button pill. */
+  .forecast-more {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    appearance: none;
+    color: inherit;
+    font: inherit;
+    font-size: var(--dwc-details-size, 13px);
+    line-height: 1.2;
+    font-weight: 400;
+    opacity: 0.85;
+    cursor: pointer;
+    text-shadow: var(--card-text-shadow);
+  }
+
+  .forecast-more:hover,
+  .forecast-more:focus-visible {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .forecast-more:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .forecast-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.45);
+    color: #f5f5f7;
+    text-shadow: none;
+  }
+
+  .forecast-dialog-panel {
+    width: min(440px, 100%);
+    max-height: min(70vh, 560px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 16px 18px;
+    border-radius: 18px;
+    background: rgba(28, 28, 30, 0.96);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    color: #f5f5f7;
+    text-shadow: none;
+  }
+
+  .forecast-dialog-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .forecast-dialog-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .forecast-dialog-source {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.2;
+    opacity: 0.55;
+    font-weight: 400;
+  }
+
+  .forecast-dialog-close {
+    flex: none;
+    margin: -4px -4px 0 0;
+    padding: 4px 8px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.85;
+  }
+
+  .forecast-dialog-close:hover,
+  .forecast-dialog-close:focus-visible {
+    opacity: 1;
+  }
+
+  .forecast-dialog-body {
+    overflow: auto;
+    font-size: 15px;
+    line-height: 1.45;
+    font-weight: 400;
+    white-space: pre-wrap;
   }
 
   .precipitation-outlook {

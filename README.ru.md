@@ -277,7 +277,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `daily_forecast_label` | string | `full` | Подпись дня в прогнозе по дням: `full` (напр. сб, 17 окт.), `day` (сб 17) или `weekday` (сб) |
 | `show_temperature_bars` | boolean | `false` | Диапазон мин.–макс. каждого дня цветной полоской на общей шкале, с отметкой текущей температуры на сегодняшней |
 | `show_forecast_wind` | boolean | `false` | Направление, скорость и порывы ветра для каждого часа и дня, если их передаёт поставщик погоды |
-| `show_forecast_description` | boolean | `false` | Текстовый прогноз поставщика погоды на текущий период, например *«Partly sunny, with a high near 75.»* Есть лишь у некоторых интеграций, в основном у метеослужбы США (NWS); иначе скрыт. Только в стандартной раскладке. Текст можно заменить через `forecast_description_entity` |
+| `show_forecast_description` | boolean | `false` | Ссылка «Подробнее» открывает текстовый прогноз в окне. Абзац на карточке не показывается. Есть лишь у некоторых интеграций, в основном у метеослужбы США (NWS); иначе скрыт. Только в стандартной раскладке. `forecast_description_entity` может дать короткую строку, если задан и подробный датчик, либо сам текст окна. `forecast_description_detail_entity` — длинный текст только в окне |
 
 ### Язык, часы и дата
 
@@ -309,7 +309,8 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `uv_index_entity` | УФ-индекс (при `show_uv_index`) |
 | `dew_point_entity` | Точка росы (при `show_dew_point`) |
 | `aqi_entity` | Индекс качества воздуха; показывается, если задан |
-| `forecast_description_entity` | Текстовый прогноз (при `show_forecast_description`). Показывается строка состояния датчика; если датчик недоступен, берётся текст поставщика погоды |
+| `forecast_description_entity` | Текстовый прогноз (при `show_forecast_description`). Одна строка на карточке, если задан и `forecast_description_detail_entity`; иначе текст датчика открывается в окне и на карточку не выводится. Если датчик недоступен, берётся текст поставщика погоды |
+| `forecast_description_detail_entity` | Длинный прогноз только в окне подробного прогноза (при `show_forecast_description`). Если не задан или недоступен, в окне используется `forecast_description_entity` или текст поставщика погоды |
 | `sunrise_entity`, `sunset_entity` | Время восхода и заката, для интеграций, которые его не отдают |
 | `templow_attribute` | Атрибут погодной сущности с минимальной температурой за сегодня, если у интеграции он называется необычно |
 
@@ -363,7 +364,8 @@ styles: |
 | «Ощущается как», строка «когда пойдёт дождь» | `.feels-like`, `.precipitation-outlook` |
 | Детали (влажность, ветер, восход…) | `.info-grid` (сетка), `.info-item` (одна деталь), `.info-icon` |
 | Часы и дата | `.clock`, `.date` |
-| Текстовый прогноз | `.forecast-description` |
+| Ссылка на текстовый прогноз и короткая строка | `.forecast-more`, `.forecast-description` |
+| Окно подробного прогноза | `.forecast-dialog` |
 | Прогнозы | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-wind` |
 | Компактная раскладка | `.mini-temp`, `.mini-condition` |
 

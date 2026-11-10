@@ -277,7 +277,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `daily_forecast_label` | string | `full` | Day heading in the daily forecast: `full` (e.g. Sat, Oct 17), `day` (Sat 17) or `weekday` (Sat) |
 | `show_temperature_bars` | boolean | `false` | Each day's low–high range as a colored bar on one shared scale, with today's temperature marked |
 | `show_forecast_wind` | boolean | `false` | Wind direction, speed and gusts for each hour and day, when the provider reports them |
-| `show_forecast_description` | boolean | `false` | The provider's text forecast for the current period, e.g. *"Partly sunny, with a high near 75."* Only some integrations have one, mainly the US National Weather Service; hidden otherwise. Default layout only. Override the text with `forecast_description_entity` |
+| `show_forecast_description` | boolean | `false` | A More link that opens the written forecast in a dialog. The paragraph is not shown on the card. Only some integrations have one, mainly the US National Weather Service; hidden otherwise. Default layout only. `forecast_description_entity` can supply a one-line summary when a detailed sensor is also set, or the dialog text on its own. `forecast_description_detail_entity` is the long text, shown only in the dialog |
 
 ### Language, clock and date
 
@@ -309,7 +309,8 @@ Optional. Each sensor replaces the weather entity's value. When the sensor is un
 | `uv_index_entity` | UV index (with `show_uv_index`) |
 | `dew_point_entity` | Dew point (with `show_dew_point`) |
 | `aqi_entity` | Air quality index; shown whenever it is set |
-| `forecast_description_entity` | Text forecast (with `show_forecast_description`). The sensor's state string is shown; when unavailable, the weather provider's text is used |
+| `forecast_description_entity` | Text forecast (with `show_forecast_description`). One line on the card when `forecast_description_detail_entity` is also set; otherwise the sensor's text opens in the dialog and is not printed on the card. When unavailable, the weather provider's text is used |
+| `forecast_description_detail_entity` | Long forecast shown only in the detailed-forecast dialog (with `show_forecast_description`). When unset or unavailable, the dialog uses `forecast_description_entity` or the weather provider |
 | `sunrise_entity`, `sunset_entity` | Sunrise and sunset times, for integrations that don't provide them |
 | `templow_attribute` | Weather entity attribute with today's minimum temperature, if your integration uses an unusual name |
 
@@ -363,7 +364,8 @@ The variables also work from a [theme](https://www.home-assistant.io/integration
 | Feels like, rain start/stop line | `.feels-like`, `.precipitation-outlook` |
 | Details (humidity, wind, sunrise …) | `.info-grid` (the grid), `.info-item` (one detail), `.info-icon` |
 | Clock and date | `.clock`, `.date` |
-| Text forecast | `.forecast-description` |
+| Text forecast link and optional one-line summary | `.forecast-more`, `.forecast-description` |
+| Detailed forecast dialog | `.forecast-dialog` |
 | Forecasts | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-wind` |
 | Minimal layout | `.mini-temp`, `.mini-condition` |
 

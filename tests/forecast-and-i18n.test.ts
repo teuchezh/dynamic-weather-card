@@ -226,7 +226,8 @@ describe('translation files', () => {
       'dailyForecastLabelFull',
       'dailyForecastLabelDay',
       'dailyForecastLabelWeekday',
-      'forecastDescriptionEntity'
+      'forecastDescriptionEntity',
+      'forecastDescriptionDetailEntity'
     ]) {
       expect(typeof demo[key]).toBe('string');
       expect(demo[key].trim().length).toBeGreaterThan(0);

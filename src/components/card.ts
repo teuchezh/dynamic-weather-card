@@ -1,5 +1,5 @@
 import { LitElement, html, TemplateResult } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { CLOCK_SCALE, CLOCK_WEIGHT, DEFAULT_CONFIG } from '../constants.js';
 import { i18n } from '../internationalization/index.js';
 import { resolveLanguage } from '../internationalization/resolveLanguage.js';
@@ -15,6 +15,7 @@ import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes, readTextSensor } from './weather-data.js';
 import { getPrecipitationOutlook } from '../precipitation-outlook.js';
+import { resolveForecastPopup, type ForecastPopup } from '../forecast-popup.js';
 import { getSVGIcon } from '../icons/svg-icons.js';
 import { applyUserStyles } from '../user-styles.js';
 import {
@@ -59,6 +60,8 @@ export class AnimatedWeatherCard extends LitElement {
   _testMoonPhase?: number | null;
   // Demo/testing override of the current time for the precipitation outlook
   _testNow?: Date | null;
+  @state() private forecastDialogOpen = false;
+  private focusForecastClose = false;
 
   static get styles() {
     return cardStyles;
@@ -153,6 +156,13 @@ export class AnimatedWeatherCard extends LitElement {
     if (i18n.lang !== resolvedLang) {
       i18n.setLanguage(resolvedLang);
     }
+
+    if (this.forecastDialogOpen && !this.renderRoot.querySelector('.forecast-dialog')) {
+      this.forecastDialogOpen = false;
+    } else if (this.focusForecastClose) {
+      this.focusForecastClose = false;
+      this.renderRoot.querySelector<HTMLElement>('.forecast-dialog-close')?.focus();
+    }
   }
 
   private getDrawParams(): DrawParams | null {
@@ -222,13 +232,96 @@ export class AnimatedWeatherCard extends LitElement {
     `;
   }
 
-  private renderForecastDescription(weather: ReturnType<typeof getWeatherData>): TemplateResult {
-    if (!this.config.showForecastDescription) return html``;
-    const text =
-      readTextSensor(this.hass, this.config.sensorEntities?.forecastDescription)
-      ?? this.forecastService.getForecastDescription(weather, this._testNow ?? new Date());
-    if (!text) return html``;
-    return html`<div class="forecast-description" title="${text}">${text}</div>`;
+  private getForecastPopup(weather: ReturnType<typeof getWeatherData>): ForecastPopup | null {
+    if (!this.config.showForecastDescription) return null;
+    const summaryEntity = this.config.sensorEntities?.forecastDescription ?? null;
+    const detailEntity = this.config.sensorEntities?.forecastDescriptionDetail ?? null;
+    const popup = resolveForecastPopup({
+      summaryText: readTextSensor(this.hass, summaryEntity),
+      summaryEntity,
+      detailText: readTextSensor(this.hass, detailEntity),
+      detailEntity,
+      providerText: this.forecastService.getForecastDescription(weather, this._testNow ?? new Date())
+    });
+    return popup.detail ? popup : null;
+  }
+
+  private stopCardPointer(event: Event): void {
+    event.stopPropagation();
+  }
+
+  private openForecastDialog(event: Event): void {
+    event.stopPropagation();
+    this.focusForecastClose = true;
+    this.forecastDialogOpen = true;
+  }
+
+  private closeForecastDialog(event: Event): void {
+    event.stopPropagation();
+    this.forecastDialogOpen = false;
+  }
+
+  private onForecastDialogKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.forecastDialogOpen = false;
+  }
+
+  private onForecastDialogBackdropClick(event: Event): void {
+    if (event.target !== event.currentTarget) return;
+    this.forecastDialogOpen = false;
+  }
+
+  private renderForecastDescription(popup: ForecastPopup): TemplateResult {
+    return html`
+      <div class="forecast-extra">
+        ${popup.summary ? html`<div class="forecast-description" title=${popup.summary}>${popup.summary}</div>` : ''}
+        <button
+          type="button"
+          class="forecast-more"
+          aria-haspopup="dialog"
+          aria-expanded=${String(this.forecastDialogOpen)}
+          @click=${this.openForecastDialog}
+          @pointerdown=${this.stopCardPointer}
+          @pointerup=${this.stopCardPointer}
+        >
+          ${i18n.t('forecast_more')}<span class="forecast-more-mark" aria-hidden="true"> ›</span>
+        </button>
+      </div>
+    `;
+  }
+
+  private renderForecastDialog(popup: ForecastPopup): TemplateResult {
+    return html`
+      <div
+        class="forecast-dialog"
+        @click=${this.onForecastDialogBackdropClick}
+        @keydown=${this.onForecastDialogKeydown}
+      >
+        <div
+          class="forecast-dialog-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="forecast-dialog-title"
+          @pointerdown=${this.stopCardPointer}
+        >
+          <div class="forecast-dialog-header">
+            <div class="forecast-dialog-heading">
+              <h2 id="forecast-dialog-title" class="forecast-dialog-title">${i18n.t('forecast_detail_title')}</h2>
+              ${popup.source ? html`<div class="forecast-dialog-source">${popup.source}</div>` : ''}
+            </div>
+            <button
+              type="button"
+              class="forecast-dialog-close"
+              aria-label=${i18n.t('forecast_detail_close')}
+              @click=${this.closeForecastDialog}
+            >×</button>
+          </div>
+          <div class="forecast-dialog-body">${popup.detail}</div>
+        </div>
+      </div>
+    `;
   }
 
   private getDetailsConfig(): DetailsConfig {
@@ -320,7 +413,8 @@ export class AnimatedWeatherCard extends LitElement {
         uvIndex: config.uv_index_entity || null,
         dewPoint: config.dew_point_entity || null,
         aqi: config.aqi_entity || null,
-        forecastDescription: config.forecast_description_entity || null
+        forecastDescription: config.forecast_description_entity || null,
+        forecastDescriptionDetail: config.forecast_description_detail_entity || null
       },
       tapAction: config.tap_action || { action: 'more-info' },
       holdAction: config.hold_action || { action: 'none' },
@@ -435,17 +529,19 @@ export class AnimatedWeatherCard extends LitElement {
       textColor ? `--dwc-text-color: ${textColor};` : ''
     ].join(' ');
     const hass = this.hass;
+    const forecastPopup = isMinimal ? null : this.getForecastPopup(weather);
 
     return html`
       <ha-card
         style="${haCardStyle}"
         @click=${(e: MouseEvent) => this.actionHandler.handleTap(e)}
-        @pointerdown=${() => this.actionHandler.handlePointerDown()}
+        @pointerdown=${(e: PointerEvent) => this.actionHandler.handlePointerDown(e)}
         @pointerup=${(e: PointerEvent) => this.actionHandler.handlePointerUp(e)}
         @pointercancel=${(e: PointerEvent) => this.actionHandler.handlePointerUp(e)}
       >
-        ${isMinimal ? this.renderMinimal(weather, sunData, hass, cardClasses, cardStyle) : this.renderDefault(weather, sunData, hourlyForecast, dailyForecast, hass, cardClasses, cardStyle)}
+        ${isMinimal ? this.renderMinimal(weather, sunData, hass, cardClasses, cardStyle) : this.renderDefault(weather, sunData, hourlyForecast, dailyForecast, hass, cardClasses, cardStyle, forecastPopup)}
       </ha-card>
+      ${forecastPopup && this.forecastDialogOpen ? this.renderForecastDialog(forecastPopup) : ''}
     `;
   }
 
@@ -456,7 +552,8 @@ export class AnimatedWeatherCard extends LitElement {
     dailyForecast: import('../types.js').WeatherForecast[],
     hass: HomeAssistant,
     cardClasses: string,
-    cardStyle: string
+    cardStyle: string,
+    forecastPopup: ForecastPopup | null
   ): TemplateResult {
     const windOptions = this.getForecastWindOptions(hass, weather);
     return html`
@@ -506,7 +603,7 @@ export class AnimatedWeatherCard extends LitElement {
               .lang=${i18n.lang}
             ></weather-clock>
           </div>
-          ${this.renderForecastDescription(weather)}
+          ${forecastPopup ? this.renderForecastDescription(forecastPopup) : ''}
           <hourly-forecast
             .userStyles=${this.config.styles ?? null}
             .forecast=${hourlyForecast}

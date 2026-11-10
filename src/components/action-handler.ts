@@ -25,9 +25,7 @@ export class ActionHandler {
   }
 
   handleTap(e: MouseEvent): void {
-    if ((e.target as HTMLElement).closest('.forecast-item') || (e.target as HTMLElement).closest('.info-item')) {
-      return;
-    }
+    if (this.ignoresCardAction(e)) return;
 
     if (this.lastTap && (Date.now() - this.lastTap) < 300) {
       this.handleDoubleTap();
@@ -45,7 +43,8 @@ export class ActionHandler {
     }, 300);
   }
 
-  handlePointerDown(): void {
+  handlePointerDown(event?: Event): void {
+    if (event && this.ignoresCardAction(event)) return;
     this.holdTimer = window.setTimeout(() => {
       this.handleHold();
       this.holdFired = true;
@@ -61,6 +60,13 @@ export class ActionHandler {
       e.stopPropagation();
       this.holdFired = false;
     }
+  }
+
+  // Forecast rows, detail chips, and the text-forecast link handle their own clicks
+  private ignoresCardAction(event: Event): boolean {
+    const target = event.target;
+    if (!(target instanceof Element)) return false;
+    return !!target.closest('.forecast-item, .info-item, .forecast-more, .forecast-dialog');
   }
 
   private handleHold(): void {

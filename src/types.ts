@@ -327,6 +327,7 @@ export interface ConfigInput {
   dew_point_entity?: string;
   aqi_entity?: string;
   forecast_description_entity?: string;
+  forecast_description_detail_entity?: string;
   tap_action?: ActionConfig;
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
@@ -346,6 +347,7 @@ export interface SensorEntities {
   dewPoint?: string | null;
   aqi?: string | null;
   forecastDescription?: string | null;
+  forecastDescriptionDetail?: string | null;
 }
 
 // Internal Card Configuration (normalized)

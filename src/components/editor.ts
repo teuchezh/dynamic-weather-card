@@ -200,7 +200,10 @@ export class DynamicWeatherCardEditor extends LitElement {
         ...(isOn('show_hourly_forecast') || isOn('show_daily_forecast') ? [toggle('show_forecast_wind')] : []),
         toggle('show_forecast_description'),
         ...(isOn('show_forecast_description')
-          ? [{ name: 'forecast_description_entity', selector: { entity: { domain: ['sensor'] } } }]
+          ? [
+            { name: 'forecast_description_entity', selector: { entity: { domain: ['sensor'] } } },
+            { name: 'forecast_description_detail_entity', selector: { entity: { domain: ['sensor'] } } }
+          ]
           : [])
       ]),
       section('clock', 'mdi:clock-outline', [
