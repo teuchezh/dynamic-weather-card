@@ -251,7 +251,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 |---|---|---|---|
 | `show_feels_like` | boolean | `true` | Температура «ощущается как» |
 | `show_min_temp` | boolean | `true` | Минимальная температура за сегодня |
-| `show_precipitation_outlook` | boolean | `false` | Когда в ближайшие 12 часов начнутся или закончатся дождь или снег, например *«Дождь ожидается около 16:00»*. Строится по почасовому прогнозу; скрыта, если ничего не меняется. Только в обычном макете |
+| `show_precipitation_outlook` | boolean | `false` | Когда в ближайшие 12 часов начнутся или закончатся дождь или снег, например *«Дождь ожидается около 16:00»*. Строится по почасовому прогнозу; скрыта, если ничего не меняется. Есть в обычном макете и, под деталями, в минимальном |
 | `show_humidity` | boolean | `true` | Влажность |
 | `show_wind` | boolean | `true` | Скорость ветра |
 | `show_wind_gust` | boolean | `true` | Порывы ветра, после скорости |
@@ -367,7 +367,7 @@ styles: |
 | Ссылка на текстовый прогноз и короткая строка | `.forecast-more`, `.forecast-description` |
 | Окно подробного прогноза | `.forecast-dialog` |
 | Прогнозы | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-precip-amount`, `.forecast-wind` |
-| Компактная раскладка | `.mini-temp`, `.mini-condition` |
+| Компактная раскладка | `.mini-temp`, `.mini-condition`, `.mini-notes` |
 
 Остальное можно найти в браузере: правый клик по карточке → **Просмотреть код**. Имена классов могут меняться между версиями, переменные — нет.
 

@@ -251,7 +251,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 |---|---|---|---|
 | `show_feels_like` | boolean | `true` | "Feels like" temperature |
 | `show_min_temp` | boolean | `true` | Today's minimum temperature |
-| `show_precipitation_outlook` | boolean | `false` | When rain or snow starts or stops in the next 12 hours, e.g. *"Rain expected around 16:00"*. Uses the hourly forecast; hidden when nothing changes. Default layout only |
+| `show_precipitation_outlook` | boolean | `false` | When rain or snow starts or stops in the next 12 hours, e.g. *"Rain expected around 16:00"*. Uses the hourly forecast; hidden when nothing changes. Shown in the default layout and, under the details, in the minimal layout |
 | `show_humidity` | boolean | `true` | Humidity |
 | `show_wind` | boolean | `true` | Wind speed |
 | `show_wind_gust` | boolean | `true` | Wind gusts, after the speed |
@@ -367,7 +367,7 @@ The variables also work from a [theme](https://www.home-assistant.io/integration
 | Text forecast link and optional one-line summary | `.forecast-more`, `.forecast-description` |
 | Detailed forecast dialog | `.forecast-dialog` |
 | Forecasts | `.forecast-title`, `.forecast-item`, `.forecast-time`, `.forecast-icon`, `.forecast-temp`, `.forecast-precipitation`, `.forecast-precip-amount`, `.forecast-wind` |
-| Minimal layout | `.mini-temp`, `.mini-condition` |
+| Minimal layout | `.mini-temp`, `.mini-condition`, `.mini-notes` |
 
 To find anything else, right-click the card in the browser and choose **Inspect**. Class names other than the variables may change between versions; the variables stay.
 
