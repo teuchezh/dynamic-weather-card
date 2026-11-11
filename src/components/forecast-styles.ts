@@ -170,8 +170,14 @@ export const forecastStyles = css`
     gap: 3px;
     font-size: 11px;
     font-weight: 500;
+    white-space: nowrap;
     opacity: 0.9;
     text-shadow: var(--card-text-shadow);
+  }
+
+  /* Day's rainfall, a step further from the chance than the drop sits from the percent */
+  .forecast-precip-amount {
+    margin-left: 3px;
   }
 
   .forecast-precipitation::before {

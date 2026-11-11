@@ -32,6 +32,8 @@ export interface WeatherEntityAttributes {
   humidity?: number;
   pressure?: number;
   pressure_unit?: string;
+  // Forecast precipitation is reported in this unit (mm or in)
+  precipitation_unit?: string;
   uv_index?: number;
   dew_point?: number;
   wind_speed?: number;

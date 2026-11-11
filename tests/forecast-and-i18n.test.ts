@@ -37,6 +37,7 @@ describe('ForecastService', () => {
       expect(item.temperature).toBe(17 + day);
       expect(item.templow).toBe(10 + day);
       expect(item.precipitation_probability).toBe(60 + day);
+      expect(item.precipitation).toBeUndefined();
       expect(item.condition).toBe('rainy');
     });
   });

@@ -1317,8 +1317,10 @@
                     condition,
                     temperature: temp,
                     temp,
-                    // The card shows the day's max chance in the daily forecast
+                    // The card shows the day's max chance in the daily forecast, and sums these
+                    // hourly amounts into that day's rainfall (mm). The hourly bars stay the chance.
                     precipitation_probability: wet ? Math.floor(Math.random() * (20 + (time.getDate() % 4) * 25)) : 0,
+                    precipitation: wet ? Math.round((0.4 + (hour % 5) * 0.35) * 10) / 10 : 0,
                     wind_speed: windSpeed,
                     wind_gust_speed: Math.round(windSpeed * 1.6),
                     wind_bearing: Math.round((dayIndex * 70 + i * 5) % 360),
@@ -1354,6 +1356,7 @@
                             templow: state.temperature - 5,
                             pressure: 1013,
                             pressure_unit: 'hPa',
+                            precipitation_unit: 'mm',
                             uv_index: /sunny|partlycloudy/.test(state.condition) ? 6 : 2,
                             // Rough dew point from temperature and humidity
                             dew_point: Math.round(state.temperature - (100 - state.humidity) / 5),
