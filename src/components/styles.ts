@@ -383,6 +383,46 @@ export const cardStyles = css`
     max-width: 100%;
   }
 
+  /* Under the details, in the left column. Same scale as those details, not the temperature */
+  .mini-notes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 4px;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .weather-card.layout--minimal .mini-notes .feels-like,
+  .weather-card.layout--minimal .mini-notes .precipitation-outlook {
+    margin: 0;
+    max-width: 100%;
+    font-size: var(--dwc-details-size, 14px);
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  .weather-card.layout--minimal .mini-notes .feels-like {
+    opacity: 0.9;
+    overflow-wrap: break-word;
+  }
+
+  .weather-card.layout--minimal .mini-notes .precipitation-outlook {
+    min-width: 0;
+    align-items: flex-start;
+  }
+
+  .weather-card.layout--minimal .mini-notes .precipitation-outlook > span:last-child {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .weather-card.layout--minimal .mini-notes .precipitation-outlook .info-icon {
+    flex: none;
+    margin-top: 1px;
+  }
+
   .weather-card.layout--minimal weather-clock {
     grid-area: clock;
     align-self: center;

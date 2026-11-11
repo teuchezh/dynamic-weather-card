@@ -1,4 +1,4 @@
-import { LitElement, html, TemplateResult } from 'lit';
+import { LitElement, html, nothing, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { CLOCK_SCALE, CLOCK_WEIGHT, DEFAULT_CONFIG } from '../constants.js';
 import { i18n } from '../internationalization/index.js';
@@ -208,12 +208,12 @@ export class AnimatedWeatherCard extends LitElement {
     return convertSpeedUnit(weather.windSpeed, unit, 'm/s');
   }
 
-  private renderPrecipitationOutlook(weather: ReturnType<typeof getWeatherData>): TemplateResult {
-    if (!this.config.showPrecipitationOutlook) return html``;
+  private precipitationOutlookText(weather: ReturnType<typeof getWeatherData>): string | null {
+    if (!this.config.showPrecipitationOutlook) return null;
 
     const hourly = this.forecastService.getHourlyData();
     const outlook = getPrecipitationOutlook(weather.condition, hourly.length > 0 ? hourly : weather.forecast, this._testNow ?? new Date());
-    if (!outlook) return html``;
+    if (!outlook) return null;
 
     const time = outlook.time
       ? formatTime(outlook.time, this.config.clockFormat ?? '24h', i18n.t('am'), i18n.t('pm'))
@@ -222,7 +222,14 @@ export class AnimatedWeatherCard extends LitElement {
     const text = template
       .replace('{kind}', i18n.t(`precipitation_outlook.${outlook.kind}`))
       .replace('{time}', time)
-      .replace('{hours}', String(outlook.hours));
+      .replace('{hours}', String(outlook.hours))
+      .trim();
+    return text || null;
+  }
+
+  private renderPrecipitationOutlook(weather: ReturnType<typeof getWeatherData>): TemplateResult | typeof nothing {
+    const text = this.precipitationOutlookText(weather);
+    if (!text) return nothing;
 
     return html`
       <div class="precipitation-outlook">
@@ -661,9 +668,18 @@ export class AnimatedWeatherCard extends LitElement {
     const templow = this.config.showMinTemp && templowStr
       ? html`<span class="mini-temp-low">${templowStr}</span>`
       : '';
+    const feelsLike = this.config.showFeelsLike && weather.apparentTemperature != null
+      ? html`<div class="feels-like">${i18n.t('feels_like')} ${Math.round(weather.apparentTemperature)}°</div>`
+      : nothing;
+    const outlook = this.renderPrecipitationOutlook(weather);
+    // Omit the block entirely when both lines are off or have nothing to say
+    const notes = feelsLike !== nothing || outlook !== nothing
+      ? html`<div class="mini-notes">${feelsLike}${outlook}</div>`
+      : nothing;
 
-    // Reading order is the left column first (temperature, condition, details), then the clock.
-    // The clock is placed on the right in CSS so it stays third here without looking secondary.
+    // Reading order is the left column first (temperature, condition, details,
+    // feels-like, precipitation outlook), then the clock.
+    // The clock is placed on the right in CSS so it stays last here without looking secondary.
     return html`
       <div class="${cardClasses} layout--minimal" style="${cardStyle}">
         ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
@@ -681,6 +697,7 @@ export class AnimatedWeatherCard extends LitElement {
               .entityAttributes=${getWeatherAttributes(hass, this.config.entity)}
               .compact=${true}
             ></weather-details>
+            ${notes}
           </div>
           ${this.config.showClock || this.config.showDate ? html`
             <weather-clock
