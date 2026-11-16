@@ -1,4 +1,5 @@
 import { BaseAnimation } from '../base';
+import { lightningOverlayAlpha, lightningVisibilityThreshold } from '../intensity';
 import { RainyAnimation } from './rainy';
 import { TimeOfDay } from '../../types';
 
@@ -15,9 +16,6 @@ interface LightningBolt {
   duration: number;
 }
 
-// Flash intensity above which a flash (and a bolt) is visible
-const FLASH_THRESHOLD = 0.4;
-
 /**
  * Thunderstorm weather animation
  */
@@ -29,6 +27,7 @@ export class ThunderstormAnimation extends BaseAnimation {
   constructor(ctx: CanvasRenderingContext2D) {
     super(ctx);
     this.rainyAnimation = new RainyAnimation(ctx);
+    this.children.push(this.rainyAnimation);
   }
 
   /**
@@ -72,7 +71,7 @@ export class ThunderstormAnimation extends BaseAnimation {
   private updateBolts(time: number, flashIntensity: number, width: number, height: number): void {
     this.bolts = this.bolts.filter(bolt => time < bolt.startsAt + bolt.duration);
 
-    const flashActive = flashIntensity > FLASH_THRESHOLD;
+    const flashActive = flashIntensity > lightningVisibilityThreshold(this.intensity);
     if (flashActive && !this.flashActive) {
       this.bolts.push(this.createBolt(time, width, height));
       // Sometimes a second strike follows shortly after
@@ -117,6 +116,7 @@ export class ThunderstormAnimation extends BaseAnimation {
       }
     }
 
+    // 0.2–0.35s on the wall clock. Intensity changes how often a bolt starts, not how long it lasts.
     return { trunk, branches, startsAt, duration: 0.2 + Math.random() * 0.15 };
   }
 
@@ -161,16 +161,10 @@ export class ThunderstormAnimation extends BaseAnimation {
    * @param flashIntensity - Current flash intensity, 0..1
    */
   private drawLightning(width: number, height: number, flashIntensity: number): void {
-    // Flashes occur less frequently and more sharply
-    if (flashIntensity > FLASH_THRESHOLD) {
-      const normalizedIntensity = (flashIntensity - FLASH_THRESHOLD) / (1 - FLASH_THRESHOLD);
-      const alpha = normalizedIntensity * 0.6;
+    const fadeAlpha = lightningOverlayAlpha(flashIntensity, this.intensity);
+    if (fadeAlpha <= 0) return;
 
-      // Smooth fade for realistic effect
-      const fadeAlpha = Math.min(alpha, Math.sin(normalizedIntensity * Math.PI) * 0.6);
-
-      this.ctx.fillStyle = `rgba(255, 255, 255, ${fadeAlpha})`;
-      this.ctx.fillRect(0, 0, width, height);
-    }
+    this.ctx.fillStyle = `rgba(255, 255, 255, ${fadeAlpha})`;
+    this.ctx.fillRect(0, 0, width, height);
   }
 }

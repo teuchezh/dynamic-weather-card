@@ -1,4 +1,5 @@
 import { BaseAnimation } from '../base';
+import { scaleParticleCount } from '../intensity';
 import { TimeOfDay } from '../../types';
 
 interface RainDrop {
@@ -40,7 +41,7 @@ export class RainyAnimation extends BaseAnimation {
    * @param heavy - Heavy rain flag
    */
   private drawRain(width: number, height: number, heavy: boolean): void {
-    const dropCount = heavy ? 130 : 90;
+    const dropCount = scaleParticleCount(heavy ? 130 : 90, this.intensity);
 
     // Initialize rain drops
     if (this.rainDrops.length !== dropCount) {

@@ -10,6 +10,7 @@ import {
 } from '../utils.js';
 import { cardStyles } from './styles.js';
 import { getSkyColors, rgb } from '../sky.js';
+import { clampAnimationIntensity } from '../animations/intensity.js';
 import { AnimationManager, type DrawParams } from './animation-manager.js';
 import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
@@ -191,6 +192,7 @@ export class AnimatedWeatherCard extends LitElement {
       moonPhase: this._testMoonPhase ?? undefined,
       visualStyle: this.config.visualStyle,
       quality: this.config.animationQuality,
+      intensity: this.config.animationIntensity ?? 1,
       windSpeed: this.getWindSpeedMs(weather),
       aurora: this.config.showAurora === true,
       raindrops: this.config.showRaindrops !== false,
@@ -405,6 +407,7 @@ export class AnimatedWeatherCard extends LitElement {
       layout: config.layout || DEFAULT_CONFIG.layout,
       visualStyle: config.visual_style === 'classic' ? 'classic' : 'modern',
       animationQuality: config.animation_quality === 'medium' || config.animation_quality === 'low' ? config.animation_quality : DEFAULT_CONFIG.animationQuality,
+      animationIntensity: clampAnimationIntensity(config.animation_intensity),
       sunriseEntity: config.sunrise_entity || null,
       sunsetEntity: config.sunset_entity || null,
       templowAttribute: config.templow_attribute || null,

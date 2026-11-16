@@ -1,3 +1,4 @@
+import { scaleParticleCount } from './intensity';
 import type { QualitySettings } from './quality';
 
 interface Gust {
@@ -40,12 +41,15 @@ export class WindEffect {
    * @param withLeaves - draw flying leaves (windy conditions)
    * @param daylight - 1 = day, 0 = night; streaks and leaves are dimmer at night
    */
-  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, strength: number, withLeaves: boolean, daylight: number, quality: QualitySettings): void {
+  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, strength: number, withLeaves: boolean, daylight: number, quality: QualitySettings, intensity = 1): void {
     const dt = this.lastTime ? Math.min(0.1, Math.max(0, time - this.lastTime)) : 0;
     this.lastTime = time;
     const scale = Math.max(0.5, Math.min(1, height / 200));
 
-    const gustTarget = Math.max(2, Math.round(width / 60 * strength * Math.max(0.5, quality.particles)));
+    const gustTarget = scaleParticleCount(
+      Math.max(2, Math.round(width / 60 * strength * Math.max(0.5, quality.particles))),
+      intensity
+    );
     while (this.gusts.length < gustTarget) this.gusts.push(this.createGust(width, height, scale, true));
     if (this.gusts.length > gustTarget) this.gusts.length = gustTarget;
 
@@ -61,7 +65,7 @@ export class WindEffect {
     });
 
     if (withLeaves && quality.details) {
-      this.drawLeaves(ctx, dt, width, height, scale, daylight, quality);
+      this.drawLeaves(ctx, dt, width, height, scale, daylight, quality, intensity);
     }
     ctx.restore();
   }
@@ -104,10 +108,10 @@ export class WindEffect {
     ctx.stroke();
   }
 
-  private drawLeaves(ctx: CanvasRenderingContext2D, dt: number, width: number, height: number, scale: number, daylight: number, quality: QualitySettings): void {
+  private drawLeaves(ctx: CanvasRenderingContext2D, dt: number, width: number, height: number, scale: number, daylight: number, quality: QualitySettings, intensity: number): void {
     const dpr = ctx.getTransform().a || 1;
     this.ensureSprites(dpr);
-    const target = Math.max(2, Math.round(width / 70 * quality.particles));
+    const target = scaleParticleCount(Math.max(2, Math.round(width / 70 * quality.particles)), intensity);
     while (this.leaves.length < target) this.leaves.push(this.createLeaf(width, height, scale, true));
     if (this.leaves.length > target) this.leaves.length = target;
 

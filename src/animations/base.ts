@@ -10,6 +10,8 @@ export class BaseAnimation {
   cloudField: CloudField | null = null;
   // Shared, updated in place by the animation manager
   quality: QualitySettings = createQualitySettings();
+  // 1 keeps today's particle counts and lightning. Lower is a calmer picture.
+  intensity = 1;
   // Nested animations (e.g. the rain inside a thunderstorm) that share clouds and quality
   protected children: BaseAnimation[] = [];
 
@@ -24,6 +26,15 @@ export class BaseAnimation {
     this.cloudField = cloudField;
     this.quality = quality;
     this.children.forEach(child => child.attach(cloudField, quality));
+  }
+
+  /**
+   * Share animation intensity with this animation and its nested ones.
+   * 1 is today's counts and lightning. Motion speed is unchanged.
+   */
+  setIntensity(intensity: number): void {
+    this.intensity = intensity;
+    this.children.forEach(child => child.setIntensity(intensity));
   }
 
   /**

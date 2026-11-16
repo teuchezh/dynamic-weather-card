@@ -30,6 +30,8 @@ export interface DrawParams {
   moonPhase?: number;
   visualStyle?: VisualStyle;
   quality?: AnimationQuality;
+  // 1 = today's rain, snow, hail, wind and lightning. Lower is calmer. Speed and frame rate stay.
+  intensity?: number;
   // Wind speed in m/s (null = unknown)
   windSpeed?: number | null;
   // Northern lights on clear nights
@@ -252,12 +254,13 @@ export class AnimationManager {
     this.applyQuality(params.quality ?? 'high');
 
     const { condition, timeOfDay, sunPosition, moonPhase, visualStyle } = params;
+    const intensity = params.intensity ?? 1;
     const width = this.width;
     const height = this.height;
 
     if (still) {
       // Sun/moon position follows the time of day in steps, so the frame isn't redrawn every minute
-      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, params.aurora, params.raindrops, params.windEffects, Math.round(params.windSpeed ?? 0), width, height]);
+      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, intensity, params.aurora, params.raindrops, params.windEffects, Math.round(params.windSpeed ?? 0), width, height]);
       if (key === this.stillKey) return;
       this.stillKey = key;
     } else {
@@ -267,9 +270,11 @@ export class AnimationManager {
     this.ctx.clearRect(0, 0, width, height);
 
     const conditionLower = condition.toLowerCase();
+    Object.values(this.animations).forEach(animation => animation.setIntensity(intensity));
 
     if (visualStyle === 'classic') {
       this.classic ??= new ClassicAnimations(this.ctx);
+      this.classic.setIntensity(intensity);
       this.classic.draw(conditionLower, width, height, timeOfDay, sunPosition);
       return;
     }
@@ -330,7 +335,7 @@ export class AnimationManager {
     const gusts = isWindy ? Math.max(0.6, (windSpeed - GUST_WIND) / 10) : (windSpeed - GUST_WIND) / 10;
     if (params.windEffects !== false && WIND_CONDITIONS.has(conditionLower) && gusts > 0) {
       const daylight = getSkyColors(conditionLower, timeOfDay).daylight;
-      this.wind.draw(this.ctx, now, width, height, Math.min(1, gusts), isWindy, daylight, this.quality);
+      this.wind.draw(this.ctx, now, width, height, Math.min(1, gusts), isWindy, daylight, this.quality, intensity);
     }
 
     const glassRain = GLASS_RAIN[conditionLower];

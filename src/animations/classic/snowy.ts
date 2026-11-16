@@ -1,4 +1,5 @@
 import { BaseAnimation } from '../base';
+import { scaleParticleCount } from '../intensity';
 import { TimeOfDay } from '../../types';
 
 interface Snowflake {
@@ -42,7 +43,7 @@ export class SnowyAnimation extends BaseAnimation {
   private drawSnowflakes(width: number, height: number): void {
     // Calculate snowflake count based on area
     const snowflakeCount = Math.floor((width * height) / 5000);
-    const targetCount = Math.max(30, Math.min(snowflakeCount, 80));
+    const targetCount = scaleParticleCount(Math.max(30, Math.min(snowflakeCount, 80)), this.intensity);
 
     // Initialize or adjust snowflakes
     if (this.snowflakes.length !== targetCount) {
