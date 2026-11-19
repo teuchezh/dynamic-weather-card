@@ -22,11 +22,12 @@ import sk from './locales/sk/translation.json';
 import sl from './locales/sl/translation.json';
 import sr from './locales/sr/translation.json';
 import sr_Latn from './locales/sr-Latn/translation.json';
+import sv from './locales/sv/translation.json';
 import tr from './locales/tr/translation.json';
 import zh from './locales/zh/translation.json';
 import zh_Hant from './locales/zh-Hant/translation.json';
 
-export type SupportedLanguage = 'ca' | 'cs' | 'da' | 'de' | 'en' | 'es' | 'et' | 'fr' | 'hu' | 'it' | 'lv' | 'nb' | 'nl' | 'pl' | 'pt' | 'ro' | 'ru' | 'sk' | 'sl' | 'sr' | 'sr-Latn' | 'tr' | 'zh' | 'zh-Hant';
+export type SupportedLanguage = 'ca' | 'cs' | 'da' | 'de' | 'en' | 'es' | 'et' | 'fr' | 'hu' | 'it' | 'lv' | 'nb' | 'nl' | 'pl' | 'pt' | 'ro' | 'ru' | 'sk' | 'sl' | 'sr' | 'sr-Latn' | 'sv' | 'tr' | 'zh' | 'zh-Hant';
 
 export const translations: Record<SupportedLanguage, Translation> = {
   ca: ca as Translation,
@@ -50,6 +51,7 @@ export const translations: Record<SupportedLanguage, Translation> = {
   sl: sl as Translation,
   sr: sr as Translation,
   'sr-Latn': sr_Latn as Translation,
+  sv: sv as Translation,
   tr: tr as Translation,
   zh: zh as Translation,
   'zh-Hant': zh_Hant as Translation
