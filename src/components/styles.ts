@@ -215,10 +215,23 @@ export const cardStyles = css`
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    /* Margin plus the system inset. Phones add a quarter of the viewport below,
+       because Home Assistant often reports a 0 safe area and Samsung's buttons
+       then cover the bottom of the sheet. */
     padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     background: rgba(0, 0, 0, 0.45);
     color: #f5f5f7;
     text-shadow: none;
+  }
+
+  /* A quarter-screen gap on a wide window pins the sheet to the top. Center it. */
+  @media (min-width: 601px) {
+    .forecast-dialog {
+      align-items: center;
+      padding: 24px;
+      padding-bottom: max(24px, calc(16px + env(safe-area-inset-bottom, 0px)));
+    }
   }
 
   .forecast-dialog-panel {
@@ -233,6 +246,17 @@ export const cardStyles = css`
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
     color: #f5f5f7;
     text-shadow: none;
+  }
+
+  @media (max-width: 600px) {
+    .forecast-dialog {
+      padding-bottom: calc(25vh + 16px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .forecast-dialog-panel {
+      /* Stay inside the space above that clearance; the body still scrolls. */
+      max-height: min(70vh, 560px, calc(100vh - 25vh - 32px - env(safe-area-inset-bottom, 0px)));
+    }
   }
 
   .forecast-dialog-header {
