@@ -1,4 +1,5 @@
 import { BaseAnimation } from './base';
+import { scaleParticleCount } from './intensity';
 import { TimeOfDay } from '../types';
 
 interface RainDrop {
@@ -65,7 +66,7 @@ export class RainyAnimation extends BaseAnimation {
    * @param heavy - Heavy rain flag
    */
   drawRain(width: number, height: number, heavy: boolean): void {
-    const key = `${Math.round(width)}x${Math.round(height)}:${heavy}:${this.quality.particles}`;
+    const key = `${Math.round(width)}x${Math.round(height)}:${heavy}:${this.quality.particles}:${this.intensity}`;
     if (key !== this.dropsKey) {
       this.createDrops(width, height, heavy);
       this.dropsKey = key;
@@ -112,7 +113,10 @@ export class RainyAnimation extends BaseAnimation {
     this.splashes = [];
     const area = (width * height) / 10000;
     RAIN_LAYERS.forEach((layer, index) => {
-      const count = Math.min(400, Math.round(area * layer.density * (heavy ? 2 : 1) * this.quality.particles));
+      const count = scaleParticleCount(
+        Math.min(400, Math.round(area * layer.density * (heavy ? 2 : 1) * this.quality.particles)),
+        this.intensity
+      );
       for (let i = 0; i < count; i++) {
         const drop: RainDrop = { layer: index, x: 0, y: 0, speed: 0, length: 0 };
         this.resetDrop(drop, width);

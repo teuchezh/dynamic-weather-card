@@ -181,6 +181,8 @@ export interface WeatherCardConfig {
   layout?: 'default' | 'minimal';
   visualStyle?: VisualStyle;
   animationQuality?: AnimationQuality;
+  // 1 is the full animation. Lower (down to 0.25) draws fewer particles and calmer lightning.
+  animationIntensity?: number;
 }
 
 // Time of Day
@@ -314,6 +316,7 @@ export interface ConfigInput {
   layout?: 'default' | 'minimal';
   visual_style?: VisualStyle;
   animation_quality?: AnimationQuality;
+  animation_intensity?: number;
   sunrise_entity?: string;
   sunset_entity?: string;
   templow_attribute?: string;

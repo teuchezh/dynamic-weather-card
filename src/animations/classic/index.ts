@@ -30,6 +30,12 @@ export class ClassicAnimations {
     this.thunderstorm = new ThunderstormAnimation(ctx);
   }
 
+  setIntensity(intensity: number): void {
+    for (const animation of [this.sunny, this.rainy, this.snowy, this.cloudy, this.foggy, this.hail, this.thunderstorm]) {
+      animation.setIntensity(intensity);
+    }
+  }
+
   draw(condition: string, width: number, height: number, timeOfDay: TimeOfDay, sunPosition?: PositionOverride): void {
     const now = Date.now();
     switch (condition) {

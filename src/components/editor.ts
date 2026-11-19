@@ -78,6 +78,7 @@ const editorDefaults = (): WeatherCardEditorConfig => ({
   show_animations: DEFAULT_CONFIG.showAnimations,
   visual_style: DEFAULT_CONFIG.visualStyle,
   animation_quality: DEFAULT_CONFIG.animationQuality,
+  animation_intensity: DEFAULT_CONFIG.animationIntensity,
   show_clock: DEFAULT_CONFIG.showClock,
   show_clock_seconds: DEFAULT_CONFIG.showClockSeconds,
   show_date: DEFAULT_CONFIG.showDate,
@@ -141,6 +142,7 @@ export class DynamicWeatherCardEditor extends LitElement {
           select('visual_style', ['modern', 'classic']),
           select('animation_quality', ['high', 'medium', 'low'])
         ),
+        { name: 'animation_intensity', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },
         grid(toggle('show_animations'), toggle('show_aurora')),
         grid(toggle('show_raindrops'), toggle('show_wind_effects')),
         grid(

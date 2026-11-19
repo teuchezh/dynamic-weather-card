@@ -1,4 +1,5 @@
 import { BaseAnimation } from './base';
+import { scaleParticleCount } from './intensity';
 import { RainyAnimation } from './rainy';
 import { TimeOfDay } from '../types';
 
@@ -62,7 +63,7 @@ export class HailAnimation extends BaseAnimation {
   }
 
   private drawHailStones(width: number, height: number): void {
-    const key = `${Math.round(width)}x${Math.round(height)}:${this.quality.particles}`;
+    const key = `${Math.round(width)}x${Math.round(height)}:${this.quality.particles}:${this.intensity}`;
     if (key !== this.stonesKey) {
       this.createStones(width, height);
       this.stonesKey = key;
@@ -104,7 +105,10 @@ export class HailAnimation extends BaseAnimation {
     this.hailStones = [];
     const area = (width * height) / 10000;
     HAIL_LAYERS.forEach((layer, index) => {
-      const count = Math.min(200, Math.round(area * layer.density * this.quality.particles));
+      const count = scaleParticleCount(
+        Math.min(200, Math.round(area * layer.density * this.quality.particles)),
+        this.intensity
+      );
       for (let i = 0; i < count; i++) {
         const stone: HailStone = { layer: index, x: 0, y: 0, vx: 0, vy: 0, size: 0, ground: 0, bounces: 0 };
         this.resetStone(stone, width, height);

@@ -1,4 +1,5 @@
 import { BaseAnimation } from './base';
+import { scaleParticleCount } from './intensity';
 import { TimeOfDay } from '../types';
 
 interface Snowflake {
@@ -56,7 +57,7 @@ export class SnowyAnimation extends BaseAnimation {
    * @param height - Canvas height
    */
   drawSnowflakes(width: number, height: number): void {
-    const key = `${Math.round(width)}x${Math.round(height)}:${this.quality.particles}`;
+    const key = `${Math.round(width)}x${Math.round(height)}:${this.quality.particles}:${this.intensity}`;
     if (key !== this.flakesKey) {
       this.createFlakes(width, height);
       this.flakesKey = key;
@@ -92,7 +93,10 @@ export class SnowyAnimation extends BaseAnimation {
     this.snowflakes = [];
     const area = (width * height) / 10000;
     SNOW_LAYERS.forEach((layer, index) => {
-      const count = Math.min(250, Math.round(area * layer.density * this.quality.particles));
+      const count = scaleParticleCount(
+        Math.min(250, Math.round(area * layer.density * this.quality.particles)),
+        this.intensity
+      );
       for (let i = 0; i < count; i++) {
         this.snowflakes.push({
           layer: index,

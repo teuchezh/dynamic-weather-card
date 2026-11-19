@@ -1,4 +1,5 @@
 import { BaseAnimation } from '../base';
+import { scaleParticleCount } from '../intensity';
 import { TimeOfDay } from '../../types';
 
 interface HailStone {
@@ -36,7 +37,7 @@ export class HailAnimation extends BaseAnimation {
    * @param height - Canvas height
    */
   private drawHailStones(width: number, height: number): void {
-    const stoneCount = 60;
+    const stoneCount = scaleParticleCount(60, this.intensity);
 
     // Initialize hail stones
     if (this.hailStones.length !== stoneCount) {
