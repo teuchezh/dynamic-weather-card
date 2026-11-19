@@ -85,6 +85,11 @@ export class WeatherDetails extends LitElement {
     }
   `;
 
+  protected willUpdate(_changedProperties: Map<string, unknown>): void {
+    // An empty compact row is display:none so it does not open a flex gap in the minimal stack
+    this.hidden = this.compact && !this.hasContent();
+  }
+
   updated(changedProperties: Map<string, unknown>): void {
     super.updated(changedProperties);
     if (changedProperties.has('userStyles')) applyUserStyles(this.shadowRoot, this.userStyles);

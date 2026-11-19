@@ -683,24 +683,28 @@ export class AnimatedWeatherCard extends LitElement {
     // Reading order is the left column first (temperature, condition, details,
     // feels-like, precipitation outlook), then the clock.
     // The clock is placed on the right in CSS so it stays last here without looking secondary.
+    // One stack, not two grid rows: a second row stretches with the card height and the clock
+    // and opens a gap between the condition and feels-like.
     return html`
       <div class="${cardClasses} layout--minimal" style="${cardStyle}">
         ${this.config.showAnimations !== false ? html`<div class="canvas-container"></div>` : ''}
         <div class="content">
-          <div class="mini-primary">
-            <div class="mini-temp">${tempStr}</div>
-            <div class="mini-condition">${i18n.t(weather.condition)}${templow}</div>
-          </div>
-          <div class="mini-details">
-            <weather-details
-              .userStyles=${this.config.styles ?? null}
-              .weather=${weather}
-              .sunData=${sunData}
-              .config=${this.getDetailsConfig()}
-              .entityAttributes=${getWeatherAttributes(hass, this.config.entity)}
-              .compact=${true}
-            ></weather-details>
-            ${notes}
+          <div class="mini-main">
+            <div class="mini-primary">
+              <div class="mini-temp">${tempStr}</div>
+              <div class="mini-condition">${i18n.t(weather.condition)}${templow}</div>
+            </div>
+            <div class="mini-details">
+              <weather-details
+                .userStyles=${this.config.styles ?? null}
+                .weather=${weather}
+                .sunData=${sunData}
+                .config=${this.getDetailsConfig()}
+                .entityAttributes=${getWeatherAttributes(hass, this.config.entity)}
+                .compact=${true}
+              ></weather-details>
+              ${notes}
+            </div>
           </div>
           ${this.config.showClock || this.config.showDate ? html`
             <weather-clock

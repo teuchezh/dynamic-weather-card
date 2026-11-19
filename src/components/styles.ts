@@ -354,20 +354,31 @@ export const cardStyles = css`
 
   .weather-card.layout--minimal .content {
     display: grid;
-    /* The clock column collapses when the clock is off, so the gap lives on the clock itself */
+    /* The clock column collapses when the clock is off. One row: the copy is a single
+       stack, so the card height and the clock cannot open a gap above feels-like. */
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "lead clock"
-      "details clock";
+    grid-template-areas: "main clock";
     align-items: center;
+    align-content: start;
+    justify-content: start;
     column-gap: 0;
-    row-gap: 6px;
+    row-gap: 0;
     padding: var(--dwc-padding, 8px 16px);
     min-height: inherit;
   }
 
+  .mini-main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 4px;
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .mini-primary {
-    grid-area: lead;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -402,9 +413,17 @@ export const cardStyles = css`
   }
 
   .mini-details {
-    grid-area: details;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
     min-width: 0;
     max-width: 100%;
+  }
+
+  /* Nothing visible (details hidden, no notes): drop the stack gap under the condition */
+  .mini-details:not(:has(.mini-notes, weather-details:not([hidden]))) {
+    display: none;
   }
 
   /* Under the details, in the left column. Same scale as those details, not the temperature */
@@ -413,7 +432,7 @@ export const cardStyles = css`
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
-    margin-top: 4px;
+    margin-top: 0;
     min-width: 0;
     max-width: 100%;
   }
