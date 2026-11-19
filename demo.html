@@ -181,7 +181,9 @@
 
         #card-container {
             width: 100%;
-            filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.35));
+            /* box-shadow, not filter: a filter would trap the forecast dialog's position:fixed */
+            border-radius: 16px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
         }
 
         .loading-message, .error-message {
