@@ -16,6 +16,7 @@ import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
 import { getWeatherData, getWeatherAttributes, readTextSensor } from './weather-data.js';
 import { getPrecipitationOutlook } from '../precipitation-outlook.js';
+import { clampTemperatureDecimals, formatTemperature } from '../temperature-format.js';
 import { resolveForecastPopup, type ForecastPopup } from '../forecast-popup.js';
 import { getSVGIcon } from '../icons/svg-icons.js';
 import { applyUserStyles } from '../user-styles.js';
@@ -367,6 +368,7 @@ export class AnimatedWeatherCard extends LitElement {
       showUvIndex: config.show_uv_index === true,
       showDewPoint: config.show_dew_point === true,
       showMinTemp: config.show_min_temp !== false,
+      temperatureDecimals: clampTemperatureDecimals(config.temperature_decimals),
       showPrecipitationOutlook: config.show_precipitation_outlook === true,
       showAurora: config.show_aurora === true,
       showRaindrops: config.show_raindrops !== false,
@@ -579,7 +581,7 @@ export class AnimatedWeatherCard extends LitElement {
           <div class="primary">
             <div class="primary-left">
               <div class="condition">${i18n.t(weather.condition)}</div>
-              <div class="temperature">${weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data')}</div>
+              <div class="temperature">${this.formatCurrentTemperature(weather.temperature)}</div>
               ${this.config.showMinTemp ? html`
                 <div class="temp-range">
                   <span class="temp-min">↓ ${weather.templow != null ? `${Math.round(weather.templow)}°` : i18n.t('no_data')}</span>
@@ -659,6 +661,13 @@ export class AnimatedWeatherCard extends LitElement {
     return this.forecastWindOptions;
   }
 
+  /** Current temperature only. Forecasts, the low and feels-like stay whole degrees. */
+  private formatCurrentTemperature(value: number | null): string {
+    return value != null
+      ? formatTemperature(value, this.config.temperatureDecimals ?? DEFAULT_CONFIG.temperatureDecimals)
+      : i18n.t('no_data');
+  }
+
   private renderMinimal(
     weather: ReturnType<typeof getWeatherData>,
     sunData: SunData,
@@ -666,7 +675,7 @@ export class AnimatedWeatherCard extends LitElement {
     cardClasses: string,
     cardStyle: string
   ): TemplateResult {
-    const tempStr = weather.temperature != null ? Math.round(weather.temperature) + '°' : i18n.t('no_data');
+    const tempStr = this.formatCurrentTemperature(weather.temperature);
     const templowStr = weather.templow != null ? `↓ ${Math.round(weather.templow)}°` : null;
     const templow = this.config.showMinTemp && templowStr
       ? html`<span class="mini-temp-low">${templowStr}</span>`

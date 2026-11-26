@@ -162,6 +162,7 @@ show_daily_forecast: true
 type: custom:dynamic-weather-card
 entity: weather.home                     # по-прежнему нужна для погоды и прогноза
 temperature_entity: sensor.outdoor_temperature
+temperature_decimals: 1                 # 14.6 остаётся 14.6°; 0 округляет до 15°
 humidity_entity: sensor.outdoor_humidity
 wind_speed_entity: sensor.wind_speed
 wind_gust_entity: sensor.wind_gust
@@ -250,6 +251,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 
 | Параметр | Тип | По умолчанию | Описание |
 |---|---|---|---|
+| `temperature_decimals` | number | `0` | Знаков после запятой у текущей температуры, от `0` до `2`. `0` округляет до целого градуса: 14.6 показывается как 15°. `1` показывает 14.6°. Почасовой и дневной прогнозы остаются целыми градусами |
 | `show_feels_like` | boolean | `true` | Температура «ощущается как» |
 | `show_min_temp` | boolean | `true` | Минимальная температура за сегодня |
 | `show_precipitation_outlook` | boolean | `false` | Когда в ближайшие 12 часов начнутся или закончатся дождь или снег, например *«Дождь ожидается около 16:00»*. Строится по почасовому прогнозу; скрыта, если ничего не меняется. Есть в обычном макете и, под деталями, в минимальном |

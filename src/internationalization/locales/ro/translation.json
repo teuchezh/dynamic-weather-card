@@ -69,6 +69,8 @@
     "show_wind_direction": "Direcție",
     "show_humidity": "Umiditate",
     "show_min_temp": "Temperatură minimă",
+    "temperature_decimals": "Zecimale temperatură",
+    "temperature_decimals_helper": "Zecimale pentru temperatura curentă, de la 0 la 2. 0 rotunjește la grad întreg.",
     "show_hourly_forecast": "Prognoză pe ore",
     "hourly_forecast_hours": "Ore",
     "hourly_forecast_step": "La fiecare",

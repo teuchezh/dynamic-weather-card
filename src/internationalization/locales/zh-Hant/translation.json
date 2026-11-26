@@ -69,6 +69,8 @@
     "show_wind_direction": "風向",
     "show_humidity": "濕度",
     "show_min_temp": "最低溫度",
+    "temperature_decimals": "溫度小數位",
+    "temperature_decimals_helper": "目前溫度的小數位數，0 到 2。0 表示四捨五入到整數。",
     "show_hourly_forecast": "逐時預報",
     "hourly_forecast_hours": "小時數",
     "hourly_forecast_step": "間隔",

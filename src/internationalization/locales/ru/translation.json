@@ -69,6 +69,8 @@
     "show_wind_direction": "Направление",
     "show_humidity": "Влажность",
     "show_min_temp": "Мин. температура",
+    "temperature_decimals": "Десятичные знаки",
+    "temperature_decimals_helper": "Знаков после запятой у текущей температуры, от 0 до 2. 0 округляет до целого градуса.",
     "show_hourly_forecast": "Прогноз по часам",
     "hourly_forecast_hours": "Часов",
     "hourly_forecast_step": "Шаг",
