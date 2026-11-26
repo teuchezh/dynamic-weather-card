@@ -749,6 +749,10 @@
             visualStyle: 'modern',
             animationQuality: 'high',
             animationIntensity: 1,
+            animationSpeed: 1,
+            lightningFrequency: 1,
+            lightningBrightness: 1,
+            showLightning: true,
             layout: 'default',
             showAnimations: true,
             height: 200,
@@ -930,7 +934,10 @@
                 { type: 'segmented', key: 'visualStyle', label: ['visualStyle', 'Graphics Style'], options: [['modern', t('visualStyleModern', '✨ Modern')], ['classic', t('visualStyleClassic', '🎨 Classic')]] },
                 { type: 'segmented', key: 'animationQuality', label: ['animationQuality', 'Animation Quality'], options: [['high', t('qualityHighShort', 'High')], ['medium', t('qualityMediumShort', 'Medium')], ['low', t('qualityLowShort', 'Low')]] },
                 { type: 'range', key: 'animationIntensity', label: ['animationIntensity', 'Animation intensity'], min: 0.25, max: 1, step: 0.05, format: v => Number(v).toFixed(2) },
-                { type: 'toggles', items: [['showAnimations', 'animations', 'Animations'], ['showAurora', 'aurora', 'Northern lights (clear nights)'], ['showRaindrops', 'raindrops', 'Raindrops on the glass'], ['showWindEffects', 'windEffects', 'Wind gusts and leaves']] },
+                { type: 'range', key: 'animationSpeed', label: ['animationSpeed', 'Animation speed'], min: 0.25, max: 1, step: 0.05, format: v => Number(v).toFixed(2) },
+                { type: 'range', key: 'lightningFrequency', label: ['lightningFrequency', 'Lightning frequency'], min: 0.25, max: 1, step: 0.05, format: v => Number(v).toFixed(2) },
+                { type: 'range', key: 'lightningBrightness', label: ['lightningBrightness', 'Lightning brightness'], min: 0.25, max: 1, step: 0.05, format: v => Number(v).toFixed(2) },
+                { type: 'toggles', items: [['showAnimations', 'animations', 'Animations'], ['showLightning', 'showLightning', 'Lightning flashes'], ['showAurora', 'aurora', 'Northern lights (clear nights)'], ['showRaindrops', 'raindrops', 'Raindrops on the glass'], ['showWindEffects', 'windEffects', 'Wind gusts and leaves']] },
                 { type: 'segmented', key: 'layout', label: ['layout', 'Layout'], options: [['default', t('layoutDefault', 'Default')], ['minimal', t('layoutMinimal', 'Minimal')]] },
                 { type: 'range', key: 'height', label: ['height', 'Height (px)'], min: 50, max: 600, step: 10, format: v => `${v}px` },
                 { type: 'range', key: 'borderRadius', label: ['borderRadius', 'Corner Radius (px)'], min: 0, max: 40, nullable: true, format: v => `${v}px` },
@@ -1437,6 +1444,10 @@
                 visual_style: state.visualStyle,
                 animation_quality: state.animationQuality,
                 animation_intensity: state.animationIntensity,
+                animation_speed: state.animationSpeed,
+                lightning_frequency: state.lightningFrequency,
+                lightning_brightness: state.lightningBrightness,
+                show_lightning: state.showLightning,
                 show_animations: state.showAnimations
             };
             if (state.name.trim()) config.name = state.name.trim();
@@ -1470,7 +1481,7 @@
         // Options in the order of the README and the visual editor, one commented group each
         const YAML_GROUPS = [
             [null, ['type', 'entity', 'name']],
-            ['Appearance', ['layout', 'height', 'visual_style', 'animation_quality', 'animation_intensity', 'show_animations', 'show_aurora', 'show_raindrops',
+            ['Appearance', ['layout', 'height', 'visual_style', 'animation_quality', 'animation_intensity', 'animation_speed', 'lightning_frequency', 'lightning_brightness', 'show_lightning', 'show_animations', 'show_aurora', 'show_raindrops',
                 'show_wind_effects', 'overlay_opacity', 'text_shadow', 'text_color', 'border_radius', 'sun_position_x', 'sun_position_y', 'styles']],
             ['Details', ['temperature_decimals', 'show_feels_like', 'show_min_temp', 'show_humidity', 'show_pressure', 'show_uv_index', 'show_dew_point',
                 'show_sunrise_sunset', 'show_precipitation_outlook', 'show_wind', 'show_wind_gust', 'show_wind_direction', 'wind_speed_unit']],

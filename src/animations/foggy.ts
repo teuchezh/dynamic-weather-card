@@ -1,4 +1,5 @@
 import { BaseAnimation } from './base';
+import { motionTime } from './speed';
 import { getSkyColors, rgb } from '../sky';
 import { TimeOfDay, RGBColor } from '../types';
 
@@ -45,6 +46,7 @@ export class FoggyAnimation extends BaseAnimation {
    */
   draw(time: number, width: number, height: number, timeOfDay: TimeOfDay): void {
     const currentTime = Date.now() * 0.001;
+    const motion = motionTime(currentTime, this.speed);
     const color = getSkyColors('foggy', timeOfDay).cloudLight;
     this.ensureSprites(color);
 
@@ -60,9 +62,9 @@ export class FoggyAnimation extends BaseAnimation {
     FOG_BANKS.forEach((bank, index) => {
       const w = SPRITE_WIDTH * sizeScale;
       const h = SPRITE_HEIGHT * sizeScale * bank.scaleY;
-      const y = bank.y * height - h / 2 + Math.sin(currentTime * 0.2 + index) * 4;
+      const y = bank.y * height - h / 2 + Math.sin(motion * 0.2 + index) * 4;
       // Seamless horizontal tiling
-      let x = (currentTime * bank.speed) % w;
+      let x = (motion * bank.speed) % w;
       if (x > 0) x -= w;
 
       this.ctx.save();

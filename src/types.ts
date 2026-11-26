@@ -185,6 +185,14 @@ export interface WeatherCardConfig {
   animationQuality?: AnimationQuality;
   // 1 is the full animation. Lower (down to 0.25) draws fewer particles and calmer lightning.
   animationIntensity?: number;
+  // 1 is today's pace. Lower (down to 0.25) slows motion. Lightning flash length stays.
+  animationSpeed?: number;
+  // 1 keeps today's flashes. Lower (down to 0.25) skips some without stretching them.
+  lightningFrequency?: number;
+  // 1 is today's bolt and white flash. Lower (down to 0.25) dims them.
+  lightningBrightness?: number;
+  // false removes flashes and bolts. Clouds and rain stay.
+  showLightning?: boolean;
 }
 
 // Time of Day
@@ -321,6 +329,10 @@ export interface ConfigInput {
   visual_style?: VisualStyle;
   animation_quality?: AnimationQuality;
   animation_intensity?: number;
+  animation_speed?: number;
+  lightning_frequency?: number;
+  lightning_brightness?: number;
+  show_lightning?: boolean;
   sunrise_entity?: string;
   sunset_entity?: string;
   templow_attribute?: string;

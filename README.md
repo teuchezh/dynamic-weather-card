@@ -233,6 +233,10 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `visual_style` | string | `modern` | `modern`: weather-aware sky, layered clouds, rain and snow with depth, stars and the real moon phase, sun rays. `classic`: the original, simpler graphics |
 | `animation_quality` | string | `high` | `high` (60 FPS), `medium` (30 FPS, fewer particles and cloud layers) or `low` (20 FPS, minimal particles, no extras, 1× resolution) for wall tablets and slow devices |
 | `animation_intensity` | number | `1` | How full the moving weather looks, from `0.25` to `1`. `1` is today's animation. Lower draws fewer rain, snow, hail and wind particles, and lightning is dimmer and rarer. Motion speed and frame rate stay the same. Clouds, fog, sun, stars and aurora are unchanged |
+| `animation_speed` | number | `1` | How fast the weather moves, from `0.25` to `1`. `1` is today's pace. Lower slows rain, snow, hail, clouds, fog and wind. Lightning flashes keep their length, and the frame rate stays the same. Particle counts stay with `animation_intensity` |
+| `lightning_frequency` | number | `1` | How often lightning strikes, from `0.25` to `1`. `1` is today's thunderstorm. Lower skips flashes. Each flash stays the same length |
+| `lightning_brightness` | number | `1` | Brightness of the bolt and the white flash, from `0.25` to `1`. `1` is today's brightness |
+| `show_lightning` | boolean | `true` | `false` turns flashes off. Clouds and rain stay |
 | `show_animations` | boolean | `true` | `false` shows a still sky gradient without animations |
 | `show_aurora` | boolean | `false` | Northern lights on clear nights |
 | `show_raindrops` | boolean | `true` | Raindrops on the glass in rain, heavy rain, thunderstorm and sleet (not on `low` quality) |

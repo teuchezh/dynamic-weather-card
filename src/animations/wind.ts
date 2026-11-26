@@ -1,4 +1,5 @@
 import { scaleParticleCount } from './intensity';
+import { motionDelta } from './speed';
 import type { QualitySettings } from './quality';
 
 interface Gust {
@@ -41,9 +42,11 @@ export class WindEffect {
    * @param withLeaves - draw flying leaves (windy conditions)
    * @param daylight - 1 = day, 0 = night; streaks and leaves are dimmer at night
    */
-  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, strength: number, withLeaves: boolean, daylight: number, quality: QualitySettings, intensity = 1): void {
+  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, strength: number, withLeaves: boolean, daylight: number, quality: QualitySettings, intensity = 1, speed = 1): void {
     const dt = this.lastTime ? Math.min(0.1, Math.max(0, time - this.lastTime)) : 0;
     this.lastTime = time;
+    // Gusts fade on the wall clock. Only the travel is slowed.
+    const step = motionDelta(dt, speed);
     const scale = Math.max(0.5, Math.min(1, height / 200));
 
     const gustTarget = scaleParticleCount(
@@ -58,14 +61,14 @@ export class WindEffect {
     const brightness = 0.35 + daylight * 0.45;
     this.gusts = this.gusts.map(gust => {
       gust.age += dt;
-      gust.x += gust.speed * dt;
+      gust.x += gust.speed * step;
       if (gust.age >= gust.life || gust.x - gust.length > width) return this.createGust(width, height, scale, false);
       this.drawGust(ctx, gust, brightness);
       return gust;
     });
 
     if (withLeaves && quality.details) {
-      this.drawLeaves(ctx, dt, width, height, scale, daylight, quality, intensity);
+      this.drawLeaves(ctx, step, width, height, scale, daylight, quality, intensity);
     }
     ctx.restore();
   }
@@ -108,7 +111,7 @@ export class WindEffect {
     ctx.stroke();
   }
 
-  private drawLeaves(ctx: CanvasRenderingContext2D, dt: number, width: number, height: number, scale: number, daylight: number, quality: QualitySettings, intensity: number): void {
+  private drawLeaves(ctx: CanvasRenderingContext2D, step: number, width: number, height: number, scale: number, daylight: number, quality: QualitySettings, intensity: number): void {
     const dpr = ctx.getTransform().a || 1;
     this.ensureSprites(dpr);
     const target = scaleParticleCount(Math.max(2, Math.round(width / 70 * quality.particles)), intensity);
@@ -117,10 +120,10 @@ export class WindEffect {
 
     ctx.globalAlpha = 0.55 + daylight * 0.45;
     this.leaves = this.leaves.map(leaf => {
-      leaf.x += leaf.speed * dt;
-      leaf.flutter += dt * 3;
-      leaf.y += Math.sin(leaf.flutter) * 30 * dt * scale + 12 * dt * scale;
-      leaf.angle += leaf.spin * dt;
+      leaf.x += leaf.speed * step;
+      leaf.flutter += step * 3;
+      leaf.y += Math.sin(leaf.flutter) * 30 * step * scale + 12 * step * scale;
+      leaf.angle += leaf.spin * step;
       if (leaf.x - leaf.size > width || leaf.y - leaf.size > height) return this.createLeaf(width, height, scale, false);
 
       ctx.save();

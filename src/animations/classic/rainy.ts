@@ -1,5 +1,6 @@
 import { BaseAnimation } from '../base';
 import { scaleParticleCount } from '../intensity';
+import { motionDelta, motionTime } from '../speed';
 import { TimeOfDay } from '../../types';
 
 interface RainDrop {
@@ -71,7 +72,8 @@ export class RainyAnimation extends BaseAnimation {
       const drop = this.rainDrops[i];
 
       // Update drop position
-      drop.y += drop.speed * deltaTime;
+      const step = motionDelta(deltaTime, this.speed);
+      drop.y += drop.speed * step;
 
       // Reset drop when it goes off screen (smooth loop)
       if (drop.y > height + 50) {
@@ -80,7 +82,7 @@ export class RainyAnimation extends BaseAnimation {
       }
 
       // Wind effect
-      const wind = drop.windOffset * (1 + Math.sin(currentAnimTime * 0.5 + drop.phase) * 0.2);
+      const wind = drop.windOffset * (1 + Math.sin(motionTime(currentAnimTime, this.speed) * 0.5 + drop.phase) * 0.2);
       const dropX = drop.x + wind;
 
       // Wrap around horizontally

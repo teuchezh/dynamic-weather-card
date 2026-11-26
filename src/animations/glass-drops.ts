@@ -1,4 +1,5 @@
 import type { QualitySettings } from './quality';
+import { motionDelta } from './speed';
 
 interface Bead {
   x: number;
@@ -34,7 +35,7 @@ export class GlassDrops {
   private size = '';
   private lastTime = 0;
 
-  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, intensity: number, quality: QualitySettings): void {
+  draw(ctx: CanvasRenderingContext2D, time: number, width: number, height: number, intensity: number, quality: QualitySettings, speed = 1): void {
     const dpr = ctx.getTransform().a || 1;
     const sprite = this.getSprite(dpr);
     const scale = Math.max(0.6, Math.min(1, height / 200));
@@ -77,8 +78,9 @@ export class GlassDrops {
       if (runner.wait > 0) {
         runner.wait -= dt;
       } else {
-        runner.y += runner.speed * dt;
-        runner.x += Math.sin(runner.y * 0.08 + runner.wobble) * 6 * dt;
+        const step = motionDelta(dt, speed);
+        runner.y += runner.speed * step;
+        runner.x += Math.sin(runner.y * 0.08 + runner.wobble) * 6 * step;
         // Slides in bursts
         if (Math.random() < dt * 0.8) runner.wait = 0.2 + Math.random() * 1.2;
         // Leaves small beads behind

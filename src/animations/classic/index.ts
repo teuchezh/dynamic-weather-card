@@ -36,6 +36,18 @@ export class ClassicAnimations {
     }
   }
 
+  setSpeed(speed: number): void {
+    for (const animation of [this.sunny, this.rainy, this.snowy, this.cloudy, this.foggy, this.hail, this.thunderstorm]) {
+      animation.setSpeed(speed);
+    }
+  }
+
+  setLightning(show: boolean, frequency: number, brightness: number): void {
+    for (const animation of [this.sunny, this.rainy, this.snowy, this.cloudy, this.foggy, this.hail, this.thunderstorm]) {
+      animation.setLightning(show, frequency, brightness);
+    }
+  }
+
   draw(condition: string, width: number, height: number, timeOfDay: TimeOfDay, sunPosition?: PositionOverride): void {
     const now = Date.now();
     switch (condition) {
