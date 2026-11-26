@@ -69,6 +69,8 @@
     "show_wind_direction": "Direcció",
     "show_humidity": "Humitat",
     "show_min_temp": "Temperatura mínima",
+    "temperature_decimals": "Decimals de temperatura",
+    "temperature_decimals_helper": "Decimals de la temperatura actual, de 0 a 2. 0 arrodoneix al grau sencer.",
     "show_hourly_forecast": "Previsió per hores",
     "hourly_forecast_hours": "Hores",
     "hourly_forecast_step": "Interval",

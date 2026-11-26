@@ -69,6 +69,8 @@
     "show_wind_direction": "Smer",
     "show_humidity": "Vlažnost",
     "show_min_temp": "Min temperatura",
+    "temperature_decimals": "Decimalke temperature",
+    "temperature_decimals_helper": "Decimalna mesta trenutne temperature, od 0 do 2. 0 zaokroži na celo stopinjo.",
     "show_hourly_forecast": "Urna napoved",
     "hourly_forecast_hours": "Ure",
     "hourly_forecast_step": "Vsakih",

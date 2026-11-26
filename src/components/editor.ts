@@ -60,6 +60,7 @@ const editorDefaults = (): WeatherCardEditorConfig => ({
   show_uv_index: DEFAULT_CONFIG.showUvIndex,
   show_dew_point: DEFAULT_CONFIG.showDewPoint,
   show_min_temp: DEFAULT_CONFIG.showMinTemp,
+  temperature_decimals: DEFAULT_CONFIG.temperatureDecimals,
   show_precipitation_outlook: DEFAULT_CONFIG.showPrecipitationOutlook,
   show_temperature_bars: DEFAULT_CONFIG.showTemperatureBars,
   show_forecast_wind: DEFAULT_CONFIG.showForecastWind,
@@ -158,6 +159,7 @@ export class DynamicWeatherCardEditor extends LitElement {
         { name: 'styles', selector: { text: { multiline: true } } }
       ]),
       section('details', 'mdi:thermometer', [
+        { name: 'temperature_decimals', selector: { number: { min: 0, max: 2, step: 1, mode: 'box' } } },
         grid(
           toggle('show_feels_like'),
           toggle('show_min_temp'),

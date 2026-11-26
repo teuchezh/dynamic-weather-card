@@ -62,6 +62,8 @@
     "show_wind_direction": "Kierunek",
     "show_humidity": "Wilgotność",
     "show_min_temp": "Temperatura minimalna",
+    "temperature_decimals": "Miejsca dziesiętne",
+    "temperature_decimals_helper": "Miejsca dziesiętne bieżącej temperatury, od 0 do 2. 0 zaokrągla do pełnego stopnia.",
     "show_hourly_forecast": "Prognoza godzinowa",
     "hourly_forecast_hours": "Godziny",
     "hourly_forecast_step": "Co",

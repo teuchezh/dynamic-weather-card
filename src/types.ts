@@ -141,6 +141,8 @@ export interface WeatherCardConfig {
   showUvIndex?: boolean;
   showDewPoint?: boolean;
   showMinTemp?: boolean;
+  // Decimal places of the current temperature. 0 rounds to a whole degree.
+  temperatureDecimals?: number;
   showPrecipitationOutlook?: boolean;
   showTemperatureBars?: boolean;
   showForecastWind?: boolean;
@@ -278,6 +280,8 @@ export interface ConfigInput {
   show_uv_index?: boolean;
   show_dew_point?: boolean;
   show_min_temp?: boolean;
+  // Decimal places of the current temperature. 0 rounds to a whole degree.
+  temperature_decimals?: number;
   show_precipitation_outlook?: boolean;
   show_temperature_bars?: boolean;
   show_forecast_wind?: boolean;

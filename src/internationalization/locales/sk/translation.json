@@ -62,6 +62,8 @@
     "show_wind_direction": "Smer",
     "show_humidity": "Vlhkosť",
     "show_min_temp": "Minimálna teplota",
+    "temperature_decimals": "Desatinné miesta",
+    "temperature_decimals_helper": "Desatinné miesta aktuálnej teploty, od 0 do 2. 0 zaokrúhli na celé stupne.",
     "show_hourly_forecast": "Hodinová predpoveď",
     "hourly_forecast_hours": "Hodiny",
     "hourly_forecast_step": "Každých",

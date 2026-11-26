@@ -162,6 +162,7 @@ show_daily_forecast: true
 type: custom:dynamic-weather-card
 entity: weather.home                     # still used for the condition and the forecast
 temperature_entity: sensor.outdoor_temperature
+temperature_decimals: 1                 # 14.6 stays 14.6°; 0 rounds to 15°
 humidity_entity: sensor.outdoor_humidity
 wind_speed_entity: sensor.wind_speed
 wind_gust_entity: sensor.wind_gust
@@ -250,6 +251,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 
 | Option | Type | Default | Description |
 |---|---|---|---|
+| `temperature_decimals` | number | `0` | Decimal places of the current temperature, from `0` to `2`. `0` rounds to a whole degree, so 14.6 shows as 15°. `1` shows 14.6°. Hourly and daily forecasts keep whole degrees |
 | `show_feels_like` | boolean | `true` | "Feels like" temperature |
 | `show_min_temp` | boolean | `true` | Today's minimum temperature |
 | `show_precipitation_outlook` | boolean | `false` | When rain or snow starts or stops in the next 12 hours, e.g. *"Rain expected around 16:00"*. Uses the hourly forecast; hidden when nothing changes. Shown in the default layout and, under the details, in the minimal layout |
