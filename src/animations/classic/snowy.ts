@@ -1,5 +1,6 @@
 import { BaseAnimation } from '../base';
 import { scaleParticleCount } from '../intensity';
+import { motionDelta, motionTime } from '../speed';
 import { TimeOfDay } from '../../types';
 
 interface Snowflake {
@@ -77,10 +78,11 @@ export class SnowyAnimation extends BaseAnimation {
       const flake = this.snowflakes[i];
 
       // Update position with gentle swaying
-      const sway = Math.sin(currentAnimTime * flake.swaySpeed + flake.swayPhase) * 2;
-      flake.y += flake.speedY * deltaTime;
-      flake.x += (flake.speedX + sway) * deltaTime;
-      flake.rotation += flake.rotationSpeed * deltaTime;
+      const step = motionDelta(deltaTime, this.speed);
+      const sway = Math.sin(motionTime(currentAnimTime, this.speed) * flake.swaySpeed + flake.swayPhase) * 2;
+      flake.y += flake.speedY * step;
+      flake.x += (flake.speedX + sway) * step;
+      flake.rotation += flake.rotationSpeed * step;
 
       // Reset when off screen (smooth loop)
       if (flake.y > height + 20) {

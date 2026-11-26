@@ -1,5 +1,6 @@
 import { BaseAnimation } from './base';
 import { lightningOverlayAlpha, lightningVisibilityThreshold } from './intensity';
+import { lightningFlashIntensity, LightningGate } from './lightning';
 import { RainyAnimation } from './rainy';
 import { TimeOfDay } from '../types';
 
@@ -23,6 +24,7 @@ export class ThunderstormAnimation extends BaseAnimation {
   private rainyAnimation: RainyAnimation;
   private bolts: LightningBolt[] = [];
   private flashActive = false;
+  private lightningGate = new LightningGate();
 
   constructor(ctx: CanvasRenderingContext2D) {
     super(ctx);
@@ -39,12 +41,24 @@ export class ThunderstormAnimation extends BaseAnimation {
    * @param withRain - Include rain flag
    */
   draw(time: number, width: number, height: number, timeOfDay: TimeOfDay, withRain: boolean = true): void {
+    // Wall clock, not animation speed: a slower sky must not stretch the flash.
     const currentTime = Date.now() * 0.001;
-    const flashIntensity = this.getFlashIntensity(currentTime);
+    const flashIntensity = lightningFlashIntensity(currentTime);
+    const admitted = this.lightningGate.frame(
+      flashIntensity,
+      lightningVisibilityThreshold(this.intensity),
+      this.lightningFrequency,
+      this.showLightning
+    );
 
-    // Bolts are drawn first so they come out of the clouds
-    this.updateBolts(currentTime, flashIntensity, width, height);
-    this.drawBolts(currentTime);
+    if (!this.showLightning) {
+      this.bolts = [];
+      this.flashActive = false;
+    } else {
+      // Bolts are drawn first so they come out of the clouds
+      this.updateBolts(currentTime, admitted, width, height);
+      this.drawBolts(currentTime);
+    }
 
     // Dark clouds
     this.drawClouds(currentTime, width, height, 1.0);
@@ -55,31 +69,24 @@ export class ThunderstormAnimation extends BaseAnimation {
     }
 
     // Lightning flash effect
-    this.drawLightning(width, height, flashIntensity);
+    if (admitted) this.drawLightning(width, height, flashIntensity);
   }
 
   /**
-   * Unpredictable flash pattern, 0..1
+   * Spawn a bolt at the start of every shown flash and drop the finished ones.
+   * Frequency decides which flashes start. It does not change bolt length.
    */
-  private getFlashIntensity(time: number): number {
-    return Math.max(0, Math.sin(time * 2.5) * Math.sin(time * 5.3) * Math.sin(time * 7.1));
-  }
-
-  /**
-   * Spawn a bolt at the start of every flash and drop the finished ones
-   */
-  private updateBolts(time: number, flashIntensity: number, width: number, height: number): void {
+  private updateBolts(time: number, admitted: boolean, width: number, height: number): void {
     this.bolts = this.bolts.filter(bolt => time < bolt.startsAt + bolt.duration);
 
-    const flashActive = flashIntensity > lightningVisibilityThreshold(this.intensity);
-    if (flashActive && !this.flashActive) {
+    if (admitted && !this.flashActive) {
       this.bolts.push(this.createBolt(time, width, height));
       // Sometimes a second strike follows shortly after
       if (Math.random() < 0.3) {
         this.bolts.push(this.createBolt(time + 0.08 + Math.random() * 0.1, width, height));
       }
     }
-    this.flashActive = flashActive;
+    this.flashActive = admitted;
   }
 
   /**
@@ -116,7 +123,7 @@ export class ThunderstormAnimation extends BaseAnimation {
       }
     }
 
-    // 0.2–0.35s on the wall clock. Intensity changes how often a bolt starts, not how long it lasts.
+    // 0.2–0.35s on the wall clock. Speed, frequency and brightness do not change this.
     return { trunk, branches, startsAt, duration: 0.2 + Math.random() * 0.15 };
   }
 
@@ -132,7 +139,7 @@ export class ThunderstormAnimation extends BaseAnimation {
       this.ctx.save();
       this.ctx.lineCap = 'round';
       this.ctx.lineJoin = 'round';
-      this.ctx.globalAlpha = opacity;
+      this.ctx.globalAlpha = this.lightningBrightness === 1 ? opacity : opacity * this.lightningBrightness;
       this.ctx.shadowColor = 'rgba(200, 220, 255, 1)';
 
       bolt.branches.forEach(branch => this.strokePath(branch, 1.2, 8));
@@ -161,7 +168,7 @@ export class ThunderstormAnimation extends BaseAnimation {
    * @param flashIntensity - Current flash intensity, 0..1
    */
   private drawLightning(width: number, height: number, flashIntensity: number): void {
-    const fadeAlpha = lightningOverlayAlpha(flashIntensity, this.intensity);
+    const fadeAlpha = lightningOverlayAlpha(flashIntensity, this.intensity, this.lightningBrightness);
     if (fadeAlpha <= 0) return;
 
     this.ctx.fillStyle = `rgba(255, 255, 255, ${fadeAlpha})`;

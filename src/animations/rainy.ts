@@ -1,5 +1,6 @@
 import { BaseAnimation } from './base';
 import { scaleParticleCount } from './intensity';
+import { motionDelta } from './speed';
 import { TimeOfDay } from '../types';
 
 interface RainDrop {
@@ -85,8 +86,9 @@ export class RainyAnimation extends BaseAnimation {
       for (const drop of this.rainDrops) {
         if (drop.layer !== index) continue;
 
-        drop.y += drop.speed * deltaTime;
-        drop.x += drop.speed * SLANT * deltaTime;
+        const step = motionDelta(deltaTime, this.speed);
+        drop.y += drop.speed * step;
+        drop.x += drop.speed * SLANT * step;
 
         if (drop.y - drop.length > height) {
           if (this.quality.details && index === RAIN_LAYERS.length - 1 && Math.random() < (heavy ? 0.7 : 0.4)) {

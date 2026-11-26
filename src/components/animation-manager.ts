@@ -32,6 +32,14 @@ export interface DrawParams {
   quality?: AnimationQuality;
   // 1 = today's rain, snow, hail, wind and lightning. Lower is calmer. Speed and frame rate stay.
   intensity?: number;
+  // 1 = today's pace. Lower slows motion. Lightning keeps its own clock. Frame rate stays.
+  speed?: number;
+  // 1 = today's flashes. Lower skips some. Flash length stays.
+  lightningFrequency?: number;
+  // 1 = today's bolt and white flash. Lower dims them.
+  lightningBrightness?: number;
+  // false removes flashes and bolts. Clouds and rain stay.
+  showLightning?: boolean;
   // Wind speed in m/s (null = unknown)
   windSpeed?: number | null;
   // Northern lights on clear nights
@@ -255,12 +263,16 @@ export class AnimationManager {
 
     const { condition, timeOfDay, sunPosition, moonPhase, visualStyle } = params;
     const intensity = params.intensity ?? 1;
+    const speed = params.speed ?? 1;
+    const lightningFrequency = params.lightningFrequency ?? 1;
+    const lightningBrightness = params.lightningBrightness ?? 1;
+    const showLightning = params.showLightning !== false;
     const width = this.width;
     const height = this.height;
 
     if (still) {
       // Sun/moon position follows the time of day in steps, so the frame isn't redrawn every minute
-      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, intensity, params.aurora, params.raindrops, params.windEffects, Math.round(params.windSpeed ?? 0), width, height]);
+      const key = JSON.stringify([condition, timeOfDay.type, Math.round(timeOfDay.progress * 20), sunPosition, moonPhase, visualStyle, params.quality, intensity, speed, lightningFrequency, lightningBrightness, showLightning, params.aurora, params.raindrops, params.windEffects, Math.round(params.windSpeed ?? 0), width, height]);
       if (key === this.stillKey) return;
       this.stillKey = key;
     } else {
@@ -270,17 +282,24 @@ export class AnimationManager {
     this.ctx.clearRect(0, 0, width, height);
 
     const conditionLower = condition.toLowerCase();
-    Object.values(this.animations).forEach(animation => animation.setIntensity(intensity));
+    Object.values(this.animations).forEach(animation => {
+      animation.setIntensity(intensity);
+      animation.setSpeed(speed);
+      animation.setLightning(showLightning, lightningFrequency, lightningBrightness);
+    });
 
     if (visualStyle === 'classic') {
       this.classic ??= new ClassicAnimations(this.ctx);
       this.classic.setIntensity(intensity);
+      this.classic.setSpeed(speed);
+      this.classic.setLightning(showLightning, lightningFrequency, lightningBrightness);
       this.classic.draw(conditionLower, width, height, timeOfDay, sunPosition);
       return;
     }
 
     const isWindy = conditionLower === 'windy' || conditionLower === 'windy-variant';
     const windSpeed = Math.max(0, params.windSpeed ?? 0);
+    this.cloudField.setSpeed(speed);
     this.cloudField.setWeather(conditionLower, timeOfDay);
     // Clouds drift faster in wind; the windy conditions always get a stiff breeze
     this.cloudField.setWind(Math.min(4, Math.max(isWindy ? 2.5 : 1, 1 + windSpeed / 5)));
@@ -335,12 +354,12 @@ export class AnimationManager {
     const gusts = isWindy ? Math.max(0.6, (windSpeed - GUST_WIND) / 10) : (windSpeed - GUST_WIND) / 10;
     if (params.windEffects !== false && WIND_CONDITIONS.has(conditionLower) && gusts > 0) {
       const daylight = getSkyColors(conditionLower, timeOfDay).daylight;
-      this.wind.draw(this.ctx, now, width, height, Math.min(1, gusts), isWindy, daylight, this.quality, intensity);
+      this.wind.draw(this.ctx, now, width, height, Math.min(1, gusts), isWindy, daylight, this.quality, intensity, speed);
     }
 
     const glassRain = GLASS_RAIN[conditionLower];
     if (glassRain && params.raindrops !== false && this.quality.details) {
-      this.glassDrops.draw(this.ctx, now, width, height, glassRain, this.quality);
+      this.glassDrops.draw(this.ctx, now, width, height, glassRain, this.quality, speed);
     }
   }
 }

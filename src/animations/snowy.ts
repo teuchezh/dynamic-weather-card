@@ -1,5 +1,6 @@
 import { BaseAnimation } from './base';
 import { scaleParticleCount } from './intensity';
+import { motionDelta, motionTime } from './speed';
 import { TimeOfDay } from '../types';
 
 interface Snowflake {
@@ -70,10 +71,11 @@ export class SnowyAnimation extends BaseAnimation {
 
     this.ctx.save();
     for (const flake of this.snowflakes) {
-      flake.y += flake.speed * deltaTime;
-      const sway = Math.sin(currentTime * flake.swaySpeed + flake.swayPhase) * flake.swayAmount;
+      const step = motionDelta(deltaTime, this.speed);
+      flake.y += flake.speed * step;
+      const sway = Math.sin(motionTime(currentTime, this.speed) * flake.swaySpeed + flake.swayPhase) * flake.swayAmount;
       // Gentle wind plus sway
-      flake.x += (flake.speed * 0.15 + sway) * deltaTime;
+      flake.x += (flake.speed * 0.15 + sway) * step;
 
       if (flake.y - flake.size > height) {
         flake.y = -flake.size - Math.random() * 20;

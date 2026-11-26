@@ -1,4 +1,5 @@
 import { BaseAnimation } from '../base';
+import { motionTime } from '../speed';
 import { TimeOfDay } from '../../types';
 
 /**
@@ -13,7 +14,7 @@ export class FoggyAnimation extends BaseAnimation {
    * @param timeOfDay - Time of day info
    */
   draw(time: number, width: number, height: number, _timeOfDay: TimeOfDay): void {
-    const currentTime = Date.now() * 0.0003;
+    const currentTime = motionTime(Date.now() * 0.0003, this.speed);
     this.ctx.fillStyle = 'rgba(200, 200, 200, 0.4)';
 
     // Draw fog layers

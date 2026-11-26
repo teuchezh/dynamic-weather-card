@@ -1,5 +1,6 @@
 import { BaseAnimation } from '../base';
 import { scaleParticleCount } from '../intensity';
+import { motionTime } from '../speed';
 import { TimeOfDay } from '../../types';
 
 interface HailStone {
@@ -55,7 +56,7 @@ export class HailAnimation extends BaseAnimation {
       }
     }
 
-    const time = Date.now() * 0.002;
+    const time = motionTime(Date.now() * 0.002, this.speed);
 
     this.ctx.fillStyle = 'rgba(240, 250, 255, 1)';
     this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';

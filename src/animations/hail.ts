@@ -1,5 +1,6 @@
 import { BaseAnimation } from './base';
 import { scaleParticleCount } from './intensity';
+import { motionDelta } from './speed';
 import { RainyAnimation } from './rainy';
 import { TimeOfDay } from '../types';
 
@@ -76,9 +77,10 @@ export class HailAnimation extends BaseAnimation {
 
     this.ctx.save();
     for (const stone of this.hailStones) {
-      if (stone.bounces > 0) stone.vy += GRAVITY * deltaTime;
-      stone.x += stone.vx * deltaTime;
-      stone.y += stone.vy * deltaTime;
+      const step = motionDelta(deltaTime, this.speed);
+      if (stone.bounces > 0) stone.vy += GRAVITY * step;
+      stone.x += stone.vx * step;
+      stone.y += stone.vy * step;
 
       // Bounce off the ground, losing most of the energy each time
       if (stone.y >= stone.ground && stone.vy > 0) {

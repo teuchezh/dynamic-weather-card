@@ -1,4 +1,5 @@
 import { getSkyColors, rgb } from '../sky';
+import { motionDelta, motionTime } from './speed';
 import type { RGBColor, TimeOfDay } from '../types';
 
 interface CloudLayer {
@@ -65,6 +66,8 @@ export class CloudField {
   // Drift speed multiplier from the wind, eased so clouds speed up smoothly
   private wind = 1;
   private targetWind = 1;
+  // 1 is today's drift. Coverage and the wind ramp stay on the wall clock.
+  private speed = 1;
   // Horizontal distance each layer has drifted, so speed changes don't make clouds jump
   private drift = LAYERS.map(() => 0);
 
@@ -87,6 +90,14 @@ export class CloudField {
   }
 
   /**
+   * Slow the drift and the bob. 1 is today's pace.
+   * The fade-in of coverage and the wind ramp are not scaled.
+   */
+  setSpeed(speed: number): void {
+    this.speed = speed;
+  }
+
+  /**
    * Jump to the target coverage without easing (used for still frames)
    */
   settle(): void {
@@ -105,8 +116,9 @@ export class CloudField {
     this.lastTime = time;
     this.coverage += (this.targetCoverage - this.coverage) * Math.min(1, dt * 1.5);
     this.wind += (this.targetWind - this.wind) * Math.min(1, dt * 0.8);
+    const driftStep = motionDelta(dt, this.speed);
     LAYERS.forEach((layer, index) => {
-      this.drift[index] += layer.speed * this.wind * dt;
+      this.drift[index] += layer.speed * this.wind * driftStep;
     });
 
     // Lower quality drops the far layers first
@@ -122,7 +134,7 @@ export class CloudField {
       const h = SPRITE_HEIGHT * layer.scale * sizeScale;
       const loop = width + w * 2;
       const x = ((cloud.offset * loop + this.drift[cloud.layer]) % loop) - w;
-      const y = cloud.y * height + Math.sin(time * 0.15 + cloud.bobPhase) * 3 - h / 2;
+      const y = cloud.y * height + Math.sin(motionTime(time, this.speed) * 0.15 + cloud.bobPhase) * 3 - h / 2;
 
       ctx.save();
       ctx.globalAlpha = layer.alpha * visibility;

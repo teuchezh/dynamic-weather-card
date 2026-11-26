@@ -36,21 +36,25 @@ export function lightningVisibilityThreshold(intensity: number): number {
   return 1 - (1 - LIGHTNING_FLASH_THRESHOLD) * intensity;
 }
 
-/** White-overlay coefficient. At intensity 1 this is 0.6. */
-export function lightningPeakAlpha(intensity: number): number {
-  if (intensity === 1) return LIGHTNING_PEAK_ALPHA;
-  return LIGHTNING_PEAK_ALPHA * intensity;
+/**
+ * White-overlay coefficient. At intensity 1 and brightness 1 this is 0.6.
+ * Brightness is the separate lightning control. It dims the flash and does not
+ * change how long the flash lasts.
+ */
+export function lightningPeakAlpha(intensity: number, brightness = 1): number {
+  if (intensity === 1 && brightness === 1) return LIGHTNING_PEAK_ALPHA;
+  return LIGHTNING_PEAK_ALPHA * intensity * brightness;
 }
 
 /**
  * Alpha of the full-canvas lightning overlay, or 0 when this peak stays hidden.
- * At intensity 1 this is the historical formula.
+ * At intensity 1 and brightness 1 this is the historical formula.
  */
-export function lightningOverlayAlpha(flashIntensity: number, intensity: number): number {
+export function lightningOverlayAlpha(flashIntensity: number, intensity: number, brightness = 1): number {
   const threshold = lightningVisibilityThreshold(intensity);
   if (!(flashIntensity > threshold)) return 0;
   const normalizedIntensity = (flashIntensity - threshold) / (1 - threshold);
-  const peak = lightningPeakAlpha(intensity);
+  const peak = lightningPeakAlpha(intensity, brightness);
   const alpha = normalizedIntensity * peak;
   return Math.min(alpha, Math.sin(normalizedIntensity * Math.PI) * peak);
 }

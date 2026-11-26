@@ -77,5 +77,9 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   layout: 'default' as 'default' | 'minimal',
   visualStyle: 'modern' as 'modern' | 'classic',
   animationQuality: 'high' as 'high' | 'medium' | 'low',
-  animationIntensity: 1
+  animationIntensity: 1,
+  animationSpeed: 1,
+  lightningFrequency: 1,
+  lightningBrightness: 1,
+  showLightning: true
 };

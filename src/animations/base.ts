@@ -1,4 +1,5 @@
 import type { CloudField } from './clouds';
+import { motionTime } from './speed';
 import { createQualitySettings, type QualitySettings } from './quality';
 
 /**
@@ -12,6 +13,12 @@ export class BaseAnimation {
   quality: QualitySettings = createQualitySettings();
   // 1 keeps today's particle counts and lightning. Lower is a calmer picture.
   intensity = 1;
+  // 1 keeps today's motion. Lower slows travel. Lightning keeps its own clock.
+  speed = 1;
+  // Lightning stays on, at today's frequency and brightness, unless configured otherwise.
+  showLightning = true;
+  lightningFrequency = 1;
+  lightningBrightness = 1;
   // Nested animations (e.g. the rain inside a thunderstorm) that share clouds and quality
   protected children: BaseAnimation[] = [];
 
@@ -35,6 +42,26 @@ export class BaseAnimation {
   setIntensity(intensity: number): void {
     this.intensity = intensity;
     this.children.forEach(child => child.setIntensity(intensity));
+  }
+
+  /**
+   * Share animation speed with this animation and its nested ones.
+   * 1 is today's pace. Lightning flash length is not scaled.
+   */
+  setSpeed(speed: number): void {
+    this.speed = speed;
+    this.children.forEach(child => child.setSpeed(speed));
+  }
+
+  /**
+   * Share lightning frequency, brightness and the on/off switch.
+   * Clouds and rain ignore these and keep drawing.
+   */
+  setLightning(show: boolean, frequency: number, brightness: number): void {
+    this.showLightning = show;
+    this.lightningFrequency = frequency;
+    this.lightningBrightness = brightness;
+    this.children.forEach(child => child.setLightning(show, frequency, brightness));
   }
 
   /**
@@ -86,11 +113,12 @@ export class BaseAnimation {
       return;
     }
 
+    const motion = motionTime(time, this.speed);
     const cloudCount = Math.max(2, Math.floor(width / 150 * density));
 
     for (let i = 0; i < cloudCount; i++) {
-      const baseX = ((time * 3 + i * 150) % (width + 200)) - 100;
-      const baseY = height * (0.2 + (i % 3) * 0.15) + Math.sin(time * 0.2 + i) * 8;
+      const baseX = ((motion * 3 + i * 150) % (width + 200)) - 100;
+      const baseY = height * (0.2 + (i % 3) * 0.15) + Math.sin(motion * 0.2 + i) * 8;
       const size = 40 + (i % 3) * 15;
       const opacity = 0.6 + (i % 2) * 0.2;
 

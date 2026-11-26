@@ -79,6 +79,10 @@ const editorDefaults = (): WeatherCardEditorConfig => ({
   visual_style: DEFAULT_CONFIG.visualStyle,
   animation_quality: DEFAULT_CONFIG.animationQuality,
   animation_intensity: DEFAULT_CONFIG.animationIntensity,
+  animation_speed: DEFAULT_CONFIG.animationSpeed,
+  lightning_frequency: DEFAULT_CONFIG.lightningFrequency,
+  lightning_brightness: DEFAULT_CONFIG.lightningBrightness,
+  show_lightning: DEFAULT_CONFIG.showLightning,
   show_clock: DEFAULT_CONFIG.showClock,
   show_clock_seconds: DEFAULT_CONFIG.showClockSeconds,
   show_date: DEFAULT_CONFIG.showDate,
@@ -143,6 +147,10 @@ export class DynamicWeatherCardEditor extends LitElement {
           select('animation_quality', ['high', 'medium', 'low'])
         ),
         { name: 'animation_intensity', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },
+        { name: 'animation_speed', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },
+        { name: 'lightning_frequency', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },
+        { name: 'lightning_brightness', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },
+        toggle('show_lightning'),
         grid(toggle('show_animations'), toggle('show_aurora')),
         grid(toggle('show_raindrops'), toggle('show_wind_effects')),
         grid(

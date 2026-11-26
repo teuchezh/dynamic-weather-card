@@ -11,6 +11,8 @@ import {
 import { cardStyles } from './styles.js';
 import { getSkyColors, rgb } from '../sky.js';
 import { clampAnimationIntensity } from '../animations/intensity.js';
+import { clampLightningBrightness, clampLightningFrequency, lightningEnabled } from '../animations/lightning.js';
+import { clampAnimationSpeed } from '../animations/speed.js';
 import { AnimationManager, type DrawParams } from './animation-manager.js';
 import { ForecastService } from './forecast-service.js';
 import { ActionHandler } from './action-handler.js';
@@ -193,6 +195,10 @@ export class AnimatedWeatherCard extends LitElement {
       visualStyle: this.config.visualStyle,
       quality: this.config.animationQuality,
       intensity: this.config.animationIntensity ?? 1,
+      speed: this.config.animationSpeed ?? 1,
+      lightningFrequency: this.config.lightningFrequency ?? 1,
+      lightningBrightness: this.config.lightningBrightness ?? 1,
+      showLightning: this.config.showLightning !== false,
       windSpeed: this.getWindSpeedMs(weather),
       aurora: this.config.showAurora === true,
       raindrops: this.config.showRaindrops !== false,
@@ -408,6 +414,10 @@ export class AnimatedWeatherCard extends LitElement {
       visualStyle: config.visual_style === 'classic' ? 'classic' : 'modern',
       animationQuality: config.animation_quality === 'medium' || config.animation_quality === 'low' ? config.animation_quality : DEFAULT_CONFIG.animationQuality,
       animationIntensity: clampAnimationIntensity(config.animation_intensity),
+      animationSpeed: clampAnimationSpeed(config.animation_speed),
+      lightningFrequency: clampLightningFrequency(config.lightning_frequency),
+      lightningBrightness: clampLightningBrightness(config.lightning_brightness),
+      showLightning: lightningEnabled(config.show_lightning),
       sunriseEntity: config.sunrise_entity || null,
       sunsetEntity: config.sunset_entity || null,
       templowAttribute: config.templow_attribute || null,
