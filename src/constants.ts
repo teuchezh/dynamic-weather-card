@@ -66,6 +66,7 @@ export const DEFAULT_CONFIG: Required<Omit<WeatherCardConfig, 'entity' | 'type'>
   clockSize: 'medium',
   clockWeight: 'thin',
   overlayOpacity: 0.1,
+  cardOpacity: 1.0,
   textShadow: 1,
   language: 'auto',
   height: null,

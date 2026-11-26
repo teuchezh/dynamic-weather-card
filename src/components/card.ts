@@ -404,6 +404,7 @@ export class AnimatedWeatherCard extends LitElement {
       clockSize: config.clock_size && config.clock_size in CLOCK_SCALE ? config.clock_size : DEFAULT_CONFIG.clockSize,
       clockWeight: config.clock_weight && config.clock_weight in CLOCK_WEIGHT ? config.clock_weight : DEFAULT_CONFIG.clockWeight,
       overlayOpacity: config.overlay_opacity !== undefined ? config.overlay_opacity : DEFAULT_CONFIG.overlayOpacity,
+      cardOpacity: config.card_opacity !== undefined ? config.card_opacity : DEFAULT_CONFIG.cardOpacity,
       textShadow: config.text_shadow !== undefined ? config.text_shadow : DEFAULT_CONFIG.textShadow,
       borderRadius: config.border_radius ?? DEFAULT_CONFIG.borderRadius,
       sunPositionX: config.sun_position_x ?? DEFAULT_CONFIG.sunPositionX,
@@ -500,7 +501,7 @@ export class AnimatedWeatherCard extends LitElement {
         : '';
     } else {
       const sky = getSkyColors(weather.condition, timeOfDay);
-      skyStyle = `--dwc-sky-top: ${rgb(sky.top)}; --dwc-sky-bottom: ${rgb(sky.bottom)};`;
+      skyStyle = `--dwc-sky-top: ${rgb(sky.top, this.config.cardOpacity)}; --dwc-sky-bottom: ${rgb(sky.bottom, this.config.cardOpacity)};`;
     }
 
     const overlayOpacity = this.config.overlayOpacity !== undefined

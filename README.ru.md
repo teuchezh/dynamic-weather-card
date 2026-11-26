@@ -242,6 +242,7 @@ sunset_entity: sensor.yandex_pogoda_next_sunset
 | `show_raindrops` | boolean | `true` | Капли на стекле в дождь, ливень, грозу и мокрый снег (кроме качества `low`) |
 | `show_wind_effects` | boolean | `true` | Порывы ветра и летящие листья в ветреную погоду, а в сухую погоду при ветре от 8 м/с |
 | `overlay_opacity` | number | `0.1` | Затемнение неба (0–1), чтобы текст читался |
+| `card_opacity` | number | `0.1` | Настройте непрозрачность (0–1) всей карточки, чтобы сквозь неё просвечивал фон |
 | `text_shadow` | number | `1` | Сила тени текста, от `0` до `3` |
 | `text_color` | string | `white` | Цвет текста и значков, любой CSS-цвет (`"#1a1a2e"`, `black`, `var(--primary-text-color)`) |
 | `border_radius` | number | тема | Скругление углов в px; `0` для прямых углов |

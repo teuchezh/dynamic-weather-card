@@ -51,6 +51,7 @@ export interface DemoTranslations {
   clockWeightRegular: string;
   clockWeightBold: string;
   overlayOpacity: string;
+  cardOpacity: string;
   windSpeedUnit: string;
   dailyForecastDays: string;
   hourlyForecastHours: string;
@@ -117,6 +118,7 @@ export interface EditorTranslations {
   clock_weight_regular: string;
   clock_weight_bold: string;
   overlay_opacity: string;
+  card_opacity: string;
   language: string;
   wind_speed_unit: string;
   wind_speed_unit_ms: string;
