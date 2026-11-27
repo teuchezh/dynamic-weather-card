@@ -171,6 +171,7 @@ export interface WeatherCardConfig {
   clockSize?: ClockSize;
   clockWeight?: ClockWeight;
   overlayOpacity?: number;
+  cardOpacity?: number;
   textShadow?: number;
   language?: 'auto' | SupportedLanguage;
   height?: number | null;
@@ -317,6 +318,7 @@ export interface ConfigInput {
   clock_size?: ClockSize;
   clock_weight?: ClockWeight;
   overlay_opacity?: number;
+  card_opacity?: number;
   text_shadow?: number;
   border_radius?: number;
   sun_position_x?: number;

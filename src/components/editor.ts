@@ -92,6 +92,7 @@ const editorDefaults = (): WeatherCardEditorConfig => ({
   clock_size: DEFAULT_CONFIG.clockSize,
   clock_weight: DEFAULT_CONFIG.clockWeight,
   overlay_opacity: DEFAULT_CONFIG.overlayOpacity,
+  card_opacity: DEFAULT_CONFIG.cardOpacity,
   text_shadow: DEFAULT_CONFIG.textShadow,
   language: DEFAULT_CONFIG.language,
   wind_speed_unit: DEFAULT_CONFIG.windSpeedUnit
@@ -147,6 +148,7 @@ export class DynamicWeatherCardEditor extends LitElement {
           select('visual_style', ['modern', 'classic']),
           select('animation_quality', ['high', 'medium', 'low'])
         ),
+        { name: 'card_opacity', selector: { number: { min: 0, max: 1, step: 0.05, mode: 'box' } } },
         { name: 'animation_intensity', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },
         { name: 'animation_speed', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },
         { name: 'lightning_frequency', selector: { number: { min: 0.25, max: 1, step: 0.05, mode: 'slider' } } },

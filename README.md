@@ -242,6 +242,7 @@ Only `entity` is required. The options below are grouped the same way as in the 
 | `show_raindrops` | boolean | `true` | Raindrops on the glass in rain, heavy rain, thunderstorm and sleet (not on `low` quality) |
 | `show_wind_effects` | boolean | `true` | Gusts and flying leaves in windy weather, and in dry weather above 8 m/s |
 | `overlay_opacity` | number | `0.1` | Darkens the sky (0–1) so text stays readable |
+| `card_opacity` | number | `0.1` | Adjust opacity (0-1) of the whole card to see background through |
 | `text_shadow` | number | `1` | Text shadow strength, `0`–`3` |
 | `text_color` | string | `white` | Text and icon color, any CSS color (`"#1a1a2e"`, `black`, `var(--primary-text-color)`) |
 | `border_radius` | number | theme | Corner radius in px; `0` for square corners |
